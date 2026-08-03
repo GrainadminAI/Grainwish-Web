@@ -30,6 +30,10 @@ export default function App() {
       {/* Hero Section with 3D Canvas */}
       <HeroSection
         onOpenDownloadModal={() => setDownloadModalOpen(true)}
+        onGoogleSignIn={() => {
+          const navAuthBtn = document.querySelector('header button');
+          if (navAuthBtn) navAuthBtn.click();
+        }}
         onScanClick={() => {
           const el = document.getElementById('diagnostics');
           if (el) el.scrollIntoView({ behavior: 'smooth' });
