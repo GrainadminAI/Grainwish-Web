@@ -3,7 +3,17 @@
 -- Run this script in your Supabase SQL Editor
 -- ==========================================================
 
--- 1. Create Mandi Prices Table
+-- 1. Create Google OAuth User Profiles Table
+CREATE TABLE IF NOT EXISTS public.profiles (
+  id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+  email TEXT NOT NULL,
+  full_name TEXT,
+  avatar_url TEXT,
+  provider TEXT DEFAULT 'google',
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 2. Create Mandi Prices Table
 CREATE TABLE IF NOT EXISTS public.mandi_prices (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   commodity VARCHAR(255) NOT NULL,
@@ -18,9 +28,10 @@ CREATE TABLE IF NOT EXISTS public.mandi_prices (
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 2. Create AI Crop Diagnostic Scans Table
+-- 3. Create AI Crop Diagnostic Scans Table
 CREATE TABLE IF NOT EXISTS public.diagnostics_scans (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   crop VARCHAR(100) NOT NULL,
   disease VARCHAR(255) NOT NULL,
   location VARCHAR(100),
@@ -33,18 +44,20 @@ CREATE TABLE IF NOT EXISTS public.diagnostics_scans (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 3. Create Ananya AI Chat Logs Table
+-- 4. Create Ananya AI Chat Logs Table
 CREATE TABLE IF NOT EXISTS public.ananya_chats (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   user_text TEXT NOT NULL,
   ananya_response TEXT NOT NULL,
   language VARCHAR(50) DEFAULT 'English',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 4. Create NPK Calculations Table
+-- 5. Create NPK Calculations Table
 CREATE TABLE IF NOT EXISTS public.npk_calculations (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
   crop VARCHAR(100) NOT NULL,
   soil_type VARCHAR(100) NOT NULL,
   acres NUMERIC(5, 2) NOT NULL,
@@ -56,7 +69,7 @@ CREATE TABLE IF NOT EXISTS public.npk_calculations (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- 5. Create App Downloads Table
+-- 6. Create App Downloads Table
 CREATE TABLE IF NOT EXISTS public.app_downloads (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   platform VARCHAR(100) NOT NULL,
@@ -65,9 +78,39 @@ CREATE TABLE IF NOT EXISTS public.app_downloads (
 );
 
 -- ==========================================================
--- Enable Row Level Security (RLS) & Public Policies
+-- Automatic User Profile Creation Trigger for Google Sign-In
 -- ==========================================================
 
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+BEGIN
+  INSERT INTO public.profiles (id, email, full_name, avatar_url, provider)
+  VALUES (
+    NEW.id,
+    NEW.email,
+    COALESCE(NEW.raw_user_meta_data->>'full_name', NEW.raw_user_meta_data->>'name', 'Google Farmer'),
+    NEW.raw_user_meta_data->>'avatar_url',
+    COALESCE(NEW.raw_app_meta_data->>'provider', 'google')
+  )
+  ON CONFLICT (id) DO UPDATE
+  SET full_name = EXCLUDED.full_name,
+      avatar_url = EXCLUDED.avatar_url,
+      updated_at = NOW();
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Re-create Trigger on auth.users table
+DROP TRIGGER IF EXISTS on_auth_user_created ON auth.users;
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
+
+-- ==========================================================
+-- Enable Row Level Security (RLS) & Define Public Access Policies
+-- ==========================================================
+
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.mandi_prices ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.diagnostics_scans ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.ananya_chats ENABLE ROW LEVEL SECURITY;
@@ -75,6 +118,8 @@ ALTER TABLE public.npk_calculations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.app_downloads ENABLE ROW LEVEL SECURITY;
 
 -- Clean existing policies if re-running
+DROP POLICY IF EXISTS "Allow Public Read Profiles" ON public.profiles;
+DROP POLICY IF EXISTS "Allow User Read Own Profile" ON public.profiles;
 DROP POLICY IF EXISTS "Allow Public Read Mandi Prices" ON public.mandi_prices;
 DROP POLICY IF EXISTS "Allow Public Insert Diagnostics" ON public.diagnostics_scans;
 DROP POLICY IF EXISTS "Allow Public Read Diagnostics" ON public.diagnostics_scans;
@@ -83,7 +128,8 @@ DROP POLICY IF EXISTS "Allow Public Read Ananya Chats" ON public.ananya_chats;
 DROP POLICY IF EXISTS "Allow Public Insert NPK" ON public.npk_calculations;
 DROP POLICY IF EXISTS "Allow Public Insert App Downloads" ON public.app_downloads;
 
--- Create Public Access Policies
+-- Create Policies
+CREATE POLICY "Allow Public Read Profiles" ON public.profiles FOR SELECT USING (true);
 CREATE POLICY "Allow Public Read Mandi Prices" ON public.mandi_prices FOR SELECT USING (true);
 CREATE POLICY "Allow Public Insert Diagnostics" ON public.diagnostics_scans FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow Public Read Diagnostics" ON public.diagnostics_scans FOR SELECT USING (true);
