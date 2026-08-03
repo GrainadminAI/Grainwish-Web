@@ -265,3 +265,56 @@ export async function getLoggedInUser() {
     return null;
   }
 }
+
+/**
+ * ==========================================================
+ * Supabase Realtime Private Broadcast Channels
+ * ==========================================================
+ */
+
+/**
+ * Subscribe to a private user Realtime channel for INSERT, UPDATE, and DELETE broadcast events.
+ * 
+ * @param {Object} user - The authenticated Supabase user object containing user.id
+ * @param {Object} callbacks - Event callbacks { onInsert, onUpdate, onDelete }
+ * @returns {Object|null} The subscribed channel instance
+ */
+export async function subscribeToUserRealtimeBroadcast(user, { onInsert, onUpdate, onDelete } = {}) {
+  if (!isSupabaseConfigured || !user?.id) return null;
+
+  try {
+    // 1. Get current session JWT token for Realtime Auth
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.access_token) {
+      await supabase.realtime.setAuth(session.access_token);
+    }
+
+    // 2. Initialize private channel for user topic
+    const channel = supabase.channel(`user:${user.id}`, {
+      config: { private: true }
+    });
+
+    if (onInsert) {
+      channel.on('broadcast', { event: 'INSERT' }, (payload) => onInsert(payload));
+    }
+    if (onUpdate) {
+      channel.on('broadcast', { event: 'UPDATE' }, (payload) => onUpdate(payload));
+    }
+    if (onDelete) {
+      channel.on('broadcast', { event: 'DELETE' }, (payload) => onDelete(payload));
+    }
+
+    // 3. Subscribe to the channel
+    channel.subscribe((status) => {
+      if (status === 'SUBSCRIBED') {
+        console.log(`Realtime private channel user:${user.id} subscribed`);
+      }
+    });
+
+    return channel;
+  } catch (err) {
+    console.error('Supabase Realtime Private Channel Subscription Error:', err);
+    return null;
+  }
+}
+
