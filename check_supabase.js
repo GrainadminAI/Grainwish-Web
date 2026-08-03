@@ -21,29 +21,71 @@ async function testConnection() {
       .limit(5);
 
     if (mandiError) {
-      console.warn('⚠️ Table mandi_prices query notice:', mandiError.message);
-      console.log('💡 Note: If table does not exist yet, make sure to execute supabase/schema.sql in your Supabase SQL Editor.');
+      console.warn('⚠️ mandi_prices select:', mandiError.message);
     } else {
-      console.log(`✅ Supabase Database Service: OK (${mandiData.length} records retrieved from mandi_prices)`);
+      console.log(`✅ mandi_prices: OK (${mandiData.length} records retrieved)`);
     }
 
-    // 3. Test Database Insert Test Record into diagnostics_scans
-    const { data: insertData, error: insertError } = await supabase
+    // 3. Test diagnostics_scans
+    const { error: diagError } = await supabase
       .from('diagnostics_scans')
       .insert([{
         crop: 'Wheat Test',
         disease: 'Connection Test Scan',
         confidence: '99.9%',
         severity: 'Low',
-        symptoms: 'Connection ping test',
-        treatment: 'All systems operational'
-      }])
-      .select();
-
-    if (insertError) {
-      console.warn('⚠️ Table diagnostics_scans insert notice:', insertError.message);
+        symptoms: 'Scan test',
+        treatment: 'Operational'
+      }]);
+    if (diagError) {
+      console.warn('⚠️ diagnostics_scans insert:', diagError.message);
     } else {
-      console.log('✅ Supabase Database Insert: OK (Test record created)');
+      console.log('✅ diagnostics_scans insert: OK');
+    }
+
+    // 4. Test ananya_chats
+    const { error: chatError } = await supabase
+      .from('ananya_chats')
+      .insert([{
+        user_text: 'Test Prompt',
+        ananya_response: 'Test Response',
+        language: 'English'
+      }]);
+    if (chatError) {
+      console.warn('⚠️ ananya_chats insert:', chatError.message);
+    } else {
+      console.log('✅ ananya_chats insert: OK');
+    }
+
+    // 5. Test npk_calculations
+    const { error: npkError } = await supabase
+      .from('npk_calculations')
+      .insert([{
+        crop: 'Wheat',
+        soil_type: 'Alluvial',
+        acres: 2.5,
+        growth_stage: 'Vegetative',
+        urea_kg: 50,
+        dap_kg: 25,
+        mop_kg: 15
+      }]);
+    if (npkError) {
+      console.warn('⚠️ npk_calculations insert:', npkError.message);
+    } else {
+      console.log('✅ npk_calculations insert: OK');
+    }
+
+    // 6. Test app_downloads
+    const { error: dlError } = await supabase
+      .from('app_downloads')
+      .insert([{
+        platform: 'Android APK Scan',
+        domain: 'Grainwish.com'
+      }]);
+    if (dlError) {
+      console.warn('⚠️ app_downloads insert:', dlError.message);
+    } else {
+      console.log('✅ app_downloads insert: OK');
     }
 
   } catch (err) {
