@@ -65,7 +65,7 @@ CREATE TABLE IF NOT EXISTS public.app_downloads (
 );
 
 -- ==========================================================
--- Enable Row Level Security (RLS) & Public Read Access
+-- Enable Row Level Security (RLS) & Public Policies
 -- ==========================================================
 
 ALTER TABLE public.mandi_prices ENABLE ROW LEVEL SECURITY;
@@ -74,7 +74,16 @@ ALTER TABLE public.ananya_chats ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.npk_calculations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.app_downloads ENABLE ROW LEVEL SECURITY;
 
--- Allow Public Read Access
+-- Clean existing policies if re-running
+DROP POLICY IF EXISTS "Allow Public Read Mandi Prices" ON public.mandi_prices;
+DROP POLICY IF EXISTS "Allow Public Insert Diagnostics" ON public.diagnostics_scans;
+DROP POLICY IF EXISTS "Allow Public Read Diagnostics" ON public.diagnostics_scans;
+DROP POLICY IF EXISTS "Allow Public Insert Ananya Chats" ON public.ananya_chats;
+DROP POLICY IF EXISTS "Allow Public Read Ananya Chats" ON public.ananya_chats;
+DROP POLICY IF EXISTS "Allow Public Insert NPK" ON public.npk_calculations;
+DROP POLICY IF EXISTS "Allow Public Insert App Downloads" ON public.app_downloads;
+
+-- Create Public Access Policies
 CREATE POLICY "Allow Public Read Mandi Prices" ON public.mandi_prices FOR SELECT USING (true);
 CREATE POLICY "Allow Public Insert Diagnostics" ON public.diagnostics_scans FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow Public Read Diagnostics" ON public.diagnostics_scans FOR SELECT USING (true);
