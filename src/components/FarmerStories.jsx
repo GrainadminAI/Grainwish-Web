@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
-import { Quote, MapPin, TrendingUp, CheckCircle2, Award, ArrowRight, Play, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Quote, MapPin, TrendingUp, CheckCircle2, Award, Sparkles, PlusCircle, Star, Send, Edit3, MessageSquare } from 'lucide-react';
+import confetti from 'canvas-confetti';
+import { recordFeatureUsageToDB, saveFeedbackToDB, getSavedUserFeedback } from '../lib/supabase';
 
-const STORIES = [
+const INITIAL_STORIES = [
   {
     id: 'ramesh',
     name: 'Ramesh Patil',
@@ -77,7 +79,118 @@ const STORIES = [
 ];
 
 export default function FarmerStories() {
-  const [selectedCase, setSelectedCase] = useState(STORIES[0]);
+  const [stories, setStories] = useState(INITIAL_STORIES);
+  const [selectedCase, setSelectedCase] = useState(INITIAL_STORIES[0]);
+
+  // Form State for User Feedback
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [userName, setUserName] = useState('');
+  const [userLocation, setUserLocation] = useState('');
+  const [userCrop, setUserCrop] = useState('');
+  const [userRating, setUserRating] = useState(5);
+  const [userFeedback, setUserFeedback] = useState('');
+  const [userPhone, setUserPhone] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [hasExistingUserFeedback, setHasExistingUserFeedback] = useState(false);
+  const [successNotice, setSuccessNotice] = useState('');
+
+  useEffect(() => {
+    // Load previously saved user feedback if available
+    const saved = getSavedUserFeedback();
+    if (saved && saved.comments) {
+      const userStoryObj = {
+        id: 'user_saved_fb',
+        name: saved.name || 'Verified Farmer',
+        location: saved.location || 'India',
+        crop: saved.category || 'General Farming',
+        metric: `${saved.rating || 5}/5 Star Feedback`,
+        metricTag: 'Community Feedback',
+        quote: `“${saved.comments}”`,
+        image: '/assets/hand_phone_crop.jpeg',
+        video: '/assets/sustainable_farming_village.mp4',
+        detectedIssue: 'User Submitted Feedback & Experience',
+        actionsTaken: [
+          'Shared real field feedback directly with GrainWise AI team',
+          'Rated platform usability and AI diagnostic accuracy',
+          'Synced feedback with verified farmer network'
+        ],
+        result: `Rating: ${saved.rating || 5} Stars — Verified User Feedback`,
+        isUserSubmission: true
+      };
+
+      setStories([userStoryObj, ...INITIAL_STORIES]);
+      setUserName(saved.name || '');
+      setUserLocation(saved.location || '');
+      setUserCrop(saved.category || '');
+      setUserRating(saved.rating || 5);
+      setUserFeedback(saved.comments || '');
+      setUserPhone(saved.phone || '');
+      setHasExistingUserFeedback(true);
+    }
+  }, []);
+
+  const handleSelectStory = (story) => {
+    setSelectedCase(story);
+    recordFeatureUsageToDB({
+      featureName: 'Farmer Stories',
+      action: 'view_story',
+      metadata: { farmer: story.name, crop: story.crop, location: story.location }
+    });
+  };
+
+  const handleUserFeedbackSubmit = async (e) => {
+    e.preventDefault();
+    if (!userFeedback.trim()) return;
+
+    setIsSubmitting(true);
+    const payload = {
+      name: userName || 'Verified Farmer',
+      location: userLocation || 'India',
+      phone: userPhone,
+      category: userCrop || 'General',
+      rating: userRating,
+      comments: userFeedback,
+      isUpdate: hasExistingUserFeedback
+    };
+
+    const res = await saveFeedbackToDB(payload);
+    setIsSubmitting(false);
+
+    if (res.success) {
+      confetti({ particleCount: 100, spread: 70 });
+      
+      const newStory = {
+        id: 'user_saved_fb',
+        name: userName || 'Verified Farmer',
+        location: userLocation || 'India',
+        crop: userCrop || 'General Farming',
+        metric: `${userRating}/5 Star Feedback`,
+        metricTag: 'Community Feedback',
+        quote: `“${userFeedback}”`,
+        image: '/assets/hand_phone_crop.jpeg',
+        video: '/assets/sustainable_farming_village.mp4',
+        detectedIssue: 'User Submitted Feedback & Experience',
+        actionsTaken: [
+          'Shared real field feedback directly with GrainWise AI team',
+          'Rated platform usability and AI diagnostic accuracy',
+          'Synced feedback with verified farmer network'
+        ],
+        result: `Rating: ${userRating} Stars — Verified User Feedback`,
+        isUserSubmission: true
+      };
+
+      setStories((prev) => {
+        const filtered = prev.filter((s) => s.id !== 'user_saved_fb');
+        return [newStory, ...filtered];
+      });
+
+      setSelectedCase(newStory);
+      setHasExistingUserFeedback(true);
+      setSuccessNotice(hasExistingUserFeedback ? 'Your feedback was updated!' : 'Your feedback was published!');
+      setTimeout(() => setSuccessNotice(''), 4000);
+      setShowAddForm(false);
+    }
+  };
 
   return (
     <section id="case-studies" className="py-24 bg-[#021109] relative overflow-hidden border-b border-emerald-900/40">
@@ -85,30 +198,170 @@ export default function FarmerStories() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <div className="text-center max-w-3xl mx-auto mb-12 space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-950 border border-emerald-500/40 text-xs font-semibold text-emerald-300">
             <Award className="w-3.5 h-3.5 text-amber-400" /> Real Fields, Real Results
           </div>
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-white">
-            Farmer Stories & <span className="gradient-text-agri">Case Studies</span>
+            Farmer Stories & <span className="gradient-text-agri">Community Feedback</span>
           </h2>
           <p className="text-slate-300 text-sm sm:text-base">
-            Farmers across India use GrainWise AI every day. Here is what changed for them — from problem to harvest.
+            Farmers across India share their experiences using GrainWise AI. Add your own feedback directly below!
           </p>
+
+          <div className="pt-2">
+            <button
+              onClick={() => setShowAddForm(!showAddForm)}
+              className="px-6 py-3 bg-amber-400 hover:bg-amber-300 text-black font-extrabold rounded-2xl shadow-lg shadow-amber-400/20 text-xs sm:text-sm inline-flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
+            >
+              {showAddForm ? (
+                <>Close Feedback Form</>
+              ) : hasExistingUserFeedback ? (
+                <>
+                  <Edit3 className="w-4 h-4 text-black" /> Update Your Submitted Feedback
+                </>
+              ) : (
+                <>
+                  <PlusCircle className="w-4 h-4 text-black" /> Add Your Own Feedback
+                </>
+              )}
+            </button>
+          </div>
         </div>
 
-        {/* Testimonials 4 Cards Grid */}
+        {/* User Success Notice */}
+        {successNotice && (
+          <div className="max-w-xl mx-auto mb-8 p-3 rounded-2xl bg-emerald-900/80 border border-emerald-500 text-emerald-200 text-xs font-semibold text-center animate-fade-in flex items-center justify-center gap-2">
+            <CheckCircle2 className="w-4 h-4 text-amber-400" /> {successNotice}
+          </div>
+        )}
+
+        {/* Interactive Form to Add Own Feedback */}
+        {showAddForm && (
+          <form onSubmit={handleUserFeedbackSubmit} className="max-w-2xl mx-auto mb-16 bg-[#031d10] border-2 border-amber-400/60 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-4 animate-fade-in">
+            <div className="flex items-center justify-between border-b border-emerald-900/60 pb-3">
+              <h3 className="font-display text-lg font-bold text-white flex items-center gap-2">
+                <MessageSquare className="w-5 h-5 text-amber-400" />
+                {hasExistingUserFeedback ? 'Update Your Feedback' : 'Add Your Own Feedback & Experience'}
+              </h3>
+              <span className="text-[10px] text-amber-400 font-mono bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
+                Live Community Sync
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1">Your Name</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Rajesh Kumar"
+                  value={userName}
+                  onChange={(e) => setUserName(e.target.value)}
+                  className="w-full bg-black/60 border border-emerald-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1">Your Location</label>
+                <input
+                  type="text"
+                  required
+                  placeholder="e.g. Karnal, Haryana"
+                  value={userLocation}
+                  onChange={(e) => setUserLocation(e.target.value)}
+                  className="w-full bg-black/60 border border-emerald-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1">Crop / Category</label>
+                <input
+                  type="text"
+                  placeholder="e.g. Wheat, Mustard, Paddy"
+                  value={userCrop}
+                  onChange={(e) => setUserCrop(e.target.value)}
+                  className="w-full bg-black/60 border border-emerald-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-medium text-slate-300 mb-1">Mobile Phone Number (Optional)</label>
+                <input
+                  type="tel"
+                  placeholder="+91 9876543210"
+                  value={userPhone}
+                  onChange={(e) => setUserPhone(e.target.value)}
+                  className="w-full bg-black/60 border border-emerald-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Star Rating</label>
+              <div className="flex items-center gap-2">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <button
+                    key={star}
+                    type="button"
+                    onClick={() => setUserRating(star)}
+                    className="p-1 hover:scale-110 transition-transform"
+                  >
+                    <Star className={`w-5 h-5 ${star <= userRating ? 'text-amber-400 fill-amber-400' : 'text-slate-600'}`} />
+                  </button>
+                ))}
+                <span className="text-xs text-amber-300 font-bold ml-2">{userRating} / 5 Stars</span>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-slate-300 mb-1">Your Feedback / Story</label>
+              <textarea
+                required
+                rows={3}
+                placeholder="Share how GrainWise AI helped your crops, diagnosed issues, or saved fertilizer costs..."
+                value={userFeedback}
+                onChange={(e) => setUserFeedback(e.target.value)}
+                className="w-full bg-black/60 border border-emerald-800 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-3 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95"
+            >
+              {isSubmitting ? (
+                <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+              ) : (
+                <>
+                  <Send className="w-4 h-4" /> {hasExistingUserFeedback ? 'Update My Feedback' : 'Publish My Feedback'}
+                </>
+              )}
+            </button>
+          </form>
+        )}
+
+        {/* Testimonials Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {STORIES.map((s) => (
+          {stories.map((s) => (
             <div
               key={s.id}
-              onClick={() => setSelectedCase(s)}
-              className={`cursor-pointer rounded-3xl p-6 transition-all duration-300 border flex flex-col justify-between ${
+              onClick={() => handleSelectStory(s)}
+              className={`cursor-pointer rounded-3xl p-6 transition-all duration-300 border flex flex-col justify-between relative overflow-hidden ${
                 selectedCase.id === s.id
                   ? 'bg-gradient-to-b from-[#06331e] to-[#042013] border-amber-400 shadow-2xl shadow-amber-400/10 scale-105'
                   : 'bg-[#042013]/90 border-emerald-800/50 hover:border-emerald-600 hover:-translate-y-1'
               }`}
             >
+              {s.isUserSubmission && (
+                <span className="absolute top-3 right-3 text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-400 text-black shadow">
+                  ✨ Your Feedback
+                </span>
+              )}
+
               <div>
                 <Quote className="w-8 h-8 text-amber-400/40 mb-3" />
                 <p className="text-xs sm:text-sm text-slate-200 italic leading-relaxed mb-6 font-serif">
@@ -211,3 +464,4 @@ export default function FarmerStories() {
     </section>
   );
 }
+

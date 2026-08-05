@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Scale, Calculator, CheckCircle2, TrendingDown, Leaf, Info, DollarSign, Sparkles, Database } from 'lucide-react';
-import { saveNPKToDB } from '../lib/supabase';
+import { saveNPKToDB, recordFeatureUsageToDB } from '../lib/supabase';
 
 const CROPS = [
   { name: 'Wheat', npkBase: [120, 60, 40], ureaFactor: 2.17, dapFactor: 2.17, mopFactor: 1.66 },
@@ -47,7 +47,12 @@ export default function NPKCalculator() {
         ureaKg,
         dapKg,
         mopKg,
-        costSavingsPct: savingsPct
+        costSavingsPct: 18
+      });
+      recordFeatureUsageToDB({
+        featureName: 'NPK Calculator',
+        action: 'calculate_npk',
+        metadata: { crop: selectedCrop.name, soilType: selectedSoil.name, acres, growthStage: stage }
       });
     }, 1500);
     return () => clearTimeout(timer);

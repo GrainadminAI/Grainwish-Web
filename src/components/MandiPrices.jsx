@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, MapPin, CloudSun, ArrowUpRight, Search, ShieldCheck, Navigation, Bell, Database } from 'lucide-react';
-import { fetchMandiPricesFromDB, isSupabaseConfigured } from '../lib/supabase';
+import { fetchMandiPricesFromDB, recordFeatureUsageToDB, isSupabaseConfigured } from '../lib/supabase';
 
 const MANDI_DATA = [
   { commodity: 'Wheat (Sharbati)', state: 'Maharashtra', district: 'Nashik', market: 'Nashik Main Mandi', price: '₹2,840 / qtl', msp: '₹2,275 / qtl', diff: '+₹565', status: 'Up (+4.2%)', distance: '12 km' },
@@ -27,6 +27,20 @@ export default function MandiPrices() {
     }
     loadDbPrices();
   }, []);
+
+  // Record Mandi search/filter interactions to Supabase
+  useEffect(() => {
+    if (searchTerm.trim() || selectedState !== 'All') {
+      const timer = setTimeout(() => {
+        recordFeatureUsageToDB({
+          featureName: 'Mandi Prices Radar',
+          action: 'filter_mandi',
+          metadata: { searchTerm, selectedState }
+        });
+      }, 1500);
+      return () => clearTimeout(timer);
+    }
+  }, [searchTerm, selectedState]);
 
   const filteredMandi = mandiList.filter((item) => {
     const matchesSearch = item.commodity.toLowerCase().includes(searchTerm.toLowerCase()) ||

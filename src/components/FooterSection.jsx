@@ -26,7 +26,7 @@ export default function FooterSection({ onOpenDownloadModal }) {
               Join thousands of farmers using GrainWise AI for real-time market prices, instant crop health checks, and a connected farming community.
             </p>
 
-            <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+            <div className="pt-4 flex flex-col items-center justify-center gap-3">
               <button
                 onClick={onOpenDownloadModal}
                 className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-500 via-emerald-600 to-amber-500 hover:from-emerald-400 hover:to-amber-400 text-black font-extrabold rounded-2xl shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 text-base"
@@ -34,6 +34,10 @@ export default function FooterSection({ onOpenDownloadModal }) {
                 <Smartphone className="w-5 h-5 text-black" />
                 Tap Download & Take Guesswork Out
               </button>
+              <div className="text-xs text-amber-300 font-mono flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                Application Phase is Coming Soon · Android Pre-Register will get Free 14 days trial pack
+              </div>
             </div>
           </div>
 

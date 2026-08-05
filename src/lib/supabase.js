@@ -129,6 +129,126 @@ export async function recordAppDownloadToDB(platform) {
 }
 
 /**
+ * Save or Update User Feedback in Supabase
+ */
+export async function saveFeedbackToDB(feedback) {
+  try {
+    const user = await getLoggedInUser();
+    const payload = {
+      user_id: user?.id || null,
+      phone: feedback.phone || '',
+      email: feedback.email || '',
+      category: feedback.category || 'General',
+      rating: feedback.rating || 5,
+      comments: feedback.comments || '',
+      updated_at: new Date().toISOString()
+    };
+
+    // Save to local storage for quick offline retrieval & update on phone
+    localStorage.setItem('grainwise_user_feedback', JSON.stringify({
+      ...payload,
+      id: feedback.id || 'fb_' + Date.now()
+    }));
+
+    if (!isSupabaseConfigured) {
+      return { success: true, isLocalOnly: true, data: payload };
+    }
+
+    // Attempt insert/upsert into user_feedbacks table or fallback to feature_usages
+    let result = null;
+    try {
+      const { data, error } = await supabase
+        .from('user_feedbacks')
+        .upsert([payload], { onConflict: 'phone' })
+        .select();
+      if (!error && data) {
+        result = data;
+      }
+    } catch (e) {
+      // Table user_feedbacks might not exist yet, fallback to feature_usages table
+    }
+
+    if (!result) {
+      await recordFeatureUsageToDB({
+        featureName: 'Direct Phone Feedback',
+        action: feedback.isUpdate ? 'update_feedback' : 'submit_feedback',
+        metadata: payload
+      });
+    }
+
+    return { success: true, data: payload };
+  } catch (err) {
+    console.warn('Supabase Feedback Save Error:', err.message);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Get stored feedback from local storage or Supabase
+ */
+export function getSavedUserFeedback() {
+  try {
+    const stored = localStorage.getItem('grainwise_user_feedback');
+    return stored ? JSON.parse(stored) : null;
+  } catch (e) {
+    return null;
+  }
+}
+
+
+/**
+ * Record User Site Visit to Supabase
+ */
+export async function recordUserVisitToDB(visitInfo = {}) {
+  if (!isSupabaseConfigured) return { success: false, reason: 'unconfigured' };
+  try {
+    const user = await getLoggedInUser();
+    const pagePath = visitInfo.path || (typeof window !== 'undefined' ? window.location.pathname : '/');
+    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+    const referrer = typeof document !== 'undefined' ? document.referrer : '';
+
+    const { data, error } = await supabase
+      .from('user_visits')
+      .insert([{
+        user_id: user?.id || null,
+        page_path: pagePath,
+        user_agent: userAgent,
+        referrer: referrer
+      }])
+      .select();
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    console.warn('Supabase Record Visit Error:', err.message);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
+ * Record Feature Usage Event to Supabase
+ */
+export async function recordFeatureUsageToDB({ featureName, action, metadata = {} }) {
+  if (!isSupabaseConfigured) return { success: false, reason: 'unconfigured' };
+  try {
+    const user = await getLoggedInUser();
+    const { data, error } = await supabase
+      .from('feature_usages')
+      .insert([{
+        user_id: user?.id || null,
+        feature_name: featureName,
+        action: action,
+        metadata: metadata
+      }])
+      .select();
+    if (error) throw error;
+    return { success: true, data };
+  } catch (err) {
+    console.warn('Supabase Record Feature Usage Error:', err.message);
+    return { success: false, error: err.message };
+  }
+}
+
+/**
  * ==========================================================
  * Supabase Authentication Helpers
  * ==========================================================

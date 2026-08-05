@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Bot, Mic, MicOff, Send, Globe, Volume2, Sparkles, CheckCircle2, Wifi, MessageSquare, User, Database } from 'lucide-react';
-import { saveAnanyaChatToDB } from '../lib/supabase';
+import { saveAnanyaChatToDB, recordFeatureUsageToDB } from '../lib/supabase';
 
 const SAMPLE_PROMPTS = [
   "What is the best treatment for yellow leaf rust in wheat?",
@@ -56,6 +56,11 @@ export default function AnanyaAIAssistant({ selectedLang, setSelectedLang }) {
         userText: textToSend,
         ananyaResponse: responseText,
         language: selectedLang
+      });
+      await recordFeatureUsageToDB({
+        featureName: 'Ananya AI Assistant',
+        action: 'send_message',
+        metadata: { userText: textToSend, language: selectedLang }
       });
     }, 600);
   };

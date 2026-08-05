@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import CoreHighlights from './components/CoreHighlights';
@@ -12,10 +12,16 @@ import FarmerStories from './components/FarmerStories';
 import FAQSection from './components/FAQSection';
 import DownloadModal from './components/DownloadModal';
 import FooterSection from './components/FooterSection';
+import { recordUserVisitToDB } from './lib/supabase';
 
 export default function App() {
   const [downloadModalOpen, setDownloadModalOpen] = useState(false);
   const [selectedLang, setSelectedLang] = useState('English');
+
+  useEffect(() => {
+    // Record user visit when landing on website
+    recordUserVisitToDB();
+  }, []);
 
   return (
     <div className="min-h-screen bg-[#021109] text-slate-100 font-sans selection:bg-emerald-500 selection:text-black">

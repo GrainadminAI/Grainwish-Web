@@ -88,13 +88,17 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
               </p>
             </div>
 
-            <div className="lg:col-span-4 flex justify-start lg:justify-end">
+            <div className="lg:col-span-4 flex flex-col items-start lg:items-end justify-center gap-2">
               <button
                 onClick={onOpenDownloadModal}
                 className="px-6 py-4 bg-amber-400 hover:bg-amber-300 text-black font-extrabold rounded-2xl shadow-xl shadow-amber-400/20 transition-all hover:scale-105 active:scale-95 text-sm sm:text-base flex items-center gap-2"
               >
                 Tap Download & Take Guesswork Out
               </button>
+              <div className="text-[11px] text-amber-300 font-mono flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-800">
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                Application Phase is Coming Soon · Android Pre-Register gets Free 14 days trial pack
+              </div>
             </div>
 
           </div>

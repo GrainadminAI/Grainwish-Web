@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut } from 'lucide-react';
-import { supabase, signOutUser, getLoggedInUser } from '../lib/supabase';
+import { supabase, signOutUser, getLoggedInUser, recordFeatureUsageToDB } from '../lib/supabase';
 import AuthModal from './AuthModal';
 
 const LANGUAGES = [
@@ -138,8 +138,14 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                       <button
                         key={lang}
                         onClick={() => {
-                          setSelectedLang(lang.split(' ')[0]);
+                          const newLang = lang.split(' ')[0];
+                          setSelectedLang(newLang);
                           setLangDropdownOpen(false);
+                          recordFeatureUsageToDB({
+                            featureName: 'Language Switcher',
+                            action: 'change_language',
+                            metadata: { language: newLang, fullLabel: lang }
+                          });
                         }}
                         className={`w-full text-left px-3 py-1.5 text-xs rounded-md transition-colors ${
                           selectedLang === lang.split(' ')[0]

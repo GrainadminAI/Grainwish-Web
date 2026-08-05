@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, CheckCircle2, AlertCircle, ChevronRight, Landmark, FileText, Sparkles } from 'lucide-react';
+import { recordFeatureUsageToDB } from '../lib/supabase';
 
 const SEASONS = [
   {
@@ -34,6 +35,15 @@ const SCHEMES = [
 export default function FarmingCalendar() {
   const [activeSeason, setActiveSeason] = useState(0);
 
+  const handleSeasonSelect = (idx) => {
+    setActiveSeason(idx);
+    recordFeatureUsageToDB({
+      featureName: 'Farming Calendar',
+      action: 'switch_season',
+      metadata: { season: SEASONS[idx].name, crops: SEASONS[idx].crops }
+    });
+  };
+
   return (
     <section className="py-24 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
       
@@ -61,7 +71,7 @@ export default function FarmingCalendar() {
               {SEASONS.map((s, idx) => (
                 <button
                   key={idx}
-                  onClick={() => setActiveSeason(idx)}
+                  onClick={() => handleSeasonSelect(idx)}
                   className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all border ${
                     activeSeason === idx
                       ? 'bg-amber-400 text-black border-amber-400 shadow-lg'

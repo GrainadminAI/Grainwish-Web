@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Camera, Sparkles, CheckCircle2, AlertTriangle, RefreshCw, Upload, ShieldAlert, Pill, Calendar, ArrowRight, Database } from 'lucide-react';
-import { saveDiagnosticScanToDB, isSupabaseConfigured } from '../lib/supabase';
+import { saveDiagnosticScanToDB, recordFeatureUsageToDB, isSupabaseConfigured } from '../lib/supabase';
 
 const CROP_SAMPLES = [
   {
@@ -84,6 +84,11 @@ export default function DiagnosticsTool() {
       setIsScanning(false);
       setScanComplete(true);
       await saveDiagnosticScanToDB(target);
+      await recordFeatureUsageToDB({
+        featureName: 'AI Diagnostics Tool',
+        action: 'scan_crop',
+        metadata: { crop: target.crop, disease: target.disease, confidence: target.confidence }
+      });
     }, 2000);
   };
 

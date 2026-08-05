@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { X, LogIn, CheckCircle2, ShieldCheck } from 'lucide-react';
-import { signInWithGoogle } from '../lib/supabase';
+import { signInWithGoogle, recordFeatureUsageToDB } from '../lib/supabase';
 
 export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
   const [loading, setLoading] = useState(false);
@@ -17,6 +17,11 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
     setLoading(false);
     if (res.success) {
       setSuccessMessage('Signed in with Google!');
+      await recordFeatureUsageToDB({
+        featureName: 'User Authentication',
+        action: 'sign_in_google',
+        metadata: { isFallback: Boolean(res.isFallback) }
+      });
       if (res.user && onAuthSuccess) onAuthSuccess(res.user);
       setTimeout(() => onClose(), 1000);
     } else {

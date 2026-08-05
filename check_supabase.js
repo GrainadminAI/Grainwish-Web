@@ -88,6 +88,35 @@ async function testConnection() {
       console.log('✅ app_downloads insert: OK');
     }
 
+    // 7. Test user_visits
+    const { error: visitError } = await supabase
+      .from('user_visits')
+      .insert([{
+        page_path: '/test-visit',
+        user_agent: 'Node test script',
+        referrer: 'https://grainwish.com'
+      }]);
+    if (visitError) {
+      console.warn('⚠️ user_visits insert:', visitError.message);
+    } else {
+      console.log('✅ user_visits insert: OK');
+    }
+
+    // 8. Test feature_usages
+    const { error: featureError } = await supabase
+      .from('feature_usages')
+      .insert([{
+        feature_name: 'System Diagnostic Test',
+        action: 'run_test',
+        metadata: { status: 'passed', timestamp: new Date().toISOString() }
+      }]);
+    if (featureError) {
+      console.warn('⚠️ feature_usages insert:', featureError.message);
+    } else {
+      console.log('✅ feature_usages insert: OK');
+    }
+
+
   } catch (err) {
     console.error('❌ Connection error:', err.message);
   }

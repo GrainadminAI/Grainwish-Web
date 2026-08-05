@@ -140,6 +140,33 @@ app.post('/api/downloads/record', async (req, res) => {
   }
 });
 
+// 5b. Direct Mobile Phone Feedback Endpoint
+app.post('/api/feedback', async (req, res) => {
+  try {
+    const { phone, email, category, rating, comments, isUpdate } = req.body;
+    
+    const payload = {
+      phone: phone || '',
+      email: email || '',
+      category: category || 'General',
+      rating: rating || 5,
+      comments: comments || '',
+      updated_at: new Date().toISOString()
+    };
+
+    // Attempt to log to feature_usages
+    await supabase.from('feature_usages').insert([{
+      feature_name: 'Direct Phone Feedback',
+      action: isUpdate ? 'update_feedback' : 'submit_feedback',
+      metadata: payload
+    }]);
+
+    res.json({ success: true, message: 'Feedback recorded successfully', data: payload });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
 // 6. Google Sign-In & Auth Verification Endpoint
 app.post('/api/auth/google', async (req, res) => {
   try {
