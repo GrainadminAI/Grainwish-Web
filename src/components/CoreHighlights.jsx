@@ -1,14 +1,17 @@
 import React from 'react';
 import { Camera, Bot, LineChart, ArrowRight, ShieldCheck, Zap, Languages } from 'lucide-react';
+import MadeInIndiaTag from './MadeInIndiaTag';
+import { useLanguage } from '../lib/LanguageContext';
 
 export default function CoreHighlights({ selectedLang }) {
+  const { t } = useLanguage();
   const highlights = [
     {
       id: 'camera-ai',
       icon: Camera,
       badge: 'Instant Detection',
-      title: 'Camera-Based AI Diagnostics',
-      description: 'Identify crop diseases instantly by pointing your phone at the affected leaf or stem.',
+      title: t('diag_title'),
+      description: t('diag_sub'),
       gradient: 'from-emerald-500/20 via-emerald-600/10 to-transparent',
       borderColor: 'border-emerald-500/30',
       iconBg: 'bg-emerald-500/20 text-emerald-400',
@@ -19,8 +22,8 @@ export default function CoreHighlights({ selectedLang }) {
       id: 'ananya-ai',
       icon: Bot,
       badge: '22 Languages Supported',
-      title: 'Ananya AI Assistant',
-      description: 'Smart farming guidance in 22 languages, available anytime you need help.',
+      title: t('ananya_title'),
+      description: t('ananya_sub'),
       gradient: 'from-amber-500/20 via-amber-600/10 to-transparent',
       borderColor: 'border-amber-500/30',
       iconBg: 'bg-amber-500/20 text-amber-400',
@@ -31,8 +34,8 @@ export default function CoreHighlights({ selectedLang }) {
       id: 'mandi-weather',
       icon: LineChart,
       badge: 'Live Market & MSP',
-      title: 'Live Mandi Prices & Weather',
-      description: 'Real-time market insights and localized weather alerts for better planning.',
+      title: t('mandi_title'),
+      description: t('mandi_sub'),
       gradient: 'from-cyan-500/20 via-cyan-600/10 to-transparent',
       borderColor: 'border-cyan-500/30',
       iconBg: 'bg-cyan-500/20 text-cyan-400',
@@ -47,17 +50,20 @@ export default function CoreHighlights({ selectedLang }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+        <div className="text-center max-w-3xl mx-auto mb-10 space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950 border border-emerald-700/50 text-xs font-semibold text-emerald-300">
-            <Zap className="w-3.5 h-3.5 text-amber-400" /> Three Core Pillars of GrainWise AI
+            <Zap className="w-3.5 h-3.5 text-amber-400" /> {t('core_pillar_badge')}
           </div>
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-white">
-            Designed to Help Your Fields <span className="gradient-text-agri">Thrive</span>
+            {t('core_title')} <span className="gradient-text-agri">{t('core_thrive')}</span>
           </h2>
           <p className="text-slate-300 text-sm sm:text-base">
-            From instant field diagnostic scans to multi-lingual AI consultation and market intelligence, GrainWise AI puts expert agricultural technology directly in your hands.
+            {t('core_subtitle')}
           </p>
         </div>
+
+        {/* Made In India Trust Banner */}
+        <MadeInIndiaTag variant="banner" className="mb-12" />
 
         {/* 3 Pillar Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -106,7 +112,7 @@ export default function CoreHighlights({ selectedLang }) {
                   href={item.link}
                   className="inline-flex items-center gap-2 text-xs font-bold text-amber-400 hover:text-amber-300 group-hover:translate-x-1 transition-all"
                 >
-                  Explore Interactive Feature <ArrowRight className="w-4 h-4" />
+                  {t('core_explore')} <ArrowRight className="w-4 h-4" />
                 </a>
               </div>
             );

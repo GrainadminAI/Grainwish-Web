@@ -2,8 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { X, Smartphone, QrCode, Download, Check, ShieldCheck, Sparkles, Copy, MessageSquare, Star, Send, Clock, Edit3, CheckCircle2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { recordAppDownloadToDB, recordFeatureUsageToDB, saveFeedbackToDB, getSavedUserFeedback } from '../lib/supabase';
+import MadeInIndiaTag from './MadeInIndiaTag';
+import { useLanguage } from '../lib/LanguageContext';
 
 export default function DownloadModal({ isOpen, onClose }) {
+  const { t } = useLanguage();
   const [copied, setCopied] = useState(false);
   const [showAndroidNotifyModal, setShowAndroidNotifyModal] = useState(false);
   const [androidEmailPhone, setAndroidEmailPhone] = useState('');
@@ -124,21 +127,21 @@ export default function DownloadModal({ isOpen, onClose }) {
 
         {/* Header */}
         <div className="text-center space-y-2">
+          <div className="flex justify-center mb-1">
+            <MadeInIndiaTag variant="pill" />
+          </div>
+
           <div className="w-14 h-14 rounded-2xl bg-amber-400 text-black mx-auto flex items-center justify-center shadow-lg shadow-amber-400/20">
             <Smartphone className="w-8 h-8" />
           </div>
 
           <h3 className="font-display text-2xl font-extrabold text-white">
-            Download GrainWise <span className="text-amber-400">AI</span>
+            {t('modal_title')}
           </h3>
 
           <p className="text-xs text-slate-300">
             <span className="text-amber-400 font-semibold">Application Phase is Coming Soon</span> · Android Pre-Register will get Free 14 days trial pack
           </p>
-
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950/80 text-[11px] font-mono text-emerald-300 border border-emerald-700/50">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Official Portal: Grainwish.com
-          </div>
         </div>
 
         {/* Action Selector Pills (Download vs Phone Feedback) */}
@@ -149,7 +152,7 @@ export default function DownloadModal({ isOpen, onClose }) {
               !showFeedbackTab ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <Download className="w-3.5 h-3.5" /> App Downloads
+            <Download className="w-3.5 h-3.5" /> {t('nav_download_app')}
           </button>
 
           <button
@@ -158,7 +161,7 @@ export default function DownloadModal({ isOpen, onClose }) {
               showFeedbackTab ? 'bg-amber-400 text-black shadow-md' : 'text-slate-400 hover:text-slate-200'
             }`}
           >
-            <MessageSquare className="w-3.5 h-3.5" /> Update Phone Feedback
+            <MessageSquare className="w-3.5 h-3.5" /> {t('modal_feedback_tab')}
             {isUpdatingFeedback && <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />}
           </button>
         </div>
@@ -168,70 +171,93 @@ export default function DownloadModal({ isOpen, onClose }) {
           <div className="space-y-5 animate-fade-in">
             {/* QR Code Container */}
             <div className="bg-[#03180f] p-4 rounded-2xl border border-emerald-800/60 flex items-center justify-between gap-4">
-              <div className="w-24 h-24 bg-white p-2 rounded-xl shrink-0 flex items-center justify-center shadow-md">
-                <svg viewBox="0 0 100 100" className="w-full h-full">
-                  <path d="M0,0 h30 v30 h-30 z M40,0 h20 v10 h-20 z M70,0 h30 v30 h-30 z M0,40 h10 v20 h-10 z M30,40 h40 v10 h-40 z M80,40 h20 v30 h-20 z M0,70 h30 v30 h-30 z M40,80 h30 v20 h-30 z M80,80 h20 v20 h-20 z" fill="#031d10" />
+              <div className="w-24 h-24 bg-white p-1.5 rounded-xl shrink-0 flex items-center justify-center shadow-md relative overflow-hidden">
+                <img
+                  src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https%3A%2F%2Fgrainwish.com&color=031d10&bgcolor=ffffff"
+                  alt="GrainWise AI QR Code"
+                  className="w-full h-full object-contain blur-md select-none pointer-events-none"
+                  onError={(e) => {
+                    e.target.style.display = 'none';
+                    if (e.target.nextSibling) e.target.nextSibling.style.display = 'block';
+                  }}
+                />
+                <svg viewBox="0 0 21 21" className="w-full h-full hidden blur-md select-none pointer-events-none" style={{ display: 'none' }}>
+                  <rect width="21" height="21" fill="#ffffff" />
+                  {/* Top-Left Finder */}
+                  <rect x="0" y="0" width="7" height="7" fill="#031d10" />
+                  <rect x="1" y="1" width="5" height="5" fill="#ffffff" />
+                  <rect x="2" y="2" width="3" height="3" fill="#031d10" />
+                  {/* Top-Right Finder */}
+                  <rect x="14" y="0" width="7" height="7" fill="#031d10" />
+                  <rect x="15" y="1" width="5" height="5" fill="#ffffff" />
+                  <rect x="16" y="2" width="3" height="3" fill="#031d10" />
+                  {/* Bottom-Left Finder */}
+                  <rect x="0" y="14" width="7" height="7" fill="#031d10" />
+                  <rect x="1" y="15" width="5" height="5" fill="#ffffff" />
+                  <rect x="2" y="16" width="3" height="3" fill="#031d10" />
+                  {/* Alignment */}
+                  <rect x="14" y="14" width="5" height="5" fill="#031d10" />
+                  <rect x="15" y="15" width="3" height="3" fill="#ffffff" />
+                  <rect x="16" y="16" width="1" height="1" fill="#031d10" />
+                  {/* Timing & Data */}
+                  <rect x="8" y="0" width="1" height="1" fill="#031d10" />
+                  <rect x="10" y="0" width="1" height="1" fill="#031d10" />
+                  <rect x="12" y="0" width="1" height="1" fill="#031d10" />
+                  <rect x="7" y="2" width="1" height="1" fill="#031d10" />
+                  <rect x="9" y="2" width="1" height="1" fill="#031d10" />
+                  <rect x="11" y="2" width="1" height="1" fill="#031d10" />
+                  <rect x="8" y="4" width="1" height="1" fill="#031d10" />
+                  <rect x="10" y="4" width="1" height="1" fill="#031d10" />
+                  <rect x="12" y="4" width="1" height="1" fill="#031d10" />
+                  <rect x="6" y="8" width="1" height="1" fill="#031d10" />
+                  <rect x="6" y="10" width="1" height="1" fill="#031d10" />
+                  <rect x="6" y="12" width="1" height="1" fill="#031d10" />
+                  <rect x="8" y="6" width="1" height="1" fill="#031d10" />
+                  <rect x="10" y="6" width="1" height="1" fill="#031d10" />
+                  <rect x="12" y="6" width="1" height="1" fill="#031d10" />
+                  <rect x="8" y="8" width="2" height="2" fill="#031d10" />
+                  <rect x="11" y="8" width="2" height="1" fill="#031d10" />
+                  <rect x="8" y="11" width="1" height="2" fill="#031d10" />
+                  <rect x="10" y="12" width="3" height="1" fill="#031d10" />
+                  <rect x="7" y="15" width="2" height="1" fill="#031d10" />
+                  <rect x="8" y="17" width="1" height="3" fill="#031d10" />
+                  <rect x="10" y="16" width="2" height="2" fill="#031d10" />
+                  <rect x="13" y="18" width="3" height="1" fill="#031d10" />
+                  <rect x="17" y="8" width="2" height="2" fill="#031d10" />
+                  <rect x="19" y="11" width="1" height="2" fill="#031d10" />
                 </svg>
               </div>
               <div className="space-y-1 text-xs">
                 <div className="font-bold text-amber-300 flex items-center gap-1">
-                  <QrCode className="w-4 h-4 text-amber-400" /> Scan QR with Phone Camera
+                  <QrCode className="w-4 h-4 text-amber-400" /> Scan Ultra-HD QR Code
                 </div>
                 <div className="text-slate-300 text-[11px]">
-                  Instantly open GrainWise AI on your smartphone device.
+                  Point your phone camera to instantly open GrainWise AI.
                 </div>
-                <button
-                  onClick={copyDomainLink}
-                  className="mt-2 text-[11px] font-mono text-emerald-400 hover:text-emerald-300 flex items-center gap-1 underline"
-                >
-                  {copied ? <Check className="w-3 h-3 text-amber-400" /> : <Copy className="w-3 h-3" />}
-                  {copied ? 'Link Copied to Clipboard!' : 'Copy Link: grainwish.com'}
-                </button>
               </div>
             </div>
 
-            {/* Direct Buttons */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Direct Download Card (Android Pre-Register Only) */}
+            <div className="grid grid-cols-1 gap-3">
               
               {/* Android Phase Coming Soon Card */}
-              <div className="relative p-3.5 rounded-2xl bg-gradient-to-br from-emerald-950 via-[#062c1b] to-black border border-amber-500/40 text-white shadow-lg space-y-2">
+              <div className="relative p-4 rounded-2xl bg-gradient-to-br from-emerald-950 via-[#062c1b] to-black border border-amber-500/40 text-white shadow-lg space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-500/40 flex items-center gap-1">
-                    <Clock className="w-3 h-3 text-amber-400" /> Application Phase is Coming Soon
+                  <span className="text-[10px] font-bold uppercase tracking-wide px-2.5 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-500/40 flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-amber-400" /> Application Phase is Coming Soon
                   </span>
                 </div>
-                <div className="font-bold text-sm text-slate-100 flex items-center gap-1.5">
-                  <Smartphone className="w-4 h-4 text-emerald-400" /> Android App
+                <div className="font-bold text-base text-slate-100 flex items-center gap-2">
+                  <Smartphone className="w-5 h-5 text-emerald-400" /> Android App Pre-Registration
                 </div>
-                <p className="text-[10px] text-amber-300 font-semibold">
-                  Android Pre-Register will get Free 14 days trial pack!
+                <p className="text-xs text-amber-300 font-semibold">
+                  Pre-register today to unlock a Free 14-day trial pack upon official launch!
                 </p>
                 <button
                   onClick={() => setShowAndroidNotifyModal(true)}
-                  className="w-full py-2 px-3 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs shadow transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                  className="w-full py-2.5 px-4 rounded-xl bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs shadow-lg transition-all active:scale-95 flex items-center justify-center gap-2"
                 >
-                  <Sparkles className="w-3.5 h-3.5" /> Android Pre-Register (Free 14 Days Trial Pack)
-                </button>
-              </div>
-
-              {/* iOS Ready Card */}
-              <div className="p-3.5 rounded-2xl bg-emerald-700/80 hover:bg-emerald-600 border border-emerald-500 text-white shadow-lg space-y-2 flex flex-col justify-between">
-                <div>
-                  <span className="text-[10px] font-bold uppercase tracking-wide px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-300 border border-emerald-500/40 inline-block mb-1">
-                    ✓ Available Now
-                  </span>
-                  <div className="font-bold text-sm text-white flex items-center gap-1.5">
-                    <Smartphone className="w-4 h-4 text-amber-300" /> iOS App Store
-                  </div>
-                  <p className="text-[10px] text-emerald-100 mt-1">
-                    Optimized for iPhone & iPad with offline AI scan mode.
-                  </p>
-                </div>
-                <button
-                  onClick={() => handleDownloadTrigger('iOS App Store')}
-                  className="w-full py-2 px-3 rounded-xl bg-white hover:bg-slate-100 text-slate-900 font-extrabold text-xs shadow transition-all active:scale-95 flex items-center justify-center gap-1.5"
-                >
-                  <Download className="w-3.5 h-3.5 text-emerald-700" /> Download iOS App
+                  <Sparkles className="w-4 h-4" /> Android Pre-Register (Free 14 Days Trial Pack)
                 </button>
               </div>
 

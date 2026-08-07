@@ -13,10 +13,11 @@ import FAQSection from './components/FAQSection';
 import DownloadModal from './components/DownloadModal';
 import FooterSection from './components/FooterSection';
 import { recordUserVisitToDB } from './lib/supabase';
+import { LanguageProvider, useLanguage } from './lib/LanguageContext';
 
-export default function App() {
+function MainContent() {
   const [downloadModalOpen, setDownloadModalOpen] = useState(false);
-  const [selectedLang, setSelectedLang] = useState('English');
+  const { selectedLang, setSelectedLang } = useLanguage();
 
   useEffect(() => {
     // Record user visit when landing on website
@@ -36,10 +37,6 @@ export default function App() {
       {/* Hero Section with 3D Canvas */}
       <HeroSection
         onOpenDownloadModal={() => setDownloadModalOpen(true)}
-        onGoogleSignIn={() => {
-          const navAuthBtn = document.querySelector('header button');
-          if (navAuthBtn) navAuthBtn.click();
-        }}
         onScanClick={() => {
           const el = document.getElementById('diagnostics');
           if (el) el.scrollIntoView({ behavior: 'smooth' });
@@ -86,5 +83,13 @@ export default function App() {
       />
 
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <LanguageProvider>
+      <MainContent />
+    </LanguageProvider>
   );
 }

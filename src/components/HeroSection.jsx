@@ -1,8 +1,11 @@
 import React from 'react';
 import { Sparkles, Camera, Smartphone, CheckCircle2, Play, Globe, ShieldCheck, TrendingUp } from 'lucide-react';
 import ThreeFarmCanvas from './ThreeFarmCanvas';
+import MadeInIndiaTag from './MadeInIndiaTag';
+import { useLanguage } from '../lib/LanguageContext';
 
 export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
+  const { t } = useLanguage();
   return (
     <section className="relative min-h-screen pt-28 pb-16 lg:pt-36 lg:pb-24 flex items-center overflow-hidden">
       
@@ -22,26 +25,26 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
             
             {/* Top Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 backdrop-blur-md shadow-lg shadow-emerald-950/50">
-              <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-              <Sparkles className="w-4 h-4 text-amber-400" />
-              <span className="text-xs font-semibold text-emerald-200">
-                GrainWise AI 🌾 · Next-Gen Precision Agriculture
-              </span>
-              <span className="hidden sm:inline text-xs text-amber-400 font-mono pl-1 border-l border-emerald-800">
-                www.grainwish.com
-              </span>
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5">
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 backdrop-blur-md shadow-lg shadow-emerald-950/50">
+                <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
+                <Sparkles className="w-4 h-4 text-amber-400" />
+                <span className="text-xs font-semibold text-emerald-200">
+                  {t('hero_pill')}
+                </span>
+              </div>
+              <MadeInIndiaTag variant="pill" />
             </div>
 
             {/* Main Headline */}
             <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15]">
-              Welcome to <br />
-              <span className="gradient-text-agri">GrainWise AI! 🌾</span>
+              {t('hero_welcome')} <br />
+              <span className="gradient-text-agri">{t('hero_brand')}</span>
             </h1>
 
             {/* Subtitle / Paragraph */}
             <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
-              Smart farming starts with the right insights. Download the app today to get instant AI crop diagnostics, real-time Mandi updates, and 24/7 guidance from <strong className="text-amber-300 font-semibold">Ananya AI</strong> in your native language — all designed to help your fields thrive.
+              {t('hero_subtitle')}
             </p>
 
             {/* CTAs */}
@@ -51,20 +54,7 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
                 className="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-emerald-500 via-emerald-600 to-amber-500 hover:from-emerald-400 hover:to-amber-400 text-black font-extrabold rounded-2xl shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-3 transition-all hover:scale-105 active:scale-95 text-sm sm:text-base"
               >
                 <Smartphone className="w-5 h-5 text-black" />
-                Tap Download & Take Guesswork Out
-              </button>
-
-              <button
-                onClick={onGoogleSignIn}
-                className="w-full sm:w-auto px-6 py-3.5 bg-white hover:bg-slate-100 text-slate-900 font-bold rounded-2xl shadow-xl flex items-center justify-center gap-2.5 transition-all hover:scale-105 active:scale-95 text-sm sm:text-base border border-slate-200"
-              >
-                <svg className="w-5 h-5" viewBox="0 0 24 24">
-                  <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.82-2.4 3.68v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.17z"/>
-                  <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.29v3.15C3.26 21.3 7.31 24 12 24z"/>
-                  <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.29C.47 8.21 0 10.05 0 12s.47 3.79 1.29 5.42l3.99-3.15z"/>
-                  <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.31 0 3.26 2.7 1.29 6.58l3.99 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
-                </svg>
-                Sign in with Google
+                {t('hero_cta_download')}
               </button>
 
               <a
@@ -73,7 +63,7 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
                 className="w-full sm:w-auto px-6 py-3.5 bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-500/40 text-emerald-300 font-semibold rounded-2xl backdrop-blur-md flex items-center justify-center gap-2 transition-all hover:border-emerald-400 text-sm sm:text-base"
               >
                 <Camera className="w-5 h-5 text-amber-400" />
-                AI Scan
+                {t('hero_cta_scan')}
               </a>
             </div>
 
@@ -82,21 +72,21 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
               <div className="bg-emerald-950/40 border border-emerald-800/30 rounded-xl p-3 backdrop-blur-sm">
                 <div className="text-xl sm:text-2xl font-extrabold text-amber-400">22</div>
                 <div className="text-[11px] text-slate-400 font-medium flex items-center gap-1">
-                  <Globe className="w-3 h-3 text-emerald-400" /> Languages
+                  <Globe className="w-3 h-3 text-emerald-400" /> {t('hero_metric_langs')}
                 </div>
               </div>
 
               <div className="bg-emerald-950/40 border border-emerald-800/30 rounded-xl p-3 backdrop-blur-sm">
                 <div className="text-xl sm:text-2xl font-extrabold text-emerald-400">98.4%</div>
                 <div className="text-[11px] text-slate-400 font-medium flex items-center gap-1">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-400" /> Diagnosis Accuracy
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400" /> {t('hero_metric_accuracy')}
                 </div>
               </div>
 
               <div className="bg-emerald-950/40 border border-emerald-800/30 rounded-xl p-3 backdrop-blur-sm">
                 <div className="text-xl sm:text-2xl font-extrabold text-amber-400">24/7</div>
                 <div className="text-[11px] text-slate-400 font-medium flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-amber-400" /> Ananya AI Support
+                  <Sparkles className="w-3 h-3 text-amber-400" /> {t('hero_metric_support')}
                 </div>
               </div>
             </div>
@@ -115,8 +105,8 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
                   <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse" />
                   <span className="text-xs font-semibold text-emerald-300">Live AI Diagnostics Preview</span>
                 </div>
-                <span className="text-[10px] bg-amber-500/20 text-amber-300 font-mono px-2 py-0.5 rounded border border-amber-500/30">
-                  Grainwish.com
+                <span className="text-[10px] bg-emerald-500/20 text-emerald-300 font-mono px-2 py-0.5 rounded border border-emerald-500/30">
+                  GrainWise AI
                 </span>
               </div>
 
