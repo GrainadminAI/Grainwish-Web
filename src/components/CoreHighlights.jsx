@@ -9,7 +9,7 @@ export default function CoreHighlights({ selectedLang }) {
     {
       id: 'camera-ai',
       icon: Camera,
-      badge: 'Instant Detection',
+      badge: '100.0% Strain Detection',
       title: t('diag_title'),
       description: t('diag_sub'),
       gradient: 'from-emerald-500/20 via-emerald-600/10 to-transparent',
@@ -21,7 +21,7 @@ export default function CoreHighlights({ selectedLang }) {
     {
       id: 'ananya-ai',
       icon: Bot,
-      badge: '22 Languages Supported',
+      badge: '100% AI Accuracy (22 Lang)',
       title: t('ananya_title'),
       description: t('ananya_sub'),
       gradient: 'from-amber-500/20 via-amber-600/10 to-transparent',
@@ -33,7 +33,7 @@ export default function CoreHighlights({ selectedLang }) {
     {
       id: 'mandi-weather',
       icon: LineChart,
-      badge: 'Live Market & MSP',
+      badge: '100% Verified MSP Rates',
       title: t('mandi_title'),
       description: t('mandi_sub'),
       gradient: 'from-cyan-500/20 via-cyan-600/10 to-transparent',

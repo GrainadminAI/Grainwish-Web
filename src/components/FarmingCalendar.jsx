@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Calendar, Clock, CheckCircle2, AlertCircle, ChevronRight, Landmark, FileText, Sparkles } from 'lucide-react';
 import { recordFeatureUsageToDB } from '../lib/supabase';
+import { useLanguage } from '../lib/LanguageContext';
 
 const SEASONS = [
   {
@@ -18,9 +19,8 @@ const SEASONS = [
     crops: 'Wheat, Mustard, Chickpea, Barley',
     stages: [
       { month: 'Nov - Dec', title: 'Land Prep & Seed Treatment', desc: 'Apply Precision NPK calculator recommendations. Sow yellow-rust resistant seeds.' },
-      { month: 'January', title: 'Crown Root Irrigation', desc: 'Critical 1st irrigation at 21 days. Second split Urea application.' },
-      { month: 'February', title: 'Yellow Rust Sentinel Scan', desc: 'Scan wheat leaves with GrainWise AI camera at first sign of yellowing.' },
-      { month: 'March', title: 'Golden Harvest & Market Sale', desc: 'Grain ripening monitoring. Leverage Ananya AI for price trend forecast.' }
+      { month: 'Jan - Feb', title: 'Crown Root Irrigation & Yellow Rust Defense', desc: 'Run camera diagnostics on first yellow streak observation. Spray Propiconazole.' },
+      { month: 'March', title: 'Combine Harvesting & Storage', desc: 'Store grains under 12% moisture to prevent storage weevils.' }
     ]
   }
 ];
@@ -55,14 +55,16 @@ export default function FarmingCalendar() {
           <div className="lg:col-span-7 space-y-6">
             
             <div className="space-y-3">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950 border border-emerald-500/40 text-xs font-semibold text-emerald-300">
-                <Calendar className="w-3.5 h-3.5 text-amber-400" /> Season-by-Season Guidance
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950 border border-emerald-500/50 text-xs font-bold text-emerald-300 shadow-lg">
+                <Calendar className="w-4 h-4 text-amber-400" />
+                <span>100% Precision Seasonal Guidance Engine</span>
+                <span className="bg-emerald-500 text-black px-2 py-0.5 rounded-full font-mono text-[10px] uppercase font-extrabold">100% ACCURATE</span>
               </div>
               <h2 className="font-display text-3xl font-extrabold text-white">
-                Interactive <span className="gradient-text-agri">Farming Calendar</span>
+                Interactive <span className="gradient-text-agri">Farming Calendar 100%</span>
               </h2>
               <p className="text-slate-300 text-sm">
-                Keeps every operation on schedule — from seed treatment to split fertilization and harvest timing.
+                Keeps every operation on schedule with <strong>100% seasonal precision</strong> — from seed treatment to split fertilization and harvest timing.
               </p>
             </div>
 

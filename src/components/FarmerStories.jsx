@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Quote, MapPin, TrendingUp, CheckCircle2, Award, Sparkles, PlusCircle, Star, Send, Edit3, MessageSquare } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { recordFeatureUsageToDB, saveFeedbackToDB, getSavedUserFeedback } from '../lib/supabase';
+import { useLanguage } from '../lib/LanguageContext';
 
 const INITIAL_STORIES = [
   {

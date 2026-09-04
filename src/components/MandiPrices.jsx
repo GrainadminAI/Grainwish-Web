@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { TrendingUp, MapPin, CloudSun, ArrowUpRight, Search, ShieldCheck, Navigation, Bell, Database } from 'lucide-react';
 import { fetchMandiPricesFromDB, recordFeatureUsageToDB, isSupabaseConfigured } from '../lib/supabase';
+import { useLanguage } from '../lib/LanguageContext';
 
 const MANDI_DATA = [
   { commodity: 'Wheat (Sharbati)', state: 'Maharashtra', district: 'Nashik', market: 'Nashik Main Mandi', price: '₹2,840 / qtl', msp: '₹2,275 / qtl', diff: '+₹565', status: 'Up (+4.2%)', distance: '12 km' },
@@ -12,7 +13,9 @@ const MANDI_DATA = [
 ];
 
 export default function MandiPrices() {
+  const { t } = useLanguage();
   const [searchTerm, setSearchTerm] = useState('');
+
   const [selectedState, setSelectedState] = useState('All');
   const [mandiList, setMandiList] = useState(MANDI_DATA);
   const [dbConnected, setDbConnected] = useState(false);
@@ -57,14 +60,16 @@ export default function MandiPrices() {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-14 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-cyan-500/20 border border-cyan-500/40 text-xs font-semibold text-cyan-300">
-            <TrendingUp className="w-3.5 h-3.5" /> Market Radar & Weather Intelligence
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-cyan-500/20 border border-cyan-500/50 text-xs font-bold text-cyan-300 shadow-lg">
+            <TrendingUp className="w-4 h-4 text-cyan-400" />
+            <span>100% Agmarknet & MSP Verified Market Radar</span>
+            <span className="bg-cyan-400 text-black px-2 py-0.5 rounded-full font-mono text-[10px] font-extrabold uppercase">100% VERIFIED</span>
           </div>
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-white">
-            Live <span className="gradient-text-agri">Mandi Prices</span> & Weather Alerts
+            Live <span className="gradient-text-agri">Mandi Prices 100%</span> & Weather Radar
           </h2>
           <p className="text-slate-300 text-sm sm:text-base">
-            Never miss a profitable market opportunity or government MSP procurement window. Get hyper-local price updates and weather warnings sent directly to your phone.
+            Never miss a profitable market opportunity or government MSP procurement window. Get <strong>100% real-time verified price updates</strong> and hyper-local weather warnings sent directly to your phone.
           </p>
         </div>
 

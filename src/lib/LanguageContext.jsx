@@ -930,14 +930,83 @@ export const TRANSLATIONS = {
   }
 };
 
-// Fallback logic for languages sharing scripts or matching closely
-export function getTranslation(lang, key) {
-  const selectedObj = TRANSLATIONS[lang] || TRANSLATIONS.Hindi || TRANSLATIONS.English;
+// Mapping of 22 supported languages to ISO language codes for full-page translation
+export const LANGUAGE_CODES = {
+  English: 'en',
+  Hindi: 'hi',
+  Tamil: 'ta',
+  Telugu: 'te',
+  Punjabi: 'pa',
+  Marathi: 'mr',
+  Bengali: 'bn',
+  Gujarati: 'gu',
+  Kannada: 'kn',
+  Malayalam: 'ml',
+  Odia: 'or',
+  Assamese: 'as',
+  Urdu: 'ur',
+  Maithili: 'mai',
+  Santali: 'sat',
+  Kashmiri: 'ks',
+  Nepali: 'ne',
+  Konkani: 'kok',
+  Sindhi: 'sd',
+  Dogri: 'doi',
+  Manipuri: 'mni-Mtei',
+  Sanskrit: 'sa'
+};
+
+// Helper for dynamic script injection
+function loadGoogleTranslateScript(targetCode) {
+  if (typeof window === 'undefined') return;
+
+  if (!window.googleTranslateElementInit) {
+    window.googleTranslateElementInit = function() {
+      if (window.google && window.google.translate) {
+        new window.google.translate.TranslateElement({
+          pageLanguage: 'en',
+          autoDisplay: false,
+          layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
+        }, 'google_translate_element');
+
+        if (targetCode && targetCode !== 'en') {
+          setTimeout(() => {
+            const selectElem = document.querySelector('.goog-te-combo');
+            if (selectElem) {
+              selectElem.value = targetCode;
+              selectElem.dispatchEvent(new Event('change', { bubbles: true }));
+            }
+          }, 600);
+        }
+      }
+    };
+  }
+
+  if (!document.getElementById('google-translate-script')) {
+    const script = document.createElement('script');
+    script.id = 'google-translate-script';
+    script.type = 'text/javascript';
+    script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
+    document.body.appendChild(script);
+  } else if (targetCode) {
+    const selectElem = document.querySelector('.goog-te-combo');
+    if (selectElem) {
+      selectElem.value = targetCode;
+      selectElem.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+  }
+}
+
+// Fallback logic for translations
+export function getTranslation(lang, key, fallback) {
+  // Normalize language string (e.g., 'Hindi (हिंदी)' -> 'Hindi')
+  const cleanLang = lang?.split(' ')[0] || lang || 'English';
+  const selectedObj = TRANSLATIONS[cleanLang] || TRANSLATIONS[lang] || TRANSLATIONS.Hindi || TRANSLATIONS.English;
   if (selectedObj && selectedObj[key]) {
     return selectedObj[key];
   }
-  // Fallback to Hindi if not present in selected lang, then English
-  return TRANSLATIONS.Hindi[key] || TRANSLATIONS.English[key] || key;
+  if (fallback) return fallback;
+  return TRANSLATIONS.Hindi?.[key] || TRANSLATIONS.English?.[key] || key;
 }
 
 /**
@@ -946,12 +1015,57 @@ export function getTranslation(lang, key) {
 const LanguageContext = createContext();
 
 export function LanguageProvider({ children }) {
-  const [selectedLang, setSelectedLang] = useState('English');
+  const [selectedLang, setSelectedLangState] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem('grainwise_lang') || 'English';
+    }
+    return 'English';
+  });
 
-  const t = (key) => getTranslation(selectedLang, key);
+  const changeLanguage = (newLang) => {
+    // Normalize language string if passed like "Hindi (हिंदी)"
+    const cleanLangName = newLang.split(' ')[0];
+    setSelectedLangState(cleanLangName);
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('grainwise_lang', cleanLangName);
+
+      const langCode = LANGUAGE_CODES[cleanLangName] || 'en';
+
+      if (langCode === 'en') {
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname + ';';
+        const selectElem = document.querySelector('.goog-te-combo');
+        if (selectElem) {
+          selectElem.value = 'en';
+          selectElem.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+      } else {
+        const cookieVal = '/en/' + langCode;
+        document.cookie = 'googtrans=' + cookieVal + '; path=/;';
+        document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=' + window.location.hostname + ';';
+        loadGoogleTranslateScript(langCode);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && selectedLang && selectedLang !== 'English') {
+      const cleanLangName = selectedLang.split(' ')[0];
+      const langCode = LANGUAGE_CODES[cleanLangName] || 'en';
+      if (langCode !== 'en') {
+        const cookieVal = '/en/' + langCode;
+        document.cookie = 'googtrans=' + cookieVal + '; path=/;';
+        document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=' + window.location.hostname + ';';
+        loadGoogleTranslateScript(langCode);
+      }
+    }
+  }, []);
+
+  const t = (key, fallbackText) => getTranslation(selectedLang, key, fallbackText);
 
   return (
-    <LanguageContext.Provider value={{ selectedLang, setSelectedLang, t }}>
+    <LanguageContext.Provider value={{ selectedLang, setSelectedLang: changeLanguage, t, languageCodes: LANGUAGE_CODES }}>
       {children}
     </LanguageContext.Provider>
   );
@@ -964,3 +1078,4 @@ export function useLanguage() {
   }
   return context;
 }
+

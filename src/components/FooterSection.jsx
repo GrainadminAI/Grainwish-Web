@@ -1,5 +1,5 @@
 import React from 'react';
-import { Sprout, Smartphone, ShieldCheck, Heart, Globe2, Mail, Phone, MapPin, ArrowUp } from 'lucide-react';
+import { Smartphone, ShieldCheck, Heart, ArrowUp } from 'lucide-react';
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
 
@@ -49,7 +49,7 @@ export default function FooterSection({ onOpenDownloadModal }) {
 
       {/* Main Footer Links */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 pb-12 border-b border-emerald-900/60 text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-12 border-b border-emerald-900/60 text-xs">
           
           {/* Brand Col */}
           <div className="lg:col-span-2 space-y-4">
@@ -95,15 +95,6 @@ export default function FooterSection({ onOpenDownloadModal }) {
               <li>Cotton (Bathinda & Gujarat)</li>
               <li>Turmeric (Erode, Tamil Nadu)</li>
               <li>Sugarcane & Vegetables</li>
-            </ul>
-          </div>
-
-          {/* Contact Information */}
-          <div className="space-y-3">
-            <div className="font-bold text-white uppercase tracking-wider text-xs">Connect & Support</div>
-            <ul className="space-y-2 text-slate-400">
-              <li className="flex items-center gap-2"><Mail className="w-3.5 h-3.5 text-emerald-400" /> support@grainwise.ai</li>
-              <li className="flex items-center gap-2"><Phone className="w-3.5 h-3.5 text-emerald-400" /> 1800-KISAAN-AI (Toll Free)</li>
             </ul>
           </div>
 

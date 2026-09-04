@@ -172,3 +172,116 @@ INSERT INTO public.mandi_prices (commodity, state, district, market, price, msp,
 ('Turmeric (Finger)', 'Tamil Nadu', 'Erode', 'Erode Turmeric Market', '₹14,200 / qtl', '₹10,500 / qtl', '+₹3,700', 'Up (+8.4%)', '6 km'),
 ('Mustard (Yellow)', 'Rajasthan', 'Bharatpur', 'Bharatpur Krishi Mandi', '₹5,680 / qtl', '₹5,450 / qtl', '+₹230', 'Stable', '22 km'),
 ('Soybean (Black)', 'Madhya Pradesh', 'Indore', 'Indore Central Mandi', '₹4,890 / qtl', '₹4,600 / qtl', '+₹290', 'Up (+1.5%)', '10 km');
+
+-- ==========================================================
+-- 9. Create Virtual Pools Table (16 MT Aggregated Pools)
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS public.virtual_pools (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  pool_code VARCHAR(100) NOT NULL UNIQUE,
+  fpo_name VARCHAR(255) NOT NULL,
+  commodity VARCHAR(100) NOT NULL DEFAULT 'ITC Grade A Wheat',
+  quantity_mt NUMERIC(10, 2) NOT NULL DEFAULT 16.00,
+  lot_count INTEGER NOT NULL DEFAULT 4,
+  avg_moisture NUMERIC(5, 2) NOT NULL DEFAULT 12.1,
+  broken_pct NUMERIC(5, 2) NOT NULL DEFAULT 1.2,
+  foreign_matter_pct NUMERIC(5, 2) NOT NULL DEFAULT 0.8,
+  offered_price NUMERIC(10, 2) NOT NULL DEFAULT 2550.00,
+  status VARCHAR(50) NOT NULL DEFAULT 'AVAILABLE', -- AVAILABLE, LOCKED, DISPATCHED, COMPLETED
+  ble_device_model VARCHAR(100) DEFAULT 'Dickey-John MiniGAC',
+  ble_serial VARCHAR(100) DEFAULT 'DJ-GAC-9842-X',
+  ble_rssi VARCHAR(20) DEFAULT '-64 dBm',
+  ble_battery VARCHAR(20) DEFAULT '92%',
+  gps_accuracy VARCHAR(50) DEFAULT '± 2.4 meters',
+  ambient_lux VARCHAR(50) DEFAULT '14,200 Lux (Direct Sunlight)',
+  bsa_hash_stamp VARCHAR(255) DEFAULT 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ==========================================================
+-- 10. Create Buyer Procurement Specs Table
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS public.buyer_procurement_specs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  buyer_name VARCHAR(255) NOT NULL DEFAULT 'ITC Foods & Agri-Business',
+  grade_name VARCHAR(100) NOT NULL DEFAULT 'ITC Grade A Wheat',
+  max_moisture_pct NUMERIC(5, 2) NOT NULL DEFAULT 12.0,
+  max_broken_pct NUMERIC(5, 2) NOT NULL DEFAULT 2.0,
+  max_foreign_matter_pct NUMERIC(5, 2) NOT NULL DEFAULT 1.0,
+  max_chalkiness_pct NUMERIC(5, 2) NOT NULL DEFAULT 1.5,
+  offered_price NUMERIC(10, 2) NOT NULL DEFAULT 2550.00,
+  is_active BOOLEAN DEFAULT true,
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ==========================================================
+-- 11. Create Active Consignments Table (In-Transit Trucks)
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS public.consignments (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  gate_pass_code VARCHAR(100) NOT NULL UNIQUE,
+  truck_number VARCHAR(50) NOT NULL,
+  driver_name VARCHAR(100) NOT NULL,
+  driver_phone VARCHAR(50) NOT NULL,
+  origin_fpo VARCHAR(255) NOT NULL,
+  destination_mill VARCHAR(255) NOT NULL DEFAULT 'ITC Mill #4, Dewas, MP',
+  commodity VARCHAR(100) NOT NULL DEFAULT 'ITC Grade A Wheat',
+  origin_weight_kg NUMERIC(10, 2) NOT NULL DEFAULT 16000.00,
+  origin_moisture_pct NUMERIC(5, 2) NOT NULL DEFAULT 12.1,
+  dest_weight_kg NUMERIC(10, 2),
+  dest_moisture_pct NUMERIC(5, 2),
+  transit_status VARCHAR(50) NOT NULL DEFAULT 'In Transit', -- In Transit, Approaching Weighbridge, Gate-In Completed
+  signed_contract_url TEXT,
+  dispatched_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  arrived_at TIMESTAMP WITH TIME ZONE
+);
+
+-- ==========================================================
+-- 12. Create NABL Escalations & Referee Testing Table
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS public.nabl_escalations (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  consignment_id UUID REFERENCES public.consignments(id) ON DELETE CASCADE,
+  gate_pass_code VARCHAR(100) NOT NULL,
+  dispute_reason TEXT NOT NULL,
+  origin_moisture NUMERIC(5, 2) NOT NULL,
+  destination_moisture NUMERIC(5, 2) NOT NULL,
+  deviation_pct NUMERIC(5, 2) NOT NULL,
+  referee_lab VARCHAR(100) NOT NULL DEFAULT 'SGS India (NABL Accredited)',
+  escalation_status VARCHAR(50) NOT NULL DEFAULT 'REFEREE_TEST_PENDING', -- REFEREE_TEST_PENDING, RESULT_VERIFIED, RESOLVED
+  nabl_certificate_url TEXT,
+  original_escrow_amount NUMERIC(12, 2) NOT NULL DEFAULT 408000.00,
+  recalculated_escrow_amount NUMERIC(12, 2),
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- ==========================================================
+-- 13. Create Live Settlements Table
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS public.settlements (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  consignment_id UUID REFERENCES public.consignments(id) ON DELETE SET NULL,
+  gate_pass_code VARCHAR(100) NOT NULL,
+  fpo_name VARCHAR(255) NOT NULL,
+  gross_amount NUMERIC(12, 2) NOT NULL,
+  deductions NUMERIC(12, 2) DEFAULT 0.00,
+  net_payout NUMERIC(12, 2) NOT NULL,
+  disbursement_status VARCHAR(50) NOT NULL DEFAULT 'T+2 Escrow Release Pending',
+  settled_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Enable RLS for new tables
+ALTER TABLE public.virtual_pools ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.buyer_procurement_specs ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.consignments ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.nabl_escalations ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.settlements ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Allow Public Access Pools" ON public.virtual_pools FOR ALL USING (true);
+CREATE POLICY "Allow Public Access Specs" ON public.buyer_procurement_specs FOR ALL USING (true);
+CREATE POLICY "Allow Public Access Consignments" ON public.consignments FOR ALL USING (true);
+CREATE POLICY "Allow Public Access NABL" ON public.nabl_escalations FOR ALL USING (true);
+CREATE POLICY "Allow Public Access Settlements" ON public.settlements FOR ALL USING (true);
+

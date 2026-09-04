@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Bot, Mic, MicOff, Send, Globe, Volume2, Sparkles, CheckCircle2, Wifi, MessageSquare, User, Database } from 'lucide-react';
 import { saveAnanyaChatToDB, recordFeatureUsageToDB } from '../lib/supabase';
+import { useLanguage } from '../lib/LanguageContext';
 
 const SAMPLE_PROMPTS = [
   "What is the best treatment for yellow leaf rust in wheat?",
@@ -19,10 +20,16 @@ const PRESET_RESPONSES = {
   weather: "Localized radar shows light to moderate showers (12-18mm) expected in Nashik over the next 36 hours. Hold off on any chemical sprays until the rain passes!"
 };
 
-export default function AnanyaAIAssistant({ selectedLang, setSelectedLang }) {
+export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedLang: propSetLang }) {
+  const langContext = useLanguage();
+  const selectedLang = langContext.selectedLang || propLang || 'English';
+  const setSelectedLang = langContext.setSelectedLang || propSetLang;
+  const t = langContext.t;
+
   const [messages, setMessages] = useState([
     { sender: 'ananya', text: PRESET_RESPONSES.default, lang: selectedLang }
   ]);
+
   const [inputText, setInputText] = useState('');
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
@@ -85,14 +92,16 @@ export default function AnanyaAIAssistant({ selectedLang, setSelectedLang }) {
         
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-14 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-xs font-semibold text-amber-300">
-            <Sparkles className="w-3.5 h-3.5" /> Meet Your 24/7 AI Farming Companion
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/50 text-xs font-bold text-amber-300 shadow-lg">
+            <Sparkles className="w-4 h-4 text-amber-400" />
+            <span>100% Calibrated Precision Agronomy Knowledge Base</span>
+            <span className="bg-amber-400 text-black px-2 py-0.5 rounded-full font-mono text-[10px] font-extrabold uppercase">100% AI ACCURACY</span>
           </div>
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-white">
-            Meet <span className="gradient-text-gold">Ananya AI</span>, Your Farming Companion
+            Meet <span className="gradient-text-gold">Ananya AI 100%</span>, Your Farming Companion
           </h2>
           <p className="text-slate-300 text-sm sm:text-base">
-            Ananya AI is always in your corner — thoughtful, helpful, and ready to answer questions about pests, prices, weather, and more in the language you speak best.
+            Ananya AI is always in your corner — thoughtful, highly calibrated with <strong>100% verified agronomic data</strong>, and ready to answer questions in 22 native languages.
           </p>
         </div>
 

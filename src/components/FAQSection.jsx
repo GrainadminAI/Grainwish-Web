@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { HelpCircle, ChevronDown, Sparkles, CheckCircle2 } from 'lucide-react';
+import { useLanguage } from '../lib/LanguageContext';
 
 const FAQS = [
   {
@@ -37,6 +38,7 @@ const FAQS = [
 ];
 
 export default function FAQSection() {
+  const { t } = useLanguage();
   const [openIdx, setOpenIdx] = useState(0);
 
   return (
@@ -47,15 +49,16 @@ export default function FAQSection() {
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
           <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-950 border border-emerald-500/40 text-xs font-semibold text-emerald-300">
-            <HelpCircle className="w-3.5 h-3.5 text-amber-400" /> Got Questions?
+            <HelpCircle className="w-3.5 h-3.5 text-amber-400" /> {t('faq_badge', 'Got Questions?')}
           </div>
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-white">
-            Frequently Asked <span className="gradient-text-gold">Questions</span>
+            {t('faq_title_1', 'Frequently Asked')} <span className="gradient-text-gold">{t('faq_title_2', 'Questions')}</span>
           </h2>
           <p className="text-slate-300 text-sm sm:text-base">
-            Everything you need to know about crop diagnostics, real-time Mandi updates, and guidance from Ananya AI.
+            {t('faq_sub', 'Everything you need to know about crop diagnostics, real-time Mandi updates, and guidance from Ananya AI.')}
           </p>
         </div>
+
 
         {/* FAQ Accordion List */}
         <div className="space-y-4">

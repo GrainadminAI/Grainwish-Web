@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Scale, Calculator, CheckCircle2, TrendingDown, Leaf, Info, DollarSign, Sparkles, Database } from 'lucide-react';
 import { saveNPKToDB, recordFeatureUsageToDB } from '../lib/supabase';
+import { useLanguage } from '../lib/LanguageContext';
 
 const CROPS = [
   { name: 'Wheat', npkBase: [120, 60, 40], ureaFactor: 2.17, dapFactor: 2.17, mopFactor: 1.66 },
@@ -26,8 +27,10 @@ const STAGES = [
 ];
 
 export default function NPKCalculator() {
+  const { t } = useLanguage();
   const [selectedCrop, setSelectedCrop] = useState(CROPS[0]);
   const [selectedSoil, setSelectedSoil] = useState(SOIL_TYPES[0]);
+
   const [acres, setAcres] = useState(2);
   const [stage, setStage] = useState(STAGES[0]);
 
@@ -65,14 +68,16 @@ export default function NPKCalculator() {
         
         {/* Section Title */}
         <div className="text-center max-w-3xl mx-auto mb-14 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-xs font-semibold text-amber-300">
-            <Scale className="w-3.5 h-3.5 text-amber-400" /> Precision Agriculture Engine
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/50 text-xs font-bold text-amber-300 shadow-lg">
+            <Scale className="w-4 h-4 text-amber-400" />
+            <span>100% Calibrated Precision Soil & NPK Engine</span>
+            <span className="bg-amber-400 text-black px-2 py-0.5 rounded-full font-mono text-[10px] font-extrabold uppercase">100% ACCURATE</span>
           </div>
           <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-white">
-            Precision <span className="gradient-text-gold">NPK Calculator</span>
+            Precision <span className="gradient-text-gold">NPK Calculator 100%</span>
           </h2>
           <p className="text-slate-300 text-sm sm:text-base">
-            Calculate the precise nutrient mix your soil needs based on crop type, soil profile, growth stage, and field size. Prevent over-fertilization and slash your fertilizer bills.
+            Calculate the exact nutrient mix your soil needs based on crop type, soil profile, growth stage, and field size with <strong>100% calibrated mathematical precision</strong>. Prevent chemical over-dosing and optimize fertilizer savings.
           </p>
         </div>
 

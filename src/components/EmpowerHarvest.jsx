@@ -1,7 +1,10 @@
 import React from 'react';
 import { ShieldCheck, Camera, Calculator, CloudSun, Landmark, Scale, TrendingUp, Calendar, Check, Sparkles } from 'lucide-react';
+import { useLanguage } from '../lib/LanguageContext';
 
 export default function EmpowerHarvest({ onOpenDownloadModal }) {
+  const { t } = useLanguage();
+
   const featuresList = [
     {
       id: 'disease',

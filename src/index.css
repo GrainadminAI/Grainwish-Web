@@ -83,3 +83,22 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #10b98188;
 }
+
+@keyframes scan {
+  0% { top: 0%; opacity: 0.8; }
+  50% { top: 95%; opacity: 1; }
+  100% { top: 0%; opacity: 0.8; }
+}
+
+.animate-scan {
+  animation: scan 2.2s ease-in-out infinite;
+}
+
+.thermal-mode {
+  filter: contrast(180%) hue-rotate(180deg) saturate(250%) invert(20%);
+}
+
+.infrared-mode {
+  filter: contrast(200%) saturate(300%) sepia(80%) hue-rotate(-50deg);
+}
+
