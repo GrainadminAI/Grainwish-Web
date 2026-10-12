@@ -143,6 +143,7 @@ export default function DiagnosticsTool() {
   
   // Offscreen canvas for pixel leaf analysis
   const canvasRef = useRef(null);
+  const [uploadError, setUploadError] = useState('');
   const [realPixelMetrics, setRealPixelMetrics] = useState({
     greenPct: '68.5%',
     lesionPct: '31.5%',
@@ -285,8 +286,17 @@ export default function DiagnosticsTool() {
   };
 
   const handleFileUpload = (e) => {
-    const file = e.target.files[0];
+    setUploadError('');
+    const file = e.target.files?.[0];
     if (file) {
+      if (!file.type.startsWith('image/')) {
+        setUploadError('Invalid file type. Please upload a JPG, PNG, or WEBP crop photo.');
+        return;
+      }
+      if (file.size > 10 * 1024 * 1024) {
+        setUploadError('Image size exceeds 10MB limit. Please upload an image under 10MB.');
+        return;
+      }
       const url = URL.createObjectURL(file);
       setUploadedImage(url);
       setInputMode('upload');
@@ -510,6 +520,13 @@ export default function DiagnosticsTool() {
           </button>
         </div>
 
+        {/* Upload Error Alert */}
+        {uploadError && (
+          <div className="max-w-xl mx-auto mb-6 p-3 bg-red-950/80 border border-red-500/80 rounded-2xl text-xs text-red-200 text-center font-semibold animate-fade-in">
+            ⚠️ {uploadError}
+          </div>
+        )}
+
         {/* 10 Sample Crops Horizontal Selector Tabs (Shown in Sample Mode) */}
         {inputMode === 'sample' && (
           <div className="flex flex-wrap items-center justify-center gap-2.5 mb-10 max-w-5xl mx-auto">
@@ -600,7 +617,9 @@ export default function DiagnosticsTool() {
                     {uploadedImage ? (
                       <img
                         src={uploadedImage}
-                        alt={selectedCrop.crop}
+                        alt={`Farmer uploaded field leaf photo for ${selectedCrop.crop} disease diagnostics`}
+                        loading="lazy"
+                        decoding="async"
                         className={`w-full h-full object-cover ${viewMode === 'thermal' ? 'thermal-mode' : viewMode === 'cellular' ? 'infrared-mode' : ''}`}
                       />
                     ) : selectedCrop.videoUrl ? (
@@ -623,7 +642,9 @@ export default function DiagnosticsTool() {
 
                     <img
                       src={selectedCrop.image}
-                      alt={selectedCrop.crop}
+                      alt={`Diagnostic leaf analysis specimen showing ${selectedCrop.crop} affected by ${selectedCrop.disease}`}
+                      loading="lazy"
+                      decoding="async"
                       className={`w-full h-full object-cover ${viewMode === 'thermal' ? 'thermal-mode' : viewMode === 'cellular' ? 'infrared-mode' : ''}`}
                       style={{ display: !uploadedImage && selectedCrop.videoUrl ? 'none' : 'block' }}
                     />

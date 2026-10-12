@@ -1,16 +1,16 @@
 import { createClient } from '@supabase/supabase-js';
 
-let rawUrl = import.meta.env.VITE_SUPABASE_URL || 'https://drhraerbklibrkigbdaw.supabase.co';
+let rawUrl = import.meta.env.VITE_SUPABASE_URL || '';
 if (rawUrl && !rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
   rawUrl = `https://${rawUrl}.supabase.co`;
 }
 
-const supabaseUrl = rawUrl;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRyaHJhZXJia2xpYnJraWdiZGF3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU2ODc2MTQsImV4cCI6MjEwMTI2MzYxNH0.xa6alTF9SSgVhWD8SrtgQmAcUyO7jpyvRNg7R7mVU_8';
+const supabaseUrl = rawUrl || 'https://placeholder.supabase.co';
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
 
-export const isSupabaseConfigured = Boolean(supabaseUrl && supabaseAnonKey);
+export const isSupabaseConfigured = Boolean(rawUrl && supabaseAnonKey);
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+export const supabase = createClient(supabaseUrl, supabaseAnonKey || 'placeholder-key', {
   auth: {
     persistSession: true,
     autoRefreshToken: true,

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { lazy, Suspense } from 'react';
 import { Sparkles, Camera, Smartphone, CheckCircle2, Play, Globe, ShieldCheck, TrendingUp } from 'lucide-react';
-import ThreeFarmCanvas from './ThreeFarmCanvas';
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
+
+const ThreeFarmCanvas = lazy(() => import('./ThreeFarmCanvas'));
 
 export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
   const { t } = useLanguage();
@@ -10,8 +11,10 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
     <section className="relative min-h-screen pt-28 pb-16 lg:pt-36 lg:pb-24 flex items-center overflow-hidden">
       
       {/* 3D Background Canvas Layer */}
-      <div className="absolute inset-0 z-0">
-        <ThreeFarmCanvas />
+      <div className="absolute inset-0 z-0 pointer-events-none">
+        <Suspense fallback={<div className="absolute inset-0 bg-[#021109]" />}>
+          <ThreeFarmCanvas />
+        </Suspense>
       </div>
 
       {/* Decorative Glow Orbs */}
@@ -125,7 +128,9 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
                 />
                 <img
                   src="/assets/ananya_hero_ai.png"
-                  alt="Ananya AI Assistant"
+                  alt="Ananya AI Agronomy Assistant showcasing holographic crop diagnostic guidance"
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-full object-cover"
                   style={{ display: 'none' }}
                   onError={(e) => {

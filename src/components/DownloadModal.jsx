@@ -11,6 +11,11 @@ export default function DownloadModal({ isOpen, onClose }) {
   const [showAndroidNotifyModal, setShowAndroidNotifyModal] = useState(false);
   const [androidEmailPhone, setAndroidEmailPhone] = useState('');
   const [androidNotified, setAndroidNotified] = useState(false);
+  const [androidFormError, setAndroidFormError] = useState('');
+
+  // Spam Protection & Honeypot
+  const [honeypot, setHoneypot] = useState('');
+  const formOpenedTimeRef = React.useRef(Date.now());
 
   // Feedback State
   const [showFeedbackTab, setShowFeedbackTab] = useState(false);
@@ -19,12 +24,16 @@ export default function DownloadModal({ isOpen, onClose }) {
   const [feedbackCategory, setFeedbackCategory] = useState('General');
   const [rating, setRating] = useState(5);
   const [comments, setComments] = useState('');
+  const [feedbackFormError, setFeedbackFormError] = useState('');
   const [isUpdatingFeedback, setIsUpdatingFeedback] = useState(false);
   const [feedbackSuccessMessage, setFeedbackSuccessMessage] = useState('');
   const [isSubmittingFeedback, setIsSubmittingFeedback] = useState(false);
 
   useEffect(() => {
     if (isOpen) {
+      formOpenedTimeRef.current = Date.now();
+      setAndroidFormError('');
+      setFeedbackFormError('');
       const existing = getSavedUserFeedback();
       if (existing) {
         setFeedbackPhone(existing.phone || '');
@@ -56,25 +65,83 @@ export default function DownloadModal({ isOpen, onClose }) {
 
   const handleAndroidPreRegister = async (e) => {
     e.preventDefault();
-    if (!androidEmailPhone.trim()) return;
+    setAndroidFormError('');
+
+    // Spam Protection 1: Honeypot trap check
+    if (honeypot) {
+      setAndroidNotified(true);
+      return;
+    }
+
+    // Spam Protection 2: Minimum interaction timing (bots submit < 600ms)
+    if (Date.now() - formOpenedTimeRef.current < 600) {
+      setAndroidFormError('Submission too rapid. Please try again.');
+      return;
+    }
+
+    const input = androidEmailPhone.trim();
+    if (!input) {
+      setAndroidFormError('Please enter your phone number or email address.');
+      return;
+    }
+
+    // Strict Validation: Valid Indian phone (10 digits, optionally with +91) or valid email
+    const isPhone = /^(\+91[\-\s]?)?[6-9]\d{9}$/.test(input.replace(/[\s\-]/g, ''));
+    const isEmail = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(input);
+
+    if (!isPhone && !isEmail) {
+      setAndroidFormError('Please enter a valid 10-digit mobile number (e.g. 9876543210) or a valid email address.');
+      return;
+    }
+
+    // Spam Protection 3: Rate Limiting
+    const key = 'grainwise_prereg_count';
+    const recentCount = parseInt(sessionStorage.getItem(key) || '0', 10);
+    if (recentCount >= 5) {
+      setAndroidFormError('Too many submissions from this session. Please try again later.');
+      return;
+    }
+    sessionStorage.setItem(key, (recentCount + 1).toString());
 
     await recordFeatureUsageToDB({
       featureName: 'Android Launch Pre-Register',
       action: 'subscribe_android_launch',
-      metadata: { contact: androidEmailPhone }
+      metadata: { contact: input }
     });
+
     setAndroidNotified(true);
     confetti({ particleCount: 80, spread: 60 });
     setTimeout(() => {
       setShowAndroidNotifyModal(false);
       setAndroidNotified(false);
       setAndroidEmailPhone('');
-    }, 2500);
+    }, 2800);
   };
 
   const handleFeedbackSubmit = async (e) => {
     e.preventDefault();
-    if (!comments.trim()) return;
+    setFeedbackFormError('');
+
+    // Spam Protection: Honeypot check
+    if (honeypot) return;
+
+    if (!comments.trim()) {
+      setFeedbackFormError('Please enter your feedback comments.');
+      return;
+    }
+
+    if (comments.trim().length < 8) {
+      setFeedbackFormError('Feedback must be at least 8 characters long.');
+      return;
+    }
+
+    if (feedbackPhone.trim()) {
+      const isPhone = /^(\+91[\-\s]?)?[6-9]\d{9}$/.test(feedbackPhone.trim().replace(/[\s\-]/g, ''));
+      if (!isPhone) {
+        setFeedbackFormError('Please enter a valid 10-digit phone number or leave blank.');
+        return;
+      }
+    }
 
     setIsSubmittingFeedback(true);
     const feedbackPayload = {
@@ -266,24 +333,47 @@ export default function DownloadModal({ isOpen, onClose }) {
             {/* Android Notification Dialog */}
             {showAndroidNotifyModal && (
               <form onSubmit={handleAndroidPreRegister} className="bg-[#031d10] p-4 rounded-2xl border border-amber-400/50 space-y-3 animate-fade-in">
+                {/* Honeypot Spam Protection Field */}
+                <input
+                  type="text"
+                  name="user_website_trap"
+                  tabIndex={-1}
+                  autoComplete="off"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  style={{ display: 'none', position: 'absolute', opacity: 0, height: 0, width: 0 }}
+                  aria-hidden="true"
+                />
+
                 <div className="text-xs font-bold text-amber-300 flex items-center gap-1.5">
                   <Sparkles className="w-4 h-4 text-amber-400" /> Android Pre-Register — Free 14 Days Trial Pack
                 </div>
                 <p className="text-[11px] text-slate-300">
                   Application Phase is Coming Soon. Android Pre-Register will get Free 14 days trial pack! Enter your mobile number or email below to claim your trial pack upon launch.
                 </p>
+
+                {androidFormError && (
+                  <div className="p-2.5 rounded-xl bg-red-950/80 border border-red-500/80 text-red-200 text-xs font-semibold">
+                    ⚠️ {androidFormError}
+                  </div>
+                )}
+
                 <div className="flex gap-2">
                   <input
                     type="text"
                     required
-                    placeholder="Enter phone number or email"
+                    aria-label="Mobile phone number or email address for Android pre-registration"
+                    placeholder="Enter 10-digit mobile or email"
                     value={androidEmailPhone}
-                    onChange={(e) => setAndroidEmailPhone(e.target.value)}
+                    onChange={(e) => {
+                      setAndroidEmailPhone(e.target.value);
+                      if (androidFormError) setAndroidFormError('');
+                    }}
                     className="flex-1 bg-black/60 border border-emerald-700/60 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-400 focus:outline-none focus:border-amber-400"
                   />
                   <button
                     type="submit"
-                    className="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs rounded-xl shadow shrink-0"
+                    className="px-4 py-2 bg-amber-400 hover:bg-amber-300 text-black font-extrabold text-xs rounded-xl shadow shrink-0 active:scale-95 transition-transform"
                   >
                     Claim 14 Days Trial
                   </button>
@@ -301,6 +391,18 @@ export default function DownloadModal({ isOpen, onClose }) {
         {/* TAB 2: DIRECT PHONE FEEDBACK */}
         {showFeedbackTab && (
           <form onSubmit={handleFeedbackSubmit} className="space-y-4 animate-fade-in bg-[#031d10] p-4 rounded-2xl border border-emerald-800/60">
+            {/* Honeypot Spam Protection Field */}
+            <input
+              type="text"
+              name="feedback_website_trap"
+              tabIndex={-1}
+              autoComplete="off"
+              value={honeypot}
+              onChange={(e) => setHoneypot(e.target.value)}
+              style={{ display: 'none', position: 'absolute', opacity: 0, height: 0, width: 0 }}
+              aria-hidden="true"
+            />
+
             <div className="flex items-center justify-between border-b border-emerald-900/60 pb-2">
               <div className="font-bold text-white text-xs flex items-center gap-1.5">
                 <MessageSquare className="w-4 h-4 text-amber-400" />
@@ -310,6 +412,12 @@ export default function DownloadModal({ isOpen, onClose }) {
                 {isUpdatingFeedback ? 'Edit Saved Feedback' : 'Direct Phone Sync'}
               </span>
             </div>
+
+            {feedbackFormError && (
+              <div className="p-2.5 rounded-xl bg-red-950/80 border border-red-500/80 text-red-200 text-xs font-semibold">
+                ⚠️ {feedbackFormError}
+              </div>
+            )}
 
             {feedbackSuccessMessage && (
               <div className="p-2.5 rounded-xl bg-emerald-900/80 border border-emerald-500 text-emerald-200 text-xs font-semibold flex items-center gap-2">

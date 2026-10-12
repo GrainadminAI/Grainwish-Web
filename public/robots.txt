@@ -1,0 +1,8 @@
+# Robots.txt for GrainWise AI (https://www.grainwish.com)
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /.git/
+
+# Point search crawlers directly to XML Sitemap
+Sitemap: https://www.grainwish.com/sitemap.xml

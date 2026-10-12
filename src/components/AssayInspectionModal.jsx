@@ -123,7 +123,9 @@ export const AssayInspectionModal = ({ isOpen, onClose, lot }) => {
               <div className="relative rounded-lg overflow-hidden border border-slate-700 group">
                 <img 
                   src={data.image_url} 
-                  alt="Grain Macro Inspection" 
+                  alt="High-resolution grain macro assay inspection image" 
+                  loading="lazy"
+                  decoding="async"
                   className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
                 />
                 <div className="absolute top-2 left-2 px-2 py-1 bg-black/70 backdrop-blur-md rounded text-[10px] font-mono text-emerald-300 border border-emerald-500/30">

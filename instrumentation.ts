@@ -7,7 +7,7 @@ export function register() {
     const exporter = new OTLPLogExporter({
       url: 'https://us.i.posthog.com/otlp/v1/logs',
       headers: {
-        Authorization: 'Bearer phc_BvzNwBSVehczv2ufsrMvEJMEMGVUoiBELXpGr5cFJ4P2',
+        Authorization: `Bearer ${process.env.POSTHOG_API_KEY || process.env.VITE_POSTHOG_KEY || ''}`,
       },
     })
 

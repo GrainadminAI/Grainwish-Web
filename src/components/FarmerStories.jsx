@@ -420,7 +420,9 @@ export default function FarmerStories() {
               />
               <img
                 src={selectedCase.image}
-                alt={selectedCase.name}
+                alt={`Portrait of farmer ${selectedCase.name} sharing their crop yield experience from ${selectedCase.location}`}
+                loading="lazy"
+                decoding="async"
                 className="w-full h-full object-cover"
                 style={{ display: 'none' }}
               />

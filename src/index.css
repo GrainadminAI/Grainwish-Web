@@ -7,6 +7,18 @@
     background-color: #021109;
     color: #f1f5f9;
   }
+
+  /* Accessible focus indicators for keyboard navigation (WCAG AA) */
+  :focus-visible {
+    outline: 2px solid #34d399;
+    outline-offset: 2px;
+  }
+
+  /* High contrast text selection */
+  ::selection {
+    background-color: #10b981;
+    color: #000000;
+  }
 }
 
 /* Glassmorphism & Cyber Agri Effects */
@@ -94,6 +106,21 @@
   animation: scan 2.2s ease-in-out infinite;
 }
 
+@keyframes slideUp {
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
 .thermal-mode {
   filter: contrast(180%) hue-rotate(180deg) saturate(250%) invert(20%);
 }
@@ -101,4 +128,3 @@
 .infrared-mode {
   filter: contrast(200%) saturate(300%) sepia(80%) hue-rotate(-50deg);
 }
-

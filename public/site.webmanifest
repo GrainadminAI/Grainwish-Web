@@ -1,0 +1,32 @@
+{
+  "name": "GrainWise AI - Smart Farming Intelligence",
+  "short_name": "GrainWise AI",
+  "description": "Instant AI crop disease diagnostics, precision NPK calculations, live Mandi updates & Ananya AI guidance in 22 native Indian languages.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#021109",
+  "theme_color": "#021109",
+  "icons": [
+    {
+      "src": "/favicon-16x16.png",
+      "sizes": "16x16",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon-32x32.png",
+      "sizes": "32x32",
+      "type": "image/png"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/grainwise_icon_transparent.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

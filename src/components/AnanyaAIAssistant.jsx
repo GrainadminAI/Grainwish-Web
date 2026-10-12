@@ -159,7 +159,9 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
                 <div className="w-32 h-32 rounded-3xl overflow-hidden border-2 border-amber-400 shadow-2xl shadow-amber-400/20 mx-auto">
                   <img
                     src="/assets/ananya_hero_ai.png"
-                    alt="Ananya AI Assistant"
+                    alt="Ananya AI 24/7 Virtual Agronomist Avatar in 22 Native Indian Languages"
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover"
                     onError={(e) => {
                       e.target.src = '/assets/farmer_hologram.jpeg';

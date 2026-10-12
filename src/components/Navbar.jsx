@@ -50,10 +50,12 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
         <div className="flex items-center justify-between">
           
           {/* Logo & Domain */}
-          <a href="#" className="flex items-center gap-3 group">
+          <a href="/" className="flex items-center gap-3 group">
             <img 
               src="/assets/grainwise_icon_transparent.png" 
-              alt="GrainWise AI Shield Logo" 
+              alt="GrainWise AI Shield Logo - Smart Agriculture Intelligence Platform" 
+              width="44"
+              height="44"
               className="h-11 w-auto object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_12px_rgba(16,185,129,0.4)]"
             />
             <div>

@@ -10,8 +10,8 @@ export async function GET(request: Request) {
     attributes: { route: '/api' },
   })
 
-  const token = process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN || 'phc_BvzNwBSVehczv2ufsrMvEJMEMGVUoiBELXpGr5cFJ4P2'
-  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST || 'https://us.i.posthog.com'
+  const token = process.env.NEXT_PUBLIC_POSTHOG_PROJECT_TOKEN || process.env.VITE_POSTHOG_KEY || ''
+  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST || process.env.VITE_POSTHOG_HOST || 'https://us.i.posthog.com'
 
   const posthog = new PostHog(token, { host })
   posthog.capture({

@@ -89,7 +89,9 @@ export default function CoreHighlights({ selectedLang }) {
                   <div className="relative rounded-2xl overflow-hidden mb-6 h-40 border border-emerald-800/40">
                     <img
                       src={item.image}
-                      alt={item.title}
+                      alt={`${item.title} - GrainWise AI Smart Farming Intelligence Feature`}
+                      loading="lazy"
+                      decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       onError={(e) => {
                         e.target.src = '/assets/farmer_hologram.jpeg';
