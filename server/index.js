@@ -2,6 +2,11 @@ import express from 'express';
 import cors from 'cors';
 import { createClient } from '@supabase/supabase-js';
 
+// Auto-load environment variables if .env exists
+if (typeof process.loadEnvFile === 'function') {
+  try { process.loadEnvFile(); } catch (e) {}
+}
+
 const app = express();
 const PORT = process.env.PORT || 5000;
 

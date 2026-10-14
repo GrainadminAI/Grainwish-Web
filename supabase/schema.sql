@@ -1,6 +1,7 @@
 -- ==========================================================
 -- GrainWise AI (grainwish.com) - Supabase Database Schema
 -- Run this script in your Supabase SQL Editor
+-- Official Support & Inquiries: support@grainwish.com
 -- ==========================================================
 
 -- 1. Create Google OAuth User Profiles Table
@@ -69,6 +70,28 @@ CREATE TABLE IF NOT EXISTS public.npk_calculations (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- 6. Create App Downloads Table
+CREATE TABLE IF NOT EXISTS public.app_downloads (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  platform VARCHAR(100) NOT NULL,
+  domain VARCHAR(100) DEFAULT 'Grainwish.com',
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- 6b. Create Direct Mobile Feedback Table
+CREATE TABLE IF NOT EXISTS public.user_feedbacks (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE SET NULL,
+  phone VARCHAR(50),
+  email VARCHAR(255),
+  category VARCHAR(100) DEFAULT 'General',
+  rating INTEGER DEFAULT 5,
+  comments TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+  CONSTRAINT user_feedbacks_phone_key UNIQUE (phone)
+);
+
 -- 7. Create User Visits Table
 CREATE TABLE IF NOT EXISTS public.user_visits (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -130,6 +153,7 @@ ALTER TABLE public.npk_calculations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.app_downloads ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.user_visits ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.feature_usages ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.user_feedbacks ENABLE ROW LEVEL SECURITY;
 
 -- Clean existing policies if re-running
 DROP POLICY IF EXISTS "Allow Public Read Profiles" ON public.profiles;
@@ -140,11 +164,16 @@ DROP POLICY IF EXISTS "Allow Public Read Diagnostics" ON public.diagnostics_scan
 DROP POLICY IF EXISTS "Allow Public Insert Ananya Chats" ON public.ananya_chats;
 DROP POLICY IF EXISTS "Allow Public Read Ananya Chats" ON public.ananya_chats;
 DROP POLICY IF EXISTS "Allow Public Insert NPK" ON public.npk_calculations;
+DROP POLICY IF EXISTS "Allow Public Read NPK" ON public.npk_calculations;
 DROP POLICY IF EXISTS "Allow Public Insert App Downloads" ON public.app_downloads;
+DROP POLICY IF EXISTS "Allow Public Read App Downloads" ON public.app_downloads;
 DROP POLICY IF EXISTS "Allow Public Insert User Visits" ON public.user_visits;
 DROP POLICY IF EXISTS "Allow Public Read User Visits" ON public.user_visits;
 DROP POLICY IF EXISTS "Allow Public Insert Feature Usages" ON public.feature_usages;
 DROP POLICY IF EXISTS "Allow Public Read Feature Usages" ON public.feature_usages;
+DROP POLICY IF EXISTS "Allow Public Insert User Feedbacks" ON public.user_feedbacks;
+DROP POLICY IF EXISTS "Allow Public Read User Feedbacks" ON public.user_feedbacks;
+DROP POLICY IF EXISTS "Allow Public Update User Feedbacks" ON public.user_feedbacks;
 
 -- Create Policies
 CREATE POLICY "Allow Public Read Profiles" ON public.profiles FOR SELECT USING (true);
@@ -154,11 +183,16 @@ CREATE POLICY "Allow Public Read Diagnostics" ON public.diagnostics_scans FOR SE
 CREATE POLICY "Allow Public Insert Ananya Chats" ON public.ananya_chats FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow Public Read Ananya Chats" ON public.ananya_chats FOR SELECT USING (true);
 CREATE POLICY "Allow Public Insert NPK" ON public.npk_calculations FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow Public Read NPK" ON public.npk_calculations FOR SELECT USING (true);
 CREATE POLICY "Allow Public Insert App Downloads" ON public.app_downloads FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow Public Read App Downloads" ON public.app_downloads FOR SELECT USING (true);
 CREATE POLICY "Allow Public Insert User Visits" ON public.user_visits FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow Public Read User Visits" ON public.user_visits FOR SELECT USING (true);
 CREATE POLICY "Allow Public Insert Feature Usages" ON public.feature_usages FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow Public Read Feature Usages" ON public.feature_usages FOR SELECT USING (true);
+CREATE POLICY "Allow Public Insert User Feedbacks" ON public.user_feedbacks FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow Public Read User Feedbacks" ON public.user_feedbacks FOR SELECT USING (true);
+CREATE POLICY "Allow Public Update User Feedbacks" ON public.user_feedbacks FOR UPDATE USING (true);
 
 
 -- ==========================================================
