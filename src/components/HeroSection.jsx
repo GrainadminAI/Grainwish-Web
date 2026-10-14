@@ -8,7 +8,7 @@ const ThreeFarmCanvas = lazy(() => import('./ThreeFarmCanvas'));
 export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
   const { t } = useLanguage();
   return (
-    <section className="relative min-h-screen pt-28 pb-16 lg:pt-36 lg:pb-24 flex items-center overflow-hidden">
+    <section className="relative min-h-screen pt-32 pb-16 lg:pt-40 lg:pb-24 flex items-center overflow-hidden">
       
       {/* 3D Background Canvas Layer */}
       <div className="absolute inset-0 z-0 pointer-events-none">

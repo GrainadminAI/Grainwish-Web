@@ -50,22 +50,22 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
         <div className="flex items-center justify-between">
           
           {/* Logo & Domain */}
-          <a href="/" className="flex items-center gap-3 group">
+          <a href="/" className="flex items-center gap-3 sm:gap-4 group">
             <img 
               src="/assets/grainwise_icon_transparent.png" 
-              alt="GrainWise AI Shield Logo - Smart Agriculture Intelligence Platform" 
-              width="44"
-              height="44"
-              className="h-11 w-auto object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_12px_rgba(16,185,129,0.4)]"
+              alt="GrainWise AI Logo - Smart Agriculture Intelligence Platform" 
+              width="72"
+              height="72"
+              className="h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_18px_rgba(16,185,129,0.5)] shrink-0"
             />
             <div>
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-display text-xl font-bold tracking-tight text-white group-hover:text-emerald-300 transition-colors">
-                  GrainWise <span className="text-amber-400 font-extrabold">AI</span>
+                <span className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-white group-hover:text-emerald-300 transition-colors">
+                  GrainWise <span className="text-amber-400 font-black">AI</span>
                 </span>
                 <MadeInIndiaTag variant="navbar" />
               </div>
-              <span className="text-[10px] text-slate-400 tracking-wider uppercase block -mt-0.5 font-medium">
+              <span className="text-[11px] sm:text-xs text-slate-300 tracking-wider uppercase block -mt-0.5 font-medium">
                 {t('nav_smart_farming')}
               </span>
             </div>

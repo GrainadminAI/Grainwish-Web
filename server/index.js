@@ -5,8 +5,86 @@ import { createClient } from '@supabase/supabase-js';
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-app.use(cors());
-app.use(express.json());
+// Security: Disable Express fingerprinting
+app.disable('x-powered-by');
+
+// Security: HTTP Response Headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  res.setHeader('Permissions-Policy', 'camera=(self), microphone=(self), geolocation=(), payment=()');
+  next();
+});
+
+// Security: Allowed Origins for CORS
+const ALLOWED_ORIGINS = [
+  'https://www.grainwish.com',
+  'https://grainwish.com',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
+  'http://localhost:5000',
+  'http://127.0.0.1:5000',
+  'http://localhost:3000',
+  'http://127.0.0.1:3000'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || ALLOWED_ORIGINS.includes(origin) || origin.endsWith('.vercel.app') || origin.includes('grainwish.com')) {
+      callback(null, true);
+    } else {
+      callback(new Error('Blocked by CORS policy'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Security: Prevent buffer overflow attacks with 50kb body limit
+app.use(express.json({ limit: '50kb' }));
+
+// Security: Lightweight In-Memory Sliding-Window Rate Limiter
+const rateLimitMap = new Map();
+function rateLimiter({ windowMs = 60000, max = 120, message = 'Too many requests, please try again later.' }) {
+  return (req, res, next) => {
+    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || 'unknown';
+    const now = Date.now();
+    const timestamps = (rateLimitMap.get(ip) || []).filter(t => now - t < windowMs);
+    if (timestamps.length >= max) {
+      res.setHeader('Retry-After', Math.ceil(windowMs / 1000));
+      return res.status(429).json({ success: false, error: message });
+    }
+    timestamps.push(now);
+    rateLimitMap.set(ip, timestamps);
+    next();
+  };
+}
+
+// Clean up rateLimitMap periodically
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, list] of rateLimitMap.entries()) {
+    const valid = list.filter(t => now - t < 120000);
+    if (valid.length === 0) rateLimitMap.delete(ip);
+    else rateLimitMap.set(ip, valid);
+  }
+}, 60000);
+
+const globalLimiter = rateLimiter({ windowMs: 60000, max: 120 });
+const writeLimiter = rateLimiter({ windowMs: 60000, max: 30, message: 'Too many submissions. Please slow down.' });
+
+app.use(globalLimiter);
+
+// Security: Input Sanitization against XSS & Injection
+function sanitizeString(str, maxLen = 500) {
+  if (typeof str !== 'string') return '';
+  return str.replace(/[<>]/g, '').trim().slice(0, maxLen);
+}
 
 // Supabase Credentials
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://drhraerbklibrkigbdaw.supabase.co';
@@ -40,39 +118,50 @@ app.get('/api/mandi/prices', async (req, res) => {
   }
 });
 
-// 2. AI Diagnostics Scan Endpoint
-app.post('/api/diagnostics/scan', async (req, res) => {
+// 2. AI Diagnostics Scan Endpoint (Rate Limited & Sanitized)
+app.post('/api/diagnostics/scan', writeLimiter, async (req, res) => {
   try {
     const { crop, disease, location, confidence, severity, symptoms, treatment, yieldProtected } = req.body;
     
+    const safeCrop = sanitizeString(crop, 100);
+    const safeDisease = sanitizeString(disease, 100);
+    const safeLocation = sanitizeString(location, 100);
+    const safeSeverity = sanitizeString(severity, 50);
+    const safeSymptoms = sanitizeString(symptoms, 300);
+    const safeTreatment = sanitizeString(treatment, 500);
+    const safeYieldProtected = sanitizeString(yieldProtected, 50);
+
     const { data, error } = await supabase
       .from('diagnostics_scans')
       .insert([{
-        crop,
-        disease,
-        location,
-        confidence,
-        severity,
-        symptoms,
-        treatment,
-        yield_protected: yieldProtected
+        crop: safeCrop,
+        disease: safeDisease,
+        location: safeLocation,
+        confidence: Number(confidence) || 0,
+        severity: safeSeverity,
+        symptoms: safeSymptoms,
+        treatment: safeTreatment,
+        yield_protected: safeYieldProtected
       }])
       .select();
 
     if (error) throw error;
     res.json({ success: true, message: 'Scan diagnostic logged to Supabase', data });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: 'Failed to process diagnostic scan' });
   }
 });
 
-// 3. Ananya AI Multi-Lingual Assistant Endpoint
-app.post('/api/ananya/chat', async (req, res) => {
+// 3. Ananya AI Multi-Lingual Assistant Endpoint (Rate Limited & Sanitized)
+app.post('/api/ananya/chat', writeLimiter, async (req, res) => {
   try {
     const { userText, language } = req.body;
+    const cleanUserText = sanitizeString(userText, 500);
+    const cleanLanguage = sanitizeString(language, 50);
+
     let responseText = "Namaste! I am Ananya AI, your 24/7 farming companion on Grainwish.com. How can I help your crops thrive today?";
     
-    const lower = (userText || '').toLowerCase();
+    const lower = (cleanUserText || '').toLowerCase();
     if (lower.includes('rust') || lower.includes('yellow') || lower.includes('leaf')) {
       responseText = "Yellow rust in wheat spreads quickly under morning dew. Apply Propiconazole 25% EC (1ml/L) immediately.";
     } else if (lower.includes('mandi') || lower.includes('price') || lower.includes('cotton')) {
@@ -84,73 +173,73 @@ app.post('/api/ananya/chat', async (req, res) => {
     const { data, error } = await supabase
       .from('ananya_chats')
       .insert([{
-        user_text: userText,
+        user_text: cleanUserText,
         ananya_response: responseText,
-        language: language || 'English'
+        language: cleanLanguage || 'English'
       }])
       .select();
 
     if (error) throw error;
     res.json({ success: true, reply: responseText, data });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: 'Failed to process assistant chat' });
   }
 });
 
-// 4. Precision NPK Calculator Endpoint
-app.post('/api/npk/calculate', async (req, res) => {
+// 4. Precision NPK Calculator Endpoint (Rate Limited & Sanitized)
+app.post('/api/npk/calculate', writeLimiter, async (req, res) => {
   try {
     const { crop, soilType, acres, growthStage, ureaKg, dapKg, mopKg, costSavingsPct } = req.body;
 
     const { data, error } = await supabase
       .from('npk_calculations')
       .insert([{
-        crop,
-        soil_type: soilType,
-        acres,
-        growth_stage: growthStage,
-        urea_kg: ureaKg,
-        dap_kg: dapKg,
-        mop_kg: mopKg,
-        cost_savings_pct: costSavingsPct || 18
+        crop: sanitizeString(crop, 100),
+        soil_type: sanitizeString(soilType, 100),
+        acres: Number(acres) || 1,
+        growth_stage: sanitizeString(growthStage, 100),
+        urea_kg: Number(ureaKg) || 0,
+        dap_kg: Number(dapKg) || 0,
+        mop_kg: Number(mopKg) || 0,
+        cost_savings_pct: Number(costSavingsPct) || 18
       }])
       .select();
 
     if (error) throw error;
     res.json({ success: true, message: 'NPK Calculation saved to Supabase', data });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: 'Failed to record calculation' });
   }
 });
 
 // 5. App Download Analytics Endpoint
-app.post('/api/downloads/record', async (req, res) => {
+app.post('/api/downloads/record', writeLimiter, async (req, res) => {
   try {
     const { platform } = req.body;
 
     const { data, error } = await supabase
       .from('app_downloads')
-      .insert([{ platform, domain: 'Grainwish.com' }])
+      .insert([{ platform: sanitizeString(platform, 50), domain: 'Grainwish.com' }])
       .select();
 
     if (error) throw error;
     res.json({ success: true, message: 'Download event recorded', data });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: 'Failed to record download event' });
   }
 });
 
-// 5b. Direct Mobile Phone Feedback Endpoint
-app.post('/api/feedback', async (req, res) => {
+// 5b. Direct Mobile Phone Feedback Endpoint (Rate Limited & Sanitized)
+app.post('/api/feedback', writeLimiter, async (req, res) => {
   try {
     const { phone, email, category, rating, comments, isUpdate } = req.body;
     
     const payload = {
-      phone: phone || '',
-      email: email || '',
-      category: category || 'General',
-      rating: rating || 5,
-      comments: comments || '',
+      phone: sanitizeString(phone, 30),
+      email: sanitizeString(email, 120),
+      category: sanitizeString(category, 50) || 'General',
+      rating: Math.min(Math.max(Number(rating) || 5, 1), 5),
+      comments: sanitizeString(comments, 1000),
       updated_at: new Date().toISOString()
     };
 
@@ -163,7 +252,7 @@ app.post('/api/feedback', async (req, res) => {
 
     res.json({ success: true, message: 'Feedback recorded successfully', data: payload });
   } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
+    res.status(500).json({ success: false, error: 'Failed to save feedback' });
   }
 });
 

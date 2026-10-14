@@ -57,19 +57,19 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
           
           {/* Brand Col */}
           <div className="space-y-4">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-4">
               <img 
                 src="/assets/grainwise_icon_transparent.png" 
-                alt="GrainWise AI Shield Logo - Trusted Indian AgriTech Platform" 
+                alt="GrainWise AI Logo - Trusted Indian AgriTech Platform" 
                 loading="lazy"
                 decoding="async"
-                width="48"
-                height="48"
-                className="h-12 w-auto object-contain drop-shadow-[0_0_12px_rgba(16,185,129,0.4)]"
+                width="84"
+                height="84"
+                className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 object-contain drop-shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0"
               />
               <div>
-                <div className="font-display text-xl font-bold text-white">GrainWise AI</div>
-                <div className="text-[10px] text-amber-400 font-mono">Smart Farming Intelligence</div>
+                <div className="font-display text-2xl sm:text-3xl font-extrabold text-white">GrainWise AI</div>
+                <div className="text-xs sm:text-sm text-amber-400 font-mono font-medium">Smart Farming Intelligence</div>
               </div>
             </div>
 
@@ -137,9 +137,6 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                 >
                   <Cookie className="w-3.5 h-3.5 text-amber-400" /> Cookie Preferences
                 </button>
-              </li>
-              <li className="pt-2 text-[11px] text-emerald-400/90 font-mono">
-                SSL 256-Bit Encrypted · HTTPS Enforced
               </li>
             </ul>
           </div>

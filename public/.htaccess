@@ -1,9 +1,28 @@
+# Disable Directory Indexes / Browsing
+Options -Indexes
+
+# Block access to hidden files and dotfiles (.env, .git, etc.)
+<FilesMatch "^\.">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
+# Block access to sensitive configuration files
+<FilesMatch "(package\.json|package-lock\.json|\.env|\.example|netlify\.toml|vercel\.json|tsconfig\.json)">
+  Order allow,deny
+  Deny from all
+</FilesMatch>
+
 <IfModule mod_rewrite.c>
   RewriteEngine On
   
   # Enforce HTTPS
   RewriteCond %{HTTPS} off
   RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+  # Block common directory traversal & script injection attempts
+  RewriteCond %{QUERY_STRING} (\.\./|<script|%3Cscript|globals|mosconfig) [NC]
+  RewriteRule .* - [F]
 
   RewriteBase /
   RewriteRule ^index\.html$ - [L]
@@ -15,6 +34,10 @@
 <IfModule mod_headers.c>
   Header always set Strict-Transport-Security "max-age=63072000; includeSubDomains; preload"
   Header set X-Content-Type-Options "nosniff"
-  Header set X-Frame-Options "SAMEORIGIN"
+  Header set X-Frame-Options "DENY"
+  Header set X-XSS-Protection "1; mode=block"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
+  Header set Cross-Origin-Opener-Policy "same-origin-allow-popups"
+  Header set X-Permitted-Cross-Domain-Policies "none"
+  Header set Permissions-Policy "camera=(self), microphone=(self), geolocation=(), payment=()"
 </IfModule>

@@ -11,28 +11,82 @@ const rootDir = path.join(__dirname, '..');
 const app = express();
 const PORT = process.env.PORT || 8080;
 
+// Security: Disable Express fingerprinting
+app.disable('x-powered-by');
+
+// Security: HTTP Security Response Headers
+app.use((req, res, next) => {
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.setHeader('X-Frame-Options', 'DENY');
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  res.setHeader('Permissions-Policy', 'camera=(self), microphone=(self), geolocation=(), payment=()');
+  next();
+});
+
 // Allowed Domains
 const ALLOWED_ORIGINS = [
   'https://www.grainwish.com',
   'http://www.grainwish.com',
   'https://grainwish.com',
   'http://grainwish.com',
+  'http://localhost:5173',
+  'http://127.0.0.1:5173',
   'http://localhost:3000',
   'http://127.0.0.1:3000'
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || ALLOWED_ORIGINS.includes(origin) || origin.includes('grainwish.com')) {
+    if (!origin || ALLOWED_ORIGINS.includes(origin) || origin.includes('grainwish.com') || origin.endsWith('.vercel.app')) {
       callback(null, true);
     } else {
-      callback(null, true);
+      callback(new Error('Blocked by CORS policy'));
     }
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-app.use(express.json());
+// Security: Body limit 50kb
+app.use(express.json({ limit: '50kb' }));
+
+// Security: Rate Limiter
+const rateLimitMap = new Map();
+function rateLimiter({ windowMs = 60000, max = 120, message = 'Too many requests, please try again later.' }) {
+  return (req, res, next) => {
+    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || 'unknown';
+    const now = Date.now();
+    const timestamps = (rateLimitMap.get(ip) || []).filter(t => now - t < windowMs);
+    if (timestamps.length >= max) {
+      res.setHeader('Retry-After', Math.ceil(windowMs / 1000));
+      return res.status(429).json({ success: false, error: message });
+    }
+    timestamps.push(now);
+    rateLimitMap.set(ip, timestamps);
+    next();
+  };
+}
+
+setInterval(() => {
+  const now = Date.now();
+  for (const [ip, list] of rateLimitMap.entries()) {
+    const valid = list.filter(t => now - t < 120000);
+    if (valid.length === 0) rateLimitMap.delete(ip);
+    else rateLimitMap.set(ip, valid);
+  }
+}, 60000);
+
+app.use(rateLimiter({ windowMs: 60000, max: 120 }));
+
+// Security: Input Sanitization against XSS & Injection
+function sanitizeString(str, maxLen = 500) {
+  if (typeof str !== 'string') return '';
+  return str.replace(/[<>]/g, '').trim().slice(0, maxLen);
+}
 
 // Supabase Connection
 const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://drhraerbklibrkigbdaw.supabase.co';
