@@ -1,0 +1,15 @@
+
+function isPalindrome(str) {
+    str = str.toLowerCase();
+
+    let reversed = str.split("").reverse().join("");
+
+    if (str === reversed) {
+        console.log("Palindrome");
+    } else {
+        console.log("Not a palindrome");
+    }
+}
+
+isPalindrome("madam"); // Palindrome
+isPalindrome("hello"); // Not a palindrome
