@@ -74,8 +74,9 @@ export default function NotFoundPage({ onNavigateHome, onNavigateSection }) {
         </div>
 
         {/* Footer info */}
-        <div className="text-[11px] text-slate-400 pt-2">
-          www.grainwish.com · 100% Free Smart Farming Intelligence
+        <div className="text-[11px] text-slate-400 pt-2 space-y-1">
+          <div>www.grainwish.com · 100% Free Smart Farming Intelligence</div>
+          <div>Need help? Contact <a href="mailto:support@grainwish.com" className="text-emerald-400 hover:underline">support@grainwish.com</a></div>
         </div>
 
       </div>

@@ -518,8 +518,9 @@ export default function DownloadModal({ isOpen, onClose }) {
         )}
 
         {/* Footer info */}
-        <div className="text-center text-[10px] text-slate-400 pt-2 border-t border-emerald-900/40">
-          22 Languages Supported · Low Bandwidth 2G/3G Optimized · 100% Free for Farmers
+        <div className="text-center text-[10px] text-slate-400 pt-2 border-t border-emerald-900/40 space-y-1">
+          <div>22 Languages Supported · Low Bandwidth 2G/3G Optimized · 100% Free for Farmers</div>
+          <div>Need assistance? Email <a href="mailto:support@grainwish.com" className="text-emerald-400 hover:underline">support@grainwish.com</a></div>
         </div>
 
       </div>

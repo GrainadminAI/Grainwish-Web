@@ -1,5 +1,5 @@
 import React from 'react';
-import { Smartphone, ShieldCheck, Heart, ArrowUp, Lock, FileText, Cookie } from 'lucide-react';
+import { Smartphone, ShieldCheck, Heart, ArrowUp, Lock, FileText, Cookie, Mail } from 'lucide-react';
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
 
@@ -81,6 +81,16 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
               <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
               <span>Certified AgriTech Platform · ISO 27001 Secured</span>
             </div>
+
+            <div className="pt-1">
+              <a 
+                href="mailto:support@grainwish.com" 
+                className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-950/70 border border-emerald-800/60 text-slate-200 hover:text-emerald-300 hover:border-emerald-500/60 transition-all font-medium text-xs"
+              >
+                <Mail className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>support@grainwish.com</span>
+              </a>
+            </div>
           </div>
 
           {/* Core Features */}
@@ -137,6 +147,14 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                 >
                   <Cookie className="w-3.5 h-3.5 text-amber-400" /> Cookie Preferences
                 </button>
+              </li>
+              <li>
+                <a
+                  href="mailto:support@grainwish.com"
+                  className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left text-slate-300"
+                >
+                  <Mail className="w-3.5 h-3.5 text-amber-400" /> Support: support@grainwish.com
+                </a>
               </li>
             </ul>
           </div>

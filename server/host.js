@@ -4,6 +4,11 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createClient } from '@supabase/supabase-js';
 
+// Auto-load environment variables if .env exists
+if (typeof process.loadEnvFile === 'function') {
+  try { process.loadEnvFile(); } catch (e) {}
+}
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.join(__dirname, '..');
