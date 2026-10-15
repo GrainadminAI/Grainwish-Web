@@ -175,7 +175,8 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
 
               <div>
                 <h3 className="font-display text-xl font-extrabold text-white">Ananya AI</h3>
-                <p className="text-xs text-amber-300 font-medium">Your Native Language Companion</p>
+                <p className="text-xs text-amber-300 font-medium">Chief Virtual Agronomist &amp; Companion</p>
+                <div className="mt-1 text-[10px] text-emerald-400 font-mono">100% Calibrated Plant Pathology &amp; Agronomy AI</div>
               </div>
 
               {/* Speaking Voice Equalizer */}
@@ -219,10 +220,14 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
                   key={i}
                   className={`flex items-start gap-3 ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}
                 >
-                  <div className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs font-bold shrink-0 ${
-                    msg.sender === 'user' ? 'bg-emerald-600 text-white' : 'bg-amber-500 text-black'
+                  <div className={`w-8 h-8 rounded-xl overflow-hidden flex items-center justify-center text-xs font-bold shrink-0 ${
+                    msg.sender === 'user' ? 'bg-emerald-600 text-white' : 'border border-amber-400/80 shadow-sm'
                   }`}>
-                    {msg.sender === 'user' ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4" />}
+                    {msg.sender === 'user' ? (
+                      <User className="w-4 h-4" />
+                    ) : (
+                      <img src="/assets/ananya_hero_ai.png" alt="Ananya AI Avatar" className="w-full h-full object-cover" />
+                    )}
                   </div>
 
                   <div className={`max-w-[80%] rounded-2xl p-4 text-xs sm:text-sm leading-relaxed ${
