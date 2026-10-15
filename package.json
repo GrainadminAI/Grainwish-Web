@@ -20,6 +20,7 @@
     "@react-three/drei": "^9.106.0",
     "@react-three/fiber": "^8.16.8",
     "@supabase/supabase-js": "^2.111.0",
+    "@tanstack/react-virtual": "^3.14.19",
     "@types/node": "^26.2.0",
     "canvas-confetti": "^1.9.3",
     "cors": "^2.8.6",
