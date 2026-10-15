@@ -139,7 +139,14 @@ export default function ThreeFarmCanvas() {
     <div className="w-full h-full relative">
       <Canvas
         camera={{ position: [0, 2, 7], fov: 50 }}
-        gl={{ antialias: true, alpha: true }}
+        dpr={[1, 1.5]}
+        gl={{
+          antialias: true,
+          alpha: true,
+          powerPreference: 'high-performance',
+          preserveDrawingBuffer: false,
+          failIfMajorPerformanceCaveat: false
+        }}
         className="w-full h-full"
       >
         <ambientLight intensity={0.6} />

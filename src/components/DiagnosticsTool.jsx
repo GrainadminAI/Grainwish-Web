@@ -200,10 +200,12 @@ export default function DiagnosticsTool() {
     const canvas = document.createElement('canvas');
     canvas.width = video.videoWidth || 640;
     canvas.height = video.videoHeight || 480;
-    const ctx = canvas.getContext('2d');
-    ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    const ctx = canvas.getContext('2d', { willReadFrequently: true });
+    if (ctx) {
+      ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+    }
     
-    const dataUrl = canvas.toDataURL('image/jpeg');
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
     stopWebcam();
     setUploadedImage(dataUrl);
     setInputMode('upload');
@@ -220,7 +222,8 @@ export default function DiagnosticsTool() {
       const canvas = canvasRef.current || document.createElement('canvas');
       canvas.width = 100;
       canvas.height = 100;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext('2d', { willReadFrequently: true });
+      if (!ctx) return;
       ctx.drawImage(img, 0, 0, 100, 100);
 
       try {
