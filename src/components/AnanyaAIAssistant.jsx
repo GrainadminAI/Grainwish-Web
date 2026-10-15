@@ -15,10 +15,37 @@ import {
 
 import {
   INDIAN_LOCALE_MAP,
+  VOICE_CADENCE_PRESETS,
   getIndianFemaleVoice,
   speakWithIndianFemaleVoice,
   stopIndianFemaleSpeech
 } from '../lib/ananyaVoiceEngine';
+import { SUPPORTED_LANGUAGES } from '../lib/LanguageContext';
+
+const NATIVE_ANANYA_GREETINGS = {
+  English: "Namaste! I am Ananya AI, your 24/7 ICAR-calibrated virtual agronomist. I provide actionable agronomic prescriptions, exact chemical dosages per litre, 100% bio-alternatives, live Mandi rates, and government subsidy guidance in 22 native languages.\n\nHow can I help your farm thrive today?",
+  Hindi: "नमस्ते! मैं अनन्या ए.आई. हूँ, आपकी 24/7 प्रमाणित डिजिटल कृषि विशेषज्ञ। मैं फसलों के रोग, कीटनाशक की सही प्रति लीटर मात्रा, 100% जैविक विकल्प, लाइव मंडी भाव और सरकारी योजनाओं की सटीक जानकारी प्रदान करती हूँ।\n\nआज आपकी फसल के लिए क्या सहायता कर सकती हूँ?",
+  Marathi: "नमस्कार! मी अनन्या एआय, आपली २४/७ डिजिटल कृषी सल्लागार. पिकांचे रोग, योग्य औषध फवारणी प्रमाण, सेंद्रिय उपाय आणि थेट बाजारभाव याबाबत अचूक मार्गदर्शन मी करते.\n\nआज आपल्या शेतीसाठी मी कशी मदत करू?",
+  Tamil: "வணக்கம்! நான் அனன்யா ஏஐ, உங்கள் 24 மணி நேர விவசாய ஆலோசகர். பயிர் நோய்கள், சரியான பூச்சிக்கொல்லி மருந்தளவு, இயற்கை முறைகள் மற்றும் நேரடி மண்டி விலைகள் பற்றிய துல்லியமான வழிகாட்டுதலை வழங்குகிறேன்.\n\nஇன்று உங்கள் பயிருக்கு நான் எவ்வாறு உதவ முடியும்?",
+  Telugu: "నమస్కారం! నేను అనన్య AI, మీ 24/7 డిజిటల్ వ్యవసాయ సలహాదారుని. పంట తెగుళ్లు, సరైన మందుల మోతాదులు, సేంద్రీయ పద్ధతులు మరియు లైవ్ మార్కెట్ ధరలపై ఖచ్చితమైన సలహాలు అందిస్తాను.\n\nఈరోజు మీ పంటకు ఎలా సహాయపడగలను?",
+  Punjabi: "ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਅਨੰਨਿਆ ਏ.ਆਈ. ਹਾਂ, ਤੁਹਾਡੀ 24/7 ਖੇਤੀ ਮਾਹਿਰ। ਮੈਂ ਫਸਲਾਂ ਦੀਆਂ ਬਿਮਾਰੀਆਂ, ਸਹੀ ਕੀਟਨਾਸ਼ਕ ਮਾਤਰਾ, ਜੈਵਿਕ ਖੇਤੀ ਅਤੇ ਮੰਡੀ ਭਾਵਾਂ ਬਾਰੇ ਸਹੀ ਜਾਣਕਾਰੀ ਦਿੰਦੀ ਹਾਂ।\n\nਅੱਜ ਮੈਂ ਤੁਹਾਡੀ ਖੇਤੀ ਲਈ ਕੀ ਮਦਦ ਕਰ ਸਕਦੀ ਹਾਂ?",
+  Gujarati: "નમસ્તે! હું અનન્યા એઆઈ છું, આપની 24/7 ડિજિટલ કૃષિ મિત્ર. પાક સંરક્ષણ, યોગ્ય દવાની માત્રા, જૈવિક ઉપાયો અને લાઈવ માર્કેટ યાર્ડના ભાવો અંગે સચોટ માહિતી આપું છું.\n\nઆજે આપના પાક માટે શું મદદ કરી શકું?",
+  Bengali: "নমস্কার! আমি অনন্যা এআই, আপনার ২৪/৭ ডিজিটাল কৃষি পরামর্শদাতা। ফসলের রোগ, সঠিক কীটনাশকের মাত্রা, জৈব পদ্ধতি এবং সরাসরি মান্ডি দর সম্পর্কে নির্ভরযোগ্য তথ্য দিই।\n\nআজ আপনার ফসলের জন্য কীভাবে সাহায্য করতে পারি?",
+  Kannada: "ನಮಸ್ಕಾರ! ನಾನು ಅನನ್ಯಾ ಎಐ, ನಿಮ್ಮ 24/7 ಡಿಜಿಟಲ್ ಕೃಷಿ ತಜ್ಞೆ. ಬೆಳೆ ರೋಗಗಳು, ಕೀಟನಾಶಕಗಳ ನಿಖರ ಪ್ರಮಾಣ, ಸಾವಯವ ಪದ್ಧತಿಗಳು ಮತ್ತು ಮಾರುಕಟ್ಟೆ ದರಗಳ ಬಗ್ಗೆ ಮಾಹಿತಿ ನೀಡುತ್ತೇನೆ.\n\nಇಂದು ನಿಮ್ಮ ಕೃಷಿಗೆ ನಾನು ಹೇಗೆ ಸಹಾಯ ಮಾಡಲಿ?",
+  Malayalam: "നമസ്കാരം! ഞാൻ അനന്യ എഐ, നിങ്ങളുടെ 24/7 കാർഷിക സഹായി. വിള രോഗങ്ങൾ, കീടനാശിനി അളവുകൾ, ജൈവ കൃഷി രീതികൾ, ലൈവ് മാർക്കറ്റ് വിലകൾ എന്നിവയെക്കുറിച്ചുള്ള മാർഗ്ഗനിർദ്ദേശം ഞാൻ നൽകുന്നു.\n\nഇന്ന് നിങ്ങളുടെ കൃഷിക്ക് എനിക്ക് എന്ത് സഹಾಯം ചെയ്യാനാകും?",
+  Odia: "ନମସ୍କାର! ମୁଁ ଅନନ୍ୟା ଏଆଇ, ଆପଣଙ୍କ ୨୪/୭ ଡିଜିଟାଲ୍ କୃଷି ପରାମର୍ଶଦାତା। ଫସଲ ରୋଗ, କୀଟନାଶକର ସଠିକ୍ ମାତ୍ରା, ଜୈବିକ ଉପଚାର ଏବଂ ମଣ୍ଡି ଦର ବିଷୟରେ ସଠିକ୍ ସୂଚନା ପ୍ରଦାନ କରେ।\n\nଆଜି ଆପଣଙ୍କ ଫସଲ ପାଇଁ କିପରି ସାହାଯ୍ୟ କରିପାରିବି?",
+  Assamese: "নমস্কাৰ! মই অনন্যা এআই, আপোনাৰ ২৪/৭ ডিজিটেল কৃষি বিশেষজ্ঞ। শস্যৰ ৰোগ, কীটনাশকৰ সঠিক মাত্ৰা, জৈৱিক বিকল্প আৰু লাইভ মাণ্ডিৰ দৰ সম্পৰ্কে সঠিক তথ্য দিওঁ।\n\nআজি আপোনাৰ খেতিৰ বাবে কি সহায় কৰিব পাৰোঁ?",
+  Urdu: "نمستے! میں اننیا اے آئی ہوں، آپ کی 24 گھنٹے دستیاب زرعی ماہر۔ میں فصلوں کے امراض، ادویات کے درست تناسب، نامیاتی متبادل اور منڈی کے بھاؤ بتاتی ہوں۔\n\nآج میں آپ کی کھیتی کے لیے کیا مدد کر سکتی ہوں؟",
+  Maithili: "प्रणाम! हम अनन्या ए.आई. छी, अहाँक 24/7 डिजिटल कृषि सलाहकार। फसलक रोग, कीटनाशकक सही मात्रा, जैविक उपाय आ मंडी भावक सटीक जानकारी दय छी।",
+  Santali: "ᱡᱚᱦᱟᱨ! ᱤᱧ ᱫᱚ ᱚᱱᱚᱱᱭᱟ ᱮ.ᱟᱭᱤ, ᱟᱯᱮᱭᱟᱜ ᱒᱔/᱗ ᱪᱟᱥᱵᱟᱥ ᱜᱚᱲᱚᱭᱤᱡ। ᱪᱟᱥ ᱨᱮᱱᱟᱜ ᱵᱮᱢᱟᱨ, ᱨᱟᱱ ᱨᱮᱱᱟᱜ ᱢᱟᱯ ᱟᱨ ᱡᱚᱛᱚ ᱞᱮᱠᱟᱱ ᱵᱮᱵᱚᱥᱛᱷᱟ ᱤᱧ ᱞᱟᱹᱭᱟ।",
+  Kashmiri: "سلام! بَہ چھَس اننیا اے آئی، تُہنٛز 24/7 زراعتٕچ مٲہر۔ فصَلن ہٕندؠ بیمارؠ، کیڑے مار دواہَن ہُنٛد حِساب تہٕ منڈی ہٕندؠ بھاو چھَس دِوان۔",
+  Nepali: "नमस्ते! म अनन्या ए.आई. हुँ, तपाईँको २४/७ डिजिटल कृषि सल्लाहकार। बालीनालीका रोगहरू, विषादीको सही मात्रा, जैविक उपचार र बजार भाउबारे म सहयोग गर्छु।",
+  Konkani: "नमस्कार! हांव अनन्या ए.आय., तुमी २४/७ डिजिटल शेतकाम सल्लागार. पिकांचे रोग, योग्य प्रमाणांत वखदां, सेंद्रिय उपाय आनी मार्केट भावांची म्हायती दितां.",
+  Sindhi: "سلام! مان اننيا اي آءِ آهيان، توهان جي 24/7 زرعي صلاحڪار۔ فصلن جي بيمارين، دوائن جي صحيح مقدار ۽ منڊي اگهن بابت پڇو۔",
+  Dogri: "नमस्ते! मैं अनन्य ए.आई. आं, तुंदी 24/7 डिजिटल खेती सलाहकार। फसली दे रोग, कीटनाशक दी सही मात्रा ते मंडी भावै दी पूरी जानकारी दिन्नी आं।",
+  Manipuri: "খোৰুমজৰি! ঐহাক অনন্যা এ.আই.নি, নহাক্কী ২৪/৭ লৌ-উ শিং-উগী পাউতাকপী। মহৈ-মরোংগী লাইনা-শিং, হিদাক-লাংথক্কী চাং অমসুং কৈথেলগী মমলশিংগী পাউ পীরি।",
+  Sanskrit: "नमस्ते! अहम् अनन्या ए.आई., भवतः २४/७ डिजिटल-कृषि-परामर्शदात्री। सस्यरोगाणां निवारणम्, औधषाणां सम्यक् मात्रा, जैविकविकल्पाः तथा विपणिमूल्यानि अहम् उपस्थापयामि।"
+};
 
 export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedLang: propSetLang }) {
   const langContext = useLanguage();
@@ -27,10 +54,11 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
   const t = langContext.t;
 
   const [activeCategory, setActiveCategory] = useState('all');
+  const [voiceCadence, setVoiceCadence] = useState('suitable'); // 'sweet' (0.76x) | 'suitable' (0.82x) | 'standard' (0.90x)
   const [messages, setMessages] = useState([
     {
       sender: 'ananya',
-      text: "Namaste! I am Ananya AI, your 24/7 ICAR-calibrated virtual agronomist. I provide actionable agronomic prescriptions, exact chemical dosages per litre, 100% bio-alternatives, live Mandi rates, and government subsidy guidance in 22 native languages.\n\nHow can I help your farm thrive today?",
+      text: NATIVE_ANANYA_GREETINGS[selectedLang] || NATIVE_ANANYA_GREETINGS.English,
       richData: null,
       lang: selectedLang,
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
@@ -48,6 +76,22 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Synchronize Ananya AI greeting message when language changes
+  useEffect(() => {
+    setMessages(prev => {
+      if (prev.length === 1 && prev[0].sender === 'ananya') {
+        return [{
+          sender: 'ananya',
+          text: NATIVE_ANANYA_GREETINGS[selectedLang] || NATIVE_ANANYA_GREETINGS.English,
+          richData: null,
+          lang: selectedLang,
+          timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        }];
+      }
+      return prev;
+    });
+  }, [selectedLang]);
 
   // Synchronize Indian Female Voice engine with system available voices
   useEffect(() => {
@@ -69,7 +113,7 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
     };
   }, [selectedLang]);
 
-  // Text-To-Speech Synthesis using Ananya Indian Female Voice Engine
+  // Text-To-Speech Synthesis using Ananya Indian Female Voice Engine with Gentle/Suitable Cadence
   const speakText = (text, lang) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
 
@@ -79,8 +123,12 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
       return;
     }
 
+    const cadence = VOICE_CADENCE_PRESETS[voiceCadence] || VOICE_CADENCE_PRESETS.suitable;
+
     speakWithIndianFemaleVoice(text, {
       language: lang || selectedLang,
+      rate: cadence.rate,
+      pitch: cadence.pitch,
       onStart: (voiceInfo) => {
         setIsSpeaking(true);
         if (voiceInfo) setActiveVoiceInfo(voiceInfo);
@@ -98,17 +146,7 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
       return;
     }
 
-    const previewPhrases = {
-      Hindi: "नमस्ते! मैं अनन्या ए.आई. हूँ, आपकी डिजिटल कृषि विशेषज्ञ। मैं भारतीय फसलों के रोग, कीटनाशक की सही मात्रा और सरकारी योजनाओं की सटीक जानकारी प्रदान करती हूँ।",
-      Tamil: "வணக்கம்! நான் அனன்யா ஏஐ, உங்கள் 24 மணி நேர விவசாய ஆலோசகர். உங்கள் பயிர்களுக்கு தேவையான மருந்து அளவுகளை துல்லியமாக வழங்குகிறேன்.",
-      Telugu: "నమస్కారం! నేను అనన్య AI, మీ డిజిటల్ వ్యవసాయ సలహాదారుని. సరైన క్రిమిసంహారక మోతాదులు మరియు సేంద్రీయ పద్ధతులను నేను తెలియజేస్తాను.",
-      Marathi: "नमस्कार! मी अनन्या एआय, तुमची शेती मार्गदर्शक. पिकांवरील रोग नियंत्रण आणि योग्य खत व्यवस्थापनासाठी मी सदैव तत्पर आहे.",
-      Punjabi: "ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਅਨੰਨਿਆ ਏ.ਆਈ. ਹਾਂ, ਤੁਹਾਡੀ ਖੇਤੀ ਸਲਾਹਕਾਰ। ਫਸਲਾਂ ਦੀਆਂ ਬਿਮਾਰੀਆਂ ਅਤੇ ਸਹੀ ਖਾਦਾਂ ਲਈ ਮੇਰੀ ਸਲਾਹ ਲਵੋ।",
-      Gujarati: "નમસ્તે! હું અનન્યા એઆઈ છું, તમારી ડિજિટલ કૃષિ મિત્ર. પાક સંરક્ષણ અને સચોટ દવાની માત્રા માટે પૂછો.",
-      English: "Namaste! I am Ananya AI, your 24/7 ICAR-calibrated virtual agronomist. I provide exact chemical dilution rates, bio-alternatives, and live Mandi prices in 22 Indian languages."
-    };
-
-    const textToSpeak = previewPhrases[selectedLang] || previewPhrases.English;
+    const textToSpeak = NATIVE_ANANYA_GREETINGS[selectedLang] || NATIVE_ANANYA_GREETINGS.English;
     speakText(textToSpeak, selectedLang);
   };
 
@@ -362,19 +400,77 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
                     </button>
                   </div>
                 )}
+                {/* Voice Cadence / Pace Selector */}
+                <div className="pt-2 border-t border-amber-500/30 flex items-center justify-between text-[10px]">
+                  <span className="text-amber-200/80 font-bold">Speech Speed:</span>
+                  <div className="inline-flex rounded-lg bg-black/60 p-0.5 border border-emerald-800">
+                    <button
+                      onClick={() => setVoiceCadence('sweet')}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
+                        voiceCadence === 'sweet'
+                          ? 'bg-amber-400 text-black shadow-sm font-extrabold'
+                          : 'text-slate-400 hover:text-amber-300'
+                      }`}
+                      title="Gentle, sweet and relaxed speech rate (0.76x)"
+                    >
+                      Sweet (0.76x)
+                    </button>
+                    <button
+                      onClick={() => setVoiceCadence('suitable')}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
+                        voiceCadence === 'suitable'
+                          ? 'bg-emerald-500 text-black shadow-sm font-extrabold'
+                          : 'text-slate-400 hover:text-emerald-300'
+                      }`}
+                      title="Suitable, clear and comfortable speech rate (0.82x)"
+                    >
+                      Suitable (0.82x)
+                    </button>
+                    <button
+                      onClick={() => setVoiceCadence('standard')}
+                      className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
+                        voiceCadence === 'standard'
+                          ? 'bg-emerald-600 text-white shadow-sm font-extrabold'
+                          : 'text-slate-400 hover:text-slate-200'
+                      }`}
+                      title="Standard speech rate (0.90x)"
+                    >
+                      0.90x
+                    </button>
+                  </div>
+                </div>
               </div>
 
-              {/* Active Language Selector Box */}
-              <div className="bg-black/50 p-3 rounded-2xl border border-emerald-800/60 text-left space-y-1">
+              {/* Active 22-Language Selector Box - Updates Entire Page */}
+              <div className="bg-black/50 p-3 rounded-2xl border border-emerald-800/60 text-left space-y-1.5 shadow-md">
                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
-                  <span>Voice Dialect &amp; Accent</span>
-                  <span className="text-amber-400 font-mono text-[9px] bg-amber-500/20 px-1.5 py-0.5 rounded">22 Supported</span>
-                </div>
-                <div className="text-xs font-bold text-emerald-300 flex items-center justify-between">
-                  <span>{selectedLang}</span>
-                  <span className="text-[10px] text-slate-400 font-mono">
-                    {INDIAN_LOCALE_MAP[selectedLang] ? `Locale ${INDIAN_LOCALE_MAP[selectedLang]}` : 'Multi-Dialect'}
+                  <span className="flex items-center gap-1">
+                    <Globe className="w-3 h-3 text-amber-400" />
+                    <span>Language &amp; Voice Dialect</span>
                   </span>
+                  <span className="text-amber-400 font-mono text-[9px] bg-amber-500/20 px-1.5 py-0.5 rounded font-extrabold">
+                    22 Languages
+                  </span>
+                </div>
+
+                <select
+                  value={selectedLang}
+                  onChange={(e) => {
+                    const newLang = e.target.value;
+                    setSelectedLang(newLang);
+                  }}
+                  className="w-full bg-[#032012] border border-emerald-600/70 rounded-xl px-2.5 py-2 text-xs font-extrabold text-amber-300 focus:outline-none focus:border-amber-400 cursor-pointer shadow-inner"
+                >
+                  {SUPPORTED_LANGUAGES.map((lang) => (
+                    <option key={lang.code} value={lang.code} className="bg-[#032012] text-slate-100">
+                      {lang.name} ({lang.native})
+                    </option>
+                  ))}
+                </select>
+
+                <div className="text-[10px] text-slate-400 font-mono flex items-center justify-between pt-0.5">
+                  <span>BCP-47: {INDIAN_LOCALE_MAP[selectedLang] || 'en-IN'}</span>
+                  <span className="text-emerald-400 font-semibold">Entire App Synced</span>
                 </div>
               </div>
 

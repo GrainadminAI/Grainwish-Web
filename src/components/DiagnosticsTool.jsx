@@ -8,7 +8,7 @@ import {
   Sun, MessageSquare, Copy, CheckCircle, Leaf, XCircle
 } from 'lucide-react';
 import { saveDiagnosticScanToDB, recordFeatureUsageToDB, isSupabaseConfigured } from '../lib/supabase';
-import { useLanguage } from '../lib/LanguageContext';
+import { useLanguage, SUPPORTED_LANGUAGES } from '../lib/LanguageContext';
 import {
   analyzeImageBuffer,
   sampleLiveVideoFrame,
@@ -18,6 +18,11 @@ import {
   CROP_TREATMENT_GUIDE
 } from '../lib/cropVisionIntelligence';
 import { speakWithIndianFemaleVoice, stopIndianFemaleSpeech } from '../lib/ananyaVoiceEngine';
+import {
+  DIAGNOSTICS_CATEGORY_I18N,
+  CROP_NAME_I18N,
+  generateSpokenDiagnosis
+} from '../lib/diagnosticsTranslations';
 
 // Comprehensive 100% Calibrated Multi-Crop Disease Database matching User's 4 Detection Categories
 const CROP_SAMPLES = [
@@ -198,7 +203,7 @@ const CROP_SAMPLES = [
 ];
 
 export default function DiagnosticsTool() {
-  const { t } = useLanguage();
+  const { selectedLang, setSelectedLang, t } = useLanguage();
   const [selectedCrop, setSelectedCrop] = useState(CROP_SAMPLES[0]);
   const [inputMode, setInputMode] = useState('sample'); // 'sample' | 'webcam' | 'upload'
   const [viewMode, setViewMode] = useState('visual'); // 'visual' | 'thermal' | 'cellular' | 'matrix'
@@ -723,7 +728,7 @@ export default function DiagnosticsTool() {
   );
   const activeFix = selectedCrop.rightWayToFix || CROP_FIX_RECOMMENDATIONS[categoryKey] || CROP_FIX_RECOMMENDATIONS['RUST DISEASE'];
 
-  // Text-to-Speech 22-Language Voice Assistant (Ananya Indian Female Voice)
+  // Text-to-Speech 22-Language Voice Assistant (Ananya Indian Female Voice in selectedLang)
   const speakDiagnosis = () => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       if (isSpeaking) {
@@ -733,10 +738,22 @@ export default function DiagnosticsTool() {
       }
       
       const fix = activeFix;
-      const textToRead = `GrainWise AI Diagnosis confirmed 100 percent match for ${selectedCrop.crop}. Detected condition: ${selectedCrop.disease}. Category: ${categoryKey}. The right way to fix this problem: Apply ${fix.chemicalFix.sprayName}. For your ${acreage} acre land, the calculated mix is ${fix.chemicalFix.dosageFormula(acreage)}. Alternatively, for organic farming, apply ${fix.organicFix.sprayName}. Expected recovery in ${fix.recoveryDays}, protecting ${fix.yieldProtected}.`;
+      const textToRead = generateSpokenDiagnosis({
+        crop: selectedCrop.crop,
+        disease: selectedCrop.disease,
+        category: categoryKey,
+        chemicalSpray: fix.chemicalFix.sprayName,
+        dosageFormula: fix.chemicalFix.dosageFormula(acreage),
+        organicSpray: fix.organicFix.sprayName,
+        acreage: acreage,
+        recoveryDays: fix.recoveryDays,
+        language: selectedLang
+      });
       
       speakWithIndianFemaleVoice(textToRead, {
-        language: 'English',
+        language: selectedLang,
+        rate: 0.82, // gentle, sweet cadence for farmers
+        pitch: 1.06,
         onStart: () => setIsSpeaking(true),
         onEnd: () => setIsSpeaking(false),
         onError: () => setIsSpeaking(false)
@@ -895,12 +912,37 @@ export default function DiagnosticsTool() {
           </div>
           
           <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight px-1">
-            Camera-Based <span className="gradient-text-agri">AI Diagnostics 100%</span>
+            {t('diag_title', 'Camera-Based AI Diagnostics 100%')}
           </h2>
           
           <p className="text-slate-300 text-xs sm:text-base leading-relaxed max-w-2xl mx-auto px-2">
-            Point your device camera directly at any crop leaf or upload a photo to detect diseases instantly with <strong>100.0% precision</strong>. Multi-spectral RGB chlorophyll indexing, necrosis segmentation, and verified agronomic remedies.
+            {t('diag_sub', 'Point your device camera directly at any crop leaf or upload a photo to detect diseases instantly with 100.0% precision. Multi-spectral RGB chlorophyll indexing, necrosis segmentation, and verified agronomic remedies.')}
           </p>
+
+          {/* 22 Official Languages Selector directly inside Camera Diagnostics */}
+          <div className="pt-1">
+            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 bg-[#032012] border border-emerald-500/50 rounded-2xl shadow-lg">
+              <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+                <span className="text-amber-400">🌐</span>
+                <span className="hidden sm:inline">Diagnostics Language:</span>
+                <span className="sm:hidden">Language:</span>
+              </span>
+              <select
+                value={selectedLang}
+                onChange={(e) => setSelectedLang(e.target.value)}
+                className="bg-emerald-950 text-amber-300 font-extrabold border border-emerald-600 rounded-xl px-2.5 py-1 text-xs focus:outline-none focus:border-amber-400 cursor-pointer shadow-inner"
+              >
+                {SUPPORTED_LANGUAGES.map((lang) => (
+                  <option key={lang.code} value={lang.code} className="bg-[#032012] text-slate-100">
+                    {lang.name} ({lang.native})
+                  </option>
+                ))}
+              </select>
+              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded-lg border border-emerald-800 hidden md:inline">
+                22 Languages Synced
+              </span>
+            </div>
+          </div>
 
           {/* Quick Accuracy Highlights Badge */}
           <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 pt-1 text-[11px] sm:text-xs font-semibold text-emerald-300">
@@ -914,7 +956,7 @@ export default function DiagnosticsTool() {
             </div>
             <div className="flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-800/60 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl">
               <Volume2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-              <span>22 Languages Audio</span>
+              <span>22 Languages Audio ({selectedLang})</span>
             </div>
           </div>
         </div>
@@ -1013,7 +1055,7 @@ export default function DiagnosticsTool() {
                 }`}
               >
                 <span className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: cat.color }} />
-                <span>{cat.label}</span>
+                <span>{DIAGNOSTICS_CATEGORY_I18N[selectedLang]?.[cat.label] || cat.label}</span>
               </button>
             );
           })}
@@ -1885,7 +1927,7 @@ export default function DiagnosticsTool() {
                       }`}
                     >
                       {isSpeaking ? <VolumeX className="w-4 h-4 shrink-0" /> : <Volume2 className="w-4 h-4 text-amber-400 shrink-0" />}
-                      <span>{isSpeaking ? 'Stop Audio' : 'Listen 22 Langs'}</span>
+                      <span>{isSpeaking ? 'Stop Audio' : `Listen (${selectedLang})`}</span>
                     </button>
 
                     <button

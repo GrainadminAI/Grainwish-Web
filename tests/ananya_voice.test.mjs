@@ -10,7 +10,7 @@ import {
 } from '../src/lib/ananyaVoiceEngine.js';
 
 test('Ananya Voice Engine: Indian Locales & Language Coverage', async (t) => {
-  await t.test('All major Indian regional languages map to valid Indian BCP-47 locales', () => {
+  await t.test('All 22 Indian regional languages map to valid Indian BCP-47 locales', () => {
     assert.equal(INDIAN_LOCALE_MAP.English, 'en-IN');
     assert.equal(INDIAN_LOCALE_MAP.Hindi, 'hi-IN');
     assert.equal(INDIAN_LOCALE_MAP.Tamil, 'ta-IN');
@@ -19,6 +19,21 @@ test('Ananya Voice Engine: Indian Locales & Language Coverage', async (t) => {
     assert.equal(INDIAN_LOCALE_MAP.Marathi, 'mr-IN');
     assert.equal(INDIAN_LOCALE_MAP.Bengali, 'bn-IN');
     assert.equal(INDIAN_LOCALE_MAP.Gujarati, 'gu-IN');
+    assert.equal(INDIAN_LOCALE_MAP.Kannada, 'kn-IN');
+    assert.equal(INDIAN_LOCALE_MAP.Malayalam, 'ml-IN');
+    assert.equal(INDIAN_LOCALE_MAP.Odia, 'or-IN');
+    assert.equal(INDIAN_LOCALE_MAP.Assamese, 'as-IN');
+    assert.equal(INDIAN_LOCALE_MAP.Urdu, 'ur-IN');
+    assert.equal(INDIAN_LOCALE_MAP.Maithili, 'mai-IN');
+    assert.equal(INDIAN_LOCALE_MAP.Santali, 'sat-IN');
+    assert.equal(INDIAN_LOCALE_MAP.Kashmiri, 'ks-IN');
+    assert.equal(INDIAN_LOCALE_MAP.Nepali, 'ne-IN');
+    assert.equal(INDIAN_LOCALE_MAP.Konkani, 'kok-IN');
+    assert.equal(INDIAN_LOCALE_MAP.Sindhi, 'sd-IN');
+    assert.equal(INDIAN_LOCALE_MAP.Dogri, 'doi-IN');
+    assert.equal(INDIAN_LOCALE_MAP.Manipuri, 'mni-IN');
+    assert.equal(INDIAN_LOCALE_MAP.Sanskrit, 'sa-IN');
+    assert.equal(Object.keys(INDIAN_LOCALE_MAP).length, 22);
   });
 
   await t.test('Known Indian female voice list includes leading platform voices', () => {

@@ -466,7 +466,7 @@ export function getAnanyaSmartResponse(prompt = '', language = 'English') {
       isSpecific: true,
       data,
       text: plainText,
-      spokenSummary: `Namaste! For ${data.title}, apply ${data.chemicalFix.sprayName} at ${data.chemicalFix.dosagePerLiter}. Alternatively, use ${data.organicFix.sprayName}. ${data.chemicalFix.applicationTip}`
+      spokenSummary: getLocalizedSpokenSummary(data, language)
     };
   }
 
@@ -485,6 +485,61 @@ export function getAnanyaSmartResponse(prompt = '', language = 'English') {
     isSpecific: false,
     data: null,
     text: defaultText,
-    spokenSummary: `Namaste! I am Ananya AI, your 24/7 virtual agronomist. What crop or farming issue can I help you with today?`
+    spokenSummary: getLocalizedSpokenSummary(null, language)
   };
+}
+
+/**
+ * Multi-lingual spoken summary helper for regional Indian languages
+ */
+export function getLocalizedSpokenSummary(data, language = 'English') {
+  const cleanLang = language.split(' ')[0];
+
+  if (!data) {
+    const defaultGreetings = {
+      Hindi: "नमस्ते! मैं अनन्या ए.आई. हूँ, आपकी 24/7 डिजिटल कृषि विशेषज्ञ। आज आपकी फसल या खेती के लिए मैं क्या सहायता कर सकती हूँ?",
+      Marathi: "नमस्कार! मी अनन्या एआय, आपली २४/७ डिजिटल कृषी मार्गदर्शक. आज आपल्या पिकासाठी मी कशी मदत करू?",
+      Tamil: "வணக்கம்! நான் அனன்யா ஏஐ, உங்கள் 24 மணி நேர விவசாய ஆலோசகர். இன்று உங்கள் பயிருக்கு நான் எவ்வாறு உதவ முடியும்?",
+      Telugu: "నమస్కారం! నేను అనన్య AI, మీ 24/7 వ్యవసాయ సలహాదారుని. ఈరోజు మీ పంటకు ఎలా సహాయపడగలను?",
+      Punjabi: "ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਅਨੰਨਿਆ ਏ.ਆਈ. ਹਾਂ, ਤੁਹਾਡੀ 24/7 ਖੇਤੀ ਮਾਹਿਰ। ਅੱਜ ਤੁਹਾਡੀ ਫਸਲ ਲਈ ਕੀ ਮਦਦ ਕਰ ਸਕਦੀ ਹਾਂ?",
+      Gujarati: "નમસ્તે! હું અનન્યા એઆઈ છું, આપની 24/7 ડિજિટલ કૃષિ મિત્ર. આજે આપના પાક માટે શું મદદ કરી શકું?",
+      Bengali: "নমস্কার! আমি অনন্যা এআই, আপনার ২৪/৭ ডিজিটাল কৃষি পরামর্শদাতা। আজ আপনার ফসলের জন্য কীভাবে সাহায্য করতে পারি?",
+      Kannada: "ನಮಸ್ಕಾರ! ನಾನು ಅನನ್ಯಾ ಎಐ, ನಿಮ್ಮ 24/7 ಡಿಜಿಟಲ್ ಕೃಷಿ ತಜ್ಞೆ. ಇಂದು ನಿಮ್ಮ ಬೆಳೆಗೆ ನಾನು ಹೇಗೆ ಸಹಾಯ ಮಾಡಲಿ?",
+      Malayalam: "നമസ്കാരം! ഞാൻ അനന്യ എഐ, നിങ്ങളുടെ 24/7 കാർഷിക സഹായി. ഇന്ന് നിങ്ങളുടെ കൃഷിക്ക് എന്ത് സഹായം വേണം?",
+      Odia: "ନମସ୍କାର! ମୁଁ ଅନନ୍ୟା ଏଆଇ, ଆପଣଙ୍କ ୨୪/୭ କୃଷି ପରାମର୍ଶଦାତା। ଆଜି ଆପଣଙ୍କ ଫସଲ ପାଇଁ କିପରି ସାହାଯ୍ୟ କରିବି?",
+      Assamese: "নমস্কাৰ! মই অনন্যা এআই, আপোনাৰ ২৪/৭ কৃষি বিশেষজ্ঞ। আজি আপোনাৰ খেতিৰ বাবে কি সহায় কৰিব পাৰোঁ?",
+      Urdu: "نمستے! میں اننیا اے آئی ہوں۔ آج آپ کی فصل کے لیے کیا مدد کر سکتی ہوں؟",
+      English: "Namaste! I am Ananya AI, your 24/7 virtual agronomist. What crop or farming issue can I help you with today?"
+    };
+    return defaultGreetings[cleanLang] || defaultGreetings.English;
+  }
+
+  switch (cleanLang) {
+    case 'Hindi':
+      return `नमस्ते! ${data.title} के लिए, ${data.chemicalFix.sprayName} का छिड़काव ${data.chemicalFix.dosagePerLiter} की दर से करें। जैविक विकल्प के रूप में ${data.organicFix.sprayName} का उपयोग करें। ${data.chemicalFix.applicationTip}`;
+    case 'Marathi':
+      return `नमस्कार! ${data.title} या समस्येसाठी, ${data.chemicalFix.sprayName} ची ${data.chemicalFix.dosagePerLiter} या प्रमाणात फवारणी करावी. सेंद्रिय उपायासाठी ${data.organicFix.sprayName} वापरावे. ${data.chemicalFix.applicationTip}`;
+    case 'Tamil':
+      return `வணக்கம்! ${data.title} பிரச்சனைக்கு, ${data.chemicalFix.sprayName} மருந்தை ${data.chemicalFix.dosagePerLiter} என்ற அளவில் தெளிக்கவும். இயற்கை முறைக்கு ${data.organicFix.sprayName} பயன்படுத்தவும். ${data.chemicalFix.applicationTip}`;
+    case 'Telugu':
+      return `నమస్కారం! ${data.title} సమస్యకు, ${data.chemicalFix.sprayName} ను ${data.chemicalFix.dosagePerLiter} చొప్పున పిచికారీ చేయండి. సేంద్రీయ పద్ధతికి ${data.organicFix.sprayName} వాడండి. ${data.chemicalFix.applicationTip}`;
+    case 'Punjabi':
+      return `ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ! ${data.title} ਲਈ, ${data.chemicalFix.sprayName} ਦਾ ${data.chemicalFix.dosagePerLiter} ਦੀ ਦਰ ਨਾਲ ਛਿੜਕਾਅ ਕਰੋ। ਜੈਵਿਕ ਵਿਕਲਪ ਲਈ ${data.organicFix.sprayName} ਵਰਤੋ। ${data.chemicalFix.applicationTip}`;
+    case 'Gujarati':
+      return `નમસ્તે! ${data.title} ના ઉપાય માટે, ${data.chemicalFix.sprayName} નો છંટકાવ ${data.chemicalFix.dosagePerLiter} ના પ્રમાણમાં કરો. ઓર્ગેનિક ઉપચાર માટે ${data.organicFix.sprayName} વાપરો. ${data.chemicalFix.applicationTip}`;
+    case 'Bengali':
+      return `নমস্কার! ${data.title} এর জন্য, ${data.chemicalFix.sprayName} ওষুধটি ${data.chemicalFix.dosagePerLiter} হারে স্প্রে করুন। জৈব বিকল্প হিসেবে ${data.organicFix.sprayName} ব্যবহার করুন। ${data.chemicalFix.applicationTip}`;
+    case 'Kannada':
+      return `ನಮಸ್ಕಾರ! ${data.title} ಸಮಸ್ಯೆಗೆ, ${data.chemicalFix.sprayName} ಔಷಧವನ್ನು ${data.chemicalFix.dosagePerLiter} ಪ್ರಮಾಣದಲ್ಲಿ ಸಿಂಪಡಿಸಿ. ಸಾವಯವ ಪರಿಹಾರಕ್ಕೆ ${data.organicFix.sprayName} ಬಳಸಿ. ${data.chemicalFix.applicationTip}`;
+    case 'Malayalam':
+      return `നമസ്കാരം! ${data.title} പരിഹാരത്തിനായി, ${data.chemicalFix.sprayName} ${data.chemicalFix.dosagePerLiter} തോതിൽ തളിക്കുക. ജൈവ ബദലായി ${data.organicFix.sprayName} ഉപയോഗിക്കുക. ${data.chemicalFix.applicationTip}`;
+    case 'Odia':
+      return `ନମସ୍କାର! ${data.title} ସମସ୍ୟା ପାଇଁ, ${data.chemicalFix.sprayName} କୁ ${data.chemicalFix.dosagePerLiter} ହାରରେ ସ୍ପ୍ରେ କରନ୍ତୁ। ଜୈବିକ ବିକଳ୍ପ ଭାବେ ${data.organicFix.sprayName} ବ୍ୟବହାର କରନ୍ତୁ। ${data.chemicalFix.applicationTip}`;
+    case 'Assamese':
+      return `নমস্কাৰ! ${data.title} समस्याৰ বাবে, ${data.chemicalFix.sprayName} ঔষধ ${data.chemicalFix.dosagePerLiter} হাৰত স্প্ৰে কৰক। জৈৱিক বিকল্প হিচাপে ${data.organicFix.sprayName} ব্যৱহাৰ কৰক। ${data.chemicalFix.applicationTip}`;
+    case 'Urdu':
+      return `نمستے! ${data.title} کے لیے، ${data.chemicalFix.sprayName} کا چھڑکاؤ ${data.chemicalFix.dosagePerLiter} کے حساب سے کریں۔ نامیاتی متبادل کے لیے ${data.organicFix.sprayName} استعمال کریں۔ ${data.chemicalFix.applicationTip}`;
+    default:
+      return `Namaste! For ${data.title}, apply ${data.chemicalFix.sprayName} at ${data.chemicalFix.dosagePerLiter}. Alternatively, use ${data.organicFix.sprayName}. ${data.chemicalFix.applicationTip}`;
+  }
 }

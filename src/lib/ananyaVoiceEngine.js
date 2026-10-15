@@ -5,7 +5,7 @@
  * for agricultural terminology, dosages, and 22 Indian regional languages.
  */
 
-// BCP-47 Locale map for speech synthesis across supported Indian languages
+// BCP-47 Locale map for speech synthesis across all 22 supported Indian languages
 export const INDIAN_LOCALE_MAP = {
   English: 'en-IN',
   Hindi: 'hi-IN',
@@ -18,7 +18,17 @@ export const INDIAN_LOCALE_MAP = {
   Kannada: 'kn-IN',
   Malayalam: 'ml-IN',
   Odia: 'or-IN',
-  Urdu: 'ur-IN'
+  Assamese: 'as-IN',
+  Urdu: 'ur-IN',
+  Maithili: 'mai-IN',
+  Santali: 'sat-IN',
+  Kashmiri: 'ks-IN',
+  Nepali: 'ne-IN',
+  Konkani: 'kok-IN',
+  Sindhi: 'sd-IN',
+  Dogri: 'doi-IN',
+  Manipuri: 'mni-IN',
+  Sanskrit: 'sa-IN'
 };
 
 // Known female voices across platforms (Apple iOS/macOS, Google Android/Chrome, Microsoft Edge/Windows)
@@ -51,19 +61,19 @@ export function cleanAgronomyTextForSpeech(text = '') {
     .replace(/[\p{Extended_Pictographic}\p{Emoji_Presentation}*_#•]/gu, '')
     // Remove any remaining stray bullet or symbol characters
     .replace(/[•⚡🌱💡📌👉✅⚠️🧪🔬📍📊💊🌾]/gu, '')
-    // Expand Indian Currency
-    .replace(/₹\s*([0-9,]+)/g, '$1 Rupees')
-    .replace(/₹/g, 'Rupees ')
-    // Expand Metric Application Dosages
-    .replace(/(\d+(?:\.\d+)?)\s*ml\/L\b/gi, '$1 millilitres per litre of water')
-    .replace(/(\d+(?:\.\d+)?)\s*g\/L\b/gi, '$1 grams per litre of water')
-    .replace(/(\d+(?:\.\d+)?)\s*kg\/acre\b/gi, '$1 kilograms per acre')
-    .replace(/(\d+(?:\.\d+)?)\s*L\/acre\b/gi, '$1 litres per acre')
-    .replace(/(\d+(?:\.\d+)?)\s*ml\/acre\b/gi, '$1 millilitres per acre')
-    .replace(/(\d+(?:\.\d+)?)\s*g\/acre\b/gi, '$1 grams per acre')
-    .replace(/(\d+(?:\.\d+)?)\s*kg\/ha\b/gi, '$1 kilograms per hectare')
-    .replace(/(\d+(?:\.\d+)?)\s*qtl\b/gi, '$1 quintal')
-    // Expand Agricultural & Institutional Acronyms
+    // Expand Indian Currency with pleasant pause
+    .replace(/₹\s*([0-9,]+)/g, '$1 Rupees, ')
+    .replace(/₹/g, 'Rupees, ')
+    // Expand Metric Application Dosages with breath pauses
+    .replace(/(\d+(?:\.\d+)?)\s*ml\/L\b/gi, '$1 millilitres per litre of water, ')
+    .replace(/(\d+(?:\.\d+)?)\s*g\/L\b/gi, '$1 grams per litre of water, ')
+    .replace(/(\d+(?:\.\d+)?)\s*kg\/acre\b/gi, '$1 kilograms per acre, ')
+    .replace(/(\d+(?:\.\d+)?)\s*L\/acre\b/gi, '$1 litres per acre, ')
+    .replace(/(\d+(?:\.\d+)?)\s*ml\/acre\b/gi, '$1 millilitres per acre, ')
+    .replace(/(\d+(?:\.\d+)?)\s*g\/acre\b/gi, '$1 grams per acre, ')
+    .replace(/(\d+(?:\.\d+)?)\s*kg\/ha\b/gi, '$1 kilograms per hectare, ')
+    .replace(/(\d+(?:\.\d+)?)\s*qtl\b/gi, '$1 quintal, ')
+    // Expand Agricultural & Institutional Acronyms with gentle pronunciation
     .replace(/\bICAR\b/g, 'I.C.A.R.')
     .replace(/\bCIBRC\b/g, 'C.I.B.R.C.')
     .replace(/\bKVK\b/g, 'Krishi Vigyan Kendra')
@@ -78,8 +88,11 @@ export function cleanAgronomyTextForSpeech(text = '') {
     .replace(/\bPHI\b/g, 'Pre-Harvest Waiting Interval')
     .replace(/\bDAP\b/g, 'D.A.P.')
     .replace(/\bMOP\b/g, 'M.O.P.')
-    // Normalize newlines to conversational pauses
+    // Normalize punctuation & newlines into calm, conversational pauses
+    .replace(/;\s*/g, ', ')
     .replace(/\n+/g, '. ')
+    .replace(/,\s*,/g, ', ')
+    .replace(/\.\s*\./g, '. ')
     .replace(/\s+/g, ' ')
     .trim();
 }
@@ -241,6 +254,15 @@ export function stopIndianFemaleSpeech() {
 }
 
 /**
+ * Pre-calibrated gentle cadence presets for Indian rural listeners & farmers
+ */
+export const VOICE_CADENCE_PRESETS = {
+  sweet: { rate: 0.76, pitch: 1.08, label: 'Gentle & Sweet (0.76x)' },
+  suitable: { rate: 0.82, pitch: 1.06, label: 'Suitable & Clear (0.82x)' },
+  standard: { rate: 0.90, pitch: 1.04, label: 'Standard (0.90x)' }
+};
+
+/**
  * Speak text with Ananya's calibrated Indian female voice
  * 
  * @param {string} text Text to read
@@ -249,8 +271,8 @@ export function stopIndianFemaleSpeech() {
  * @param {Function} [options.onStart] Callback when speech starts
  * @param {Function} [options.onEnd] Callback when speech finishes
  * @param {Function} [options.onError] Callback on error
- * @param {number} [options.rate=0.94] Natural spoken cadence
- * @param {number} [options.pitch=1.14] Warm feminine vocal pitch
+ * @param {number} [options.rate=0.82] Natural calm spoken cadence suited for farmers
+ * @param {number} [options.pitch=1.06] Sweet, warm feminine vocal pitch
  * @param {boolean} [options.withChime=true] Play subtle arrival chime
  * @returns {SpeechSynthesisUtterance|null}
  */
@@ -265,8 +287,8 @@ export function speakWithIndianFemaleVoice(text, options = {}) {
     onStart,
     onEnd,
     onError,
-    rate = 0.94,
-    pitch = 1.14,
+    rate = 0.82,
+    pitch = 1.06,
     withChime = true
   } = options;
 
