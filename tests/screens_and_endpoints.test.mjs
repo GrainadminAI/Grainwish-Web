@@ -88,6 +88,7 @@ test('Screen Components: Verify target screens exist and are intact', async (t) 
     'FooterSection.jsx',
     'PrivacyPolicyPage.jsx',
     'TermsConditionsPage.jsx',
+    'SecurityPolicyPage.jsx',
     'NotFoundPage.jsx'
   ];
 
@@ -142,3 +143,49 @@ test('List Endpoints Baseline: Verify candidate list endpoints currently fetch w
     assert.match(serverCode, /\.from\('mandi_prices'\)\s*\.select\('\*'\)/, 'Mandi prices endpoint currently queries all records');
   });
 });
+
+// Test Suite 6: Information Security Policy & Governance Verification
+test('Security Policy: Verify SECURITY.md and SecurityPolicyPage adhere to 15-section charter', async (t) => {
+  const securityMdPath = path.join(rootDir, 'SECURITY.md');
+  const githubSecPath = path.join(rootDir, '.github', 'SECURITY.md');
+  const secPagePath = path.join(rootDir, 'src', 'components', 'SecurityPolicyPage.jsx');
+
+  await t.test('Root SECURITY.md exists and contains all 15 sections', () => {
+    assert.ok(fs.existsSync(securityMdPath), 'SECURITY.md must exist in root');
+    const content = fs.readFileSync(securityMdPath, 'utf8');
+    assert.ok(content.includes('1. Purpose'));
+    assert.ok(content.includes('2. Scope'));
+    assert.ok(content.includes('3. Access Control and Authentication'));
+    assert.ok(content.includes('4. Password and Secret Management'));
+    assert.ok(content.includes('5. Website and Application Security'));
+    assert.ok(content.includes('6. Data Protection and Privacy'));
+    assert.ok(content.includes('7. GitHub and Source Code Security'));
+    assert.ok(content.includes('8. Vercel and Cloud Infrastructure Security'));
+    assert.ok(content.includes('9. API and Third-Party Integrations'));
+    assert.ok(content.includes('10. Security Monitoring and Incident Response'));
+    assert.ok(content.includes('11. Backup and Business Continuity'));
+    assert.ok(content.includes('12. Employee and Developer Responsibilities'));
+    assert.ok(content.includes('13. Vulnerability Management'));
+    assert.ok(content.includes('14. Compliance and Policy Enforcement'));
+    assert.ok(content.includes('15. Policy Review and Approval'));
+  });
+
+  await t.test('.github/SECURITY.md exists for GitHub security advisories', () => {
+    assert.ok(fs.existsSync(githubSecPath), '.github/SECURITY.md must exist');
+    const content = fs.readFileSync(githubSecPath, 'utf8');
+    assert.ok(content.includes('Reporting a Vulnerability'));
+    assert.ok(content.includes('security@grainwish.com'));
+  });
+
+  await t.test('SecurityPolicyPage.jsx has 15 sections and incident response stepper', () => {
+    assert.ok(fs.existsSync(secPagePath), 'SecurityPolicyPage.jsx must exist');
+    const content = fs.readFileSync(secPagePath, 'utf8');
+    assert.ok(content.includes('Identify'));
+    assert.ok(content.includes('Contain'));
+    assert.ok(content.includes('Investigate'));
+    assert.ok(content.includes('Recover'));
+    assert.ok(content.includes('Notify'));
+    assert.ok(content.includes('Review'));
+  });
+});
+

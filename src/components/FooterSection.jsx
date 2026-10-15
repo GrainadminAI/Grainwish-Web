@@ -3,7 +3,7 @@ import { Smartphone, ShieldCheck, Heart, ArrowUp, Lock, FileText, Cookie, Mail }
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
 
-export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms }) {
+export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy }) {
   const { t } = useLanguage();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -137,6 +137,15 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left"
                 >
                   <FileText className="w-3.5 h-3.5 text-amber-400" /> Terms &amp; Conditions
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={onOpenSecurityPolicy}
+                  className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left text-slate-300"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" /> Security Policy &amp; Charter
                 </button>
               </li>
               <li>

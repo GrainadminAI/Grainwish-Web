@@ -16,11 +16,12 @@ import CookieConsentBanner from './components/CookieConsentBanner';
 import FloatingMobileBar from './components/FloatingMobileBar';
 import PrivacyPolicyPage from './components/PrivacyPolicyPage';
 import TermsConditionsPage from './components/TermsConditionsPage';
+import SecurityPolicyPage from './components/SecurityPolicyPage';
 import NotFoundPage from './components/NotFoundPage';
 import { recordUserVisitToDB } from './lib/supabase';
 import { LanguageProvider, useLanguage } from './lib/LanguageContext';
 
-function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms }) {
+function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy }) {
   const { selectedLang, setSelectedLang } = useLanguage();
 
   const handleScanClick = () => {
@@ -79,6 +80,7 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
         onOpenDownloadModal={onOpenDownloadModal}
         onOpenPrivacyPolicy={onOpenPrivacyPolicy}
         onOpenTerms={onOpenTerms}
+        onOpenSecurityPolicy={onOpenSecurityPolicy}
       />
 
       {/* Mobile Sticky Quick-Action Bar */}
@@ -99,6 +101,7 @@ function RootApp() {
     const hash = window.location.hash.toLowerCase();
     if (path === '/privacy' || hash === '#privacy') return 'privacy';
     if (path === '/terms' || hash === '#terms') return 'terms';
+    if (path === '/security' || hash === '#security') return 'security';
     if (path === '/' || path === '' || path === '/index.html') return 'home';
     return '404';
   });
@@ -114,6 +117,9 @@ function RootApp() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (path === '/terms' || hash === '#terms') {
         setCurrentRoute('terms');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (path === '/security' || hash === '#security') {
+        setCurrentRoute('security');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (path === '/' || path === '' || path === '/index.html' || hash.startsWith('#')) {
         setCurrentRoute('home');
@@ -135,6 +141,7 @@ function RootApp() {
     let newPath = '/';
     if (route === 'privacy') newPath = '/privacy';
     else if (route === 'terms') newPath = '/terms';
+    else if (route === 'security') newPath = '/security';
     else if (route === '404') newPath = '/404';
 
     if (hash) newPath += hash;
@@ -159,6 +166,10 @@ function RootApp() {
         <TermsConditionsPage onBackToHome={() => navigateTo('home')} />
       )}
 
+      {currentRoute === 'security' && (
+        <SecurityPolicyPage onBackToHome={() => navigateTo('home')} />
+      )}
+
       {currentRoute === '404' && (
         <NotFoundPage
           onNavigateHome={() => navigateTo('home')}
@@ -171,6 +182,7 @@ function RootApp() {
           onOpenDownloadModal={() => setDownloadModalOpen(true)}
           onOpenPrivacyPolicy={() => navigateTo('privacy')}
           onOpenTerms={() => navigateTo('terms')}
+          onOpenSecurityPolicy={() => navigateTo('security')}
         />
       )}
 
