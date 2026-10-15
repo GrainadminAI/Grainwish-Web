@@ -1,12 +1,14 @@
 import { createClient } from '@supabase/supabase-js';
 
-let rawUrl = import.meta.env.VITE_SUPABASE_URL || '';
+let rawUrl = (typeof import.meta !== 'undefined' && import.meta?.env?.VITE_SUPABASE_URL) || 
+  (typeof process !== 'undefined' && process.env?.VITE_SUPABASE_URL) || '';
 if (rawUrl && !rawUrl.startsWith('http://') && !rawUrl.startsWith('https://')) {
   rawUrl = `https://${rawUrl}.supabase.co`;
 }
 
 const supabaseUrl = rawUrl || 'https://placeholder.supabase.co';
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
+const supabaseAnonKey = (typeof import.meta !== 'undefined' && import.meta?.env?.VITE_SUPABASE_ANON_KEY) || 
+  (typeof process !== 'undefined' && process.env?.VITE_SUPABASE_ANON_KEY) || '';
 
 export const isSupabaseConfigured = Boolean(rawUrl && supabaseAnonKey);
 
@@ -200,12 +202,25 @@ export function getSavedUserFeedback() {
  * Record User Site Visit to Supabase
  */
 export async function recordUserVisitToDB(visitInfo = {}) {
-  if (!isSupabaseConfigured) return { success: false, reason: 'unconfigured' };
+  const pagePath = visitInfo.path || (typeof window !== 'undefined' ? (window.location.pathname + (window.location.hash || '')) : '/');
+  const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
+  const referrer = typeof document !== 'undefined' ? document.referrer : '';
+
+  if (!isSupabaseConfigured) {
+    try {
+      if (typeof fetch !== 'undefined') {
+        await fetch('/api/visits/record', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: pagePath, userAgent, referrer })
+        });
+      }
+    } catch (_) {}
+    return { success: false, reason: 'unconfigured' };
+  }
+
   try {
     const user = await getLoggedInUser();
-    const pagePath = visitInfo.path || (typeof window !== 'undefined' ? window.location.pathname : '/');
-    const userAgent = typeof navigator !== 'undefined' ? navigator.userAgent : '';
-    const referrer = typeof document !== 'undefined' ? document.referrer : '';
 
     const { data, error } = await supabase
       .from('user_visits')
@@ -216,10 +231,20 @@ export async function recordUserVisitToDB(visitInfo = {}) {
         referrer: referrer
       }])
       .select();
+
     if (error) throw error;
     return { success: true, data };
   } catch (err) {
     console.warn('Supabase Record Visit Error:', err.message);
+    try {
+      if (typeof fetch !== 'undefined') {
+        await fetch('/api/visits/record', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ path: pagePath, userAgent, referrer })
+        });
+      }
+    } catch (_) {}
     return { success: false, error: err.message };
   }
 }

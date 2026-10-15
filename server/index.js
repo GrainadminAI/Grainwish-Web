@@ -250,6 +250,31 @@ app.post('/api/downloads/record', writeLimiter, async (req, res) => {
   }
 });
 
+// 5a. User Website Visit Analytics Endpoint
+app.post('/api/visits/record', async (req, res) => {
+  try {
+    const { path, userAgent, referrer, userId } = req.body || {};
+    const safePath = sanitizeString(path || '/', 255);
+    const safeUserAgent = sanitizeString(userAgent || req.headers['user-agent'] || '', 500);
+    const safeReferrer = sanitizeString(referrer || req.headers['referer'] || '', 500);
+
+    const { data, error } = await supabase
+      .from('user_visits')
+      .insert([{
+        user_id: userId || null,
+        page_path: safePath,
+        user_agent: safeUserAgent,
+        referrer: safeReferrer
+      }])
+      .select();
+
+    if (error) throw error;
+    res.json({ success: true, message: 'Visit recorded in Supabase', data });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to record visit' });
+  }
+});
+
 // 5b. Direct Mobile Phone Feedback Endpoint (Rate Limited & Sanitized)
 app.post('/api/feedback', writeLimiter, async (req, res) => {
   try {

@@ -71,10 +71,18 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
   const [copiedIndex, setCopiedIndex] = useState(null);
   const [activeVoiceInfo, setActiveVoiceInfo] = useState(() => getIndianFemaleVoice(selectedLang));
   const messagesEndRef = useRef(null);
+  const chatContainerRef = useRef(null);
 
-  // Auto-scroll chat to latest message
+  // Confine auto-scroll strictly inside the chat container ONLY when user converses (never scroll window on mount)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messages.length <= 1) return;
+
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTo({
+        top: chatContainerRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
   }, [messages]);
 
   // Synchronize Ananya AI greeting message when language changes
@@ -531,7 +539,7 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
             </div>
 
             {/* Chat Messages Stream Log */}
-            <div className="flex-1 overflow-y-auto space-y-4 pr-1.5 sm:pr-2 scrollbar-none">
+            <div ref={chatContainerRef} className="flex-1 overflow-y-auto space-y-4 pr-1.5 sm:pr-2 scrollbar-none">
               {messages.map((msg, i) => (
                 <div
                   key={i}

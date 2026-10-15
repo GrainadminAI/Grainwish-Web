@@ -167,6 +167,7 @@ DROP POLICY IF EXISTS "Allow Public Insert NPK" ON public.npk_calculations;
 DROP POLICY IF EXISTS "Allow Public Read NPK" ON public.npk_calculations;
 DROP POLICY IF EXISTS "Allow Public Insert App Downloads" ON public.app_downloads;
 DROP POLICY IF EXISTS "Allow Public Read App Downloads" ON public.app_downloads;
+DROP POLICY IF EXISTS "Users can insert their own visits" ON public.user_visits;
 DROP POLICY IF EXISTS "Allow Public Insert User Visits" ON public.user_visits;
 DROP POLICY IF EXISTS "Allow Public Read User Visits" ON public.user_visits;
 DROP POLICY IF EXISTS "Allow Public Insert Feature Usages" ON public.feature_usages;
@@ -186,7 +187,7 @@ CREATE POLICY "Allow Public Insert NPK" ON public.npk_calculations FOR INSERT WI
 CREATE POLICY "Allow Public Read NPK" ON public.npk_calculations FOR SELECT USING (true);
 CREATE POLICY "Allow Public Insert App Downloads" ON public.app_downloads FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow Public Read App Downloads" ON public.app_downloads FOR SELECT USING (true);
-CREATE POLICY "Allow Public Insert User Visits" ON public.user_visits FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow Public Insert User Visits" ON public.user_visits FOR INSERT TO public WITH CHECK ((user_id IS NULL) OR (user_id = (SELECT auth.uid())));
 CREATE POLICY "Allow Public Read User Visits" ON public.user_visits FOR SELECT USING (true);
 CREATE POLICY "Allow Public Insert Feature Usages" ON public.feature_usages FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow Public Read Feature Usages" ON public.feature_usages FOR SELECT USING (true);

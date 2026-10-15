@@ -27,3 +27,5 @@ yarn-error.log*
 *.sln
 *.sw?
 .github/
+supabase/.temp/
+skills-lock.json
