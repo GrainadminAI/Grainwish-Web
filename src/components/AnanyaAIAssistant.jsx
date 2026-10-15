@@ -13,21 +13,12 @@ import {
   getAnanyaSmartResponse
 } from '../lib/ananyaIntelligence';
 
-// BCP-47 Locale map for speech synthesis across supported Indian languages
-const LANG_LOCALE_MAP = {
-  English: 'en-IN',
-  Hindi: 'hi-IN',
-  Tamil: 'ta-IN',
-  Telugu: 'te-IN',
-  Punjabi: 'pa-IN',
-  Marathi: 'mr-IN',
-  Bengali: 'bn-IN',
-  Gujarati: 'gu-IN',
-  Kannada: 'kn-IN',
-  Malayalam: 'ml-IN',
-  Odia: 'or-IN',
-  Urdu: 'ur-IN'
-};
+import {
+  INDIAN_LOCALE_MAP,
+  getIndianFemaleVoice,
+  speakWithIndianFemaleVoice,
+  stopIndianFemaleSpeech
+} from '../lib/ananyaVoiceEngine';
 
 export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedLang: propSetLang }) {
   const langContext = useLanguage();
@@ -50,6 +41,7 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(null);
+  const [activeVoiceInfo, setActiveVoiceInfo] = useState(() => getIndianFemaleVoice(selectedLang));
   const messagesEndRef = useRef(null);
 
   // Auto-scroll chat to latest message
@@ -57,37 +49,67 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Text-To-Speech Synthesis using Web Speech API
+  // Synchronize Indian Female Voice engine with system available voices
+  useEffect(() => {
+    const refreshVoice = () => {
+      const resolved = getIndianFemaleVoice(selectedLang);
+      setActiveVoiceInfo(resolved);
+    };
+
+    refreshVoice();
+
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      window.speechSynthesis.onvoiceschanged = refreshVoice;
+    }
+
+    return () => {
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        window.speechSynthesis.onvoiceschanged = null;
+      }
+    };
+  }, [selectedLang]);
+
+  // Text-To-Speech Synthesis using Ananya Indian Female Voice Engine
   const speakText = (text, lang) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
 
     if (isSpeaking) {
-      window.speechSynthesis.cancel();
+      stopIndianFemaleSpeech();
       setIsSpeaking(false);
       return;
     }
 
-    try {
-      window.speechSynthesis.cancel();
-      const cleanText = text
-        .replace(/[*_#•⚡🌱💡📌]/g, '')
-        .replace(/\n+/g, '. ')
-        .slice(0, 450); // Concise spoken audio summary
+    speakWithIndianFemaleVoice(text, {
+      language: lang || selectedLang,
+      onStart: (voiceInfo) => {
+        setIsSpeaking(true);
+        if (voiceInfo) setActiveVoiceInfo(voiceInfo);
+      },
+      onEnd: () => setIsSpeaking(false),
+      onError: () => setIsSpeaking(false)
+    });
+  };
 
-      const utterance = new SpeechSynthesisUtterance(cleanText);
-      utterance.lang = LANG_LOCALE_MAP[lang] || 'en-IN';
-      utterance.rate = 0.95;
-      utterance.pitch = 1.05;
-
-      utterance.onstart = () => setIsSpeaking(true);
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
-
-      window.speechSynthesis.speak(utterance);
-    } catch (e) {
-      console.warn('Speech synthesis error:', e);
+  // Preview Ananya's Indian Female Voice with regional greeting
+  const handleVoicePreview = () => {
+    if (isSpeaking) {
+      stopIndianFemaleSpeech();
       setIsSpeaking(false);
+      return;
     }
+
+    const previewPhrases = {
+      Hindi: "नमस्ते! मैं अनन्या ए.आई. हूँ, आपकी डिजिटल कृषि विशेषज्ञ। मैं भारतीय फसलों के रोग, कीटनाशक की सही मात्रा और सरकारी योजनाओं की सटीक जानकारी प्रदान करती हूँ।",
+      Tamil: "வணக்கம்! நான் அனன்யா ஏஐ, உங்கள் 24 மணி நேர விவசாய ஆலோசகர். உங்கள் பயிர்களுக்கு தேவையான மருந்து அளவுகளை துல்லியமாக வழங்குகிறேன்.",
+      Telugu: "నమస్కారం! నేను అనన్య AI, మీ డిజిటల్ వ్యవసాయ సలహాదారుని. సరైన క్రిమిసంహారక మోతాదులు మరియు సేంద్రీయ పద్ధతులను నేను తెలియజేస్తాను.",
+      Marathi: "नमस्कार! मी अनन्या एआय, तुमची शेती मार्गदर्शक. पिकांवरील रोग नियंत्रण आणि योग्य खत व्यवस्थापनासाठी मी सदैव तत्पर आहे.",
+      Punjabi: "ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ! ਮੈਂ ਅਨੰਨਿਆ ਏ.ਆਈ. ਹਾਂ, ਤੁਹਾਡੀ ਖੇਤੀ ਸਲਾਹਕਾਰ। ਫਸਲਾਂ ਦੀਆਂ ਬਿਮਾਰੀਆਂ ਅਤੇ ਸਹੀ ਖਾਦਾਂ ਲਈ ਮੇਰੀ ਸਲਾਹ ਲਵੋ।",
+      Gujarati: "નમસ્તે! હું અનન્યા એઆઈ છું, તમારી ડિજિટલ કૃષિ મિત્ર. પાક સંરક્ષણ અને સચોટ દવાની માત્રા માટે પૂછો.",
+      English: "Namaste! I am Ananya AI, your 24/7 ICAR-calibrated virtual agronomist. I provide exact chemical dilution rates, bio-alternatives, and live Mandi prices in 22 Indian languages."
+    };
+
+    const textToSpeak = previewPhrases[selectedLang] || previewPhrases.English;
+    speakText(textToSpeak, selectedLang);
   };
 
   const handleSend = (customText) => {
@@ -285,37 +307,73 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
                 </div>
               </div>
 
-              {/* Voice Status Indicator / Equalizer */}
-              {isSpeaking ? (
-                <div className="p-3 bg-amber-500/15 rounded-2xl border border-amber-500/40 flex items-center justify-center gap-2 animate-pulse">
-                  <Volume2 className="w-4 h-4 text-amber-400 shrink-0" />
-                  <span className="text-xs font-bold text-amber-300">Speaking in {selectedLang}...</span>
-                  <div className="flex items-center gap-0.5 h-3.5">
-                    <span className="w-1 bg-amber-400 h-full animate-pulse" />
-                    <span className="w-1 bg-amber-400 h-1/2 animate-pulse" />
-                    <span className="w-1 bg-amber-400 h-3/4 animate-pulse" />
+              {/* Indian Female Voice Engine Card */}
+              <div className="bg-[#02180d]/90 p-3 sm:p-3.5 rounded-2xl border border-amber-500/40 text-left space-y-2.5 shadow-lg">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                    <span className="text-xs font-extrabold text-amber-300">Indian Female Voice</span>
                   </div>
+                  <span className="text-[10px] font-mono text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800/80">
+                    {activeVoiceInfo?.voiceName || 'Calibrated Indian Female'}
+                  </span>
                 </div>
-              ) : (
-                <button
-                  onClick={() => speakText(messages[messages.length - 1]?.spokenSummary || messages[messages.length - 1]?.text, selectedLang)}
-                  className="w-full p-2.5 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-700/60 text-xs font-bold text-emerald-300 flex items-center justify-center gap-2 transition-colors touch-manipulation"
-                >
-                  <Volume2 className="w-4 h-4 text-amber-400" />
-                  <span>Hear Last Answer Spoken Aloud</span>
-                </button>
-              )}
+
+                <div className="text-[11px] text-slate-300 leading-tight">
+                  Authentic Indian cadence &amp; pronunciation calibrated for agricultural terms &amp; 22 languages.
+                </div>
+
+                {/* Voice Status Indicator / Equalizer or Action Buttons */}
+                {isSpeaking ? (
+                  <div className="p-2.5 bg-amber-500/20 rounded-xl border border-amber-400/50 flex items-center justify-between gap-2 animate-pulse">
+                    <div className="flex items-center gap-2">
+                      <Volume2 className="w-4 h-4 text-amber-400 shrink-0" />
+                      <span className="text-xs font-bold text-amber-300">Speaking in {selectedLang}...</span>
+                      <div className="flex items-center gap-0.5 h-3.5">
+                        <span className="w-1 bg-amber-400 h-full animate-pulse" />
+                        <span className="w-1 bg-amber-400 h-1/2 animate-pulse" />
+                        <span className="w-1 bg-amber-400 h-3/4 animate-pulse" />
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => speakText('', selectedLang)}
+                      className="px-2.5 py-1 rounded-lg bg-amber-400 text-black font-extrabold text-[10px] hover:bg-amber-300 transition-colors shadow"
+                    >
+                      Stop
+                    </button>
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-2 gap-2">
+                    <button
+                      onClick={handleVoicePreview}
+                      className="p-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-[11px] font-bold text-amber-300 flex items-center justify-center gap-1.5 transition-all active:scale-95 touch-manipulation"
+                      title="Preview Indian Female Voice"
+                    >
+                      <Volume2 className="w-3.5 h-3.5 text-amber-400" />
+                      <span>Preview Voice</span>
+                    </button>
+                    <button
+                      onClick={() => speakText(messages[messages.length - 1]?.spokenSummary || messages[messages.length - 1]?.text, selectedLang)}
+                      className="p-2 rounded-xl bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-[11px] font-bold text-emerald-300 flex items-center justify-center gap-1.5 transition-all active:scale-95 touch-manipulation"
+                      title="Hear Last Answer Spoken Aloud"
+                    >
+                      <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+                      <span>Hear Answer</span>
+                    </button>
+                  </div>
+                )}
+              </div>
 
               {/* Active Language Selector Box */}
               <div className="bg-black/50 p-3 rounded-2xl border border-emerald-800/60 text-left space-y-1">
                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
-                  <span>Language Voice Accent</span>
+                  <span>Voice Dialect &amp; Accent</span>
                   <span className="text-amber-400 font-mono text-[9px] bg-amber-500/20 px-1.5 py-0.5 rounded">22 Supported</span>
                 </div>
                 <div className="text-xs font-bold text-emerald-300 flex items-center justify-between">
                   <span>{selectedLang}</span>
-                  <span className="text-[10px] text-slate-400 font-sans">
-                    {LANG_LOCALE_MAP[selectedLang] ? `Locale ${LANG_LOCALE_MAP[selectedLang]}` : 'Multi-Dialect'}
+                  <span className="text-[10px] text-slate-400 font-mono">
+                    {INDIAN_LOCALE_MAP[selectedLang] ? `Locale ${INDIAN_LOCALE_MAP[selectedLang]}` : 'Multi-Dialect'}
                   </span>
                 </div>
               </div>
@@ -511,11 +569,11 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
                           <div className="flex items-center gap-2">
                             <button
                               onClick={() => speakText(msg.spokenSummary || msg.text, msg.lang)}
-                              className="px-2 py-1 rounded-md bg-emerald-950 hover:bg-emerald-900 text-amber-300 flex items-center gap-1 border border-emerald-800 transition-colors"
-                              title="Listen to response"
+                              className="px-2 py-1 rounded-md bg-emerald-950 hover:bg-emerald-900 text-amber-300 flex items-center gap-1.5 border border-emerald-800 transition-colors shadow-sm"
+                              title="Listen to response in Indian Female Voice"
                             >
-                              <Volume2 className="w-3 h-3 text-amber-400" />
-                              <span>Listen in {msg.lang}</span>
+                              <Volume2 className={`w-3 h-3 text-amber-400 ${isSpeaking ? 'animate-bounce' : ''}`} />
+                              <span>{isSpeaking ? 'Stop Voice' : `Listen (${msg.lang} Indian Female)`}</span>
                             </button>
 
                             <button

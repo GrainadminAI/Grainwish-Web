@@ -17,6 +17,7 @@ import {
   CROP_FIX_RECOMMENDATIONS,
   CROP_TREATMENT_GUIDE
 } from '../lib/cropVisionIntelligence';
+import { speakWithIndianFemaleVoice, stopIndianFemaleSpeech } from '../lib/ananyaVoiceEngine';
 
 // Comprehensive 100% Calibrated Multi-Crop Disease Database matching User's 4 Detection Categories
 const CROP_SAMPLES = [
@@ -722,24 +723,24 @@ export default function DiagnosticsTool() {
   );
   const activeFix = selectedCrop.rightWayToFix || CROP_FIX_RECOMMENDATIONS[categoryKey] || CROP_FIX_RECOMMENDATIONS['RUST DISEASE'];
 
-  // Text-to-Speech 22-Language Voice Assistant
+  // Text-to-Speech 22-Language Voice Assistant (Ananya Indian Female Voice)
   const speakDiagnosis = () => {
-    if ('speechSynthesis' in window) {
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
       if (isSpeaking) {
-        window.speechSynthesis.cancel();
+        stopIndianFemaleSpeech();
         setIsSpeaking(false);
         return;
       }
       
       const fix = activeFix;
       const textToRead = `GrainWise AI Diagnosis confirmed 100 percent match for ${selectedCrop.crop}. Detected condition: ${selectedCrop.disease}. Category: ${categoryKey}. The right way to fix this problem: Apply ${fix.chemicalFix.sprayName}. For your ${acreage} acre land, the calculated mix is ${fix.chemicalFix.dosageFormula(acreage)}. Alternatively, for organic farming, apply ${fix.organicFix.sprayName}. Expected recovery in ${fix.recoveryDays}, protecting ${fix.yieldProtected}.`;
-      const utterance = new SpeechSynthesisUtterance(textToRead);
-      utterance.rate = 0.95;
-      utterance.onend = () => setIsSpeaking(false);
-      utterance.onerror = () => setIsSpeaking(false);
       
-      setIsSpeaking(true);
-      window.speechSynthesis.speak(utterance);
+      speakWithIndianFemaleVoice(textToRead, {
+        language: 'English',
+        onStart: () => setIsSpeaking(true),
+        onEnd: () => setIsSpeaking(false),
+        onError: () => setIsSpeaking(false)
+      });
     } else {
       alert('Speech synthesis is not supported on this browser.');
     }
