@@ -753,7 +753,7 @@ export default function DiagnosticsTool() {
   };
 
   return (
-    <section id="diagnostics" className="py-24 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
+    <section id="diagnostics" className="py-12 sm:py-20 lg:py-24 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
       
       {/* Offscreen Canvas for software-backed pixel analysis */}
       <canvas ref={canvasRef} className="hidden" />
@@ -772,119 +772,119 @@ export default function DiagnosticsTool() {
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[500px] bg-emerald-600/10 blur-[140px] pointer-events-none rounded-full" />
       <div className="absolute bottom-10 right-10 w-[400px] h-[400px] bg-amber-500/10 blur-[120px] pointer-events-none rounded-full" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-4xl mx-auto mb-12 space-y-4">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/90 border border-emerald-500/50 text-xs font-bold text-emerald-300 shadow-lg shadow-emerald-900/30">
-            <Cpu className="w-4 h-4 text-amber-400 animate-pulse" />
-            <span>100% Calibrated Multi-Spectral AI Pathology Vision</span>
-            <span className="bg-emerald-500 text-black px-2 py-0.5 rounded-full font-mono text-[10px] uppercase font-extrabold">v5.0 Enterprise</span>
+        <div className="text-center max-w-4xl mx-auto mb-6 sm:mb-10 lg:mb-12 space-y-3 sm:space-y-4">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-emerald-950/90 border border-emerald-500/50 text-[11px] sm:text-xs font-bold text-emerald-300 shadow-lg shadow-emerald-900/30 max-w-full">
+            <Cpu className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 animate-pulse shrink-0" />
+            <span className="hidden sm:inline">100% Calibrated Multi-Spectral AI Pathology Vision</span>
+            <span className="sm:hidden">100% Multi-Spectral AI Vision</span>
+            <span className="bg-emerald-500 text-black px-1.5 sm:px-2 py-0.5 rounded-full font-mono text-[9px] sm:text-[10px] uppercase font-extrabold shrink-0">v5.0 Enterprise</span>
           </div>
           
-          <h2 className="font-display text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight px-1">
             Camera-Based <span className="gradient-text-agri">AI Diagnostics 100%</span>
           </h2>
           
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed max-w-2xl mx-auto">
+          <p className="text-slate-300 text-xs sm:text-base leading-relaxed max-w-2xl mx-auto px-2">
             Point your device camera directly at any crop leaf or upload a photo to detect diseases instantly with <strong>100.0% precision</strong>. Multi-spectral RGB chlorophyll indexing, necrosis segmentation, and verified agronomic remedies.
           </p>
 
           {/* Quick Accuracy Highlights Badge */}
-          <div className="flex flex-wrap items-center justify-center gap-4 sm:gap-6 pt-2 text-xs font-semibold text-emerald-300">
-            <div className="flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-800/60 px-3.5 py-1.5 rounded-xl">
-              <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 pt-1 text-[11px] sm:text-xs font-semibold text-emerald-300">
+            <div className="flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-800/60 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
               <span>100.0% Strain Accuracy</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-800/60 px-3.5 py-1.5 rounded-xl">
-              <Activity className="w-4 h-4 text-amber-400" />
-              <span>Real-Time GLI &amp; VARI Indices</span>
+            <div className="flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-800/60 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl">
+              <Activity className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+              <span>Real-Time GLI &amp; VARI</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-800/60 px-3.5 py-1.5 rounded-xl">
-              <Volume2 className="w-4 h-4 text-cyan-400" />
-              <span>22 Indian Languages Audio</span>
+            <div className="flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-800/60 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl">
+              <Volume2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+              <span>22 Languages Audio</span>
             </div>
           </div>
         </div>
 
-        {/* Input Mode Selector Bar */}
-        <div className="bg-[#032012] border border-emerald-800/60 p-2 rounded-2xl max-w-3xl mx-auto mb-8 shadow-2xl flex flex-wrap items-center justify-between gap-2">
+        {/* Input Mode Selector Bar - Responsive Grid for mobile, Flex for desktop */}
+        <div className="bg-[#032012] border border-emerald-800/60 p-1.5 sm:p-2 rounded-2xl max-w-3xl mx-auto mb-5 sm:mb-8 shadow-2xl grid grid-cols-2 sm:flex sm:items-center sm:justify-center gap-1.5 sm:gap-2">
           
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            {/* Live Camera Button */}
-            <button
-              onClick={startWebcam}
-              className={`flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border ${
-                inputMode === 'webcam'
-                  ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white border-emerald-400 shadow-lg shadow-emerald-600/30'
-                  : 'bg-[#042d1b] border-emerald-800/70 text-slate-300 hover:text-white hover:border-emerald-600'
-              }`}
-            >
-              <Camera className="w-4 h-4 text-amber-400" />
-              <span>Live Phone/Webcam Camera</span>
-            </button>
+          {/* Live Camera Button */}
+          <button
+            onClick={startWebcam}
+            className={`w-full sm:w-auto px-3 sm:px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 min-h-[44px] touch-manipulation border ${
+              inputMode === 'webcam'
+                ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white border-emerald-400 shadow-lg shadow-emerald-600/30'
+                : 'bg-[#042d1b] border-emerald-800/70 text-slate-300 hover:text-white hover:border-emerald-600'
+            }`}
+          >
+            <Camera className="w-4 h-4 text-amber-400 shrink-0" />
+            <span className="sm:hidden">Live Cam</span>
+            <span className="hidden sm:inline">Live Phone/Webcam</span>
+          </button>
 
-            {/* Upload Image Button */}
-            <label
-              className={`flex-1 sm:flex-none px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 cursor-pointer border ${
-                inputMode === 'upload'
-                  ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white border-amber-400 shadow-lg'
-                  : 'bg-[#042d1b] border-emerald-800/70 text-slate-300 hover:text-white hover:border-emerald-600'
-              }`}
-            >
-              <Upload className="w-4 h-4 text-amber-400" />
-              <span>Upload Leaf Photo</span>
-              <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
-            </label>
-          </div>
+          {/* Upload Image Button */}
+          <label
+            className={`w-full sm:w-auto px-3 sm:px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 min-h-[44px] touch-manipulation cursor-pointer border ${
+              inputMode === 'upload'
+                ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white border-amber-400 shadow-lg'
+                : 'bg-[#042d1b] border-emerald-800/70 text-slate-300 hover:text-white hover:border-emerald-600'
+            }`}
+          >
+            <Upload className="w-4 h-4 text-amber-400 shrink-0" />
+            <span className="sm:hidden">Upload Photo</span>
+            <span className="hidden sm:inline">Upload Leaf Photo</span>
+            <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
+          </label>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto">
-            {/* Native Mobile Camera Button (Special for smartphones) */}
-            <button
-              onClick={() => nativeCameraInputRef.current?.click()}
-              title="Open smartphone native high-res camera"
-              className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/60 text-slate-300 flex items-center gap-1.5"
-            >
-              <Maximize2 className="w-3.5 h-3.5 text-amber-400" />
-              <span>Mobile Cam</span>
-            </button>
+          {/* Native Mobile Camera Button (Special for smartphones) */}
+          <button
+            onClick={() => nativeCameraInputRef.current?.click()}
+            title="Open smartphone native high-res camera"
+            className="w-full sm:w-auto px-3 sm:px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/60 text-slate-300 flex items-center justify-center gap-1.5 min-h-[44px] touch-manipulation"
+          >
+            <Maximize2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <span>Mobile Cam</span>
+          </button>
 
-            {/* Sample Crops Toggle */}
-            <button
-              onClick={() => {
-                stopWebcam();
-                setInputMode('sample');
-              }}
-              className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 border ${
-                inputMode === 'sample'
-                  ? 'bg-emerald-950 border-emerald-500/80 text-emerald-300'
-                  : 'bg-[#042d1b] border-emerald-800/70 text-slate-400 hover:text-white'
-              }`}
-            >
-              <Database className="w-4 h-4 text-emerald-400" />
-              <span>Sample Library</span>
-            </button>
-          </div>
+          {/* Sample Crops Toggle */}
+          <button
+            onClick={() => {
+              stopWebcam();
+              setInputMode('sample');
+            }}
+            className={`w-full sm:w-auto px-3 sm:px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 min-h-[44px] touch-manipulation border ${
+              inputMode === 'sample'
+                ? 'bg-emerald-950 border-emerald-500/80 text-emerald-300'
+                : 'bg-[#042d1b] border-emerald-800/70 text-slate-400 hover:text-white'
+            }`}
+          >
+            <Database className="w-4 h-4 text-emerald-400 shrink-0" />
+            <span className="sm:hidden">Sample Crops</span>
+            <span className="hidden sm:inline">Sample Library</span>
+          </button>
 
         </div>
 
         {/* Upload Error Alert */}
         {uploadError && (
-          <div className="max-w-xl mx-auto mb-6 p-3 bg-red-950/80 border border-red-500/80 rounded-2xl text-xs text-red-200 text-center font-semibold animate-fade-in">
+          <div className="max-w-xl mx-auto mb-5 p-3 bg-red-950/80 border border-red-500/80 rounded-2xl text-xs text-red-200 text-center font-semibold animate-fade-in">
             ⚠️ {uploadError}
           </div>
         )}
 
-        {/* Sample Crops Horizontal Selector Tabs (Shown in Sample Mode) */}
+        {/* Sample Crops Carousel (Horizontally swipeable on mobile, flex-wrap on desktop) */}
         {inputMode === 'sample' && (
-          <div className="flex flex-wrap items-center justify-center gap-2.5 mb-10 max-w-5xl mx-auto">
+          <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-6 sm:mb-8 max-w-5xl mx-auto px-1 sm:flex-wrap sm:justify-center scrollbar-none snap-x snap-mandatory">
             {CROP_SAMPLES.map((sample) => (
               <button
                 key={sample.id}
                 onClick={() => handleSelectSample(sample)}
-                className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border ${
+                className={`flex-shrink-0 snap-center px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border min-h-[40px] touch-manipulation ${
                   selectedCrop.id === sample.id
-                    ? 'bg-emerald-600 border-emerald-400 text-white shadow-lg shadow-emerald-600/30 scale-105 ring-2 ring-emerald-400/40'
+                    ? 'bg-emerald-600 border-emerald-400 text-white shadow-lg shadow-emerald-600/30 ring-2 ring-emerald-400/40'
                     : 'bg-[#042516] border-emerald-800/60 text-slate-300 hover:border-emerald-600 hover:text-white'
                 }`}
               >
@@ -898,16 +898,16 @@ export default function DiagnosticsTool() {
         )}
 
         {/* Main Work Area: Left HUD Camera Viewport & Right Diagnostic 100% Breakdown */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
           
           {/* LEFT COLUMN: Futuristic AI Scanner Frame */}
-          <div className="lg:col-span-6 flex flex-col items-center">
+          <div className="lg:col-span-6 flex flex-col items-center w-full">
             
             <div
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
-              className={`w-full max-w-lg bg-[#031e11] border-2 transition-all rounded-3xl p-4 shadow-2xl overflow-hidden relative ${
+              className={`w-full max-w-lg bg-[#031e11] border-2 transition-all rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 shadow-2xl overflow-hidden relative ${
                 isDragging
                   ? 'border-amber-400 ring-4 ring-amber-400/30 bg-[#052b19]'
                   : 'border-emerald-500/40'
@@ -915,14 +915,14 @@ export default function DiagnosticsTool() {
             >
               
               {/* TOP HUD STATUS BAR */}
-              <div className="flex items-center justify-between px-3.5 py-2 bg-emerald-950/90 rounded-xl mb-3 border border-emerald-800/60 text-xs">
-                <div className="flex items-center gap-2">
-                  <span className={`w-2.5 h-2.5 rounded-full ${isScanning ? 'bg-amber-400 animate-ping' : 'bg-emerald-400'}`} />
-                  <span className="font-bold text-emerald-200 tracking-tight">
-                    {isScanning ? '100% AI Neural Matrix Scanning...' : '100% Multi-Spectrum Sensor Active'}
+              <div className="flex items-center justify-between px-2.5 sm:px-3.5 py-1.5 sm:py-2 bg-emerald-950/90 rounded-xl mb-2.5 sm:mb-3 border border-emerald-800/60 text-xs">
+                <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
+                  <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${isScanning ? 'bg-amber-400 animate-ping' : 'bg-emerald-400'}`} />
+                  <span className="font-bold text-emerald-200 tracking-tight text-[11px] sm:text-xs truncate">
+                    {isScanning ? '100% Neural Scanning...' : '100% Sensor Active'}
                   </span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                   {torchSupported && inputMode === 'webcam' && (
                     <button
                       onClick={toggleTorch}
@@ -938,18 +938,18 @@ export default function DiagnosticsTool() {
               </div>
 
               {/* Viewport Frame with Multi-Spectrum Filters & Drag Drop Zone */}
-              <div className="relative aspect-[4/3] rounded-2xl overflow-hidden border border-emerald-500/40 bg-black group">
+              <div className="relative aspect-square sm:aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden border border-emerald-500/40 bg-black group">
                 
                 {/* 1. WEBCAM LIVE STREAM MODE */}
                 {inputMode === 'webcam' ? (
                   <div className="relative w-full h-full">
                     {cameraError ? (
-                      <div className="w-full h-full flex flex-col items-center justify-center p-6 text-center bg-red-950/40 text-red-300 text-xs space-y-3">
+                      <div className="w-full h-full flex flex-col items-center justify-center p-4 sm:p-6 text-center bg-red-950/40 text-red-300 text-xs space-y-3">
                         <AlertTriangle className="w-8 h-8 text-amber-400" />
                         <p>{cameraError}</p>
                         <button
                           onClick={() => nativeCameraInputRef.current?.click()}
-                          className="px-4 py-2 bg-amber-500 text-black font-extrabold rounded-xl text-xs shadow-lg"
+                          className="px-4 py-2 bg-amber-500 text-black font-extrabold rounded-xl text-xs shadow-lg min-h-[40px] touch-manipulation"
                         >
                           Use Smartphone Native Camera
                         </button>
@@ -964,36 +964,41 @@ export default function DiagnosticsTool() {
                           className={`w-full h-full object-cover ${viewMode === 'thermal' ? 'thermal-mode' : viewMode === 'cellular' ? 'infrared-mode' : ''}`}
                         />
                         {/* Live Crosshair Target & Alignment Guides */}
-                        <div className="absolute inset-4 border-2 border-dashed border-emerald-400/50 rounded-2xl pointer-events-none flex flex-col items-center justify-between p-3">
-                          <div className="text-[10px] font-mono text-emerald-300 bg-black/70 px-2 py-0.5 rounded backdrop-blur">
+                        <div className="absolute inset-2 sm:inset-4 border-2 border-dashed border-emerald-400/50 rounded-xl sm:rounded-2xl pointer-events-none flex flex-col items-center justify-between p-2 sm:p-3">
+                          <div className="text-[9px] sm:text-[10px] font-mono text-emerald-300 bg-black/70 px-2 py-0.5 rounded backdrop-blur">
                             CENTER LEAF IN FRAME · HOLD STEADY
                           </div>
-                          <Crosshair className="w-14 h-14 text-emerald-400/70 animate-pulse" />
-                          <div className="text-[10px] font-mono text-amber-300 bg-black/70 px-2 py-0.5 rounded backdrop-blur">
+                          <Crosshair className="w-10 h-10 sm:w-14 sm:h-14 text-emerald-400/70 animate-pulse" />
+                          <div className="text-[9px] sm:text-[10px] font-mono text-amber-300 bg-black/70 px-2 py-0.5 rounded backdrop-blur">
                             100% REAL-TIME PATHOLOGY FOCUS
                           </div>
                         </div>
 
-                        {/* Camera Controls Bar */}
-                        <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between bg-black/85 p-2 rounded-xl backdrop-blur border border-emerald-500/40 z-20">
+                        {/* Camera Controls Bar - Ergonomically designed for mobile thumbs */}
+                        <div className="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-3 flex items-center justify-between gap-1.5 sm:gap-2 bg-black/85 p-1.5 sm:p-2 rounded-xl backdrop-blur border border-emerald-500/40 z-20">
                           <button
                             onClick={toggleCameraFacing}
-                            className="p-2 bg-emerald-950 hover:bg-emerald-900 text-emerald-300 rounded-lg border border-emerald-800 text-xs font-semibold flex items-center gap-1"
+                            title="Flip camera"
+                            className="p-2 sm:px-3 sm:py-2 bg-emerald-950 hover:bg-emerald-900 text-emerald-300 rounded-lg border border-emerald-800 text-xs font-semibold flex items-center justify-center gap-1 min-w-[38px] min-h-[38px] touch-manipulation"
                           >
-                            <RotateCcw className="w-3.5 h-3.5" /> Flip
+                            <RotateCcw className="w-3.5 h-3.5 shrink-0" />
+                            <span className="hidden sm:inline">Flip</span>
                           </button>
 
                           <button
                             onClick={captureWebcamPhoto}
-                            className="px-5 py-2.5 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-400 hover:from-amber-300 hover:to-amber-300 text-black font-black rounded-xl text-xs shadow-xl flex items-center gap-2 active:scale-95 transition-transform"
+                            className="flex-1 px-3 sm:px-5 py-2 sm:py-2.5 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-400 hover:from-amber-300 hover:to-amber-300 text-black font-black rounded-xl text-xs shadow-xl flex items-center justify-center gap-1.5 sm:gap-2 active:scale-95 transition-transform min-h-[38px] touch-manipulation"
                           >
-                            <Camera className="w-4 h-4 text-black" /> Capture &amp; Scan 100%
+                            <Camera className="w-4 h-4 text-black shrink-0" />
+                            <span className="sm:hidden">Capture 100%</span>
+                            <span className="hidden sm:inline">Capture &amp; Scan 100%</span>
                           </button>
 
                           {torchSupported && (
                             <button
                               onClick={toggleTorch}
-                              className={`p-2 rounded-lg border text-xs font-semibold ${
+                              title="Toggle Torch/Flash"
+                              className={`p-2 rounded-lg border text-xs font-semibold min-w-[38px] min-h-[38px] flex items-center justify-center touch-manipulation ${
                                 torchActive ? 'bg-amber-400 text-black border-amber-300' : 'bg-emerald-950 text-slate-300 border-emerald-800'
                               }`}
                             >
@@ -1072,27 +1077,27 @@ export default function DiagnosticsTool() {
                           width: `${box.width}%`,
                           height: `${box.height}%`
                         }}
-                        className="absolute border-2 border-dashed border-amber-400 bg-amber-500/15 rounded-xl animate-pulse flex flex-col justify-between p-1.5 pointer-events-none z-10 shadow-[0_0_15px_rgba(245,158,11,0.4)]"
+                        className="absolute border-2 border-dashed border-amber-400 bg-amber-500/15 rounded-xl animate-pulse flex flex-col justify-between p-1 sm:p-1.5 pointer-events-none z-10 shadow-[0_0_15px_rgba(245,158,11,0.4)]"
                       >
-                        <span className="text-[10px] font-extrabold bg-amber-400 text-black px-1.5 py-0.5 rounded w-max shadow">
+                        <span className="text-[9px] sm:text-[10px] font-extrabold bg-amber-400 text-black px-1 sm:px-1.5 py-0.5 rounded w-max shadow truncate">
                           {box.label}
                         </span>
-                        <span className="text-[10px] font-mono font-bold text-amber-300 bg-black/90 px-1.5 py-0.5 rounded self-end border border-amber-500/40">
-                          Precision: {box.conf}
+                        <span className="text-[9px] sm:text-[10px] font-mono font-bold text-amber-300 bg-black/90 px-1 sm:px-1.5 py-0.5 rounded self-end border border-amber-500/40">
+                          {box.conf}
                         </span>
                       </div>
                     ))}
                   </>
                 )}
 
-                {/* View Mode Switching Controls Overlay */}
-                <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-20">
+                {/* View Mode Switching Controls Overlay (Comfortable touch targets) */}
+                <div className="absolute top-2.5 right-2.5 sm:top-3 sm:right-3 flex flex-col gap-1.5 z-20">
                   <button
                     onClick={() => setViewMode('visual')}
                     title="Standard Visual RGB HD"
-                    className={`p-2 rounded-xl text-xs backdrop-blur border transition-all ${
+                    className={`w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-xs backdrop-blur border transition-all touch-manipulation ${
                       viewMode === 'visual'
-                        ? 'bg-emerald-500 text-black border-emerald-300 font-bold'
+                        ? 'bg-emerald-500 text-black border-emerald-300 font-bold shadow-lg'
                         : 'bg-black/70 text-slate-300 border-emerald-900 hover:text-white'
                     }`}
                   >
@@ -1101,9 +1106,9 @@ export default function DiagnosticsTool() {
                   <button
                     onClick={() => setViewMode('thermal')}
                     title="Infrared Thermal Disease Heatmap"
-                    className={`p-2 rounded-xl text-xs backdrop-blur border transition-all ${
+                    className={`w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-xs backdrop-blur border transition-all touch-manipulation ${
                       viewMode === 'thermal'
-                        ? 'bg-amber-500 text-black border-amber-300 font-bold'
+                        ? 'bg-amber-500 text-black border-amber-300 font-bold shadow-lg'
                         : 'bg-black/70 text-slate-300 border-emerald-900 hover:text-white'
                     }`}
                   >
@@ -1112,9 +1117,9 @@ export default function DiagnosticsTool() {
                   <button
                     onClick={() => setViewMode('cellular')}
                     title="Micro-Spore Cellular View"
-                    className={`p-2 rounded-xl text-xs backdrop-blur border transition-all ${
+                    className={`w-9 h-9 sm:w-8 sm:h-8 flex items-center justify-center rounded-xl text-xs backdrop-blur border transition-all touch-manipulation ${
                       viewMode === 'cellular'
-                        ? 'bg-cyan-500 text-black border-cyan-300 font-bold'
+                        ? 'bg-cyan-500 text-black border-cyan-300 font-bold shadow-lg'
                         : 'bg-black/70 text-slate-300 border-emerald-900 hover:text-white'
                     }`}
                   >
@@ -1123,27 +1128,28 @@ export default function DiagnosticsTool() {
                 </div>
 
                 {/* Bottom Action Bar inside Viewport */}
-                <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between z-20">
+                <div className="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-3 flex items-center justify-between gap-2 z-20">
                   <button
                     onClick={() => triggerScanAnimation(selectedCrop)}
                     disabled={isScanning}
-                    className="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-lg flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-50 border border-emerald-400/40"
+                    className="px-3 sm:px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-lg flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-50 border border-emerald-400/40 min-h-[38px] touch-manipulation"
                   >
-                    <RefreshCw className={`w-3.5 h-3.5 ${isScanning ? 'animate-spin' : ''}`} />
-                    {isScanning ? '100% Analyzing...' : 'Re-Scan Leaf 100%'}
+                    <RefreshCw className={`w-3.5 h-3.5 shrink-0 ${isScanning ? 'animate-spin' : ''}`} />
+                    <span className="sm:hidden">{isScanning ? 'Analyzing...' : 'Re-Scan 100%'}</span>
+                    <span className="hidden sm:inline">{isScanning ? '100% Analyzing...' : 'Re-Scan Leaf 100%'}</span>
                   </button>
 
-                  <span className="text-[10px] text-amber-300 bg-black/85 px-3 py-1.5 rounded-xl border border-amber-500/40 backdrop-blur font-mono font-semibold">
-                    Spectrum: {viewMode.toUpperCase()}
+                  <span className="text-[10px] text-amber-300 bg-black/85 px-2.5 sm:px-3 py-1.5 rounded-xl border border-amber-500/40 backdrop-blur font-mono font-semibold shrink-0">
+                    <span className="hidden sm:inline">Spectrum: </span>{viewMode.toUpperCase()}
                   </span>
                 </div>
 
               </div>
 
               {/* Real-time Spectrum Metrics Gauge Bar */}
-              <div className="mt-4 p-3.5 rounded-2xl bg-emerald-950/70 border border-emerald-800/50 space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-slate-300 font-medium">Chlorophyll Green vs Lesion Ratio:</span>
+              <div className="mt-3 sm:mt-4 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-emerald-950/70 border border-emerald-800/50 space-y-2 text-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] sm:text-xs">
+                  <span className="text-slate-300 font-medium">Chlorophyll vs Lesion:</span>
                   <span className="text-emerald-300 font-mono font-bold">
                     Green {selectedCrop.greenChlorophyll} | Lesion {selectedCrop.lesionCoverage}
                   </span>
@@ -1163,9 +1169,9 @@ export default function DiagnosticsTool() {
                   />
                 </div>
 
-                <div className="flex items-center justify-between pt-1 text-[11px] text-slate-400">
-                  <span>GLI Index: <strong className="text-emerald-300">{realPixelMetrics.gliIndex}</strong></span>
-                  <span>VARI Index: <strong className="text-amber-300">{realPixelMetrics.variIndex}</strong></span>
+                <div className="flex items-center justify-between pt-1 text-[10px] sm:text-[11px] text-slate-400">
+                  <span className="truncate mr-2">GLI: <strong className="text-emerald-300">{realPixelMetrics.gliIndex}</strong></span>
+                  <span className="shrink-0">VARI: <strong className="text-amber-300">{realPixelMetrics.variIndex}</strong></span>
                 </div>
               </div>
 
@@ -1174,25 +1180,25 @@ export default function DiagnosticsTool() {
           </div>
 
           {/* RIGHT COLUMN: 100% Precision Diagnostic Report & Remedy Plan */}
-          <div className="lg:col-span-6 space-y-5">
+          <div className="lg:col-span-6 space-y-4 sm:space-y-5 w-full">
             
             {/* Header Card: Disease Match & 100% Confidence */}
-            <div className="p-6 rounded-3xl bg-gradient-to-br from-[#06331e] to-[#042013] border-2 border-emerald-500/50 shadow-2xl space-y-4">
+            <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#06331e] to-[#042013] border-2 border-emerald-500/50 shadow-2xl space-y-3.5 sm:space-y-4">
               
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex items-start gap-3">
-                  <div className="p-3 rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-inner mt-1">
-                    <CheckCircle2 className="w-6 h-6" />
+              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
+                <div className="flex items-start gap-2.5 sm:gap-3">
+                  <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-inner mt-0.5 shrink-0">
+                    <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
                   </div>
-                  <div>
-                    <div className="text-[11px] font-mono font-extrabold uppercase text-amber-400 tracking-wider flex items-center gap-1">
-                      <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                      100.0% VERIFIED PATHOLOGY MATCH
+                  <div className="min-w-0">
+                    <div className="text-[10px] sm:text-[11px] font-mono font-extrabold uppercase text-amber-400 tracking-wider flex items-center gap-1">
+                      <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 shrink-0" />
+                      <span>100.0% VERIFIED PATHOLOGY MATCH</span>
                     </div>
-                    <h3 className="text-xl sm:text-2xl font-extrabold text-white mt-0.5">
+                    <h3 className="text-lg sm:text-2xl font-extrabold text-white mt-0.5 break-words">
                       {selectedCrop.disease}
                     </h3>
-                    <div className="text-xs text-slate-300 mt-1 flex items-center gap-2">
+                    <div className="text-xs text-slate-300 mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
                       <span>Crop: <strong className="text-emerald-300">{selectedCrop.crop}</strong></span>
                       <span>·</span>
                       <span>Pathogen: <strong className="text-slate-200">{selectedCrop.pathogenType || 'Fungal Spore'}</strong></span>
@@ -1200,94 +1206,94 @@ export default function DiagnosticsTool() {
                   </div>
                 </div>
 
-                <div className="text-right shrink-0">
-                  <span className="inline-block px-3 py-1 bg-emerald-500/20 text-emerald-300 font-mono text-base font-extrabold rounded-xl border border-emerald-400/50 shadow-lg">
+                <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-1 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-emerald-800/40">
+                  <span className="inline-block px-2.5 sm:px-3 py-1 bg-emerald-500/20 text-emerald-300 font-mono text-sm sm:text-base font-extrabold rounded-xl border border-emerald-400/50 shadow-lg">
                     {selectedCrop.confidence}
                   </span>
-                  <div className="text-[10px] text-emerald-400 font-semibold mt-1">100% Calibrated</div>
+                  <div className="text-[10px] text-emerald-400 font-semibold">100% Calibrated</div>
                 </div>
               </div>
 
               {/* 3 Metric Chips */}
-              <div className="grid grid-cols-3 gap-2.5 text-xs pt-3 border-t border-emerald-800/60">
-                <div className="bg-emerald-950/60 p-2.5 rounded-xl border border-emerald-900/80">
-                  <div className="text-[10px] text-slate-400">Severity Status</div>
-                  <div className="text-amber-300 font-bold text-xs truncate mt-0.5">{selectedCrop.severity}</div>
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 text-xs pt-3 border-t border-emerald-800/60">
+                <div className="bg-emerald-950/60 p-2 sm:p-2.5 rounded-xl border border-emerald-900/80">
+                  <div className="text-[9px] sm:text-[10px] text-slate-400">Severity Status</div>
+                  <div className="text-amber-300 font-bold text-[11px] sm:text-xs truncate mt-0.5">{selectedCrop.severity}</div>
                 </div>
 
-                <div className="bg-emerald-950/60 p-2.5 rounded-xl border border-emerald-900/80">
-                  <div className="text-[10px] text-slate-400">Yield Protected</div>
-                  <div className="text-emerald-300 font-bold text-xs truncate mt-0.5">{selectedCrop.yieldProtected}</div>
+                <div className="bg-emerald-950/60 p-2 sm:p-2.5 rounded-xl border border-emerald-900/80">
+                  <div className="text-[9px] sm:text-[10px] text-slate-400">Yield Protected</div>
+                  <div className="text-emerald-300 font-bold text-[11px] sm:text-xs truncate mt-0.5">{selectedCrop.yieldProtected}</div>
                 </div>
 
-                <div className="bg-emerald-950/60 p-2.5 rounded-xl border border-emerald-900/80">
-                  <div className="text-[10px] text-slate-400">Recovery Time</div>
-                  <div className="text-cyan-300 font-bold text-xs truncate mt-0.5">{selectedCrop.recoveryDays}</div>
+                <div className="bg-emerald-950/60 p-2 sm:p-2.5 rounded-xl border border-emerald-900/80">
+                  <div className="text-[9px] sm:text-[10px] text-slate-400">Recovery Time</div>
+                  <div className="text-cyan-300 font-bold text-[11px] sm:text-xs truncate mt-0.5">{selectedCrop.recoveryDays}</div>
                 </div>
               </div>
 
-              {/* Voice Readout, WhatsApp & Print Controls */}
-              <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-emerald-900/50">
+              {/* Voice Readout, WhatsApp & Print Controls - Stacked grid for mobile thumbs */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-emerald-900/50">
                 <button
                   onClick={speakDiagnosis}
-                  className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border ${
+                  className={`w-full px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 border min-h-[42px] touch-manipulation ${
                     isSpeaking
                       ? 'bg-amber-500 text-black border-amber-300 animate-pulse'
                       : 'bg-emerald-900/60 hover:bg-emerald-900 text-emerald-200 border-emerald-700/60'
                   }`}
                 >
-                  {isSpeaking ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4 text-amber-400" />}
-                  <span>{isSpeaking ? 'Stop Audio' : 'Listen 22 Languages'}</span>
+                  {isSpeaking ? <VolumeX className="w-4 h-4 shrink-0" /> : <Volume2 className="w-4 h-4 text-amber-400 shrink-0" />}
+                  <span>{isSpeaking ? 'Stop Audio' : 'Listen 22 Langs'}</span>
                 </button>
 
-                <div className="flex items-center gap-2">
-                  <button
-                    onClick={handleShareWhatsApp}
-                    className="px-3.5 py-2 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold border border-emerald-500/50 shadow-md flex items-center gap-1.5 transition-colors"
-                  >
-                    <MessageSquare className="w-3.5 h-3.5 text-emerald-200" />
-                    <span>WhatsApp Share</span>
-                  </button>
+                <button
+                  onClick={handleShareWhatsApp}
+                  className="w-full px-3 py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold border border-emerald-500/50 shadow-md flex items-center justify-center gap-1.5 transition-colors min-h-[42px] touch-manipulation"
+                >
+                  <MessageSquare className="w-3.5 h-3.5 text-emerald-200 shrink-0" />
+                  <span>WhatsApp Share</span>
+                </button>
 
-                  <button
-                    onClick={handlePrintReport}
-                    className="px-3.5 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold border border-emerald-400/40 shadow-lg flex items-center gap-1.5 transition-colors"
-                  >
-                    <Printer className="w-3.5 h-3.5" />
-                    <span>PDF Report</span>
-                  </button>
-                </div>
+                <button
+                  onClick={handlePrintReport}
+                  className="w-full px-3 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold border border-emerald-400/40 shadow-lg flex items-center justify-center gap-1.5 transition-colors min-h-[42px] touch-manipulation"
+                >
+                  <Printer className="w-3.5 h-3.5 shrink-0" />
+                  <span>PDF Report</span>
+                </button>
               </div>
 
             </div>
 
             {/* Symptoms & Environmental Trigger Card */}
-            <div className="p-5 rounded-2xl bg-[#042416] border border-emerald-800/60 space-y-3 shadow-lg">
+            <div className="p-4 sm:p-5 rounded-2xl bg-[#042416] border border-emerald-800/60 space-y-2.5 sm:space-y-3 shadow-lg">
               <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-400" /> Symptoms &amp; Environmental Trigger
+                <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>Symptoms &amp; Environmental Trigger</span>
               </h4>
               
-              <div className="text-xs text-slate-200 leading-relaxed bg-emerald-950/40 p-3 rounded-xl border border-emerald-900/60">
+              <div className="text-xs text-slate-200 leading-relaxed bg-emerald-950/40 p-2.5 sm:p-3 rounded-xl border border-emerald-900/60">
                 <strong className="text-amber-300 block mb-1">Observed Symptoms:</strong>
                 {selectedCrop.symptoms}
               </div>
 
-              <div className="text-xs text-slate-300 leading-relaxed bg-emerald-950/40 p-3 rounded-xl border border-emerald-900/60">
+              <div className="text-xs text-slate-300 leading-relaxed bg-emerald-950/40 p-2.5 sm:p-3 rounded-xl border border-emerald-900/60">
                 <strong className="text-emerald-400 block mb-1">Root Environmental Trigger:</strong>
                 {selectedCrop.causes}
               </div>
             </div>
 
             {/* 100% Actionable Remedy & Acreage Dosage Calculator */}
-            <div className="p-6 rounded-3xl bg-gradient-to-r from-emerald-950 via-[#052b1b] to-emerald-950 border-2 border-emerald-500/40 space-y-4 shadow-xl">
+            <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-emerald-950 via-[#052b1b] to-emerald-950 border-2 border-emerald-500/40 space-y-3.5 sm:space-y-4 shadow-xl">
               
-              <div className="flex items-center justify-between">
-                <h4 className="text-xs font-extrabold text-emerald-300 uppercase tracking-wider flex items-center gap-2">
-                  <Pill className="w-4 h-4 text-emerald-400" /> 100% Recommended Treatment &amp; Dosage
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h4 className="text-xs font-extrabold text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
+                  <Pill className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span>100% Remedy &amp; Dosage</span>
                 </h4>
                 
-                {/* Land Acreage Input Slider */}
-                <div className="flex items-center gap-2 bg-black/60 px-3 py-1 rounded-xl border border-emerald-800">
+                {/* Land Acreage Input Slider - iOS Safari zoom safe (text-base on mobile) */}
+                <div className="flex items-center gap-2 bg-black/60 px-2.5 py-1 rounded-xl border border-emerald-800">
                   <span className="text-[11px] text-slate-400">Land Area:</span>
                   <input
                     type="number"
@@ -1296,15 +1302,15 @@ export default function DiagnosticsTool() {
                     step="0.5"
                     value={acreage}
                     onChange={(e) => setAcreage(Math.max(0.5, parseFloat(e.target.value) || 1))}
-                    className="w-12 bg-emerald-950 border border-emerald-700 text-amber-300 text-xs font-mono font-bold rounded px-1.5 py-0.5 text-center focus:outline-none focus:border-amber-400"
+                    className="w-12 bg-emerald-950 border border-emerald-700 text-amber-300 text-base sm:text-xs font-mono font-bold rounded px-1.5 py-0.5 text-center focus:outline-none focus:border-amber-400 touch-manipulation"
                   />
                   <span className="text-[11px] text-slate-300 font-semibold">Acre(s)</span>
                 </div>
               </div>
 
               {/* Chemical Treatment Box */}
-              <div className="p-3.5 bg-emerald-900/40 rounded-2xl border border-emerald-700/50 text-xs text-slate-200 space-y-1.5">
-                <div className="flex items-center justify-between">
+              <div className="p-3 sm:p-3.5 bg-emerald-900/40 rounded-2xl border border-emerald-700/50 text-xs text-slate-200 space-y-1.5">
+                <div className="flex flex-wrap items-center justify-between gap-1">
                   <strong className="text-emerald-400 font-bold">Standard Fungicide / Chemical Spray:</strong>
                   <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono font-bold">
                     For {acreage} Acre(s)
@@ -1317,13 +1323,13 @@ export default function DiagnosticsTool() {
               </div>
 
               {/* Organic / Bio Alternative */}
-              <div className="p-3.5 bg-amber-950/40 rounded-2xl border border-amber-800/50 text-xs text-slate-300 space-y-1">
+              <div className="p-3 sm:p-3.5 bg-amber-950/40 rounded-2xl border border-amber-800/50 text-xs text-slate-300 space-y-1">
                 <strong className="text-amber-300 font-bold block">100% Organic &amp; Biological Alternative:</strong>
                 <p className="leading-relaxed">{selectedCrop.organicAlternative}</p>
               </div>
 
               {/* Recovery Timeline Steps */}
-              <div className="grid grid-cols-3 gap-2 text-[11px] text-center pt-1">
+              <div className="grid grid-cols-3 gap-1.5 sm:gap-2 text-[10px] sm:text-[11px] text-center pt-1">
                 <div className="bg-emerald-950/80 p-2 rounded-xl border border-emerald-900">
                   <span className="text-amber-400 font-bold block">Day 1</span>
                   <span className="text-slate-300 text-[10px]">Isolate &amp; Spray</span>
