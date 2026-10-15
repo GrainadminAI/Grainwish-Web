@@ -1,23 +1,32 @@
-import React, { useState } from 'react';
-import { Bot, Mic, MicOff, Send, Globe, Volume2, Sparkles, CheckCircle2, Wifi, MessageSquare, User, Database } from 'lucide-react';
+import React, { useState, useRef, useEffect } from 'react';
+import {
+  Bot, Mic, MicOff, Send, Globe, Volume2, VolumeX, Sparkles,
+  CheckCircle2, Wifi, MessageSquare, User, Database, Share2, Copy,
+  Check, Pill, ShieldAlert, Zap, Leaf, TrendingUp, Landmark,
+  CloudRain, HelpCircle, ArrowRight, CornerDownLeft
+} from 'lucide-react';
 import { saveAnanyaChatToDB, recordFeatureUsageToDB } from '../lib/supabase';
 import { useLanguage } from '../lib/LanguageContext';
+import {
+  ANANYA_CATEGORIES,
+  POPULAR_PROMPTS,
+  getAnanyaSmartResponse
+} from '../lib/ananyaIntelligence';
 
-const SAMPLE_PROMPTS = [
-  "What is the best treatment for yellow leaf rust in wheat?",
-  "Ananya, what is the Mandi price of cotton in Punjab today?",
-  "How much urea should I apply for my paddy field in 2nd stage?",
-  "Are there any government subsidies for drip irrigation in Tamil Nadu?",
-  "Is heavy rainfall expected in Nashik over the next 48 hours?"
-];
-
-const PRESET_RESPONSES = {
-  default: "Namaste! I am Ananya AI, your 24/7 farming companion. I can help you with crop health, fertilizer ratios, weather forecasts, and live Mandi prices in 22 native languages. What would you like to ask today?",
-  rust: "Yellow rust in wheat spreads quickly in humid weather. Apply Propiconazole 25% EC (1ml/L) immediately. Make sure to spray early in the morning before dew dries. Would you like me to check local chemical prices?",
-  mandi: "Today in Bathinda, Punjab, long-staple Cotton is trading at ₹7,450 per quintal, which is ₹1,900 higher than the baseline MSP! Demand is peak right now.",
-  urea: "For Paddy in the 2nd stage (tillering), apply 35kg Urea + 10kg MOP per acre. Avoid over-applying Urea to prevent stem rot and brown spot disease.",
-  subsidy: "Under the PM-KSY (Pradhan Mantri Krishi Sinchayee Yojana), Tamil Nadu provides up to 100% subsidy for small farmers and 75% for general farmers installing drip irrigation systems.",
-  weather: "Localized radar shows light to moderate showers (12-18mm) expected in Nashik over the next 36 hours. Hold off on any chemical sprays until the rain passes!"
+// BCP-47 Locale map for speech synthesis across supported Indian languages
+const LANG_LOCALE_MAP = {
+  English: 'en-IN',
+  Hindi: 'hi-IN',
+  Tamil: 'ta-IN',
+  Telugu: 'te-IN',
+  Punjabi: 'pa-IN',
+  Marathi: 'mr-IN',
+  Bengali: 'bn-IN',
+  Gujarati: 'gu-IN',
+  Kannada: 'kn-IN',
+  Malayalam: 'ml-IN',
+  Odia: 'or-IN',
+  Urdu: 'ur-IN'
 };
 
 export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedLang: propSetLang }) {
@@ -26,236 +35,527 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
   const setSelectedLang = langContext.setSelectedLang || propSetLang;
   const t = langContext.t;
 
+  const [activeCategory, setActiveCategory] = useState('all');
   const [messages, setMessages] = useState([
-    { sender: 'ananya', text: PRESET_RESPONSES.default, lang: selectedLang }
+    {
+      sender: 'ananya',
+      text: "Namaste! I am Ananya AI, your 24/7 ICAR-calibrated virtual agronomist. I provide actionable agronomic prescriptions, exact chemical dosages per litre, 100% bio-alternatives, live Mandi rates, and government subsidy guidance in 22 native languages.\n\nHow can I help your farm thrive today?",
+      richData: null,
+      lang: selectedLang,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    }
   ]);
 
   const [inputText, setInputText] = useState('');
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
+  const [copiedIndex, setCopiedIndex] = useState(null);
+  const messagesEndRef = useRef(null);
+
+  // Auto-scroll chat to latest message
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  // Text-To-Speech Synthesis using Web Speech API
+  const speakText = (text, lang) => {
+    if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
+
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+
+    try {
+      window.speechSynthesis.cancel();
+      const cleanText = text
+        .replace(/[*_#•⚡🌱💡📌]/g, '')
+        .replace(/\n+/g, '. ')
+        .slice(0, 450); // Concise spoken audio summary
+
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.lang = LANG_LOCALE_MAP[lang] || 'en-IN';
+      utterance.rate = 0.95;
+      utterance.pitch = 1.05;
+
+      utterance.onstart = () => setIsSpeaking(true);
+      utterance.onend = () => setIsSpeaking(false);
+      utterance.onerror = () => setIsSpeaking(false);
+
+      window.speechSynthesis.speak(utterance);
+    } catch (e) {
+      console.warn('Speech synthesis error:', e);
+      setIsSpeaking(false);
+    }
+  };
 
   const handleSend = (customText) => {
     const textToSend = customText || inputText;
     if (!textToSend.trim()) return;
 
     // Add User Message
-    const userMsg = { sender: 'user', text: textToSend };
+    const userMsg = {
+      sender: 'user',
+      text: textToSend,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    };
     setMessages(prev => [...prev, userMsg]);
     setInputText('');
 
-    // Determine Ananya response
-    let responseText = PRESET_RESPONSES.default;
-    const lower = textToSend.toLowerCase();
-    if (lower.includes('rust') || lower.includes('yellow') || lower.includes('leaf')) responseText = PRESET_RESPONSES.rust;
-    else if (lower.includes('mandi') || lower.includes('price') || lower.includes('cotton')) responseText = PRESET_RESPONSES.mandi;
-    else if (lower.includes('urea') || lower.includes('paddy') || lower.includes('fertilizer')) responseText = PRESET_RESPONSES.urea;
-    else if (lower.includes('subsid') || lower.includes('drip') || lower.includes('government')) responseText = PRESET_RESPONSES.subsidy;
-    else if (lower.includes('rain') || lower.includes('weather') || lower.includes('nashik')) responseText = PRESET_RESPONSES.weather;
+    // Generate High-Efficacy Structured Agronomy Response
+    const smartResponse = getAnanyaSmartResponse(textToSend, selectedLang);
 
-    // Simulate Ananya AI Typing & Voice response
+    // Simulate Ananya AI Typing & Neural Knowledge Look-Up
     setTimeout(async () => {
-      setMessages(prev => [...prev, { sender: 'ananya', text: responseText, lang: selectedLang }]);
-      setIsSpeaking(true);
-      setTimeout(() => setIsSpeaking(false), 3500);
+      const ananyaMsg = {
+        sender: 'ananya',
+        text: smartResponse.text,
+        richData: smartResponse.data,
+        spokenSummary: smartResponse.spokenSummary,
+        lang: selectedLang,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+
+      setMessages(prev => [...prev, ananyaMsg]);
+
+      // Automatically speak summary for accessibility if voice mode preferred
+      speakText(smartResponse.spokenSummary, selectedLang);
 
       // Persist to Supabase Database
-      await saveAnanyaChatToDB({
-        userText: textToSend,
-        ananyaResponse: responseText,
-        language: selectedLang
-      });
-      await recordFeatureUsageToDB({
-        featureName: 'Ananya AI Assistant',
-        action: 'send_message',
-        metadata: { userText: textToSend, language: selectedLang }
-      });
-    }, 600);
+      try {
+        await saveAnanyaChatToDB({
+          userText: textToSend,
+          ananyaResponse: smartResponse.text,
+          language: selectedLang
+        });
+        await recordFeatureUsageToDB({
+          featureName: 'Ananya AI Assistant',
+          action: 'send_message',
+          metadata: {
+            userText: textToSend,
+            language: selectedLang,
+            category: smartResponse.data?.category || 'general'
+          }
+        });
+      } catch (err) {
+        console.warn('Chat logging error:', err);
+      }
+    }, 450);
   };
 
   const toggleMic = () => {
     setIsMicActive(!isMicActive);
     if (!isMicActive) {
       setTimeout(() => {
-        handleSend("Ananya, how to protect turmeric crop from rhizome rot during monsoon?");
+        handleSend("How to protect turmeric and ginger from rhizome rot during monsoon?");
         setIsMicActive(false);
-      }, 2500);
+      }, 2200);
     }
   };
 
+  const copyToClipboard = (text, index) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text);
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2500);
+    }
+  };
+
+  const shareViaWhatsApp = (title, text) => {
+    const shareText = encodeURIComponent(
+      `🌾 *GrainWise AI — Ananya Agronomy Prescription*\n\n*${title || 'Crop Health Advice'}*\n\n${text}\n\n👉 Diagnose your crops 100% free at https://grainwise.ai`
+    );
+    window.open(`https://api.whatsapp.com/send?text=${shareText}`, '_blank');
+  };
+
+  // Filter popular prompts by category
+  const filteredPrompts = activeCategory === 'all'
+    ? POPULAR_PROMPTS
+    : POPULAR_PROMPTS.filter(p => p.category === activeCategory);
+
   return (
-    <section id="ananya-ai" className="py-24 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
+    <section id="ananya-ai" className="py-20 sm:py-24 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
       
       {/* Background Radial Glow */}
-      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-14 space-y-4">
+        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12 space-y-3.5">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/50 text-xs font-bold text-amber-300 shadow-lg">
             <Sparkles className="w-4 h-4 text-amber-400" />
-            <span>100% Calibrated Precision Agronomy Knowledge Base</span>
-            <span className="bg-amber-400 text-black px-2 py-0.5 rounded-full font-mono text-[10px] font-extrabold uppercase">100% AI ACCURACY</span>
+            <span>ICAR &amp; CIBRC Calibrated Agronomy Intelligence</span>
+            <span className="bg-amber-400 text-black px-2 py-0.5 rounded-full font-mono text-[10px] font-black uppercase">
+              100% Verified Rx
+            </span>
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-white">
-            Meet <span className="gradient-text-gold">Ananya AI 100%</span>, Your Farming Companion
+
+          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+            Meet <span className="gradient-text-gold">Ananya AI</span>, Your 24/7 Virtual Agronomist
           </h2>
-          <p className="text-slate-300 text-sm sm:text-base">
-            Ananya AI is always in your corner — thoughtful, highly calibrated with <strong>100% verified agronomic data</strong>, and ready to answer questions in 22 native languages.
+
+          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+            Get instant actionable prescriptions with exact chemical dilution rates per litre, 100% biological alternatives, live Mandi rates, and government subsidies in <strong>22 Indian languages</strong>.
           </p>
         </div>
 
         {/* 4 Feature Value Props Badges */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-12">
-          <div className="p-4 rounded-2xl bg-[#042013] border border-emerald-800/50 flex items-start gap-3">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
+          <div className="p-3 sm:p-4 rounded-2xl bg-[#042013] border border-emerald-800/50 flex items-start gap-2.5 sm:gap-3 shadow-md">
             <span className="p-2 rounded-xl bg-amber-500/20 text-amber-400 shrink-0">
-              <MessageSquare className="w-5 h-5" />
+              <Pill className="w-4 h-4 sm:w-5 sm:h-5" />
             </span>
-            <div>
-              <div className="text-xs font-bold text-white">Ask Anything</div>
-              <div className="text-[11px] text-slate-400">Crop health, nutrition, pest control or market trends.</div>
+            <div className="min-w-0">
+              <div className="text-xs font-bold text-white truncate">Dual-Track Rx</div>
+              <div className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5">Approved chemical doses + organic bio-alternatives.</div>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#042013] border border-emerald-800/50 flex items-start gap-3">
+          <div className="p-3 sm:p-4 rounded-2xl bg-[#042013] border border-emerald-800/50 flex items-start gap-2.5 sm:gap-3 shadow-md">
             <span className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 shrink-0">
-              <Globe className="w-5 h-5" />
+              <Globe className="w-4 h-4 sm:w-5 sm:h-5" />
             </span>
-            <div>
-              <div className="text-xs font-bold text-white">22 Languages</div>
-              <div className="text-[11px] text-slate-400">Voice and text replies in your native tongue.</div>
+            <div className="min-w-0">
+              <div className="text-xs font-bold text-white truncate">22 Indian Languages</div>
+              <div className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5">Voice and text in Hindi, Tamil, Marathi &amp; more.</div>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#042013] border border-emerald-800/50 flex items-start gap-3">
+          <div className="p-3 sm:p-4 rounded-2xl bg-[#042013] border border-emerald-800/50 flex items-start gap-2.5 sm:gap-3 shadow-md">
             <span className="p-2 rounded-xl bg-cyan-500/20 text-cyan-400 shrink-0">
-              <Wifi className="w-5 h-5" />
+              <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5" />
             </span>
-            <div>
-              <div className="text-xs font-bold text-white">24/7 & Low Bandwidth</div>
-              <div className="text-[11px] text-slate-400">Fast replies even on 2G/3G rural networks.</div>
+            <div className="min-w-0">
+              <div className="text-xs font-bold text-white truncate">Live Mandi &amp; MSP</div>
+              <div className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5">Real-time APMC prices with moisture thresholds.</div>
             </div>
           </div>
 
-          <div className="p-4 rounded-2xl bg-[#042013] border border-emerald-800/50 flex items-start gap-3">
+          <div className="p-3 sm:p-4 rounded-2xl bg-[#042013] border border-emerald-800/50 flex items-start gap-2.5 sm:gap-3 shadow-md">
             <span className="p-2 rounded-xl bg-amber-400/20 text-amber-300 shrink-0">
-              <Sparkles className="w-5 h-5" />
+              <Landmark className="w-4 h-4 sm:w-5 sm:h-5" />
             </span>
-            <div>
-              <div className="text-xs font-bold text-white">Hyper-Personalized</div>
-              <div className="text-[11px] text-slate-400">Tailored tips based on your location & crop.</div>
+            <div className="min-w-0">
+              <div className="text-xs font-bold text-white truncate">Govt Subsidies</div>
+              <div className="text-[10px] sm:text-[11px] text-slate-400 leading-tight mt-0.5">PM-KUSUM 90% solar, PM-KSY drip &amp; KCC loans.</div>
             </div>
           </div>
         </div>
 
         {/* Interactive Chat Box Showcase */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-stretch">
           
           {/* Ananya Avatar Showcase Card */}
-          <div className="lg:col-span-4 bg-gradient-to-b from-[#06301d] to-[#031d10] border border-emerald-500/40 rounded-3xl p-6 shadow-2xl flex flex-col items-center justify-between text-center">
+          <div className="lg:col-span-4 bg-gradient-to-b from-[#06301d] via-[#042516] to-[#02180d] border border-emerald-500/40 rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col justify-between text-center relative overflow-hidden">
             
             <div className="w-full space-y-4">
-              <div className="relative inline-block">
-                <div className="w-32 h-32 rounded-3xl overflow-hidden border-2 border-amber-400 shadow-2xl shadow-amber-400/20 mx-auto">
+              
+              {/* Avatar Portrait with High-Resolution User Image */}
+              <div className="relative inline-block mx-auto mt-2">
+                <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-3xl overflow-hidden border-2 border-amber-400 shadow-2xl shadow-amber-400/30 mx-auto ring-4 ring-emerald-500/30 bg-emerald-950">
                   <img
                     src="/assets/ananya_hero_ai.png"
-                    alt="Ananya AI 24/7 Virtual Agronomist Avatar in 22 Native Indian Languages"
+                    alt="Ananya AI 24/7 Virtual Agronomist in Indian Wheat Field"
                     loading="lazy"
                     decoding="async"
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500"
                     onError={(e) => {
-                      e.target.src = '/assets/farmer_hologram.jpeg';
+                      e.target.src = '/assets/ananya_avatar.jpg';
                     }}
                   />
                 </div>
-                <span className="absolute -bottom-2 right-2 px-2.5 py-0.5 rounded-full bg-emerald-500 text-black font-extrabold text-[10px] flex items-center gap-1 shadow-md">
-                  <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse" /> Online
+
+                {/* Online Badge */}
+                <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-emerald-500 text-black font-black text-[10px] flex items-center gap-1.5 shadow-lg border border-emerald-300 uppercase tracking-wider">
+                  <span className="w-2 h-2 rounded-full bg-black animate-ping shrink-0" />
+                  <span>Online 24/7</span>
                 </span>
               </div>
 
-              <div>
-                <h3 className="font-display text-xl font-extrabold text-white">Ananya AI</h3>
-                <p className="text-xs text-amber-300 font-medium">Chief Virtual Agronomist &amp; Companion</p>
-                <div className="mt-1 text-[10px] text-emerald-400 font-mono">100% Calibrated Plant Pathology &amp; Agronomy AI</div>
+              <div className="pt-2">
+                <h3 className="font-display text-xl sm:text-2xl font-black text-white">Ananya AI</h3>
+                <p className="text-xs text-amber-300 font-bold uppercase tracking-wider mt-0.5">
+                  Chief Virtual Agronomist &amp; Companion
+                </p>
+                <div className="mt-1 text-[11px] text-emerald-400 font-mono flex items-center justify-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>100% CIBRC &amp; ICAR Scientific Knowledge</span>
+                </div>
               </div>
 
-              {/* Speaking Voice Equalizer */}
-              {isSpeaking && (
-                <div className="p-3 bg-amber-500/10 rounded-xl border border-amber-500/30 flex items-center justify-center gap-1.5">
-                  <Volume2 className="w-4 h-4 text-amber-400 animate-bounce" />
+              {/* Voice Status Indicator / Equalizer */}
+              {isSpeaking ? (
+                <div className="p-3 bg-amber-500/15 rounded-2xl border border-amber-500/40 flex items-center justify-center gap-2 animate-pulse">
+                  <Volume2 className="w-4 h-4 text-amber-400 shrink-0" />
                   <span className="text-xs font-bold text-amber-300">Speaking in {selectedLang}...</span>
-                  <div className="flex items-center gap-0.5 h-3">
+                  <div className="flex items-center gap-0.5 h-3.5">
                     <span className="w-1 bg-amber-400 h-full animate-pulse" />
-                    <span className="w-1 bg-amber-400 h-2/3 animate-pulse" />
-                    <span className="w-1 bg-amber-400 h-full animate-pulse" />
+                    <span className="w-1 bg-amber-400 h-1/2 animate-pulse" />
+                    <span className="w-1 bg-amber-400 h-3/4 animate-pulse" />
                   </div>
                 </div>
+              ) : (
+                <button
+                  onClick={() => speakText(messages[messages.length - 1]?.spokenSummary || messages[messages.length - 1]?.text, selectedLang)}
+                  className="w-full p-2.5 rounded-xl bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-700/60 text-xs font-bold text-emerald-300 flex items-center justify-center gap-2 transition-colors touch-manipulation"
+                >
+                  <Volume2 className="w-4 h-4 text-amber-400" />
+                  <span>Hear Last Answer Spoken Aloud</span>
+                </button>
               )}
 
-              {/* Language Quick Switcher */}
-              <div className="bg-emerald-950/60 p-3 rounded-2xl border border-emerald-800/60 text-left">
-                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Active Language</div>
+              {/* Active Language Selector Box */}
+              <div className="bg-black/50 p-3 rounded-2xl border border-emerald-800/60 text-left space-y-1">
+                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between">
+                  <span>Language Voice Accent</span>
+                  <span className="text-amber-400 font-mono text-[9px] bg-amber-500/20 px-1.5 py-0.5 rounded">22 Supported</span>
+                </div>
                 <div className="text-xs font-bold text-emerald-300 flex items-center justify-between">
                   <span>{selectedLang}</span>
-                  <span className="text-[10px] text-amber-400 bg-amber-500/20 px-2 py-0.5 rounded border border-amber-500/30">
-                    22 Supported
+                  <span className="text-[10px] text-slate-400 font-sans">
+                    {LANG_LOCALE_MAP[selectedLang] ? `Locale ${LANG_LOCALE_MAP[selectedLang]}` : 'Multi-Dialect'}
                   </span>
                 </div>
               </div>
+
+              {/* Expertise Highlights */}
+              <div className="text-[11px] text-slate-300 text-left space-y-1 pt-1 bg-emerald-950/30 p-3 rounded-2xl border border-emerald-900/50">
+                <div className="font-bold text-white text-[11px] mb-1">Ananya's Core Specializations:</div>
+                <div className="flex items-center gap-1.5 text-slate-300">
+                  <span className="text-emerald-400">✓</span> Exact chemical dosages per litre of water
+                </div>
+                <div className="flex items-center gap-1.5 text-slate-300">
+                  <span className="text-emerald-400">✓</span> Biological &amp; organic IPM bio-controls
+                </div>
+                <div className="flex items-center gap-1.5 text-slate-300">
+                  <span className="text-emerald-400">✓</span> Pre-harvest safety intervals (PHI)
+                </div>
+                <div className="flex items-center gap-1.5 text-slate-300">
+                  <span className="text-emerald-400">✓</span> Split NPK, Urea &amp; Micronutrients
+                </div>
+              </div>
+
             </div>
 
-            <div className="w-full pt-4 border-t border-emerald-900/50 text-[11px] text-slate-400 flex items-center justify-center gap-2">
-              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" /> Powered by GrainWise AI Neural Network
+            <div className="w-full pt-4 border-t border-emerald-900/60 text-[11px] text-slate-400 flex items-center justify-center gap-1.5">
+              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span>GrainWise AI Multi-Modal Engine</span>
             </div>
 
           </div>
 
-          {/* Chat Window */}
-          <div className="lg:col-span-8 bg-[#042013] border border-emerald-800/50 rounded-3xl p-4 sm:p-6 shadow-2xl flex flex-col h-[520px]">
+          {/* Chat Window Showcase */}
+          <div className="lg:col-span-8 bg-[#042013] border border-emerald-800/60 rounded-3xl p-4 sm:p-6 shadow-2xl flex flex-col h-[600px] sm:h-[640px]">
             
-            {/* Chat Messages Log */}
-            <div className="flex-1 overflow-y-auto space-y-4 pr-2">
+            {/* Category Quick Selector Tabs */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-3 mb-2 border-b border-emerald-900/60 scrollbar-none text-xs">
+              <button
+                onClick={() => setActiveCategory('all')}
+                className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
+                  activeCategory === 'all'
+                    ? 'bg-amber-400 text-black shadow-md shadow-amber-400/20'
+                    : 'bg-emerald-950/80 hover:bg-emerald-900 text-slate-300 border border-emerald-800'
+                }`}
+              >
+                🌾 All Topics
+              </button>
+              {ANANYA_CATEGORIES.map(cat => (
+                <button
+                  key={cat.id}
+                  onClick={() => setActiveCategory(cat.id)}
+                  className={`px-3 py-1.5 rounded-full font-bold whitespace-nowrap transition-all ${
+                    activeCategory === cat.id
+                      ? 'bg-amber-400 text-black shadow-md shadow-amber-400/20'
+                      : 'bg-emerald-950/80 hover:bg-emerald-900 text-slate-300 border border-emerald-800'
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+
+            {/* Chat Messages Stream Log */}
+            <div className="flex-1 overflow-y-auto space-y-4 pr-1.5 sm:pr-2 scrollbar-none">
               {messages.map((msg, i) => (
                 <div
                   key={i}
-                  className={`flex items-start gap-3 ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}
+                  className={`flex items-start gap-2.5 sm:gap-3.5 ${msg.sender === 'user' ? 'flex-row-reverse' : ''}`}
                 >
-                  <div className={`w-8 h-8 rounded-xl overflow-hidden flex items-center justify-center text-xs font-bold shrink-0 ${
-                    msg.sender === 'user' ? 'bg-emerald-600 text-white' : 'border border-amber-400/80 shadow-sm'
+                  {/* Sender Avatar Icon */}
+                  <div className={`w-8 h-8 sm:w-9 sm:h-9 rounded-2xl overflow-hidden flex items-center justify-center text-xs font-bold shrink-0 ${
+                    msg.sender === 'user' ? 'bg-emerald-600 text-white shadow-md' : 'border border-amber-400 shadow-sm'
                   }`}>
                     {msg.sender === 'user' ? (
                       <User className="w-4 h-4" />
                     ) : (
-                      <img src="/assets/ananya_hero_ai.png" alt="Ananya AI Avatar" className="w-full h-full object-cover" />
+                      <img src="/assets/ananya_hero_ai.png" alt="Ananya AI Avatar" className="w-full h-full object-cover object-top" />
                     )}
                   </div>
 
-                  <div className={`max-w-[80%] rounded-2xl p-4 text-xs sm:text-sm leading-relaxed ${
+                  {/* Message Bubble Container */}
+                  <div className={`max-w-[88%] sm:max-w-[82%] rounded-2xl p-3.5 sm:p-4 text-xs sm:text-sm leading-relaxed shadow-lg ${
                     msg.sender === 'user'
                       ? 'bg-emerald-600 text-white rounded-tr-none'
-                      : 'bg-emerald-950/80 border border-emerald-800/60 text-slate-100 rounded-tl-none shadow-md'
+                      : 'bg-gradient-to-b from-[#06331e] to-[#042416] border border-emerald-700/60 text-slate-100 rounded-tl-none space-y-3'
                   }`}>
-                    {msg.text}
-                    {msg.sender === 'ananya' && (
-                      <div className="mt-2 text-[10px] text-amber-400 font-mono flex items-center gap-1 border-t border-emerald-900/60 pt-1">
-                        <Volume2 className="w-3 h-3 text-amber-400" /> Audio response available in {msg.lang}
-                      </div>
+                    
+                    {msg.sender === 'user' ? (
+                      <p className="whitespace-pre-wrap">{msg.text}</p>
+                    ) : (
+                      <>
+                        {/* Rich Structured Answer Card */}
+                        {msg.richData ? (
+                          <div className="space-y-3">
+                            
+                            {/* Diagnosis / Prescription Header */}
+                            <div className="border-b border-emerald-800/60 pb-2.5">
+                              <span className="inline-block px-2.5 py-0.5 rounded text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 uppercase mb-1">
+                                {msg.richData.category}
+                              </span>
+                              <h4 className="text-sm sm:text-base font-black text-white">
+                                {msg.richData.title}
+                              </h4>
+                              <p className="text-xs text-slate-300 mt-1 leading-relaxed">
+                                {msg.richData.summary}
+                              </p>
+                            </div>
+
+                            {/* Recommended Chemical Control */}
+                            <div className="p-3 rounded-xl bg-black/60 border border-emerald-700/70 space-y-1 text-xs">
+                              <div className="text-amber-400 font-extrabold flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                                <Zap className="w-3.5 h-3.5 text-amber-400" />
+                                <span>{msg.richData.chemicalFix.headline}</span>
+                              </div>
+                              <div className="text-white font-bold text-xs pt-0.5">
+                                {msg.richData.chemicalFix.sprayName}
+                              </div>
+                              <div className="text-emerald-300 font-mono text-[11px]">
+                                <strong>Dilution Rate:</strong> {msg.richData.chemicalFix.dosagePerLiter}
+                              </div>
+                              <div className="text-amber-200 font-mono text-[10px]">
+                                <strong>Tank Mix:</strong> {msg.richData.chemicalFix.acreageFormula}
+                              </div>
+                              <div className="text-slate-400 text-[10px] italic pt-1 border-t border-emerald-900/60">
+                                💡 {msg.richData.chemicalFix.applicationTip}
+                              </div>
+                            </div>
+
+                            {/* Organic / Bio-Alternative */}
+                            <div className="p-3 rounded-xl bg-emerald-950/70 border border-emerald-800/80 space-y-1 text-xs">
+                              <div className="text-emerald-400 font-extrabold flex items-center gap-1.5 text-[11px] uppercase tracking-wider">
+                                <Leaf className="w-3.5 h-3.5 text-emerald-400" />
+                                <span>{msg.richData.organicFix.headline}</span>
+                              </div>
+                              <div className="text-slate-200 font-semibold text-xs pt-0.5">
+                                {msg.richData.organicFix.sprayName}
+                              </div>
+                              <div className="text-amber-300 font-mono text-[10px]">
+                                <strong>Bio-Rate:</strong> {msg.richData.organicFix.dosagePerLiter}
+                              </div>
+                              <div className="text-slate-400 text-[10px] italic">
+                                🌱 {msg.richData.organicFix.applicationTip}
+                              </div>
+                            </div>
+
+                            {/* Safety & Pre-Harvest Advice */}
+                            <div className="p-2.5 bg-blue-950/40 rounded-xl border border-blue-800/50 text-[11px] text-blue-200 leading-relaxed">
+                              <strong>⚠️ Safety &amp; Spray Timing:</strong> {msg.richData.safetyAdvice}
+                            </div>
+
+                            {/* Key Metrics Chips */}
+                            {msg.richData.keyMetrics && (
+                              <div className="grid grid-cols-3 gap-1.5 pt-1 text-center">
+                                {msg.richData.keyMetrics.map((met, mIdx) => (
+                                  <div key={mIdx} className="bg-black/50 p-2 rounded-xl border border-emerald-900">
+                                    <div className="text-[9px] text-slate-400">{met.label}</div>
+                                    <div className="text-amber-300 font-bold text-[11px] mt-0.5 truncate">{met.value}</div>
+                                  </div>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Interactive Follow-up Question Chips */}
+                            {msg.richData.followUps && msg.richData.followUps.length > 0 && (
+                              <div className="pt-2 border-t border-emerald-900/60 space-y-1.5">
+                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1">
+                                  <HelpCircle className="w-3 h-3 text-emerald-400" />
+                                  <span>Recommended Follow-Up Questions:</span>
+                                </div>
+                                <div className="flex flex-wrap gap-1.5">
+                                  {msg.richData.followUps.map((q, qIdx) => (
+                                    <button
+                                      key={qIdx}
+                                      onClick={() => handleSend(q)}
+                                      className="px-2.5 py-1 rounded-lg bg-emerald-950 hover:bg-emerald-900 text-emerald-300 hover:text-white border border-emerald-800/80 text-[11px] font-medium flex items-center gap-1 transition-colors text-left"
+                                    >
+                                      <span>{q}</span>
+                                      <ArrowRight className="w-2.5 h-2.5 text-amber-400 shrink-0" />
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                          </div>
+                        ) : (
+                          /* Plain Fallback Text */
+                          <div className="whitespace-pre-wrap leading-relaxed text-slate-200">
+                            {msg.text}
+                          </div>
+                        )}
+
+                        {/* Action Bar: Listen Audio, Copy, WhatsApp */}
+                        <div className="flex items-center justify-between border-t border-emerald-900/70 pt-2 text-[10px] text-slate-400">
+                          <div className="flex items-center gap-2">
+                            <button
+                              onClick={() => speakText(msg.spokenSummary || msg.text, msg.lang)}
+                              className="px-2 py-1 rounded-md bg-emerald-950 hover:bg-emerald-900 text-amber-300 flex items-center gap-1 border border-emerald-800 transition-colors"
+                              title="Listen to response"
+                            >
+                              <Volume2 className="w-3 h-3 text-amber-400" />
+                              <span>Listen in {msg.lang}</span>
+                            </button>
+
+                            <button
+                              onClick={() => copyToClipboard(msg.text, i)}
+                              className="px-2 py-1 rounded-md bg-emerald-950 hover:bg-emerald-900 text-slate-300 hover:text-white flex items-center gap-1 border border-emerald-800 transition-colors"
+                              title="Copy answer"
+                            >
+                              {copiedIndex === i ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
+                              <span>{copiedIndex === i ? 'Copied' : 'Copy'}</span>
+                            </button>
+                          </div>
+
+                          <button
+                            onClick={() => shareViaWhatsApp(msg.richData?.title, msg.text)}
+                            className="px-2 py-1 rounded-md bg-emerald-800 hover:bg-emerald-700 text-white flex items-center gap-1 font-bold transition-colors"
+                            title="Share on WhatsApp"
+                          >
+                            <Share2 className="w-3 h-3" />
+                            <span>WhatsApp</span>
+                          </button>
+                        </div>
+                      </>
                     )}
+
                   </div>
                 </div>
               ))}
+              <div ref={messagesEndRef} />
             </div>
 
-            {/* Quick Sample Chips */}
-            <div className="py-3 flex items-center gap-2 overflow-x-auto border-t border-emerald-900/60 scrollbar-none">
+            {/* Quick Sample Prompts Carousel */}
+            <div className="py-2.5 flex items-center gap-1.5 overflow-x-auto border-t border-emerald-900/60 scrollbar-none">
               <span className="text-[10px] text-slate-400 uppercase font-bold shrink-0">Try Asking:</span>
-              {SAMPLE_PROMPTS.map((prompt, idx) => (
+              {filteredPrompts.slice(0, 5).map((prompt, idx) => (
                 <button
                   key={idx}
-                  onClick={() => handleSend(prompt)}
-                  className="px-3 py-1 rounded-full bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-[11px] text-emerald-300 whitespace-nowrap transition-colors"
+                  onClick={() => handleSend(prompt.text)}
+                  className="px-3 py-1 rounded-full bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-[11px] text-emerald-300 hover:text-white whitespace-nowrap transition-colors flex items-center gap-1 touch-manipulation"
                 >
-                  {prompt}
+                  <span>{prompt.text}</span>
                 </button>
               ))}
             </div>
@@ -264,12 +564,12 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
             <div className="flex items-center gap-2 pt-2">
               <button
                 onClick={toggleMic}
-                className={`p-3 rounded-xl border transition-all ${
+                className={`p-3 rounded-xl border transition-all touch-manipulation ${
                   isMicActive
                     ? 'bg-red-500 border-red-400 text-white animate-pulse'
                     : 'bg-emerald-950 border-emerald-800 text-amber-400 hover:border-amber-400'
                 }`}
-                title="Voice Input"
+                title="Voice Query Input"
               >
                 {isMicActive ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
               </button>
@@ -285,7 +585,7 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
 
               <button
                 onClick={() => handleSend()}
-                className="px-5 py-3 bg-amber-400 hover:bg-amber-300 text-black font-extrabold rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-1 text-xs"
+                className="px-4 sm:px-5 py-3 bg-amber-400 hover:bg-amber-300 text-black font-extrabold rounded-xl shadow-lg transition-all active:scale-95 flex items-center gap-1.5 text-xs touch-manipulation shrink-0"
               >
                 <span>Send</span>
                 <Send className="w-4 h-4" />

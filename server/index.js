@@ -167,12 +167,28 @@ app.post('/api/ananya/chat', writeLimiter, async (req, res) => {
     let responseText = "Namaste! I am Ananya AI, your 24/7 farming companion on Grainwish.com. How can I help your crops thrive today?";
     
     const lower = (cleanUserText || '').toLowerCase();
-    if (lower.includes('rust') || lower.includes('yellow') || lower.includes('leaf')) {
-      responseText = "Yellow rust in wheat spreads quickly under morning dew. Apply Propiconazole 25% EC (1ml/L) immediately.";
-    } else if (lower.includes('mandi') || lower.includes('price') || lower.includes('cotton')) {
-      responseText = "Today in Bathinda, Punjab, long-staple Cotton is trading at ₹7,450 per quintal, which is ₹1,900 higher than the baseline MSP!";
-    } else if (lower.includes('urea') || lower.includes('paddy') || lower.includes('fertilizer')) {
-      responseText = "For Paddy in the tillering stage, apply 35kg Urea + 10kg MOP per acre to avoid stem rot.";
+    if (lower.includes('rust') || lower.includes('yellow stripe') || (lower.includes('wheat') && lower.includes('disease'))) {
+      responseText = "🌾 Yellow Rust in Wheat (Puccinia striiformis): Apply Propiconazole 25% EC @ 1 ml/L (200 ml/acre) or Nativo @ 0.5 g/L early in the morning before dew dries. Organic alternative: Sulfur 80% WP @ 2.5 g/L or Neem Oil 3,000 ppm @ 3-5 ml/L. Maintain 14 days pre-harvest waiting interval.";
+    } else if (lower.includes('turmeric') || lower.includes('rhizome') || lower.includes('ginger') || lower.includes('root rot')) {
+      responseText = "🌿 Rhizome Rot in Turmeric / Ginger (Pythium-Fusarium): Drench collar soil immediately with Metalaxyl 4% + Mancozeb 64% WP @ 2.5 g/L. Organic cure: Broadcast Trichoderma viride (2.5 kg mixed with 100 kg FYM/acre) along ridges. Ensure deep drainage furrows to prevent waterlogging.";
+    } else if (lower.includes('blight') || lower.includes('brown spot') || lower.includes('cercospora') || lower.includes('alternaria')) {
+      responseText = "🍂 Leaf Blight & Brown Spot: Spray Mancozeb 75% WP @ 2.0 to 2.5 g/L or Copper Oxychloride 50% WP @ 2.5 g/L. Bio-alternative: Pseudomonas fluorescens @ 5 to 10 g/L. Remove blighted lower leaves and avoid overhead sprinkler splashing.";
+    } else if (lower.includes('caterpillar') || lower.includes('bollworm') || lower.includes('spodoptera') || lower.includes('armyworm')) {
+      responseText = "🐛 Defoliator Caterpillar & Bollworm: Spray Chlorantraniliprole 18.5% SC (Coragen) @ 0.4 ml/L (60 ml/acre) or Emamectin Benzoate 5% SG @ 0.5 g/L. Spray post 5 PM to protect bees. Organic alternative: Bt kurstaki @ 2 g/L or Beauveria bassiana + 5-8 pheromone traps/acre.";
+    } else if (lower.includes('whitefly') || lower.includes('aphid') || lower.includes('thrip') || lower.includes('sucking') || lower.includes('leaf curl')) {
+      responseText = "🪰 Sucking Pests (Whitefly/Aphids/Thrips): Spray Thiamethoxam 25% WG @ 0.2 g/L (40 g/acre) or Diafenthiuron 50% WP @ 1.2 g/L targeting leaf undersides. Bio-alternative: Install 10 Yellow + 5 Blue sticky cards/acre and spray NSKE 5% @ 50 ml/L.";
+    } else if (lower.includes('mandi') || lower.includes('price') || lower.includes('cotton') || lower.includes('wheat') || lower.includes('rate')) {
+      responseText = "⚖️ Mandi Benchmark Rates: Cotton (Bathinda/Rajkot) is trading at ₹7,250 – ₹7,850/qtl (MSP ₹7,121); Wheat at ₹2,450 – ₹2,680/qtl (MSP ₹2,275); Basmati 1121 at ₹4,200 – ₹4,650/qtl. Keep grain moisture below 12–14% to avoid deductions.";
+    } else if (lower.includes('urea') || lower.includes('paddy') || lower.includes('fertilizer') || lower.includes('npk')) {
+      responseText = "🧪 Scientific NPK Schedule: For Paddy at tillering stage, apply 35kg Urea + 10kg MOP per acre in late afternoon when soil is moist. Alternatively, spray IFFCO Nano Urea @ 4 ml/L (500 ml bottle replaces 1 bag of urea) to avoid stem rot and leaching.";
+    } else if (lower.includes('zinc') || lower.includes('khaira') || lower.includes('micronutrient') || lower.includes('boron')) {
+      responseText = "🌱 Micronutrient Correction: For Zinc deficiency (Khaira disease in rice), soil apply Zinc Sulphate 21% @ 10 kg/acre basal or spray Chelated Zinc (Zn-EDTA 12%) @ 1.0 g/L. Never mix Zinc directly with DAP in the same spray tank.";
+    } else if (lower.includes('subsid') || lower.includes('drip') || lower.includes('solar') || lower.includes('pm-kisan') || lower.includes('kusum')) {
+      responseText = "🏛️ Government Subsidies: PM-KUSUM provides 60%–90% subsidy for 3HP–7.5HP solar pumps. PM-KSY provides 55%–100% subsidy for drip irrigation. PM-KISAN credits ₹6,000/yr in 3 installments. Kisan Credit Card (KCC) offers loans up to ₹3 Lakh @ 4% net interest.";
+    } else if (lower.includes('rain') || lower.includes('weather') || lower.includes('nashik') || lower.includes('spray')) {
+      responseText = "🌦️ Agromet Weather Advisory: Do NOT spray pesticides within 4 hours of expected rain or if wind speed exceeds 15 km/h. Early morning (7–10 AM) or late afternoon (4–6 PM) offers optimal leaf stomata absorption and minimal drift.";
+    } else if (lower.includes('jeevamrit') || lower.includes('organic') || lower.includes('panchagavya') || lower.includes('zbnf')) {
+      responseText = "🌿 Authentic Jeevamrit Recipe (for 1 acre): Mix 10 kg Desi cow dung + 10 L cow urine + 2 kg jaggery + 2 kg pulse flour + handful of farm soil in 200 L water. Stir twice daily for 48 hrs under shade. Apply through irrigation for 100% natural microbial fertility.";
     }
 
     const { data, error } = await supabase
