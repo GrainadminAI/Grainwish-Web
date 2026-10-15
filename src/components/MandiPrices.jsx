@@ -59,6 +59,18 @@ export default function MandiPrices() {
     return () => clearInterval(interval);
   }, []);
 
+  // Synchronize active weather alert when user filters by a specific state
+  useEffect(() => {
+    if (selectedState && selectedState !== 'All States & UTs') {
+      const matchIdx = IMD_WEATHER_ALERTS.findIndex(
+        (a) => a.state.toLowerCase() === selectedState.toLowerCase()
+      );
+      if (matchIdx !== -1) {
+        setActiveWeatherIdx(matchIdx);
+      }
+    }
+  }, [selectedState]);
+
   // Offline-first data loading: IndexedDB first, then network sync
   const loadData = useCallback(async () => {
     setIsSyncing(true);
@@ -242,7 +254,7 @@ export default function MandiPrices() {
     overscan: 4
   });
 
-  const activeWeather = IMD_WEATHER_ALERTS[activeWeatherIdx];
+  const activeWeather = IMD_WEATHER_ALERTS[activeWeatherIdx] || IMD_WEATHER_ALERTS[0];
 
   const handleOpenGoogleMaps = (market, district, state) => {
     const query = encodeURIComponent(`${market}, ${district}, ${state}`);
@@ -312,59 +324,110 @@ export default function MandiPrices() {
         </div>
 
         {/* =========================================================================
-            IMD HYPER-LOCAL WEATHER & TARPAULIN ADVISORY TICKER
+            IMD HYPER-LOCAL WEATHER & TARPAULIN ADVISORY TICKER - 27 STATES PAN-INDIA
         ========================================================================= */}
-        <div className="bg-gradient-to-r from-[#032415] via-[#053820] to-[#032415] border-2 border-emerald-500/40 rounded-3xl p-5 shadow-2xl space-y-3 relative overflow-hidden">
-          <div className="flex items-center justify-between flex-wrap gap-2">
-            <div className="flex items-center gap-2 text-xs font-mono font-bold uppercase tracking-wider text-amber-400">
+        <div className="bg-gradient-to-r from-[#032415] via-[#053820] to-[#032415] border-2 border-emerald-500/40 rounded-3xl p-5 shadow-2xl space-y-4 relative overflow-hidden">
+          <div className="flex items-center justify-between flex-wrap gap-3">
+            <div className="flex items-center gap-2.5 text-xs font-mono font-bold uppercase tracking-wider text-amber-400">
               <span className="relative flex h-2.5 w-2.5">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
                 <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500" />
               </span>
               <Bell className="w-4 h-4 text-amber-400" />
               <span>IMD Live Agri-Weather Advisory &amp; Tarpaulin Alerts</span>
+              <span className="px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-500/40 text-[10px] font-sans font-bold normal-case tracking-normal">
+                27 States Pan-India
+              </span>
             </div>
 
-            {/* Carousel Controls */}
-            <div className="flex items-center gap-1.5 text-xs text-slate-400">
-              <span>{activeWeatherIdx + 1} of {IMD_WEATHER_ALERTS.length}</span>
+            {/* Quick State Dropdown & Carousel Navigation Controls */}
+            <div className="flex items-center gap-2 text-xs">
+              <div className="relative">
+                <select
+                  value={activeWeatherIdx}
+                  onChange={(e) => setActiveWeatherIdx(Number(e.target.value))}
+                  aria-label="Select state for IMD weather advisory"
+                  className="bg-emerald-950/90 text-emerald-200 border border-emerald-700/80 rounded-lg px-2.5 py-1 text-xs font-medium focus:outline-none focus:border-amber-400 cursor-pointer shadow-inner"
+                >
+                  {IMD_WEATHER_ALERTS.map((alert, idx) => (
+                    <option key={alert.state} value={idx} className="bg-[#032415] text-slate-200">
+                      {idx + 1}. {alert.state}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <span className="text-slate-400 text-xs font-mono px-1">
+                {activeWeatherIdx + 1} / {IMD_WEATHER_ALERTS.length}
+              </span>
+
               <button
                 onClick={() => setActiveWeatherIdx((prev) => (prev - 1 + IMD_WEATHER_ALERTS.length) % IMD_WEATHER_ALERTS.length)}
-                className="p-1 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-slate-300 hover:text-white"
-                title="Previous Advisory"
+                className="p-1.5 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-slate-300 hover:text-white transition-colors"
+                title="Previous State Advisory"
+                aria-label="Previous State Advisory"
               >
                 <ChevronLeft className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={() => setActiveWeatherIdx((prev) => (prev + 1) % IMD_WEATHER_ALERTS.length)}
-                className="p-1 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-slate-300 hover:text-white"
-                title="Next Advisory"
+                className="p-1.5 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-slate-300 hover:text-white transition-colors"
+                title="Next State Advisory"
+                aria-label="Next State Advisory"
               >
                 <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
 
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pt-1">
-            <div className="flex items-start gap-3.5">
-              <span className="p-3 rounded-2xl bg-amber-500/20 text-amber-400 border border-amber-500/40 shrink-0">
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pt-1">
+            <div className="flex items-start gap-3.5 flex-1 min-w-0">
+              <span className={`p-3 rounded-2xl border shrink-0 ${
+                activeWeather.severity === 'warning' 
+                  ? 'bg-red-500/20 text-red-400 border-red-500/40' 
+                  : 'bg-amber-500/20 text-amber-400 border-amber-500/40'
+              }`}>
                 <CloudSun className="w-6 h-6" />
               </span>
-              <div className="space-y-1">
-                <div className="text-sm font-bold text-white flex items-center gap-2">
-                  <span>{activeWeather.district}, {activeWeather.state}</span>
-                  <span className="px-2 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-500/40 font-mono text-[10px] uppercase font-bold">
+              <div className="space-y-2 min-w-0 flex-1">
+                <div className="text-sm font-bold text-white flex items-center flex-wrap gap-2">
+                  <span className="text-emerald-300 font-semibold text-base">{activeWeather.state}</span>
+                  <span className="text-slate-400 font-normal text-xs">({activeWeather.district})</span>
+                  <span className={`px-2 py-0.5 rounded-full font-mono text-[10px] uppercase font-bold border ${
+                    activeWeather.severity === 'warning'
+                      ? 'bg-red-500/20 text-red-300 border-red-500/40'
+                      : 'bg-amber-400/20 text-amber-300 border-amber-500/40'
+                  }`}>
                     {activeWeather.condition}
                   </span>
                 </div>
-                <p className="text-xs text-slate-200 leading-relaxed font-medium">
-                  {activeWeather.advisory}
-                </p>
+                <div className="bg-black/35 border border-amber-500/30 rounded-xl px-3.5 py-2.5">
+                  <div className="flex items-start gap-2">
+                    <span className="text-amber-400 font-bold text-xs uppercase tracking-wide shrink-0">
+                      🚨 Tarpaulin Advisory:
+                    </span>
+                    <p className="text-xs text-slate-200 leading-relaxed font-medium">
+                      {activeWeather.advisory}
+                    </p>
+                  </div>
+                </div>
               </div>
             </div>
 
-            <div className="shrink-0 font-mono text-xs text-emerald-300 bg-emerald-950/80 px-3.5 py-2 rounded-xl border border-emerald-800">
-              {activeWeather.metrics}
+            <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-2.5 shrink-0 w-full lg:w-auto">
+              <div className="font-mono text-xs text-emerald-300 bg-emerald-950/90 px-3.5 py-2 rounded-xl border border-emerald-800 shadow-inner whitespace-nowrap">
+                {activeWeather.metrics}
+              </div>
+              {selectedState !== activeWeather.state && (
+                <button
+                  onClick={() => setSelectedState(activeWeather.state)}
+                  className="text-xs font-semibold text-amber-400 hover:text-amber-300 underline decoration-dotted flex items-center gap-1 transition-colors"
+                  title={`Filter Mandi table to ${activeWeather.state}`}
+                >
+                  <span>Filter Mandis for {activeWeather.state}</span>
+                  <ChevronRight className="w-3.5 h-3.5" />
+                </button>
+              )}
             </div>
           </div>
         </div>
