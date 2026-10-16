@@ -184,6 +184,30 @@ app.post('/api/downloads/record', async (req, res) => {
   }
 });
 
+app.post('/api/visits/record', async (req, res) => {
+  try {
+    const { path, userAgent, referrer, userId } = req.body || {};
+    const safePath = sanitizeString(path || '/', 255);
+    const safeUserAgent = sanitizeString(userAgent || req.headers['user-agent'] || '', 500);
+    const safeReferrer = sanitizeString(referrer || req.headers['referer'] || '', 500);
+
+    const { data, error } = await supabase
+      .from('user_visits')
+      .insert([{
+        user_id: userId || null,
+        page_path: safePath,
+        user_agent: safeUserAgent,
+        referrer: safeReferrer
+      }])
+      .select();
+
+    if (error) throw error;
+    res.json({ success: true, message: 'Visit recorded in Supabase', data });
+  } catch (err) {
+    res.status(500).json({ success: false, error: err.message });
+  }
+});
+
 // Serve Static Frontend Assets from dist/
 const distPath = path.join(rootDir, 'dist');
 app.use(express.static(distPath));

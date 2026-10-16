@@ -107,7 +107,15 @@ function RootApp() {
   });
 
   useEffect(() => {
-    recordUserVisitToDB();
+    // Ensure website opens at the very top (Hero Section) without auto-scrolling
+    if (typeof window !== 'undefined' && (!window.location.hash || window.location.hash === '#')) {
+      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    }
+
+    // Record initial visit in Supabase
+    recordUserVisitToDB({
+      path: typeof window !== 'undefined' ? (window.location.pathname + (window.location.hash || '')) : '/'
+    });
 
     const handleLocationChange = () => {
       const path = window.location.pathname.toLowerCase();
@@ -126,6 +134,10 @@ function RootApp() {
       } else {
         setCurrentRoute('404');
       }
+
+      recordUserVisitToDB({
+        path: window.location.pathname + (window.location.hash || '')
+      });
     };
 
     window.addEventListener('popstate', handleLocationChange);
@@ -147,6 +159,9 @@ function RootApp() {
     if (hash) newPath += hash;
     window.history.pushState({}, '', newPath);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Record route navigation visit to Supabase
+    recordUserVisitToDB({ path: newPath });
 
     if (hash) {
       setTimeout(() => {
