@@ -15,6 +15,25 @@
       if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
         location.replace('https:' + window.location.href.substring(window.location.protocol.length));
       }
+      // Disable automatic scroll restoration so browsers do not restore scroll position down to #ananya-ai
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
+      // If opening with #ananya-ai hash, strip it and ensure the page stays at the top Hero section
+      if (window.location.hash && window.location.hash.toLowerCase() === '#ananya-ai') {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+      window.scrollTo(0, 0);
+      window.addEventListener('DOMContentLoaded', function () {
+        if (!window.location.hash || window.location.hash.toLowerCase() === '#ananya-ai') {
+          window.scrollTo(0, 0);
+        }
+      });
+      window.addEventListener('load', function () {
+        if (!window.location.hash || window.location.hash.toLowerCase() === '#ananya-ai') {
+          window.scrollTo(0, 0);
+        }
+      });
     </script>
 
     <!-- Primary Meta Tags -->

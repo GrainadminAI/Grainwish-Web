@@ -107,15 +107,36 @@ function RootApp() {
   });
 
   useEffect(() => {
-    // Ensure website opens at the very top (Hero Section) without auto-scrolling
-    if (typeof window !== 'undefined' && (!window.location.hash || window.location.hash === '#')) {
-      window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-    }
+    let timer50, timer200;
 
-    // Record initial visit in Supabase
-    recordUserVisitToDB({
-      path: typeof window !== 'undefined' ? (window.location.pathname + (window.location.hash || '')) : '/'
-    });
+    if (typeof window !== 'undefined') {
+      // Force manual scroll restoration so browsers do not restore scroll position down to #ananya-ai
+      if ('scrollRestoration' in window.history) {
+        window.history.scrollRestoration = 'manual';
+      }
+
+      // If opened with #ananya-ai, strip it and stay firmly at the top Hero section
+      if (window.location.hash && window.location.hash.toLowerCase() === '#ananya-ai') {
+        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      }
+
+      // Ensure website opens at the very top (Hero Section) without auto-scrolling
+      const resetScrollToTop = () => {
+        if (!window.location.hash || window.location.hash.toLowerCase() === '#ananya-ai') {
+          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        }
+      };
+
+      resetScrollToTop();
+      requestAnimationFrame(resetScrollToTop);
+      timer50 = setTimeout(resetScrollToTop, 50);
+      timer200 = setTimeout(resetScrollToTop, 200);
+
+      // Record initial visit in Supabase
+      recordUserVisitToDB({
+        path: window.location.pathname + (window.location.hash || '')
+      });
+    }
 
     const handleLocationChange = () => {
       const path = window.location.pathname.toLowerCase();
@@ -143,6 +164,8 @@ function RootApp() {
     window.addEventListener('popstate', handleLocationChange);
     window.addEventListener('hashchange', handleLocationChange);
     return () => {
+      clearTimeout(timer50);
+      clearTimeout(timer200);
       window.removeEventListener('popstate', handleLocationChange);
       window.removeEventListener('hashchange', handleLocationChange);
     };
