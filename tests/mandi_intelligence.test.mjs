@@ -68,14 +68,40 @@ test('Mandi Data Quality: Verify modal prices, varieties, MSPs, and coordinates'
   });
 });
 
-test('IMD Weather Advisories: Verify tarpaulin protection alerts and humidity metrics', async (t) => {
-  await t.test('Weather alerts exist and contain tarpaulin or grain protection guidance', () => {
-    assert.ok(IMD_WEATHER_ALERTS.length >= 4, 'Should have at least 4 active weather alerts');
-    const hasTarpaulin = IMD_WEATHER_ALERTS.some(a => 
-      a.advisory.toLowerCase().includes('tarpaulin') || 
-      a.advisory.toLowerCase().includes('protect') ||
-      a.advisory.toLowerCase().includes('shed')
-    );
-    assert.ok(hasTarpaulin, 'At least one advisory must advise tarpaulin or grain protection');
+test('IMD Weather Advisories: 27 States Pan-India Coverage & Tarpaulin Alerts', async (t) => {
+  await t.test('Exactly 27 distinct Indian states are covered in IMD_WEATHER_ALERTS', () => {
+    assert.equal(IMD_WEATHER_ALERTS.length, 27, 'Must have exactly 27 state weather advisories');
+    const states = new Set(IMD_WEATHER_ALERTS.map(a => a.state));
+    assert.equal(states.size, 27, 'All 27 alerts must correspond to unique states');
+  });
+
+  await t.test('Every alert contains state, district, condition, metrics, severity, and tarpaulin guidance', () => {
+    for (const alert of IMD_WEATHER_ALERTS) {
+      assert.ok(alert.state && alert.state.length > 0, `Missing state in alert: ${JSON.stringify(alert)}`);
+      assert.ok(alert.district && alert.district.length > 0, `Missing district in alert for ${alert.state}`);
+      assert.ok(alert.condition && alert.condition.length > 0, `Missing condition in alert for ${alert.state}`);
+      assert.ok(alert.metrics && alert.metrics.length > 0, `Missing metrics in alert for ${alert.state}`);
+      assert.ok(['warning', 'caution', 'advisory'].includes(alert.severity), `Invalid severity in alert for ${alert.state}`);
+      
+      const advLower = alert.advisory.toLowerCase();
+      const hasProtection = 
+        advLower.includes('tarpaulin') || 
+        advLower.includes('protect') || 
+        advLower.includes('cover') ||
+        advLower.includes('shed') ||
+        advLower.includes('net');
+      assert.ok(hasProtection, `Advisory for ${alert.state} must give crop/grain protection advice: "${alert.advisory}"`);
+    }
+  });
+
+  await t.test('Meteorological metrics include humidity, wind, rainfall, or temperature', () => {
+    for (const alert of IMD_WEATHER_ALERTS) {
+      const m = alert.metrics;
+      assert.ok(
+        m.includes('Humidity:') || m.includes('Rain:') || m.includes('Temp:') || m.includes('Wind:'),
+        `Metrics for ${alert.state} must specify standard weather indicators`
+      );
+    }
   });
 });
+

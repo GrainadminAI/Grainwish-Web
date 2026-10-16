@@ -53,56 +53,224 @@ export const CROP_CATEGORIES = [
 ];
 
 /**
- * IMD Weather Advisories for Agricultural Protection
+ * IMD Weather Advisories & Tarpaulin Protection Alerts for 27 States Pan-India
  */
 export const IMD_WEATHER_ALERTS = [
   {
-    district: 'Nashik & Jalgaon',
+    district: 'Nashik, Jalgaon & Latur',
     state: 'Maharashtra',
     severity: 'warning',
-    condition: 'Unseasonal Thunderstorms',
-    metrics: 'Rain: 14mm · Humidity: 78% · Wind: 28 km/h',
-    advisory: 'Cover harvested onion and wheat under waterproof tarpaulins immediately. Delay pesticide spraying by 36 hours.'
+    condition: 'Unseasonal Thunderstorms & Squall',
+    metrics: 'Rain: 18mm · Humidity: 82% · Wind: 28 km/h',
+    advisory: 'Cover harvested onion, soybean and wheat heaps with 250+ GSM waterproof tarpaulins immediately. Delay pesticide spraying by 36 hours.'
   },
   {
-    district: 'Bathinda & Firozpur',
+    district: 'Bathinda, Ludhiana & Firozpur',
     state: 'Punjab',
     severity: 'caution',
-    condition: 'Dry & Strong Gusts',
-    metrics: 'Temp: 34°C · Humidity: 32% · Wind: 22 km/h',
-    advisory: 'Optimal weather for cotton and wheat threshing. Ensure open grain storage yards are guarded from wind dispersal.'
+    condition: 'Strong Westerly Dust Gusts',
+    metrics: 'Temp: 34°C · Humidity: 32% · Wind: 24 km/h',
+    advisory: 'Protect open grain threshing floors with tarpaulin wind-break screens. Secure bags in covered APMC sheds.'
   },
   {
-    district: 'Warangal & Nizamabad',
-    state: 'Telangana',
+    district: 'Karnal, Sirsa & Hisar',
+    state: 'Haryana',
     severity: 'warning',
-    condition: 'Isolated Heavy Showers',
-    metrics: 'Rain: 22mm · Humidity: 84% · Wind: 18 km/h',
-    advisory: 'Move open paddy heaps to elevated platforms or covered market sheds. High moisture risk in gunny bags.'
+    condition: 'Gusty Dust Winds & Scattered Drizzle',
+    metrics: 'Temp: 33°C · Humidity: 48% · Wind: 26 km/h',
+    advisory: 'Tie down tarpaulin covers on grain piles with sandbags. Keep basmati paddy heaps on raised wooden pallets to prevent seepage.'
   },
   {
-    district: 'Guntur & Kurnool',
-    state: 'Andhra Pradesh',
-    severity: 'advisory',
-    condition: 'Clear Sky & High Sun',
-    metrics: 'Temp: 36°C · Humidity: 45% · Wind: 10 km/h',
-    advisory: 'Ideal drying conditions for red chilli and turmeric. Spread pods evenly on raised concrete drying beds.'
+    district: 'Muzaffarnagar, Hardoi & Agra',
+    state: 'Uttar Pradesh',
+    severity: 'warning',
+    condition: 'Localized Hailstorms & Thunderclouds',
+    metrics: 'Rain: 16mm · Humidity: 76% · Wind: 30 km/h',
+    advisory: 'High risk of hail damage. Secure harvested mustard and potato stacks with double-layer waterproof tarpaulins. Postpone field irrigation.'
   },
   {
-    district: 'Kota & Bharatpur',
+    district: 'Indore, Ujjain & Sehore',
+    state: 'Madhya Pradesh',
+    severity: 'caution',
+    condition: 'Humid Overcast & Intermittent Rain',
+    metrics: 'Rain: 12mm · Humidity: 79% · Wind: 20 km/h',
+    advisory: 'Move open soybean and sharbati wheat from mandi open yards under tarpaulin cover. Clear field drainage ditches.'
+  },
+  {
+    district: 'Rajkot, Mehsana & Junagadh',
+    state: 'Gujarat',
+    severity: 'caution',
+    condition: 'Coastal Wind Shear & High Humidity',
+    metrics: 'Temp: 35°C · Humidity: 72% · Wind: 25 km/h',
+    advisory: 'Cover cumin, groundnut and cotton bales in APMC yards with heavy tarpaulins against sudden coastal squalls and dew condensation.'
+  },
+  {
+    district: 'Kota, Bharatpur & Nagaur',
     state: 'Rajasthan',
     severity: 'caution',
-    condition: 'Moderate Breeze & Dust',
-    metrics: 'Temp: 35°C · Humidity: 38% · Wind: 25 km/h',
-    advisory: 'Mustard and coriander threshing requires wind-break nets to prevent seed scattering.'
+    condition: 'Dry Heat Gusts & Dust Storms',
+    metrics: 'Temp: 38°C · Humidity: 28% · Wind: 32 km/h',
+    advisory: 'Anchor tarpaulins over open mustard, cumin and coriander threshing floors using stone weights to prevent wind loss.'
   },
   {
-    district: 'Erode & Coimbatore',
+    district: 'Guntur, Kurnool & Krishna',
+    state: 'Andhra Pradesh',
+    severity: 'warning',
+    condition: 'Sudden Convective Showers',
+    metrics: 'Rain: 16mm · Humidity: 82% · Wind: 22 km/h',
+    advisory: 'Cover red chilli drying platforms and cotton immediately with waterproof tarpaulins. Elevate groundnut pods above soil level.'
+  },
+  {
+    district: 'Warangal, Nizamabad & Adilabad',
+    state: 'Telangana',
+    severity: 'warning',
+    condition: 'Heavy Isolated Downpours',
+    metrics: 'Rain: 26mm · Humidity: 86% · Wind: 20 km/h',
+    advisory: 'Mandatory tarpaulin protection for open paddy and cotton heaps at market yards. Ensure 15cm ground clearance to avoid runoff soaking.'
+  },
+  {
+    district: 'Kalaburagi, Haveri & Shimoga',
+    state: 'Karnataka',
+    severity: 'warning',
+    condition: 'Pre-Monsoon Showers & Lightning',
+    metrics: 'Rain: 15mm · Humidity: 75% · Wind: 18 km/h',
+    advisory: 'Protect Byadgi chilli and tur dal heaps with tarpaulins immediately. Delay pulse harvesting until clear weather resumes.'
+  },
+  {
+    district: 'Erode, Coimbatore & Thanjavur',
     state: 'Tamil Nadu',
     severity: 'advisory',
-    condition: 'Humid & Overcast',
-    metrics: 'Temp: 31°C · Humidity: 74% · Wind: 12 km/h',
-    advisory: 'Turmeric finger boiling and polishing ongoing. Ensure shade drying if drizzle manifests.'
+    condition: 'Humid with Afternoon Drizzles',
+    metrics: 'Rain: 10mm · Humidity: 80% · Wind: 14 km/h',
+    advisory: 'Cover turmeric fingers on drying yards under tarpaulins when overcast. Move copra and samba paddy to covered processing sheds.'
+  },
+  {
+    district: 'Kottayam, Wayanad & Palakkad',
+    state: 'Kerala',
+    severity: 'warning',
+    condition: 'Continuous Moderate Rainfall',
+    metrics: 'Rain: 35mm · Humidity: 92% · Wind: 24 km/h',
+    advisory: 'Keep rubber sheets and black pepper on raised indoor racks. Secure terrace crops under durable plastic tarpaulins.'
+  },
+  {
+    district: 'Purnea, Muzaffarpur & Darbhanga',
+    state: 'Bihar',
+    severity: 'warning',
+    condition: 'Thunderstorms & Sudden Squalls',
+    metrics: 'Rain: 20mm · Humidity: 84% · Wind: 28 km/h',
+    advisory: 'Critical tarpaulin alert for open maize drying platforms and makhana stocks. Fasten covers securely against wind lift.'
+  },
+  {
+    district: 'Burdwan, Hooghly & Murshidabad',
+    state: 'West Bengal',
+    severity: 'warning',
+    condition: 'Kalbaishakhi (Nor’wester) Squall Warning',
+    metrics: 'Rain: 28mm · Humidity: 88% · Wind: 42 km/h',
+    advisory: 'Severe squall alert. Secure raw jute and paddy heaps under tied tarpaulins immediately. Avoid working in open fields during lightning.'
+  },
+  {
+    district: 'Bargarh, Sambalpur & Cuttack',
+    state: 'Odisha',
+    severity: 'warning',
+    condition: 'Cyclonic Moisture & Scattered Rainfall',
+    metrics: 'Rain: 22mm · Humidity: 85% · Wind: 26 km/h',
+    advisory: 'Shift paddy from open mandi mandaps under tarpaulin cover. Check moisture content before bagging to prevent fungal discoloration.'
+  },
+  {
+    district: 'Raipur, Rajnandgaon & Bilaspur',
+    state: 'Chhattisgarh',
+    severity: 'caution',
+    condition: 'Cloudy with Sudden Thunder Showers',
+    metrics: 'Rain: 15mm · Humidity: 80% · Wind: 19 km/h',
+    advisory: 'Cover open Swarna paddy and kodo millet piles with tarpaulins. Keep produce stacked on plastic ground sheets.'
+  },
+  {
+    district: 'Ranchi, Hazaribagh & Palamu',
+    state: 'Jharkhand',
+    severity: 'caution',
+    condition: 'Hail Risk & Localized Showers',
+    metrics: 'Rain: 12mm · Humidity: 74% · Wind: 22 km/h',
+    advisory: 'Cover harvested tomato crates and vegetable produce with tarpaulins. Protect pulse seed stock from damp ground moisture.'
+  },
+  {
+    district: 'Nagaon, Dhubri & Cachar',
+    state: 'Assam',
+    severity: 'warning',
+    condition: 'Heavy Pre-Monsoon Inundation Warning',
+    metrics: 'Rain: 38mm · Humidity: 94% · Wind: 20 km/h',
+    advisory: 'High moisture & flood risk. Move jute bundles and paddy sacks to highland godowns covered with waterproof tarpaulins.'
+  },
+  {
+    district: 'Shimla, Solan & Kullu',
+    state: 'Himachal Pradesh',
+    severity: 'caution',
+    condition: 'Hailstorm & Temperature Dip Warning',
+    metrics: 'Temp: 14°C · Humidity: 82% · Wind: 18 km/h',
+    advisory: 'Erect anti-hail nets over apple orchards. Cover harvested garlic and tomato crates with waterproof tarpaulins.'
+  },
+  {
+    district: 'Dehradun, Haridwar & Udham Singh Nagar',
+    state: 'Uttarakhand',
+    severity: 'warning',
+    condition: 'Sudden Hill Squalls & Downpours',
+    metrics: 'Rain: 16mm · Humidity: 78% · Wind: 25 km/h',
+    advisory: 'Protect basmati grain and seed stock with tarpaulins. Ensure terrace field drainage to prevent waterlogging.'
+  },
+  {
+    district: 'North Goa & South Goa',
+    state: 'Goa',
+    severity: 'caution',
+    condition: 'Coastal Humidity & Squally Breeze',
+    metrics: 'Temp: 32°C · Humidity: 85% · Wind: 28 km/h',
+    advisory: 'Protect raw cashew nuts on open drying patios with tarpaulin covers. Guard copra against coastal dampness.'
+  },
+  {
+    district: 'West Tripura & Khowai',
+    state: 'Tripura',
+    severity: 'warning',
+    condition: 'Heavy Thundercloud Activity',
+    metrics: 'Rain: 30mm · Humidity: 90% · Wind: 22 km/h',
+    advisory: 'Keep rubber sheets and pineapple crates under covered sheds or tight tarpaulins to prevent fungal mildew.'
+  },
+  {
+    district: 'West Jaintia Hills & Ri-Bhoi',
+    state: 'Meghalaya',
+    severity: 'warning',
+    condition: 'Persistent Heavy Mists & Drizzle',
+    metrics: 'Rain: 45mm · Humidity: 96% · Wind: 16 km/h',
+    advisory: 'Keep Lakadong turmeric and ginger under waterproof tarpaulin sheets on elevated indoor racks. Avoid outdoor drying until humidity drops below 75%.'
+  },
+  {
+    district: 'Imphal West & Bishnupur',
+    state: 'Manipur',
+    severity: 'caution',
+    condition: 'Overcast Skies with Evening Showers',
+    metrics: 'Rain: 14mm · Humidity: 84% · Wind: 14 km/h',
+    advisory: 'Cover black rice (Chak-Hao) threshing platforms with tarpaulin. Prevent moisture ingress in grain storage bags.'
+  },
+  {
+    district: 'Dimapur & Kohima',
+    state: 'Nagaland',
+    severity: 'caution',
+    condition: 'Intermittent Hill Showers',
+    metrics: 'Rain: 18mm · Humidity: 86% · Wind: 15 km/h',
+    advisory: 'Protect King Chilli (Bhut Jolokia) and cardamom stocks under tarpaulin covers. Maintain air circulation to prevent mold.'
+  },
+  {
+    district: 'Aizawl & Kolasib',
+    state: 'Mizoram',
+    severity: 'caution',
+    condition: 'Dense Fog & Heavy Morning Dew',
+    metrics: 'Humidity: 92% · Temp: 22°C · Wind: 12 km/h',
+    advisory: 'Cover bird’s eye chilli and ginger harvest under waterproof tarpaulins. Keep drying platforms covered during early morning hours.'
+  },
+  {
+    district: 'Gangtok & Gyalshing',
+    state: 'Sikkim',
+    severity: 'warning',
+    condition: 'High Altitude Cloudburst Watch',
+    metrics: 'Rain: 25mm · Humidity: 89% · Wind: 18 km/h',
+    advisory: 'Shift large cardamom drying pods inside bhattis. Cover outdoor organic produce with heavy-duty tarpaulins against sudden downpours.'
   }
 ];
 
