@@ -138,11 +138,11 @@ const CROP_SAMPLES = [
     organicAlternative: 'Install 10 Yellow Sticky Traps/acre + Spray 5% Neem Seed Kernel Extract (NSKE) @ 50ml/L.',
     yieldProtected: '~40% Pod & Grain Loss Prevented',
     recoveryDays: '7 - 10 Days',
-    image: '/assets/Farmer_walking.jpeg',
-    videoUrl: '/assets/Sustainable_farm_sunset.mp4',
+    image: '/assets/soybean_leaf_mosaic.jpg',
+    videoUrl: null,
     shareUrl: 'https://www.grainwish.com/#diagnostics',
     boundingBoxes: [
-      { x: 26, y: 22, width: 46, height: 46, label: 'LEAF DISEASE', conf: '98.9%', color: '#eab308' }
+      { x: 18, y: 22, width: 62, height: 56, label: 'LEAF DISEASE', conf: '99.4%', color: '#eab308' }
     ],
     rightWayToFix: CROP_FIX_RECOMMENDATIONS['LEAF DISEASE']
   },
@@ -168,11 +168,11 @@ const CROP_SAMPLES = [
     organicAlternative: 'Filtered Vermiwash or Jeevamrutham foliar spray @ 20ml/L water.',
     yieldProtected: '100% Potential Crop Yield Maintained',
     recoveryDays: 'Ongoing Maintenance',
-    image: '/assets/farmer_harvest.jpeg',
-    videoUrl: '/assets/holographic_leaves.mp4',
+    image: '/assets/field_wheat_healthy.jpg',
+    videoUrl: null,
     shareUrl: 'https://www.grainwish.com/#diagnostics',
     boundingBoxes: [
-      { x: 18, y: 18, width: 64, height: 64, label: 'HEALTHY LEAF', conf: '99.9%', color: '#10b981' }
+      { x: 22, y: 16, width: 56, height: 68, label: 'HEALTHY LEAF', conf: '99.9%', color: '#10b981' }
     ],
     rightWayToFix: CROP_FIX_RECOMMENDATIONS['HEALTHY LEAF']
   },
@@ -198,11 +198,11 @@ const CROP_SAMPLES = [
     organicAlternative: 'Foliar spray of 10% Cow urine bio-formulation + Trichoderma viride @ 4g/L.',
     yieldProtected: '~32% Oilseed Yield Protected',
     recoveryDays: '8 - 12 Days',
-    image: '/assets/Farmer_gesturing.jpeg',
-    videoUrl: '/assets/sustainable_farming_village.mp4',
+    image: '/assets/mustard_sarson_blight.jpg',
+    videoUrl: null,
     shareUrl: 'https://www.grainwish.com/#diagnostics',
     boundingBoxes: [
-      { x: 28, y: 32, width: 42, height: 38, label: 'LEAF BLIGHT SPOT', conf: '99.6%', color: '#ef4444' }
+      { x: 16, y: 18, width: 52, height: 60, label: 'LEAF BLIGHT SPOT', conf: '99.6%', color: '#ef4444' }
     ],
     rightWayToFix: CROP_FIX_RECOMMENDATIONS['LEAF BLIGHT SPOT']
   }

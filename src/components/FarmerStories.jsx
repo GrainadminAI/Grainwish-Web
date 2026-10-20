@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Quote, MapPin, TrendingUp, CheckCircle2, Award, Sparkles, PlusCircle, Star, Send, Edit3, MessageSquare, ChevronUp, ChevronDown, Filter } from 'lucide-react';
+import { Quote, MapPin, TrendingUp, CheckCircle2, Award, Sparkles, PlusCircle, Star, Send, Edit3, MessageSquare, ChevronUp, ChevronDown } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { recordFeatureUsageToDB, saveFeedbackToDB, getSavedUserFeedback } from '../lib/supabase';
 import { useLanguage } from '../lib/LanguageContext';
@@ -164,34 +164,15 @@ export default function FarmerStories() {
   const [selectedCase, setSelectedCase] = useState(INITIAL_STORIES[0]);
   const [caseVideoPlaying, setCaseVideoPlaying] = useState(false);
   const [caseVideoFailed, setCaseVideoFailed] = useState(false);
-  const [selectedStateFilter, setSelectedStateFilter] = useState('all');
   const scrollContainerRef = useRef(null);
 
   const handleScrollUp = () => {
-    scrollContainerRef.current?.scrollBy({ top: -240, behavior: 'smooth' });
+    scrollContainerRef.current?.scrollBy({ top: -260, behavior: 'smooth' });
   };
 
   const handleScrollDown = () => {
-    scrollContainerRef.current?.scrollBy({ top: 240, behavior: 'smooth' });
+    scrollContainerRef.current?.scrollBy({ top: 260, behavior: 'smooth' });
   };
-
-  const STATE_OPTIONS = [
-    { id: 'all', label: 'All Regions' },
-    { id: 'West Bengal', label: '🌾 West Bengal', badge: 'New' },
-    { id: 'Bihar', label: '🌽 Bihar', badge: 'New' },
-    { id: 'Maharashtra', label: 'Maharashtra' },
-    { id: 'Telangana', label: 'Telangana' },
-    { id: 'Punjab', label: 'Punjab' },
-    { id: 'Tamil Nadu', label: 'Tamil Nadu' }
-  ];
-
-  const filteredStories = stories.filter((s) => {
-    if (selectedStateFilter === 'all') return true;
-    return (
-      s.state === selectedStateFilter ||
-      (s.location && s.location.toLowerCase().includes(selectedStateFilter.toLowerCase()))
-    );
-  });
 
   const handleSelectCase = (story) => {
     setSelectedCase(story);
@@ -465,82 +446,54 @@ export default function FarmerStories() {
 
         {/* Vertical Scroll Feedback Showcase */}
         <div className="mb-8 sm:mb-14 space-y-3.5">
-          {/* Region Filters & Vertical Scroll Controls */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#031d10] p-3 sm:p-4 rounded-2xl border border-emerald-800/60 shadow-xl">
-            {/* State Filter Pills */}
-            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none text-xs">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 mr-1 shrink-0">
-                <Filter className="w-3.5 h-3.5 text-amber-400" />
-                <span className="hidden sm:inline">Region:</span>
-              </span>
-              {STATE_OPTIONS.map((st) => {
-                const count = st.id === 'all'
-                  ? stories.length
-                  : stories.filter(s => s.state === st.id || (s.location && s.location.toLowerCase().includes(st.id.toLowerCase()))).length;
-                if (st.id !== 'all' && count === 0) return null;
-
-                const isActive = selectedStateFilter === st.id;
-                return (
-                  <button
-                    key={st.id}
-                    onClick={() => setSelectedStateFilter(st.id)}
-                    className={`px-3 py-1.5 rounded-full font-bold text-xs whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 min-h-[32px] touch-manipulation ${
-                      isActive
-                        ? 'bg-amber-400 text-black shadow-md shadow-amber-400/20 font-extrabold'
-                        : 'bg-emerald-950/80 hover:bg-emerald-900 text-slate-300 border border-emerald-800/80'
-                    }`}
-                  >
-                    <span>{st.label}</span>
-                    <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${isActive ? 'bg-black/20 text-black font-extrabold' : 'bg-black/40 text-amber-300'}`}>
-                      {count}
-                    </span>
-                    {st.badge && (
-                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500 text-black font-extrabold uppercase tracking-tight">
-                        {st.badge}
-                      </span>
-                    )}
-                  </button>
-                );
-              })}
+          {/* Vertical Scroll Feed Header */}
+          <div className="flex items-center justify-between gap-3 bg-[#031d10] px-3.5 sm:px-5 py-3 sm:py-3.5 rounded-2xl border border-emerald-800/60 shadow-xl">
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <div className="flex items-center gap-2 truncate">
+                <span className="font-display font-bold text-white text-xs sm:text-sm truncate">
+                  Farmer Feedback Stream
+                </span>
+                <span className="text-[10px] font-mono text-amber-300 bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/30 shrink-0 font-semibold">
+                  {stories.length} Verified Reviews
+                </span>
+              </div>
             </div>
 
-            {/* Vertical Scroll Header Indicators & Quick Buttons */}
-            <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-1.5 sm:pt-0 border-t sm:border-t-0 border-emerald-900/50">
-              <div className="text-[11px] text-emerald-300 font-mono flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span>↕ Vertical Scroll ({filteredStories.length} Feedback)</span>
+            {/* Quick Scroll Buttons & Indicator */}
+            <div className="flex items-center gap-2 shrink-0">
+              <div className="hidden sm:flex text-[11px] text-emerald-300 font-mono items-center gap-1.5 mr-1">
+                <span>↕ Vertical Feed</span>
               </div>
-              <div className="flex items-center gap-1.5">
-                <button
-                  onClick={handleScrollUp}
-                  title="Scroll Up Feedback"
-                  aria-label="Scroll feedback up"
-                  className="w-8 h-8 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-slate-200 hover:text-white flex items-center justify-center transition-all active:scale-95 touch-manipulation"
-                >
-                  <ChevronUp className="w-4 h-4 text-emerald-300" />
-                </button>
-                <button
-                  onClick={handleScrollDown}
-                  title="Scroll Down Feedback"
-                  aria-label="Scroll feedback down"
-                  className="w-8 h-8 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-slate-200 hover:text-white flex items-center justify-center transition-all active:scale-95 touch-manipulation"
-                >
-                  <ChevronDown className="w-4 h-4 text-emerald-300" />
-                </button>
-              </div>
+              <button
+                onClick={handleScrollUp}
+                title="Scroll Up Feedback"
+                aria-label="Scroll feedback up"
+                className="w-8 h-8 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-slate-200 hover:text-white flex items-center justify-center transition-all active:scale-95 touch-manipulation"
+              >
+                <ChevronUp className="w-4 h-4 text-emerald-300" />
+              </button>
+              <button
+                onClick={handleScrollDown}
+                title="Scroll Down Feedback"
+                aria-label="Scroll feedback down"
+                className="w-8 h-8 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-slate-200 hover:text-white flex items-center justify-center transition-all active:scale-95 touch-manipulation"
+              >
+                <ChevronDown className="w-4 h-4 text-emerald-300" />
+              </button>
             </div>
           </div>
 
-          {/* Vertical Scrollable Feed Viewport */}
+          {/* Vertical Scrollable Feed Viewport (Vertical feed on mobile, 2 cols on md+) */}
           <div
             ref={scrollContainerRef}
             tabIndex={0}
             role="region"
             aria-label="Farmer stories vertical scrollable feed"
-            className="relative max-h-[460px] sm:max-h-[520px] md:max-h-[580px] overflow-y-auto pr-1.5 sm:pr-2.5 rounded-2xl sm:rounded-3xl bg-[#031d10]/95 border-2 border-emerald-500/30 p-3.5 sm:p-5 shadow-2xl scrollbar-thin scrollbar-thumb-emerald-600/80 scrollbar-track-emerald-950/60 focus:outline-none focus:ring-1 focus:ring-emerald-500/50"
+            className="relative max-h-[500px] sm:max-h-[560px] md:max-h-[620px] overflow-y-auto overscroll-contain pr-1.5 sm:pr-2.5 rounded-2xl sm:rounded-3xl bg-[#031d10]/95 border-2 border-emerald-500/30 p-3 sm:p-5 shadow-2xl scrollbar-thin scrollbar-thumb-emerald-600/80 scrollbar-track-emerald-950/60 focus:outline-none focus:ring-1 focus:ring-emerald-500/50"
           >
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
-              {filteredStories.map((s) => (
+            <div className="flex flex-col md:grid md:grid-cols-2 gap-3.5 sm:gap-4">
+              {stories.map((s) => (
                 <div
                   key={s.id}
                   onClick={() => handleSelectStory(s)}
@@ -598,25 +551,13 @@ export default function FarmerStories() {
                 </div>
               ))}
             </div>
-
-            {filteredStories.length === 0 && (
-              <div className="py-12 text-center text-slate-400 text-xs space-y-2">
-                <div>No stories found matching this region.</div>
-                <button
-                  onClick={() => setSelectedStateFilter('all')}
-                  className="px-3 py-1 bg-emerald-900/80 text-emerald-300 rounded-lg border border-emerald-700 text-xs font-bold"
-                >
-                  Show All Regions
-                </button>
-              </div>
-            )}
           </div>
 
           {/* Scroll Instruction Bar */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-slate-400 px-2 pt-0.5">
             <span className="flex items-center gap-1.5">
               <Sparkles className="w-3 h-3 text-amber-400 shrink-0" />
-              <span>Scroll vertically inside feed to browse all farmer stories across West Bengal, Bihar, and Pan-India</span>
+              <span>Scroll vertically to view all feedback from West Bengal, Bihar, and across India</span>
             </span>
             <span className="font-mono text-emerald-400 text-[10px]">
               Tap any feedback card to spotlight full case study below ↓
