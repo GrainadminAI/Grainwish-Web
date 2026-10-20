@@ -1,14 +1,91 @@
-import React, { useState, useEffect } from 'react';
-import { Quote, MapPin, TrendingUp, CheckCircle2, Award, Sparkles, PlusCircle, Star, Send, Edit3, MessageSquare } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Quote, MapPin, TrendingUp, CheckCircle2, Award, Sparkles, PlusCircle, Star, Send, Edit3, MessageSquare, ChevronUp, ChevronDown, Filter } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { recordFeatureUsageToDB, saveFeedbackToDB, getSavedUserFeedback } from '../lib/supabase';
 import { useLanguage } from '../lib/LanguageContext';
 
 const INITIAL_STORIES = [
   {
+    id: 'subhashish',
+    name: 'Subhashish Mondal',
+    location: 'Bardhaman, West Bengal',
+    state: 'West Bengal',
+    crop: 'Aman Paddy & Potato',
+    metric: 'Saved 3.5 Bighas from Blast',
+    metricTag: '28% Higher Net Realization',
+    quote: '“আমি বাংলায় অনন্যা AI-কে ব্লাস্ট রোগের ছবি পাঠাই। নিমেষে কার্বেনডাজিম আর নিম তেলের সঠিক মাত্রা বাতলে দেয়। বর্ধমানের মাঠে আমার ধানের ফলন পুরো রক্ষা পেয়েছে।” (I shared photos of leaf blast in Bengali with Ananya AI. It immediately gave the exact spray dilution and neem oil alternative. My harvest in Bardhaman was completely saved.)',
+    image: '/assets/Farmer_walking.jpeg',
+    video: '/assets/Paddy_rice.mp4',
+    detectedIssue: 'Neck blast & spindle lesions across Aman paddy plot',
+    actionsTaken: [
+      'Scanned yellow-brown spindle lesions using camera AI diagnostics',
+      'Received dual-track prescription: tricyclazole dosage + Pseudomonas bio-fungicide',
+      'Calculated balanced NPK fertilizer dressing for alluvial Gangetic soil'
+    ],
+    result: 'Completely stopped blast spread across 3.5 bighas; harvested 24 quintals/acre quality paddy.'
+  },
+  {
+    id: 'rajendra',
+    name: 'Rajendra Prasad Kushwaha',
+    location: 'Samastipur, Bihar',
+    state: 'Bihar',
+    crop: 'Rabi Maize & Wheat',
+    metric: '+₹350/qtl via Mandi Radar',
+    metricTag: '₹14,000 Extra Net Profit on Single Trolley',
+    quote: '“समस्तीपुर मंडी के बजाय बेगूसराय मंडी में मक्के का भाव ₹350 प्रति क्विंटल अधिक मिल रहा था। लाइव मंडी रडार ने एक ही ट्रॉली में ₹14,000 का अतिरिक्त फायदा करा दिया।” (Instead of Samastipur yard, Begusarai Mandi was offering ₹350/qtl more. The live Mandi radar earned me an extra ₹14,000 on a single trolley.)',
+    image: '/assets/Farmer_gesturing.jpeg',
+    video: '/assets/Yellow_Rust_Wheat.mp4',
+    detectedIssue: 'Fall armyworm whorl infestation & localized leaf spots',
+    actionsTaken: [
+      'Pointed phone camera directly into the maize whorl for instant AI diagnosis',
+      'Applied Emamectin Benzoate 5% SG at verified ICAR dilution (0.4g/litre)',
+      'Compared APMC modal rates across Samastipur, Rosera, and Begusarai yards'
+    ],
+    result: 'Controlled armyworm infestation within 48 hours; sold crop at peak Begusarai modal rate.'
+  },
+  {
+    id: 'debabrata',
+    name: 'Debabrata Roy',
+    location: 'Nadia, West Bengal',
+    state: 'West Bengal',
+    crop: 'Jute & Cauliflower',
+    metric: '₹2,200/bigha Fertilizer Savings',
+    metricTag: 'Zero Chemical Over-dosing',
+    quote: '“সবজি চাষে সারের খরচ অনেক বেড়ে যাচ্ছিল। গ্রেনওয়াইজ ক্যালকুলেটর দিয়ে ইউরিয়া কমিয়ে সঠিক পটাশ প্রয়োগ করে আল্ট্রা-গ্রিন ফলন পেয়েছি।” (Fertilizer bills in vegetable farming were excessive. Using GrainWise to reduce urea and optimize potash gave me a lush, healthy harvest with ₹2,200/bigha savings.)',
+    image: '/assets/tablet_wheat_field.jpeg',
+    video: '/assets/Sustainable_farm_sunset.mp4',
+    detectedIssue: 'Boron deficiency and leaf rot in winter vegetable plots',
+    actionsTaken: [
+      'Diagnosed micronutrient deficiency vs fungal infection via multi-spectral scan',
+      'Applied calibrated foliar spray (2g Borax/litre) during early vegetative growth',
+      'Monitored Ranaghat and Bethuadahari APMC prices before wholesale dispatch'
+    ],
+    result: 'Achieved prime curd quality and fetched premium prices at Ranaghat wholesale market.'
+  },
+  {
+    id: 'sunita',
+    name: 'Sunita Devi',
+    location: 'Nalanda, Bihar',
+    state: 'Bihar',
+    crop: 'Paddy & Gram (Chana)',
+    metric: '100% Bio-IPM Transition',
+    metricTag: '90% Drip Irrigation Subsidy Approved',
+    quote: '“अनन्या दीदी से हमने मगही और हिंदी में बात की। खेत में चना का उकठा (Wilt) रोग लगा था, ट्राइकोडर्मा और जैविक खाद से 3 एकड़ खेत को बिना भारी दवा के ठीक कर लिया।” (We consulted Ananya Didi in Magahi and Hindi. Our gram crop had wilt disease; we treated 3 acres using Trichoderma and organic compost without expensive chemical sprays.)',
+    image: '/assets/Hand_holding_smartphone.jpeg',
+    video: '/assets/sustainable_farming_village.mp4',
+    detectedIssue: 'Vascular wilt and pod borer in rainfed chickpea (chana)',
+    actionsTaken: [
+      'Obtained organic bio-fungicide seed treatment and Trichoderma soil drenching advice',
+      'Installed pheromone monitoring traps at 5 traps/acre as prescribed by Ananya AI',
+      'Tracked Bihar state micro-irrigation subsidy under PMKSY directly through the portal'
+    ],
+    result: 'Halted vascular wilt spread across 3 acres; verified for 90% state drip irrigation subsidy.'
+  },
+  {
     id: 'ramesh',
     name: 'Ramesh Patil',
     location: 'Nashik, Maharashtra',
+    state: 'Maharashtra',
     crop: 'Wheat & onion',
     metric: 'Saved ~2 acres from rust spread',
     metricTag: '~35% yield protected',
@@ -27,6 +104,7 @@ const INITIAL_STORIES = [
     id: 'lakshmi',
     name: 'Lakshmi Devi',
     location: 'Warangal, Telangana',
+    state: 'Telangana',
     crop: 'Paddy',
     metric: '~18% lower fertilizer cost',
     metricTag: '18% lower fertilizer cost',
@@ -45,6 +123,7 @@ const INITIAL_STORIES = [
     id: 'gurpreet',
     name: 'Gurpreet Singh',
     location: 'Bathinda, Punjab',
+    state: 'Punjab',
     crop: 'Cotton',
     metric: '₹1,900 more per quintal',
     metricTag: '₹1,900 more per quintal',
@@ -63,6 +142,7 @@ const INITIAL_STORIES = [
     id: 'meena',
     name: 'Meena Ravi',
     location: 'Erode, Tamil Nadu',
+    state: 'Tamil Nadu',
     crop: 'Turmeric',
     metric: 'Fewer sprays, cleaner harvest',
     metricTag: '22% higher marketable yield',
@@ -84,6 +164,34 @@ export default function FarmerStories() {
   const [selectedCase, setSelectedCase] = useState(INITIAL_STORIES[0]);
   const [caseVideoPlaying, setCaseVideoPlaying] = useState(false);
   const [caseVideoFailed, setCaseVideoFailed] = useState(false);
+  const [selectedStateFilter, setSelectedStateFilter] = useState('all');
+  const scrollContainerRef = useRef(null);
+
+  const handleScrollUp = () => {
+    scrollContainerRef.current?.scrollBy({ top: -240, behavior: 'smooth' });
+  };
+
+  const handleScrollDown = () => {
+    scrollContainerRef.current?.scrollBy({ top: 240, behavior: 'smooth' });
+  };
+
+  const STATE_OPTIONS = [
+    { id: 'all', label: 'All Regions' },
+    { id: 'West Bengal', label: '🌾 West Bengal', badge: 'New' },
+    { id: 'Bihar', label: '🌽 Bihar', badge: 'New' },
+    { id: 'Maharashtra', label: 'Maharashtra' },
+    { id: 'Telangana', label: 'Telangana' },
+    { id: 'Punjab', label: 'Punjab' },
+    { id: 'Tamil Nadu', label: 'Tamil Nadu' }
+  ];
+
+  const filteredStories = stories.filter((s) => {
+    if (selectedStateFilter === 'all') return true;
+    return (
+      s.state === selectedStateFilter ||
+      (s.location && s.location.toLowerCase().includes(selectedStateFilter.toLowerCase()))
+    );
+  });
 
   const handleSelectCase = (story) => {
     setSelectedCase(story);
@@ -355,42 +463,165 @@ export default function FarmerStories() {
           </form>
         )}
 
-        {/* Testimonials Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-8 sm:mb-16">
-          {stories.map((s) => (
-            <div
-              key={s.id}
-              onClick={() => handleSelectStory(s)}
-              className={`cursor-pointer rounded-2xl sm:rounded-3xl p-4 sm:p-6 transition-all duration-300 border flex flex-col justify-between relative overflow-hidden ${
-                selectedCase.id === s.id
-                  ? 'bg-gradient-to-b from-[#06331e] to-[#042013] border-amber-400 shadow-2xl shadow-amber-400/10 scale-105'
-                  : 'bg-[#042013]/90 border-emerald-800/50 hover:border-emerald-600 hover:-translate-y-1'
-              }`}
-            >
-              {s.isUserSubmission && (
-                <span className="absolute top-3 right-3 text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-400 text-black shadow">
-                  ✨ Your Feedback
-                </span>
-              )}
+        {/* Vertical Scroll Feedback Showcase */}
+        <div className="mb-8 sm:mb-14 space-y-3.5">
+          {/* Region Filters & Vertical Scroll Controls */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-[#031d10] p-3 sm:p-4 rounded-2xl border border-emerald-800/60 shadow-xl">
+            {/* State Filter Pills */}
+            <div className="flex items-center gap-1.5 overflow-x-auto pb-1 sm:pb-0 scrollbar-none text-xs">
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider flex items-center gap-1 mr-1 shrink-0">
+                <Filter className="w-3.5 h-3.5 text-amber-400" />
+                <span className="hidden sm:inline">Region:</span>
+              </span>
+              {STATE_OPTIONS.map((st) => {
+                const count = st.id === 'all'
+                  ? stories.length
+                  : stories.filter(s => s.state === st.id || (s.location && s.location.toLowerCase().includes(st.id.toLowerCase()))).length;
+                if (st.id !== 'all' && count === 0) return null;
 
-              <div>
-                <Quote className="w-6 h-6 sm:w-8 sm:h-8 text-amber-400/40 mb-2 sm:mb-3" />
-                <p className="text-xs sm:text-sm text-slate-200 italic leading-relaxed mb-4 sm:mb-6 font-serif">
-                  {s.quote}
-                </p>
+                const isActive = selectedStateFilter === st.id;
+                return (
+                  <button
+                    key={st.id}
+                    onClick={() => setSelectedStateFilter(st.id)}
+                    className={`px-3 py-1.5 rounded-full font-bold text-xs whitespace-nowrap transition-all flex items-center gap-1.5 shrink-0 min-h-[32px] touch-manipulation ${
+                      isActive
+                        ? 'bg-amber-400 text-black shadow-md shadow-amber-400/20 font-extrabold'
+                        : 'bg-emerald-950/80 hover:bg-emerald-900 text-slate-300 border border-emerald-800/80'
+                    }`}
+                  >
+                    <span>{st.label}</span>
+                    <span className={`text-[10px] font-mono px-1.5 py-0.5 rounded-full ${isActive ? 'bg-black/20 text-black font-extrabold' : 'bg-black/40 text-amber-300'}`}>
+                      {count}
+                    </span>
+                    {st.badge && (
+                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500 text-black font-extrabold uppercase tracking-tight">
+                        {st.badge}
+                      </span>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Vertical Scroll Header Indicators & Quick Buttons */}
+            <div className="flex items-center justify-between sm:justify-end gap-3 shrink-0 pt-1.5 sm:pt-0 border-t sm:border-t-0 border-emerald-900/50">
+              <div className="text-[11px] text-emerald-300 font-mono flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span>↕ Vertical Scroll ({filteredStories.length} Feedback)</span>
               </div>
-
-              <div className="pt-3 sm:pt-4 border-t border-emerald-900/60">
-                <div className="font-display font-extrabold text-white text-sm sm:text-base">{s.name}</div>
-                <div className="text-[10px] sm:text-[11px] text-slate-400 flex items-center gap-1 mt-0.5">
-                  <MapPin className="w-3 h-3 text-emerald-400" /> {s.location} · <span className="text-amber-300">{s.crop}</span>
-                </div>
-                <div className="mt-2 sm:mt-3 px-2.5 sm:px-3 py-1 bg-amber-500/20 text-amber-300 text-[10px] sm:text-[11px] font-bold rounded-lg border border-amber-500/30 inline-block">
-                  {s.metric}
-                </div>
+              <div className="flex items-center gap-1.5">
+                <button
+                  onClick={handleScrollUp}
+                  title="Scroll Up Feedback"
+                  aria-label="Scroll feedback up"
+                  className="w-8 h-8 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-slate-200 hover:text-white flex items-center justify-center transition-all active:scale-95 touch-manipulation"
+                >
+                  <ChevronUp className="w-4 h-4 text-emerald-300" />
+                </button>
+                <button
+                  onClick={handleScrollDown}
+                  title="Scroll Down Feedback"
+                  aria-label="Scroll feedback down"
+                  className="w-8 h-8 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-slate-200 hover:text-white flex items-center justify-center transition-all active:scale-95 touch-manipulation"
+                >
+                  <ChevronDown className="w-4 h-4 text-emerald-300" />
+                </button>
               </div>
             </div>
-          ))}
+          </div>
+
+          {/* Vertical Scrollable Feed Viewport */}
+          <div
+            ref={scrollContainerRef}
+            tabIndex={0}
+            role="region"
+            aria-label="Farmer stories vertical scrollable feed"
+            className="relative max-h-[460px] sm:max-h-[520px] md:max-h-[580px] overflow-y-auto pr-1.5 sm:pr-2.5 rounded-2xl sm:rounded-3xl bg-[#031d10]/95 border-2 border-emerald-500/30 p-3.5 sm:p-5 shadow-2xl scrollbar-thin scrollbar-thumb-emerald-600/80 scrollbar-track-emerald-950/60 focus:outline-none focus:ring-1 focus:ring-emerald-500/50"
+          >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 sm:gap-4">
+              {filteredStories.map((s) => (
+                <div
+                  key={s.id}
+                  onClick={() => handleSelectStory(s)}
+                  className={`cursor-pointer rounded-2xl p-4 sm:p-5 transition-all duration-300 border flex flex-col justify-between relative overflow-hidden group touch-manipulation ${
+                    selectedCase.id === s.id
+                      ? 'bg-gradient-to-b from-[#06331e] to-[#042013] border-amber-400 shadow-xl shadow-amber-400/10 ring-2 ring-amber-400/50 scale-[1.01]'
+                      : 'bg-[#042013]/90 border-emerald-800/60 hover:border-emerald-500/70 hover:bg-[#052818]/90'
+                  }`}
+                >
+                  {s.isUserSubmission ? (
+                    <span className="absolute top-3 right-3 text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-400 text-black shadow">
+                      ✨ Your Feedback
+                    </span>
+                  ) : s.state ? (
+                    <span className="absolute top-3 right-3 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950 border border-emerald-700 text-amber-300 shadow">
+                      {s.state}
+                    </span>
+                  ) : null}
+
+                  <div>
+                    <div className="flex items-center gap-1 mb-2">
+                      {[1, 2, 3, 4, 5].map((st) => (
+                        <Star key={st} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
+                      ))}
+                      <span className="text-[10px] font-mono text-emerald-400 font-bold ml-1.5">5.0 Verified</span>
+                    </div>
+                    <Quote className="w-6 h-6 sm:w-7 sm:h-7 text-amber-400/40 mb-2" />
+                    <p className="text-xs sm:text-sm text-slate-200 italic leading-relaxed mb-4 font-serif">
+                      {s.quote}
+                    </p>
+                  </div>
+
+                  <div className="pt-3 border-t border-emerald-900/60 flex items-center justify-between gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="font-display font-extrabold text-white text-sm sm:text-base group-hover:text-amber-300 transition-colors truncate">
+                        {s.name}
+                      </div>
+                      <div className="text-[10px] sm:text-[11px] text-slate-400 flex items-center gap-1 mt-0.5 truncate">
+                        <MapPin className="w-3 h-3 text-emerald-400 shrink-0" />
+                        <span className="truncate">{s.location}</span>
+                        <span className="text-slate-600">·</span>
+                        <span className="text-amber-300 font-medium shrink-0">{s.crop}</span>
+                      </div>
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <div className="px-2.5 py-1 bg-amber-500/20 text-amber-300 text-[10px] sm:text-[11px] font-bold rounded-lg border border-amber-500/30">
+                        {s.metric}
+                      </div>
+                      <div className="text-[9px] text-emerald-400 mt-1 font-mono group-hover:underline">
+                        View Breakdown →
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {filteredStories.length === 0 && (
+              <div className="py-12 text-center text-slate-400 text-xs space-y-2">
+                <div>No stories found matching this region.</div>
+                <button
+                  onClick={() => setSelectedStateFilter('all')}
+                  className="px-3 py-1 bg-emerald-900/80 text-emerald-300 rounded-lg border border-emerald-700 text-xs font-bold"
+                >
+                  Show All Regions
+                </button>
+              </div>
+            )}
+          </div>
+
+          {/* Scroll Instruction Bar */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-slate-400 px-2 pt-0.5">
+            <span className="flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3 text-amber-400 shrink-0" />
+              <span>Scroll vertically inside feed to browse all farmer stories across West Bengal, Bihar, and Pan-India</span>
+            </span>
+            <span className="font-mono text-emerald-400 text-[10px]">
+              Tap any feedback card to spotlight full case study below ↓
+            </span>
+          </div>
         </div>
 
         {/* Detailed Case Study Deep Dive Breakdown Card */}
