@@ -45,25 +45,25 @@ export default function FarmingCalendar() {
   };
 
   return (
-    <section id="calendar" className="py-24 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
+    <section id="calendar" className="py-10 sm:py-16 md:py-24 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-12 items-start">
           
           {/* Left Column: Interactive Farming Calendar */}
-          <div className="lg:col-span-7 space-y-6">
+          <div className="lg:col-span-7 space-y-4 sm:space-y-6">
             
-            <div className="space-y-3">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950 border border-emerald-500/50 text-xs font-bold text-emerald-300 shadow-lg">
-                <Calendar className="w-4 h-4 text-amber-400" />
+            <div className="space-y-2 sm:space-y-3">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-emerald-950 border border-emerald-500/50 text-[11px] sm:text-xs font-bold text-emerald-300 shadow-lg">
+                <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
                 <span>100% Precision Seasonal Guidance Engine</span>
-                <span className="bg-emerald-500 text-black px-2 py-0.5 rounded-full font-mono text-[10px] uppercase font-extrabold">100% ACCURATE</span>
+                <span className="bg-emerald-500 text-black px-1.5 sm:px-2 py-0.5 rounded-full font-mono text-[9px] sm:text-[10px] uppercase font-extrabold">100% ACCURATE</span>
               </div>
-              <h2 className="font-display text-3xl font-extrabold text-white">
+              <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white">
                 Interactive <span className="gradient-text-agri">Farming Calendar 100%</span>
               </h2>
-              <p className="text-slate-300 text-sm">
+              <p className="text-slate-300 text-xs sm:text-sm">
                 Keeps every operation on schedule with <strong>100% seasonal precision</strong> — from seed treatment to split fertilization and harvest timing.
               </p>
             </div>
@@ -74,7 +74,7 @@ export default function FarmingCalendar() {
                 <button
                   key={idx}
                   onClick={() => handleSeasonSelect(idx)}
-                  className={`px-4 py-2.5 rounded-xl text-xs font-bold transition-all border ${
+                  className={`px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all border ${
                     activeSeason === idx
                       ? 'bg-amber-400 text-black border-amber-400 shadow-lg'
                       : 'bg-[#042013] text-slate-300 border-emerald-800/60 hover:border-emerald-600'
@@ -86,7 +86,7 @@ export default function FarmingCalendar() {
             </div>
 
             {/* Timeline Steps */}
-            <div className="bg-[#042013] border border-emerald-800/50 rounded-3xl p-6 shadow-xl space-y-4">
+            <div className="bg-[#042013] border border-emerald-800/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 shadow-xl space-y-3 sm:space-y-4">
               <div className="text-xs font-bold text-amber-300 uppercase tracking-wider mb-2">
                 Crops: {SEASONS[activeSeason].crops}
               </div>
@@ -113,23 +113,23 @@ export default function FarmingCalendar() {
           </div>
 
           {/* Right Column: Government Schemes Tracker */}
-          <div className="lg:col-span-5 space-y-6">
+          <div className="lg:col-span-5 space-y-4 sm:space-y-6">
             
-            <div className="space-y-3">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-xs font-semibold text-indigo-300">
+            <div className="space-y-2 sm:space-y-3">
+              <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-500/40 text-[11px] sm:text-xs font-semibold text-indigo-300">
                 <Landmark className="w-3.5 h-3.5 text-indigo-400" /> Government Schemes & Subsidies
               </div>
-              <h2 className="font-display text-3xl font-extrabold text-white">
+              <h2 className="font-display text-2xl sm:text-3xl font-extrabold text-white">
                 Subsidies <span className="gradient-text-gold">Tracker</span>
               </h2>
-              <p className="text-slate-300 text-sm">
+              <p className="text-slate-300 text-xs sm:text-sm">
                 Track the latest subsidies, insurance, and financial support programs relevant to your state.
               </p>
             </div>
 
-            <div className="space-y-3">
+            <div className="space-y-2.5 sm:space-y-3">
               {SCHEMES.map((scm, idx) => (
-                <div key={idx} className="p-4 rounded-2xl bg-[#042013] border border-emerald-800/50 hover:border-amber-400/50 transition-colors shadow-lg">
+                <div key={idx} className="p-3.5 sm:p-4 rounded-2xl bg-[#042013] border border-emerald-800/50 hover:border-amber-400/50 transition-colors shadow-lg">
                   <div className="flex items-center justify-between mb-2">
                     <div className="text-xs font-bold text-white flex items-center gap-1.5">
                       <FileText className="w-4 h-4 text-amber-400" /> {scm.title}

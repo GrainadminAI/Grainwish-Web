@@ -14,36 +14,36 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
   };
 
   return (
-    <footer className="bg-[#010c06] text-slate-300 border-t border-emerald-900/60 pt-20 pb-12 relative overflow-hidden">
+    <footer className="bg-[#010c06] text-slate-300 border-t border-emerald-900/60 pt-10 pb-24 md:pb-12 sm:pt-16 relative overflow-hidden">
       
       {/* Single Unified Primary CTA Footer Card */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16">
-        <div className="bg-gradient-to-r from-[#052b19] via-[#083b23] to-[#042013] border-2 border-emerald-500/40 rounded-3xl p-8 sm:p-14 text-center shadow-2xl space-y-6 relative overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 sm:mb-16">
+        <div className="bg-gradient-to-r from-[#052b19] via-[#083b23] to-[#042013] border-2 border-emerald-500/40 rounded-3xl p-5 sm:p-8 md:p-14 text-center shadow-2xl space-y-4 sm:space-y-6 relative overflow-hidden">
           
-          <div className="max-w-3xl mx-auto space-y-4">
-            <span className="px-3.5 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-500/40 text-xs font-bold uppercase tracking-wider inline-block">
+          <div className="max-w-3xl mx-auto space-y-3 sm:space-y-4">
+            <span className="px-3 sm:px-3.5 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-500/40 text-[11px] sm:text-xs font-bold uppercase tracking-wider inline-block">
               Empower Your Fields Today
             </span>
 
-            <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
+            <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
               {t('footer_hero_title')} <span className="gradient-text-gold">{t('footer_hero_gold')}</span>
             </h2>
 
-            <p className="text-slate-200 text-sm sm:text-base leading-relaxed">
+            <p className="text-slate-200 text-xs sm:text-base leading-relaxed">
               {t('footer_hero_sub')}
             </p>
 
-            <div className="pt-4 flex flex-col items-center justify-center gap-3">
+            <div className="pt-2 sm:pt-4 flex flex-col items-center justify-center gap-2.5 sm:gap-3">
               <button
                 onClick={onOpenDownloadModal}
-                className="w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-emerald-500 via-emerald-600 to-amber-500 hover:from-emerald-400 hover:to-amber-400 text-black font-extrabold rounded-2xl shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 text-base"
+                className="w-full sm:w-auto px-7 sm:px-8 py-3.5 sm:py-4 bg-gradient-to-r from-emerald-500 via-emerald-600 to-amber-500 hover:from-emerald-400 hover:to-amber-400 text-black font-extrabold rounded-2xl shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95 text-xs sm:text-base"
               >
-                <Smartphone className="w-5 h-5 text-black" />
+                <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
                 {t('hero_cta_download')}
               </button>
-              <div className="text-xs text-amber-300 font-mono flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                Application Phase is Coming Soon · Android Pre-Register will get Free 14 days trial pack
+              <div className="text-[10px] sm:text-xs text-amber-300 font-mono flex items-center gap-1.5 text-center px-2">
+                <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0" />
+                <span>Application Phase is Coming Soon · Android Pre-Register will get Free 14 days trial pack</span>
               </div>
             </div>
           </div>
@@ -53,7 +53,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
 
       {/* Main Footer Links */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 pb-12 border-b border-emerald-900/60 text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 pb-8 sm:pb-12 border-b border-emerald-900/60 text-xs">
           
           {/* Brand Col */}
           <div className="space-y-4">

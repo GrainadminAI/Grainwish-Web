@@ -104,9 +104,11 @@ function HologramScannerOrb() {
 // Interactive Field Grid
 function FarmFieldGrid() {
   const crops = useMemo(() => {
+    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+    const step = isMobile ? 2.4 : 1.4;
     const arr = [];
-    for (let x = -8; x <= 8; x += 1.2) {
-      for (let z = -8; z <= 8; z += 1.2) {
+    for (let x = -7; x <= 7; x += step) {
+      for (let z = -7; z <= 7; z += step) {
         // Skip middle area for orb
         if (Math.abs(x) < 2 && Math.abs(z) < 2) continue;
         const h = 1.8 + Math.random() * 0.8;
@@ -129,25 +131,27 @@ function FarmFieldGrid() {
         <CropStalk key={c.id} position={c.position} height={c.height} delay={c.delay} color={c.color} />
       ))}
       {/* Ground Grid */}
-      <gridHelper args={[24, 24, "#10b981", "#083320"]} position={[0, 0, 0]} />
+      <gridHelper args={[20, 20, "#10b981", "#083320"]} position={[0, 0, 0]} />
     </group>
   );
 }
 
 export default function ThreeFarmCanvas() {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relative pointer-events-none">
       <Canvas
         camera={{ position: [0, 2, 7], fov: 50 }}
-        dpr={[1, 1.5]}
+        dpr={isMobile ? [1, 1.2] : [1, 1.5]}
         gl={{
-          antialias: true,
+          antialias: !isMobile,
           alpha: true,
           powerPreference: 'high-performance',
           preserveDrawingBuffer: false,
           failIfMajorPerformanceCaveat: false
         }}
-        className="w-full h-full"
+        className="w-full h-full pointer-events-none"
       >
         <ambientLight intensity={0.6} />
         <directionalLight position={[10, 15, 10]} intensity={1.5} color="#fbbf24" />
@@ -160,8 +164,8 @@ export default function ThreeFarmCanvas() {
         <FarmFieldGrid />
 
         {/* Floating Agricultural Dust / Pollen Sparkles */}
-        <Sparkles count={120} scale={[12, 10, 12]} size={3} speed={0.4} color="#f59e0b" opacity={0.6} />
-        <Sparkles count={80} scale={[10, 8, 10]} size={2} speed={0.6} color="#34d399" opacity={0.8} />
+        <Sparkles count={isMobile ? 35 : 120} scale={[12, 10, 12]} size={3} speed={0.4} color="#f59e0b" opacity={0.6} />
+        <Sparkles count={isMobile ? 25 : 80} scale={[10, 8, 10]} size={2} speed={0.6} color="#34d399" opacity={0.8} />
 
         <OrbitControls
           enableZoom={false}

@@ -49,8 +49,8 @@ const CROP_SAMPLES = [
     yieldProtected: '~38% Estimated Crop Loss Prevented',
     recoveryDays: '7 - 10 Days',
     image: '/assets/hand_phone_crop.jpeg',
-    videoUrl: 'https://labs.google/fx/api/og-video/shared/ec9838d9-3d0d-4966-b815-e8ecd4c41d3e',
-    shareUrl: 'https://labs.google/fx/tools/flow/shared/video/ec9838d9-3d0d-4966-b815-e8ecd4c41d3e',
+    videoUrl: '/assets/Yellow_Rust_Wheat.mp4',
+    shareUrl: 'https://www.grainwish.com/#diagnostics',
     boundingBoxes: [
       { x: 24, y: 20, width: 48, height: 44, label: 'RUST DISEASE', conf: '99.8%', color: '#f59e0b' }
     ],
@@ -79,8 +79,8 @@ const CROP_SAMPLES = [
     yieldProtected: '~28% Estimated Harvest Loss Prevented',
     recoveryDays: '10 - 14 Days',
     image: '/assets/tablet_wheat_field.jpeg',
-    videoUrl: 'https://labs.google/fx/api/og-video/shared/a256b2ce-a1a6-4dd2-91b6-46aad4039a43',
-    shareUrl: 'https://labs.google/fx/tools/flow/shared/video/a256b2ce-a1a6-4dd2-91b6-46aad4039a43',
+    videoUrl: '/assets/Paddy_rice.mp4',
+    shareUrl: 'https://www.grainwish.com/#diagnostics',
     boundingBoxes: [
       { x: 28, y: 22, width: 44, height: 42, label: 'LEAF BLIGHT SPOT', conf: '99.5%', color: '#ef4444' }
     ],
@@ -109,8 +109,8 @@ const CROP_SAMPLES = [
     yieldProtected: '~35% Defoliation Loss Prevented',
     recoveryDays: '5 - 7 Days',
     image: '/assets/farmer_hologram.jpeg',
-    videoUrl: 'https://labs.google/fx/api/og-video/shared/492a8d54-34c1-411f-886f-604ed1bacc5c',
-    shareUrl: 'https://labs.google/fx/tools/flow/shared/video/492a8d54-34c1-411f-886f-604ed1bacc5c',
+    videoUrl: '/assets/Green_cotton.mp4',
+    shareUrl: 'https://www.grainwish.com/#diagnostics',
     boundingBoxes: [
       { x: 22, y: 26, width: 54, height: 42, label: 'INSECT DAMAGE', conf: '99.2%', color: '#84cc16' }
     ],
@@ -138,7 +138,9 @@ const CROP_SAMPLES = [
     organicAlternative: 'Install 10 Yellow Sticky Traps/acre + Spray 5% Neem Seed Kernel Extract (NSKE) @ 50ml/L.',
     yieldProtected: '~40% Pod & Grain Loss Prevented',
     recoveryDays: '7 - 10 Days',
-    image: '/assets/hand_phone_crop.jpeg',
+    image: '/assets/Farmer_walking.jpeg',
+    videoUrl: '/assets/Sustainable_farm_sunset.mp4',
+    shareUrl: 'https://www.grainwish.com/#diagnostics',
     boundingBoxes: [
       { x: 26, y: 22, width: 46, height: 46, label: 'LEAF DISEASE', conf: '98.9%', color: '#eab308' }
     ],
@@ -166,7 +168,9 @@ const CROP_SAMPLES = [
     organicAlternative: 'Filtered Vermiwash or Jeevamrutham foliar spray @ 20ml/L water.',
     yieldProtected: '100% Potential Crop Yield Maintained',
     recoveryDays: 'Ongoing Maintenance',
-    image: '/assets/tablet_wheat_field.jpeg',
+    image: '/assets/farmer_harvest.jpeg',
+    videoUrl: '/assets/holographic_leaves.mp4',
+    shareUrl: 'https://www.grainwish.com/#diagnostics',
     boundingBoxes: [
       { x: 18, y: 18, width: 64, height: 64, label: 'HEALTHY LEAF', conf: '99.9%', color: '#10b981' }
     ],
@@ -194,7 +198,9 @@ const CROP_SAMPLES = [
     organicAlternative: 'Foliar spray of 10% Cow urine bio-formulation + Trichoderma viride @ 4g/L.',
     yieldProtected: '~32% Oilseed Yield Protected',
     recoveryDays: '8 - 12 Days',
-    image: '/assets/tablet_wheat_field.jpeg',
+    image: '/assets/Farmer_gesturing.jpeg',
+    videoUrl: '/assets/sustainable_farming_village.mp4',
+    shareUrl: 'https://www.grainwish.com/#diagnostics',
     boundingBoxes: [
       { x: 28, y: 32, width: 42, height: 38, label: 'LEAF BLIGHT SPOT', conf: '99.6%', color: '#ef4444' }
     ],
@@ -227,6 +233,8 @@ export default function DiagnosticsTool() {
   const [isDragging, setIsDragging] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
   const [isFrozen, setIsFrozen] = useState(false);
+  const [sampleVideoPlaying, setSampleVideoPlaying] = useState(false);
+  const [sampleVideoFailed, setSampleVideoFailed] = useState(false);
 
   // Live Optical Leaf Verification Intelligence states
   const [webcamState, setWebcamState] = useState('inactive'); // 'inactive' | 'live' | 'captured'
@@ -425,6 +433,16 @@ export default function DiagnosticsTool() {
       rejectionReason: '',
       advice: 'Position a crop leaf in frame'
     });
+    // Safety check for mobile browsers, in-app webviews, or non-HTTPS contexts
+    if (!navigator?.mediaDevices?.getUserMedia) {
+      console.warn('getUserMedia not supported in this browser context');
+      setCameraError('Live browser streaming is not supported in this mobile webview. Launching your device camera directly.');
+      setTimeout(() => {
+        nativeCameraInputRef.current?.click();
+      }, 300);
+      return;
+    }
+
     try {
       if (webcamStream) {
         webcamStream.getTracks().forEach(track => track.stop());
@@ -460,6 +478,10 @@ export default function DiagnosticsTool() {
     } catch (err) {
       console.warn('Webcam Access Error:', err);
       setCameraError('Direct webcam streaming unavailable. You can use your phone camera or upload a leaf photo directly.');
+      // Automatically prompt native camera as seamless fallback on mobile
+      setTimeout(() => {
+        nativeCameraInputRef.current?.click();
+      }, 600);
     }
   };
 
@@ -706,6 +728,8 @@ export default function DiagnosticsTool() {
     setUploadedImage(null);
     setInputMode('sample');
     setWebcamState('inactive');
+    setSampleVideoPlaying(false);
+    setSampleVideoFailed(false);
     setCropVerification({
       isVerified: true,
       isCropLeaf: true,
@@ -784,7 +808,10 @@ export default function DiagnosticsTool() {
       `⏱️ *Recovery:* ${fix.recoveryDays}\n\n` +
       `🔗 100% Free AI Smart Camera Crop Detection on https://www.grainwish.com`
     );
-    window.open(`https://api.whatsapp.com/send?text=${text}`, '_blank');
+    const waUrl = `https://wa.me/?text=${text}`;
+    if (!window.open(waUrl, '_blank')) {
+      window.location.href = waUrl;
+    }
   };
 
   // Copy shareable summary to clipboard
@@ -803,8 +830,17 @@ export default function DiagnosticsTool() {
 
   // Print / Export PDF Diagnostic Certificate
   const handlePrintReport = () => {
-    const printWindow = window.open('', '_blank');
-    if (!printWindow) return;
+    let printWindow = null;
+    try {
+      printWindow = window.open('', '_blank');
+    } catch {
+      printWindow = null;
+    }
+
+    if (!printWindow) {
+      window.print();
+      return;
+    }
 
     printWindow.document.write(`
       <!DOCTYPE html>
@@ -881,7 +917,7 @@ export default function DiagnosticsTool() {
   };
 
   return (
-    <section id="diagnostics" className="py-12 sm:py-20 lg:py-24 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
+    <section id="diagnostics" className="py-8 sm:py-16 lg:py-20 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
       
       {/* Offscreen Canvas for software-backed pixel analysis */}
       <canvas ref={canvasRef} className="hidden" />
@@ -903,7 +939,7 @@ export default function DiagnosticsTool() {
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-4xl mx-auto mb-6 sm:mb-10 lg:mb-12 space-y-3 sm:space-y-4">
+        <div className="text-center max-w-4xl mx-auto mb-4 sm:mb-8 lg:mb-12 space-y-2 sm:space-y-4">
           <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-emerald-950/90 border border-emerald-500/50 text-[11px] sm:text-xs font-bold text-emerald-300 shadow-lg shadow-emerald-900/30 max-w-full">
             <Cpu className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 animate-pulse shrink-0" />
             <span className="hidden sm:inline">100% Calibrated Multi-Spectral AI Pathology Vision</span>
@@ -1139,7 +1175,7 @@ export default function DiagnosticsTool() {
               </div>
 
               {/* Viewport Frame with Multi-Spectrum Filters & Drag Drop Zone */}
-              <div className="relative aspect-square sm:aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden border border-emerald-500/40 bg-black group">
+              <div className="relative aspect-[4/3] rounded-xl sm:rounded-2xl overflow-hidden border border-emerald-500/40 bg-black group">
                 
                 {/* 1. WEBCAM LIVE STREAM MODE */}
                 {inputMode === 'webcam' ? (
@@ -1281,41 +1317,54 @@ export default function DiagnosticsTool() {
                   </div>
                 ) : (
                   /* 2. STATIC IMAGE OR UPLOAD MODE */
-                  <div className="relative w-full h-full">
+                  <div className="relative w-full h-full bg-emerald-950">
                     {uploadedImage ? (
                       <img
                         src={uploadedImage}
                         alt={`Farmer leaf specimen for ${selectedCrop.crop} 100% diagnostics`}
-                        loading="lazy"
+                        loading="eager"
                         decoding="async"
                         className={`w-full h-full object-cover ${viewMode === 'thermal' ? 'thermal-mode' : viewMode === 'cellular' ? 'infrared-mode' : ''}`}
                       />
-                    ) : selectedCrop.videoUrl ? (
-                      <video
-                        key={selectedCrop.id}
-                        autoPlay
-                        loop
-                        muted
-                        playsInline
-                        className={`w-full h-full object-cover ${viewMode === 'thermal' ? 'thermal-mode' : viewMode === 'cellular' ? 'infrared-mode' : ''}`}
-                        src={selectedCrop.videoUrl}
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          if (e.target.nextElementSibling) {
-                            e.target.nextElementSibling.style.display = 'block';
-                          }
-                        }}
-                      />
-                    ) : null}
+                    ) : (
+                      <>
+                        {/* Leaf image is ALWAYS mounted and visible by default */}
+                        <img
+                          src={selectedCrop.image}
+                          alt={`Diagnostic leaf analysis specimen showing ${selectedCrop.crop}`}
+                          loading="eager"
+                          decoding="async"
+                          className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+                            sampleVideoPlaying && !sampleVideoFailed ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                          } ${viewMode === 'thermal' ? 'thermal-mode' : viewMode === 'cellular' ? 'infrared-mode' : ''}`}
+                          onError={(e) => {
+                            e.target.src = '/assets/hand_phone_crop.jpeg';
+                          }}
+                        />
 
-                    <img
-                      src={selectedCrop.image}
-                      alt={`Diagnostic leaf analysis specimen showing ${selectedCrop.crop}`}
-                      loading="lazy"
-                      decoding="async"
-                      className={`w-full h-full object-cover ${viewMode === 'thermal' ? 'thermal-mode' : viewMode === 'cellular' ? 'infrared-mode' : ''}`}
-                      style={{ display: !uploadedImage && selectedCrop.videoUrl ? 'none' : 'block' }}
-                    />
+                        {selectedCrop.videoUrl && !sampleVideoFailed && (
+                          <video
+                            key={selectedCrop.id}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            preload="metadata"
+                            poster={selectedCrop.image}
+                            onPlay={() => setSampleVideoPlaying(true)}
+                            onPlaying={() => setSampleVideoPlaying(true)}
+                            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+                              sampleVideoPlaying ? 'opacity-100' : 'opacity-0'
+                            } ${viewMode === 'thermal' ? 'thermal-mode' : viewMode === 'cellular' ? 'infrared-mode' : ''}`}
+                            src={selectedCrop.videoUrl}
+                            onError={() => {
+                              setSampleVideoFailed(true);
+                              setSampleVideoPlaying(false);
+                            }}
+                          />
+                        )}
+                      </>
+                    )}
                   </div>
                 )}
 

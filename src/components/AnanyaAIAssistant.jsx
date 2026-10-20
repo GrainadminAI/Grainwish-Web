@@ -213,12 +213,46 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
   };
 
   const toggleMic = () => {
+    const SpeechRec = typeof window !== 'undefined' && (window.SpeechRecognition || window.webkitSpeechRecognition);
+    if (SpeechRec) {
+      try {
+        if (isMicActive) {
+          setIsMicActive(false);
+          return;
+        }
+        const recognition = new SpeechRec();
+        recognition.lang = INDIAN_LOCALE_MAP[selectedLang] || 'en-IN';
+        recognition.continuous = false;
+        recognition.interimResults = false;
+        setIsMicActive(true);
+        recognition.onresult = (event) => {
+          const transcript = event.results[0]?.[0]?.transcript;
+          if (transcript) {
+            setInputText(transcript);
+            handleSend(transcript);
+          }
+          setIsMicActive(false);
+        };
+        recognition.onerror = () => {
+          setIsMicActive(false);
+        };
+        recognition.onend = () => {
+          setIsMicActive(false);
+        };
+        recognition.start();
+        return;
+      } catch (e) {
+        console.warn('SpeechRecognition exception:', e);
+      }
+    }
+
+    // Fallback demo query if browser lacks Web Speech API
     setIsMicActive(!isMicActive);
     if (!isMicActive) {
       setTimeout(() => {
-        handleSend("How to protect turmeric and ginger from rhizome rot during monsoon?");
+        handleSend("How to protect crops from leaf diseases and yellow rust?");
         setIsMicActive(false);
-      }, 2200);
+      }, 1800);
     }
   };
 
@@ -232,9 +266,12 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
 
   const shareViaWhatsApp = (title, text) => {
     const shareText = encodeURIComponent(
-      `🌾 *GrainWise AI — Ananya Agronomy Prescription*\n\n*${title || 'Crop Health Advice'}*\n\n${text}\n\n👉 Diagnose your crops 100% free at https://grainwise.ai`
+      `🌾 *GrainWise AI — Ananya Agronomy Prescription*\n\n*${title || 'Crop Health Advice'}*\n\n${text}\n\n👉 Diagnose your crops 100% free at https://www.grainwish.com`
     );
-    window.open(`https://api.whatsapp.com/send?text=${shareText}`, '_blank');
+    const waUrl = `https://wa.me/?text=${shareText}`;
+    if (!window.open(waUrl, '_blank')) {
+      window.location.href = waUrl;
+    }
   };
 
   // Filter popular prompts by category
@@ -243,7 +280,7 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
     : POPULAR_PROMPTS.filter(p => p.category === activeCategory);
 
   return (
-    <section id="ananya-ai" className="py-20 sm:py-24 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
+    <section id="ananya-ai" className="py-10 sm:py-16 md:py-20 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
       
       {/* Background Radial Glow */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -251,27 +288,27 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-12 space-y-3.5">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/50 text-xs font-bold text-amber-300 shadow-lg">
-            <Sparkles className="w-4 h-4 text-amber-400" />
+        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-10 space-y-2 sm:space-y-3.5">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-amber-500/20 border border-amber-500/50 text-[11px] sm:text-xs font-bold text-amber-300 shadow-lg">
+            <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
             <span>ICAR &amp; CIBRC Calibrated Agronomy Intelligence</span>
-            <span className="bg-amber-400 text-black px-2 py-0.5 rounded-full font-mono text-[10px] font-black uppercase">
+            <span className="bg-amber-400 text-black px-1.5 sm:px-2 py-0.5 rounded-full font-mono text-[9px] sm:text-[10px] font-black uppercase">
               100% Verified Rx
             </span>
           </div>
 
-          <h2 className="font-display text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="font-display text-2xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight">
             Meet <span className="gradient-text-gold">Ananya AI</span>, Your 24/7 Virtual Agronomist
           </h2>
 
-          <p className="text-slate-300 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-300 text-xs sm:text-base leading-relaxed">
             Get instant actionable prescriptions with exact chemical dilution rates per litre, 100% biological alternatives, live Mandi rates, and government subsidies in <strong>22 Indian languages</strong>.
           </p>
         </div>
 
         {/* 4 Feature Value Props Badges */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 mb-8">
-          <div className="p-3 sm:p-4 rounded-2xl bg-[#042013] border border-emerald-800/50 flex items-start gap-2.5 sm:gap-3 shadow-md">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 mb-5 sm:mb-8">
+          <div className="p-2.5 sm:p-4 rounded-2xl bg-[#042013] border border-emerald-800/50 flex items-start gap-2 sm:gap-3 shadow-md">
             <span className="p-2 rounded-xl bg-amber-500/20 text-amber-400 shrink-0">
               <Pill className="w-4 h-4 sm:w-5 sm:h-5" />
             </span>
@@ -316,13 +353,13 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-stretch">
           
           {/* Ananya Avatar Showcase Card */}
-          <div className="lg:col-span-4 bg-gradient-to-b from-[#06301d] via-[#042516] to-[#02180d] border border-emerald-500/40 rounded-3xl p-5 sm:p-6 shadow-2xl flex flex-col justify-between text-center relative overflow-hidden">
+          <div className="lg:col-span-4 bg-gradient-to-b from-[#06301d] via-[#042516] to-[#02180d] border border-emerald-500/40 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 md:p-6 shadow-2xl flex flex-col justify-between text-center relative overflow-hidden">
             
-            <div className="w-full space-y-4">
+            <div className="w-full space-y-3 sm:space-y-4">
               
               {/* Avatar Portrait with High-Resolution User Image */}
-              <div className="relative inline-block mx-auto mt-2">
-                <div className="w-36 h-36 sm:w-44 sm:h-44 rounded-3xl overflow-hidden border-2 border-amber-400 shadow-2xl shadow-amber-400/30 mx-auto ring-4 ring-emerald-500/30 bg-emerald-950">
+              <div className="relative inline-block mx-auto mt-1 sm:mt-2">
+                <div className="w-28 h-28 sm:w-40 sm:h-40 md:w-44 md:h-44 rounded-2xl sm:rounded-3xl overflow-hidden border-2 border-amber-400 shadow-2xl shadow-amber-400/30 mx-auto ring-4 ring-emerald-500/30 bg-emerald-950">
                   <img
                     src="/assets/ananya_hero_ai.png"
                     alt="Ananya AI 24/7 Virtual Agronomist in Indian Wheat Field"
@@ -509,7 +546,7 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
           </div>
 
           {/* Chat Window Showcase */}
-          <div className="lg:col-span-8 bg-[#042013] border border-emerald-800/60 rounded-3xl p-4 sm:p-6 shadow-2xl flex flex-col h-[600px] sm:h-[640px]">
+          <div className="lg:col-span-8 bg-[#042013] border border-emerald-800/60 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-2xl flex flex-col h-[460px] sm:h-[560px] md:h-[640px]">
             
             {/* Category Quick Selector Tabs */}
             <div className="flex items-center gap-1.5 overflow-x-auto pb-3 mb-2 border-b border-emerald-900/60 scrollbar-none text-xs">
@@ -552,7 +589,14 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
                     {msg.sender === 'user' ? (
                       <User className="w-4 h-4" />
                     ) : (
-                      <img src="/assets/ananya_hero_ai.png" alt="Ananya AI Avatar" className="w-full h-full object-cover object-top" />
+                      <img 
+                        src="/assets/ananya_hero_ai.png" 
+                        alt="Ananya AI Avatar" 
+                        className="w-full h-full object-cover object-top" 
+                        onError={(e) => {
+                          e.target.src = '/assets/ananya_avatar.jpg';
+                        }}
+                      />
                     )}
                   </div>
 

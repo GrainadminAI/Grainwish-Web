@@ -55,16 +55,16 @@ export default function CookieConsentBanner({ onOpenPrivacyPolicy }) {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4 sm:p-6 animate-slide-up pointer-events-none">
+    <div className="fixed bottom-0 left-0 right-0 z-50 p-2.5 sm:p-6 animate-slide-up pointer-events-none">
       
-      <div className="max-w-4xl mx-auto bg-[#031d10]/95 backdrop-blur-xl border-2 border-emerald-500/50 rounded-2xl sm:rounded-3xl p-5 sm:p-6 shadow-[0_10px_40px_rgba(0,0,0,0.8)] pointer-events-auto space-y-4">
+      <div className="max-w-4xl mx-auto bg-[#031d10]/95 backdrop-blur-xl border-2 border-emerald-500/50 rounded-2xl sm:rounded-3xl p-3.5 sm:p-6 shadow-[0_10px_40px_rgba(0,0,0,0.8)] pointer-events-auto space-y-3 sm:space-y-4">
         
         {/* Banner Top Row */}
-        <div className="flex items-start justify-between gap-4">
+        <div className="flex items-start justify-between gap-3">
           
-          <div className="flex items-start gap-3.5">
-            <div className="w-10 h-10 rounded-xl bg-amber-400 text-black flex items-center justify-center shrink-0 shadow-md shadow-amber-400/20 mt-0.5">
-              <Cookie className="w-5 h-5" />
+          <div className="flex items-start gap-2.5 sm:gap-3.5">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-amber-400 text-black flex items-center justify-center shrink-0 shadow-md shadow-amber-400/20 mt-0.5">
+              <Cookie className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
 
             <div className="space-y-1">

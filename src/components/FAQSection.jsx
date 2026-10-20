@@ -42,26 +42,26 @@ export default function FAQSection() {
   const [openIdx, setOpenIdx] = useState(0);
 
   return (
-    <section id="faq" className="py-24 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
+    <section id="faq" className="py-10 sm:py-16 md:py-24 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
       
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-950 border border-emerald-500/40 text-xs font-semibold text-emerald-300">
+        <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-16 space-y-2 sm:space-y-4">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1 rounded-full bg-emerald-950 border border-emerald-500/40 text-[11px] sm:text-xs font-semibold text-emerald-300">
             <HelpCircle className="w-3.5 h-3.5 text-amber-400" /> {t('faq_badge', 'Got Questions?')}
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-white">
+          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">
             {t('faq_title_1', 'Frequently Asked')} <span className="gradient-text-gold">{t('faq_title_2', 'Questions')}</span>
           </h2>
-          <p className="text-slate-300 text-sm sm:text-base">
+          <p className="text-slate-300 text-xs sm:text-base">
             {t('faq_sub', 'Everything you need to know about crop diagnostics, real-time Mandi updates, and guidance from Ananya AI.')}
           </p>
         </div>
 
 
         {/* FAQ Accordion List */}
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {FAQS.map((faq, idx) => {
             const isOpen = openIdx === idx;
             return (
@@ -75,19 +75,19 @@ export default function FAQSection() {
               >
                 <button
                   onClick={() => setOpenIdx(isOpen ? null : idx)}
-                  className="w-full p-5 sm:p-6 text-left flex items-center justify-between gap-4 font-bold text-sm sm:text-base text-white hover:text-emerald-300 transition-colors"
+                  className="w-full p-3.5 sm:p-5 md:p-6 text-left flex items-center justify-between gap-3 sm:gap-4 font-bold text-xs sm:text-base text-white hover:text-emerald-300 transition-colors"
                 >
-                  <span className="flex items-center gap-3">
-                    <span className="text-amber-400 font-mono text-xs font-extrabold">0{idx + 1}</span>
+                  <span className="flex items-center gap-2.5 sm:gap-3">
+                    <span className="text-amber-400 font-mono text-[11px] sm:text-xs font-extrabold">0{idx + 1}</span>
                     <span>{faq.q}</span>
                   </span>
-                  <ChevronDown className={`w-5 h-5 text-emerald-400 shrink-0 transition-transform duration-300 ${
+                  <ChevronDown className={`w-4 h-4 sm:w-5 sm:h-5 text-emerald-400 shrink-0 transition-transform duration-300 ${
                     isOpen ? 'rotate-180 text-amber-400' : ''
                   }`} />
                 </button>
 
                 {isOpen && (
-                  <div className="px-5 sm:px-6 pb-6 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-emerald-900/50 font-normal">
+                  <div className="px-3.5 sm:px-6 pb-4 sm:pb-6 pt-1 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-emerald-900/50 font-normal">
                     {faq.a}
                   </div>
                 )}

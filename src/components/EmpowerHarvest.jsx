@@ -65,7 +65,7 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
   ];
 
   return (
-    <section className="py-24 bg-[#021109] relative overflow-hidden">
+    <section className="py-10 sm:py-16 md:py-24 bg-[#021109] relative overflow-hidden">
       
       {/* Background Glow */}
       <div className="absolute top-1/2 right-0 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />
@@ -73,20 +73,20 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Banner Section */}
-        <div className="bg-gradient-to-r from-[#052b19] via-[#083b23] to-[#042013] border border-emerald-500/30 rounded-3xl p-8 sm:p-12 shadow-2xl mb-16 relative overflow-hidden">
+        <div className="bg-gradient-to-r from-[#052b19] via-[#083b23] to-[#042013] border border-emerald-500/30 rounded-3xl p-5 sm:p-8 md:p-12 shadow-2xl mb-8 sm:mb-16 relative overflow-hidden">
           
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-center">
             
-            <div className="lg:col-span-8 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-xs font-semibold text-amber-300">
+            <div className="lg:col-span-8 space-y-3 sm:space-y-4">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-[11px] sm:text-xs font-semibold text-amber-300">
                 <Sparkles className="w-3.5 h-3.5" /> Comprehensive Agritech Platform
               </div>
               
-              <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
+              <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
                 Empower your harvest with <span className="gradient-text-agri">GrainWise AI</span>
               </h2>
               
-              <p className="text-slate-200 text-base sm:text-lg leading-relaxed max-w-3xl">
+              <p className="text-slate-200 text-xs sm:text-base lg:text-lg leading-relaxed max-w-3xl">
                 From seed to market, GrainWise AI is by your side. Detect diseases early, maximize yields with personalized NPK doses, track government schemes, and navigate market prices — all supported by <strong className="text-amber-400 font-semibold">Ananya AI</strong>.
               </p>
             </div>
@@ -94,11 +94,11 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
             <div className="lg:col-span-4 flex flex-col items-start lg:items-end justify-center gap-2">
               <button
                 onClick={onOpenDownloadModal}
-                className="px-6 py-4 bg-amber-400 hover:bg-amber-300 text-black font-extrabold rounded-2xl shadow-xl shadow-amber-400/20 transition-all hover:scale-105 active:scale-95 text-sm sm:text-base flex items-center gap-2"
+                className="w-full sm:w-auto px-6 py-3.5 sm:py-4 bg-amber-400 hover:bg-amber-300 text-black font-extrabold rounded-2xl shadow-xl shadow-amber-400/20 transition-all hover:scale-105 active:scale-95 text-xs sm:text-base flex items-center justify-center gap-2"
               >
                 Tap Download & Take Guesswork Out
               </button>
-              <div className="text-[11px] text-amber-300 font-mono flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-800">
+              <div className="text-[10px] sm:text-[11px] text-amber-300 font-mono flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-800">
                 <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
                 Application Phase is Coming Soon · Android Pre-Register gets Free 14 days trial pack
               </div>
@@ -108,25 +108,25 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
         </div>
 
         {/* Feature Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
           {featuresList.map((f) => {
             const Icon = f.icon;
             return (
               <div
                 key={f.id}
-                className="group relative rounded-2xl p-6 bg-[#042013]/80 border border-emerald-800/40 hover:border-emerald-500/60 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-950/80 flex flex-col justify-between"
+                className="group relative rounded-2xl p-4 sm:p-6 bg-[#042013]/80 border border-emerald-800/40 hover:border-emerald-500/60 backdrop-blur-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-emerald-950/80 flex flex-col justify-between"
               >
                 <div>
-                  <div className="flex items-center justify-between mb-4">
-                    <div className={`p-3 rounded-xl ${f.accent} border`}>
-                      <Icon className="w-6 h-6" />
+                  <div className="flex items-center justify-between mb-3 sm:mb-4">
+                    <div className={`p-2.5 sm:p-3 rounded-xl ${f.accent} border`}>
+                      <Icon className="w-5 h-5 sm:w-6 sm:h-6" />
                     </div>
                     <span className="text-[10px] font-semibold tracking-wider uppercase px-2.5 py-0.5 rounded-full bg-emerald-950 text-slate-300 border border-emerald-800/60">
                       {f.badge}
                     </span>
                   </div>
 
-                  <h3 className="font-display text-lg font-bold text-white mb-2 group-hover:text-emerald-300 transition-colors">
+                  <h3 className="font-display text-base sm:text-lg font-bold text-white mb-1.5 sm:mb-2 group-hover:text-emerald-300 transition-colors">
                     {f.title}
                   </h3>
 
@@ -135,7 +135,7 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
                   </p>
                 </div>
 
-                <div className="mt-6 pt-4 border-t border-emerald-900/40 flex items-center justify-between text-xs text-emerald-400 font-medium">
+                <div className="mt-4 sm:mt-6 pt-3 sm:pt-4 border-t border-emerald-900/40 flex items-center justify-between text-xs text-emerald-400 font-medium">
                   <span className="flex items-center gap-1">
                     <Check className="w-3.5 h-3.5 text-amber-400" /> GrainWise Verified
                   </span>

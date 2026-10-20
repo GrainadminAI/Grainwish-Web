@@ -44,28 +44,31 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-[#021109]/85 backdrop-blur-md border-b border-emerald-900/40 py-3 shadow-xl' : 'bg-transparent py-5'
+      isScrolled ? 'bg-[#021109]/90 backdrop-blur-md border-b border-emerald-900/40 py-2 sm:py-3 shadow-xl' : 'bg-transparent py-2.5 sm:py-5'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           
           {/* Logo & Domain */}
-          <a href="/" className="flex items-center gap-3 sm:gap-4 group">
+          <a href="/" className="flex items-center gap-2.5 sm:gap-4 group">
             <img 
               src="/assets/grainwise_icon_transparent.png" 
               alt="GrainWise AI Logo - Smart Agriculture Intelligence Platform" 
-              width="72"
-              height="72"
-              className="h-14 w-14 sm:h-16 sm:w-16 md:h-20 md:w-20 object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_18px_rgba(16,185,129,0.5)] shrink-0"
+              width="64"
+              height="64"
+              className="h-10 w-10 sm:h-14 sm:w-14 md:h-16 md:w-16 object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_18px_rgba(16,185,129,0.5)] shrink-0"
+              onError={(e) => {
+                e.target.src = '/favicon.png';
+              }}
             />
             <div>
-              <div className="flex items-center gap-2 flex-wrap">
-                <span className="font-display text-2xl sm:text-3xl font-extrabold tracking-tight text-white group-hover:text-emerald-300 transition-colors">
+              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                <span className="font-display text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white group-hover:text-emerald-300 transition-colors">
                   GrainWise <span className="text-amber-400 font-black">AI</span>
                 </span>
                 <MadeInIndiaTag variant="navbar" />
               </div>
-              <span className="text-[11px] sm:text-xs text-slate-300 tracking-wider uppercase block -mt-0.5 font-medium">
+              <span className="text-[10px] sm:text-xs text-slate-300 tracking-wider uppercase block -mt-0.5 font-medium">
                 {t('nav_smart_farming')}
               </span>
             </div>
@@ -180,33 +183,92 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
         </div>
       </div>
 
-      {/* Mobile Drawer */}
+      {/* Mobile Backdrop & Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden bg-[#031d10] border-b border-emerald-800/40 px-4 pt-3 pb-6 space-y-3">
-          <div className="grid grid-cols-2 gap-2 pb-3 border-b border-emerald-900/50">
-            <a href="#features" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium bg-emerald-950/60 text-slate-200">Features</a>
-            <a href="#diagnostics" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium bg-emerald-950/60 text-amber-300 flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-amber-400" /> AI Scan
-            </a>
-            <a href="#npk-calc" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium bg-emerald-950/60 text-slate-200">NPK Calculator</a>
-            <a href="#ananya-ai" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium bg-emerald-950/60 text-slate-200">Ananya AI</a>
-            <a href="#mandi" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium bg-emerald-950/60 text-slate-200">Mandi Rates</a>
-            <a href="#case-studies" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-lg text-sm font-medium bg-emerald-950/60 text-slate-200">Farmer Stories</a>
-          </div>
+        <>
+          <div 
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 md:hidden animate-fade-in"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+          <div className="relative z-50 md:hidden bg-[#031d10] border-b border-emerald-800/60 px-4 pt-3 pb-6 space-y-3.5 shadow-2xl max-h-[85vh] overflow-y-auto">
+            
+            {/* User Account / Auth Bar on Mobile */}
+            <div className="flex items-center justify-between pb-3 border-b border-emerald-900/60">
+              {currentUser ? (
+                <div className="flex items-center justify-between w-full">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded-full bg-emerald-900 border border-emerald-500/50 flex items-center justify-center text-amber-400 font-bold text-xs">
+                      {currentUser.email?.charAt(0).toUpperCase()}
+                    </div>
+                    <div className="text-xs">
+                      <div className="text-white font-bold truncate max-w-[150px]">{currentUser.email?.split('@')[0]}</div>
+                      <div className="text-[10px] text-emerald-400 font-mono">Logged In</div>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => {
+                      signOutUser();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="px-3 py-1.5 rounded-lg bg-red-950/80 border border-red-800 text-red-300 text-xs font-semibold flex items-center gap-1"
+                  >
+                    <LogOut className="w-3.5 h-3.5" /> Sign Out
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => {
+                    setAuthModalOpen(true);
+                    setMobileMenuOpen(false);
+                  }}
+                  className="w-full py-2.5 rounded-xl bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-emerald-300 text-xs font-bold flex items-center justify-center gap-2"
+                >
+                  <LogIn className="w-4 h-4 text-amber-400" />
+                  <span>Farmer Account / Sign In</span>
+                </button>
+              )}
+            </div>
 
-          <div className="space-y-2">
-            <label className="text-xs font-semibold text-slate-400">Select Language (22 Languages):</label>
-            <select
-              value={selectedLang}
-              onChange={(e) => setSelectedLang(e.target.value)}
-              className="w-full bg-[#021109] border border-emerald-700/50 rounded-lg px-3 py-2 text-xs text-emerald-300"
-            >
-              {LANGUAGES.map((lang) => (
-                <option key={lang} value={lang.split(' ')[0]}>{lang}</option>
-              ))}
-            </select>
+            {/* Complete Mobile Navigation Links */}
+            <div className="grid grid-cols-2 gap-2 pb-3 border-b border-emerald-900/50">
+              <a href="#features" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-slate-200 hover:bg-emerald-900">Features</a>
+              <a href="#diagnostics" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-amber-300 flex items-center gap-1.5 hover:bg-emerald-900">
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" /> AI Scan
+              </a>
+              <a href="#npk-calc" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-slate-200 hover:bg-emerald-900">NPK Calculator</a>
+              <a href="#ananya-ai" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-slate-200 hover:bg-emerald-900">Ananya AI</a>
+              <a href="#mandi" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-slate-200 hover:bg-emerald-900">Mandi Rates</a>
+              <a href="#case-studies" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-slate-200 hover:bg-emerald-900">Farmer Stories</a>
+              <a href="#calendar" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-slate-200 hover:bg-emerald-900">Agri Calendar</a>
+              <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-slate-200 hover:bg-emerald-900">FAQ</a>
+            </div>
+
+            {/* Mobile Language Selector */}
+            <div className="space-y-1.5">
+              <label className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
+                <Globe2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span>Select Language (22 Native Languages):</span>
+              </label>
+              <select
+                value={selectedLang}
+                onChange={(e) => {
+                  const newLang = e.target.value;
+                  setSelectedLang(newLang);
+                  recordFeatureUsageToDB({
+                    featureName: 'Language Switcher (Mobile)',
+                    action: 'change_language',
+                    metadata: { language: newLang }
+                  });
+                }}
+                className="w-full bg-[#021109] border border-emerald-700/60 rounded-xl px-3 py-2.5 text-xs text-amber-300 font-semibold focus:outline-none focus:border-amber-400"
+              >
+                {LANGUAGES.map((lang) => (
+                  <option key={lang} value={lang.split(' ')[0]}>{lang}</option>
+                ))}
+              </select>
+            </div>
           </div>
-        </div>
+        </>
       )}
       {/* Supabase Auth Modal */}
       <AuthModal

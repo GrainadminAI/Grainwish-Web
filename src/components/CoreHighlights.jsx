@@ -45,48 +45,48 @@ export default function CoreHighlights({ selectedLang }) {
   ];
 
   return (
-    <section id="features" className="py-20 bg-[#02180d]/80 border-y border-emerald-900/40 relative overflow-hidden">
+    <section id="features" className="py-10 sm:py-16 md:py-20 bg-[#02180d]/80 border-y border-emerald-900/40 relative overflow-hidden">
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-10 space-y-4">
+        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-10 space-y-2 sm:space-y-4">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950 border border-emerald-700/50 text-xs font-semibold text-emerald-300">
             <Zap className="w-3.5 h-3.5 text-amber-400" /> {t('core_pillar_badge')}
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-white">
+          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">
             {t('core_title')} <span className="gradient-text-agri">{t('core_thrive')}</span>
           </h2>
-          <p className="text-slate-300 text-sm sm:text-base">
+          <p className="text-slate-300 text-xs sm:text-base">
             {t('core_subtitle')}
           </p>
         </div>
 
         {/* Made In India Trust Banner */}
-        <MadeInIndiaTag variant="banner" className="mb-12" />
+        <MadeInIndiaTag variant="banner" className="mb-6 sm:mb-12" />
 
         {/* 3 Pillar Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
           {highlights.map((item) => {
             const Icon = item.icon;
             return (
               <div
                 key={item.id}
-                className={`relative group rounded-3xl p-6 bg-gradient-to-b ${item.gradient} bg-[#042114]/90 border ${item.borderColor} backdrop-blur-xl shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between`}
+                className={`relative group rounded-2xl sm:rounded-3xl p-4 sm:p-6 bg-gradient-to-b ${item.gradient} bg-[#042114]/90 border ${item.borderColor} backdrop-blur-xl shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between`}
               >
                 <div>
                   {/* Top Badge & Icon */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className={`p-3 rounded-2xl ${item.iconBg} shadow-inner`}>
-                      <Icon className="w-7 h-7" />
+                  <div className="flex items-center justify-between mb-4 sm:mb-6">
+                    <div className={`p-2.5 sm:p-3 rounded-2xl ${item.iconBg} shadow-inner`}>
+                      <Icon className="w-6 h-6 sm:w-7 sm:h-7" />
                     </div>
-                    <span className="text-[11px] font-semibold px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-800 text-emerald-300">
+                    <span className="text-[11px] font-semibold px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-emerald-950/80 border border-emerald-800 text-emerald-300">
                       {item.badge}
                     </span>
                   </div>
 
                   {/* Thumbnail Preview */}
-                  <div className="relative rounded-2xl overflow-hidden mb-6 h-40 border border-emerald-800/40">
+                  <div className="relative rounded-2xl overflow-hidden mb-4 sm:mb-6 h-32 sm:h-40 border border-emerald-800/40">
                     <img
                       src={item.image}
                       alt={`${item.title} - GrainWise AI Smart Farming Intelligence Feature`}

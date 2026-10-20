@@ -62,30 +62,30 @@ export default function NPKCalculator() {
   }, [selectedCrop, selectedSoil, acres, stage]);
 
   return (
-    <section id="npk-calc" className="py-24 bg-[#021109] relative overflow-hidden border-b border-emerald-900/40">
+    <section id="npk-calc" className="py-10 sm:py-16 md:py-24 bg-[#021109] relative overflow-hidden border-b border-emerald-900/40">
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         {/* Section Title */}
-        <div className="text-center max-w-3xl mx-auto mb-14 space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/50 text-xs font-bold text-amber-300 shadow-lg">
-            <Scale className="w-4 h-4 text-amber-400" />
+        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-10 lg:mb-14 space-y-2 sm:space-y-4">
+          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-amber-500/20 border border-amber-500/50 text-[11px] sm:text-xs font-bold text-amber-300 shadow-lg">
+            <Scale className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
             <span>100% Calibrated Precision Soil & NPK Engine</span>
-            <span className="bg-amber-400 text-black px-2 py-0.5 rounded-full font-mono text-[10px] font-extrabold uppercase">100% ACCURATE</span>
+            <span className="bg-amber-400 text-black px-2 py-0.5 rounded-full font-mono text-[9px] sm:text-[10px] font-extrabold uppercase">100% ACCURATE</span>
           </div>
-          <h2 className="font-display text-3xl sm:text-4xl font-extrabold text-white">
+          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">
             Precision <span className="gradient-text-gold">NPK Calculator 100%</span>
           </h2>
-          <p className="text-slate-300 text-sm sm:text-base">
+          <p className="text-slate-300 text-xs sm:text-base">
             Calculate the exact nutrient mix your soil needs based on crop type, soil profile, growth stage, and field size with <strong>100% calibrated mathematical precision</strong>. Prevent chemical over-dosing and optimize fertilizer savings.
           </p>
         </div>
 
         {/* Calculator Main Box */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-start">
           
           {/* Inputs Column */}
-          <div className="lg:col-span-7 bg-[#042013] border border-emerald-800/50 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6">
+          <div className="lg:col-span-7 bg-[#042013] border border-emerald-800/50 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl space-y-4 sm:space-y-6">
             
             {/* 1. Crop Selection */}
             <div className="space-y-2">
@@ -174,9 +174,9 @@ export default function NPKCalculator() {
           </div>
 
           {/* Results Output Column */}
-          <div className="lg:col-span-5 space-y-6">
+          <div className="lg:col-span-5 space-y-4 sm:space-y-6">
             
-            <div className="bg-gradient-to-b from-[#08331f] to-[#042013] border-2 border-emerald-500/40 rounded-3xl p-6 sm:p-8 shadow-2xl space-y-6 relative">
+            <div className="bg-gradient-to-b from-[#08331f] to-[#042013] border-2 border-emerald-500/40 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl space-y-4 sm:space-y-6 relative">
               
               <div className="flex items-center justify-between pb-4 border-b border-emerald-800/50">
                 <div>

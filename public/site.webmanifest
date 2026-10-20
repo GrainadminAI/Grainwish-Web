@@ -23,6 +23,11 @@
       "type": "image/png"
     },
     {
+      "src": "/favicon.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
       "src": "/assets/grainwise_icon_transparent.png",
       "sizes": "512x512",
       "type": "image/png",

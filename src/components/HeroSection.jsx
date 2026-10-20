@@ -7,8 +7,11 @@ const ThreeFarmCanvas = lazy(() => import('./ThreeFarmCanvas'));
 
 export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
   const { t } = useLanguage();
+  const [videoPlaying, setVideoPlaying] = React.useState(false);
+  const [videoFailed, setVideoFailed] = React.useState(false);
+
   return (
-    <section className="relative min-h-screen pt-32 pb-16 lg:pt-40 lg:pb-24 flex items-center overflow-hidden">
+    <section className="relative min-h-[auto] lg:min-h-screen pt-24 pb-10 sm:pt-32 sm:pb-16 lg:pt-40 lg:pb-24 flex items-center overflow-hidden">
       
       {/* 3D Background Canvas Layer */}
       <div className="absolute inset-0 z-0 pointer-events-none">
@@ -22,17 +25,17 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none animate-pulse-slow" style={{ animationDelay: '2s' }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-center">
           
           {/* Left Column: Copy & Actions */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+          <div className="lg:col-span-7 space-y-4 sm:space-y-6 text-center lg:text-left">
             
             {/* Top Pill Badge */}
-            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2.5">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 backdrop-blur-md shadow-lg shadow-emerald-950/50">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 sm:px-3.5 sm:py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/30 backdrop-blur-md shadow-lg shadow-emerald-950/50">
                 <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping" />
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                <span className="text-xs font-semibold text-emerald-200">
+                <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
+                <span className="text-[11px] sm:text-xs font-semibold text-emerald-200">
                   {t('hero_pill')}
                 </span>
               </div>
@@ -40,55 +43,55 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
             </div>
 
             {/* Main Headline */}
-            <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15]">
+            <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-white leading-[1.15]">
               {t('hero_welcome')} <br />
               <span className="gradient-text-agri">{t('hero_brand')}</span>
             </h1>
 
             {/* Subtitle / Paragraph */}
-            <p className="text-base sm:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+            <p className="text-sm sm:text-base lg:text-lg text-slate-300 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
               {t('hero_subtitle')}
             </p>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 sm:gap-4 pt-1 sm:pt-2">
               <button
                 onClick={onOpenDownloadModal}
-                className="w-full sm:w-auto px-7 py-3.5 bg-gradient-to-r from-emerald-500 via-emerald-600 to-amber-500 hover:from-emerald-400 hover:to-amber-400 text-black font-extrabold rounded-2xl shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-3 transition-all hover:scale-105 active:scale-95 text-sm sm:text-base"
+                className="w-full sm:w-auto px-6 sm:px-7 py-3 sm:py-3.5 bg-gradient-to-r from-emerald-500 via-emerald-600 to-amber-500 hover:from-emerald-400 hover:to-amber-400 text-black font-extrabold rounded-2xl shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2.5 sm:gap-3 transition-all hover:scale-105 active:scale-95 text-xs sm:text-base"
               >
-                <Smartphone className="w-5 h-5 text-black" />
+                <Smartphone className="w-4 h-4 sm:w-5 sm:h-5 text-black" />
                 {t('hero_cta_download')}
               </button>
 
               <a
                 href="#diagnostics"
                 onClick={onScanClick}
-                className="w-full sm:w-auto px-6 py-3.5 bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-500/40 text-emerald-300 font-semibold rounded-2xl backdrop-blur-md flex items-center justify-center gap-2 transition-all hover:border-emerald-400 text-sm sm:text-base"
+                className="w-full sm:w-auto px-5 sm:px-6 py-3 sm:py-3.5 bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-500/40 text-emerald-300 font-semibold rounded-2xl backdrop-blur-md flex items-center justify-center gap-2 transition-all hover:border-emerald-400 text-xs sm:text-base"
               >
-                <Camera className="w-5 h-5 text-amber-400" />
+                <Camera className="w-4 h-4 sm:w-5 sm:h-5 text-amber-400" />
                 {t('hero_cta_scan')}
               </a>
             </div>
 
             {/* Quick Metrics & Badges */}
-            <div className="pt-6 border-t border-emerald-900/50 grid grid-cols-3 gap-4 max-w-xl mx-auto lg:mx-0">
-              <div className="bg-emerald-950/40 border border-emerald-800/30 rounded-xl p-3 backdrop-blur-sm">
-                <div className="text-xl sm:text-2xl font-extrabold text-amber-400">22</div>
-                <div className="text-[11px] text-slate-400 font-medium flex items-center gap-1">
+            <div className="pt-4 sm:pt-6 border-t border-emerald-900/50 grid grid-cols-3 gap-2 sm:gap-4 max-w-xl mx-auto lg:mx-0">
+              <div className="bg-emerald-950/40 border border-emerald-800/30 rounded-xl p-2 sm:p-3 backdrop-blur-sm">
+                <div className="text-lg sm:text-2xl font-extrabold text-amber-400">22</div>
+                <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium flex items-center gap-1">
                   <Globe className="w-3 h-3 text-emerald-400" /> {t('hero_metric_langs')}
                 </div>
               </div>
 
-              <div className="bg-emerald-950/40 border border-emerald-800/30 rounded-xl p-3 backdrop-blur-sm">
-                <div className="text-xl sm:text-2xl font-extrabold text-emerald-400">98.4%</div>
-                <div className="text-[11px] text-slate-400 font-medium flex items-center gap-1">
+              <div className="bg-emerald-950/40 border border-emerald-800/30 rounded-xl p-2 sm:p-3 backdrop-blur-sm">
+                <div className="text-lg sm:text-2xl font-extrabold text-emerald-400">98.4%</div>
+                <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium flex items-center gap-1">
                   <CheckCircle2 className="w-3 h-3 text-emerald-400" /> {t('hero_metric_accuracy')}
                 </div>
               </div>
 
-              <div className="bg-emerald-950/40 border border-emerald-800/30 rounded-xl p-3 backdrop-blur-sm">
-                <div className="text-xl sm:text-2xl font-extrabold text-amber-400">24/7</div>
-                <div className="text-[11px] text-slate-400 font-medium flex items-center gap-1">
+              <div className="bg-emerald-950/40 border border-emerald-800/30 rounded-xl p-2 sm:p-3 backdrop-blur-sm">
+                <div className="text-lg sm:text-2xl font-extrabold text-amber-400">24/7</div>
+                <div className="text-[10px] sm:text-[11px] text-slate-400 font-medium flex items-center gap-1">
                   <Sparkles className="w-3 h-3 text-amber-400" /> {t('hero_metric_support')}
                 </div>
               </div>
@@ -113,30 +116,42 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
                 </span>
               </div>
 
-              {/* Video / Graphic Showcase */}
-              <div className="relative rounded-2xl overflow-hidden border border-emerald-500/20 aspect-[4/3] bg-black">
-                <video
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
-                  src="/assets/sustainable_farm_diorama.mp4"
-                  onError={(e) => {
-                    e.target.style.display = 'none';
-                  }}
-                />
+              {/* Video / Graphic Showcase with Guaranteed Image Display */}
+              <div className="relative rounded-2xl overflow-hidden border border-emerald-500/20 aspect-[4/3] bg-emerald-950">
+                {/* Fallback Image is ALWAYS mounted and visible by default */}
                 <img
                   src="/assets/ananya_hero_ai.png"
                   alt="Ananya AI Agronomy Assistant showcasing holographic crop diagnostic guidance"
-                  loading="lazy"
+                  loading="eager"
                   decoding="async"
-                  className="w-full h-full object-cover"
-                  style={{ display: 'none' }}
+                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+                    videoPlaying && !videoFailed ? 'opacity-0 pointer-events-none' : 'opacity-100'
+                  }`}
                   onError={(e) => {
                     e.target.src = '/assets/hand_phone_crop.jpeg';
                   }}
                 />
+
+                {!videoFailed && (
+                  <video
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    preload="metadata"
+                    poster="/assets/ananya_hero_ai.png"
+                    onPlay={() => setVideoPlaying(true)}
+                    onPlaying={() => setVideoPlaying(true)}
+                    onError={() => {
+                      setVideoFailed(true);
+                      setVideoPlaying(false);
+                    }}
+                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
+                      videoPlaying ? 'opacity-100' : 'opacity-0'
+                    }`}
+                    src="/assets/sustainable_farm_diorama.mp4"
+                  />
+                )}
 
                 {/* Live Scanning Holographic Overlay Animation */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none" />

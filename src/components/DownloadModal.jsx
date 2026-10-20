@@ -245,7 +245,7 @@ export default function DownloadModal({ isOpen, onClose }) {
                   className="w-full h-full object-contain blur-md select-none pointer-events-none"
                   onError={(e) => {
                     e.target.style.display = 'none';
-                    if (e.target.nextSibling) e.target.nextSibling.style.display = 'block';
+                    if (e.target.nextElementSibling) e.target.nextElementSibling.style.display = 'block';
                   }}
                 />
                 <svg viewBox="0 0 21 21" className="w-full h-full hidden blur-md select-none pointer-events-none" style={{ display: 'none' }}>

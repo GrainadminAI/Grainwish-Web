@@ -3,9 +3,20 @@
 @tailwind utilities;
 
 @layer base {
+  html {
+    scroll-padding-top: 80px;
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
     background-color: #021109;
     color: #f1f5f9;
+    overflow-x: hidden;
+  }
+
+  button, a, input, select {
+    touch-action: manipulation;
   }
 
   /* Accessible focus indicators for keyboard navigation (WCAG AA) */
