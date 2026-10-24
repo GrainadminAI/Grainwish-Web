@@ -18,7 +18,7 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
         <img
           src="/assets/hero_agri_3d_bg.jpg"
           alt="GrainWise AI Smart Agriculture Field"
-          className="w-full h-full object-cover object-center scale-105 filter brightness-100 contrast-110 saturate-110"
+          className="w-full h-full object-cover object-center scale-105 filter brightness-105 contrast-115 saturate-115 [image-rendering:-webkit-optimize-contrast]"
         />
 
         {/* Google Flow AI Living Farm Background Video (Wind, Moving Leaves, Sunlight, Farmers) - Without Audio */}
@@ -29,7 +29,7 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
           playsInline
           preload="auto"
           poster="/assets/flow_farm_poster.jpg"
-          className="absolute inset-0 w-full h-full object-cover opacity-85 filter brightness-105 contrast-115 saturate-115 transition-opacity duration-1000 pointer-events-none"
+          className="absolute inset-0 w-full h-full object-cover opacity-85 filter brightness-108 contrast-120 saturate-130 [image-rendering:-webkit-optimize-contrast] transform-gpu transition-opacity duration-1000 pointer-events-none"
         >
           <source src="/assets/flow_farm_background.mp4" type="video/mp4" />
           <source src="https://flow-content.google/video/5cd2638b-4b4c-4ace-b9f4-b6126ef94611?Expires=1792852818&KeyName=labs-flow-prod-cdn-key&Signature=bOEf06Hwg7HNhfowrxjPf91Kr6Q" type="video/mp4" />

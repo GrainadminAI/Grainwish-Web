@@ -78,10 +78,10 @@ function WindCropsField() {
     >
       <meshStandardMaterial
         color="#fbbf24"
-        roughness={0.4}
-        metalness={0.2}
-        emissive="#042c16"
-        emissiveIntensity={0.2}
+        roughness={0.26}
+        metalness={0.38}
+        emissive="#064e26"
+        emissiveIntensity={0.35}
       />
     </instancedMesh>
   );
@@ -250,20 +250,23 @@ export default function ThreeFarmCanvas() {
     <div className="w-full h-full relative pointer-events-none select-none">
       <Canvas
         camera={{ position: [0, 1.7, 6.5], fov: 46 }}
-        dpr={isMobile ? [1, 1.2] : [1, 1.5]}
+        dpr={isMobile ? [1, 1.5] : [1, 2.5]}
         gl={{
-          antialias: !isMobile,
+          antialias: true,
           alpha: true,
           powerPreference: 'high-performance',
           preserveDrawingBuffer: false,
-          failIfMajorPerformanceCaveat: false
+          failIfMajorPerformanceCaveat: false,
+          toneMapping: THREE.ACESFilmicToneMapping,
+          toneMappingExposure: 1.35
         }}
         className="w-full h-full pointer-events-none"
       >
-        <ambientLight intensity={0.85} color="#e6f4ea" />
-        <directionalLight position={[9, 14, 6]} intensity={2.4} color="#fde047" />
-        <directionalLight position={[-8, 7, -3]} intensity={1.1} color="#34d399" />
-        <pointLight position={[0, 3, -2]} intensity={1.5} color="#10b981" />
+        <ambientLight intensity={0.95} color="#e6f4ea" />
+        <directionalLight position={[9, 15, 6]} intensity={3.2} color="#fef08a" />
+        <directionalLight position={[-8, 8, -3]} intensity={1.6} color="#34d399" />
+        <pointLight position={[0, 3.5, -2]} intensity={2.2} color="#10b981" />
+        <pointLight position={[5, 2, -5]} intensity={2.4} color="#fbbf24" />
 
         {/* Interactive Smooth Camera Parallax */}
         <CameraParallax />

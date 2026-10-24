@@ -7,12 +7,20 @@
     scroll-padding-top: 80px;
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    image-rendering: -webkit-optimize-contrast;
   }
 
   body {
     background-color: #021109;
     color: #f1f5f9;
     overflow-x: hidden;
+    /* 4K HDR crisp subpixel anti-aliasing */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
   }
 
   button, a, input, select {
@@ -25,55 +33,80 @@
     outline-offset: 2px;
   }
 
-  /* High contrast text selection */
+  /* High contrast HDR text selection */
   ::selection {
     background-color: #10b981;
     color: #000000;
   }
 }
 
-/* Glassmorphism & Cyber Agri Effects */
+/* 4K HDR & Wide Color Gamut (Display P3) Master Tokens */
+:root {
+  --hdr-black: #010a05;
+  --hdr-emerald: #10b981;
+  --hdr-emerald-bright: #34d399;
+  --hdr-gold: #fbbf24;
+  --hdr-amber: #f59e0b;
+  --hdr-cyan: #06b6d4;
+  --hdr-contrast-boost: 1.15;
+}
+
+@media (dynamic-range: high) or (color-gamut: p3) {
+  :root {
+    --hdr-black: color(display-p3 0.005 0.04 0.02);
+    --hdr-emerald: color(display-p3 0.06 0.73 0.51);
+    --hdr-emerald-bright: color(display-p3 0.2 0.83 0.6);
+    --hdr-gold: color(display-p3 0.99 0.75 0.14);
+    --hdr-amber: color(display-p3 0.98 0.62 0.08);
+    --hdr-cyan: color(display-p3 0.02 0.71 0.83);
+  }
+}
+
+/* 4K HDR Master Glassmorphism & Cyber Agri Effects */
 .glass-panel {
-  background: rgba(8, 35, 23, 0.65);
+  background: rgba(8, 35, 23, 0.68);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(16, 185, 129, 0.22);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.45), inset 0 1px 1px 0 rgba(255, 255, 255, 0.12);
 }
 
 .glass-card {
-  background: linear-gradient(135deg, rgba(13, 43, 29, 0.7) 0%, rgba(6, 25, 17, 0.9) 100%);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(52, 211, 153, 0.15);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  background: linear-gradient(135deg, rgba(13, 43, 29, 0.75) 0%, rgba(6, 25, 17, 0.92) 100%);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(52, 211, 153, 0.2);
+  box-shadow: 0 10px 36px 0 rgba(0, 0, 0, 0.45), inset 0 1px 1px 0 rgba(255, 255, 255, 0.14);
 }
 
 .glass-card-3d {
-  background: radial-gradient(120% 120% at 30% 20%, rgba(16, 185, 129, 0.14) 0%, rgba(8, 35, 23, 0.8) 50%, rgba(2, 17, 9, 0.95) 100%);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(52, 211, 153, 0.22);
-  box-shadow: 0 16px 40px -8px rgba(0, 0, 0, 0.65), inset 0 1px 1px 0 rgba(255, 255, 255, 0.12);
+  background: radial-gradient(120% 120% at 30% 20%, rgba(16, 185, 129, 0.18) 0%, rgba(8, 35, 23, 0.85) 50%, rgba(2, 17, 9, 0.98) 100%);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(52, 211, 153, 0.28);
+  box-shadow: 0 20px 48px -8px rgba(0, 0, 0, 0.75), inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.18);
 }
 
 .glass-card-gold {
-  background: linear-gradient(135deg, rgba(35, 25, 8, 0.7) 0%, rgba(20, 14, 5, 0.9) 100%);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(245, 158, 11, 0.25);
-  box-shadow: 0 8px 32px 0 rgba(245, 158, 11, 0.12);
+  background: linear-gradient(135deg, rgba(35, 25, 8, 0.75) 0%, rgba(20, 14, 5, 0.92) 100%);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  box-shadow: 0 10px 36px 0 rgba(245, 158, 11, 0.16), inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
 }
 
 .glass-card-terracotta {
-  background: linear-gradient(135deg, rgba(46, 20, 12, 0.72) 0%, rgba(26, 11, 7, 0.9) 100%);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(224, 99, 59, 0.25);
-  box-shadow: 0 8px 32px 0 rgba(224, 99, 59, 0.12);
+  background: linear-gradient(135deg, rgba(46, 20, 12, 0.76) 0%, rgba(26, 11, 7, 0.92) 100%);
+  backdrop-filter: blur(14px);
+  border: 1px solid rgba(224, 99, 59, 0.3);
+  box-shadow: 0 10px 36px 0 rgba(224, 99, 59, 0.16), inset 0 1px 1px 0 rgba(255, 255, 255, 0.14);
 }
 
+/* 4K HDR High-Luminance Typography Gradients */
 .gradient-text-agri {
   background: linear-gradient(135deg, #34d399 0%, #10b981 32%, #fbbf24 68%, #f97316 100%);
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 12px rgba(16, 185, 129, 0.35));
 }
 
 .gradient-text-gold {
@@ -81,6 +114,7 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 12px rgba(245, 158, 11, 0.35));
 }
 
 .gradient-text-harvest {
@@ -88,8 +122,10 @@
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 12px rgba(234, 88, 12, 0.35));
 }
 
+/* 4K Multi-Hue Glow Border with Specular Shimmer */
 .agri-glow-border {
   position: relative;
 }
@@ -111,7 +147,15 @@
   opacity: 1;
 }
 
-/* Custom Scrollbar */
+/* 4K HDR Video Dynamic Range Enhancement */
+.hdr-vibrant-video {
+  filter: brightness(108%) contrast(120%) saturate(128%);
+  image-rendering: -webkit-optimize-contrast;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+/* Custom 4K HDR Scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -121,12 +165,13 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #10b98133;
+  background: #10b98144;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #10b98188;
+  background: #10b981aa;
+  box-shadow: 0 0 8px #10b981;
 }
 
 /* Hide scrollbar for Chrome, Safari and Opera */
@@ -135,8 +180,8 @@
 }
 /* Hide scrollbar for IE, Edge and Firefox */
 .scrollbar-none {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 @keyframes scan {
@@ -220,4 +265,3 @@
   border-radius: 0 8px 8px 0;
   line-height: 1.45;
 }
-

@@ -36,9 +36,9 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
   return (
     <div className="relative min-h-screen bg-[#021109] text-slate-100 font-sans selection:bg-emerald-500 selection:text-black">
       
-      {/* Global Smart AgriTech 3D Living Background Layer (Video + Three.js Cyber Farm Grid) */}
+      {/* Global Smart AgriTech 4K HDR Living Background Layer (Video + Three.js Cyber Farm Grid) */}
       <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none">
-        {/* Living Google Flow Farm Video Layer Without Audio */}
+        {/* Living Google Flow Farm Video Layer Without Audio - 4K HDR Filter */}
         <video
           autoPlay
           loop
@@ -46,7 +46,7 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
           playsInline
           preload="auto"
           poster="/assets/flow_farm_poster.jpg"
-          className="w-full h-full object-cover opacity-50 filter brightness-105 contrast-115 saturate-125"
+          className="w-full h-full object-cover opacity-60 filter brightness-108 contrast-120 saturate-130 [image-rendering:-webkit-optimize-contrast] transform-gpu"
         >
           <source src="/assets/flow_farm_background.mp4" type="video/mp4" />
           <source src="https://flow-content.google/video/5cd2638b-4b4c-4ace-b9f4-b6126ef94611?Expires=1792852818&KeyName=labs-flow-prod-cdn-key&Signature=bOEf06Hwg7HNhfowrxjPf91Kr6Q" type="video/mp4" />
