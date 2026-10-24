@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut, Palette } from 'lucide-react';
+import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut } from 'lucide-react';
 import { supabase, signOutUser, getLoggedInUser, recordFeatureUsageToDB } from '../lib/supabase';
 import AuthModal from './AuthModal';
 
@@ -17,7 +17,7 @@ import { useBrandTheme } from '../lib/BrandThemeContext';
 
 export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedLang }) {
   const { t } = useLanguage();
-  const { currentOption, setBrandModalOpen } = useBrandTheme();
+  const { currentOption } = useBrandTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
@@ -69,40 +69,30 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
         <div className="flex items-center justify-between">
           
           {/* Logo & Domain */}
-          <div className="flex items-center gap-2">
-            <a href="/" className="flex items-center gap-2 sm:gap-3 group">
+          <div className="flex items-center">
+            <a href="/" className="flex items-center gap-2.5 sm:gap-3 group">
               <img 
                 src={currentOption.src} 
-                alt="GrainWise AI Logo - Smart Agriculture Intelligence Platform" 
-                width="48"
-                height="48"
-                className="h-8 w-8 sm:h-10 sm:w-10 md:h-11 md:w-11 object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_14px_rgba(16,185,129,0.5)] shrink-0"
+                alt="GrainWish AI Logo - Smart Agriculture Intelligence Platform" 
+                width="56"
+                height="56"
+                className="h-10 w-10 sm:h-12 sm:w-12 md:h-14 md:w-14 object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_16px_rgba(16,185,129,0.55)] shrink-0"
                 onError={(e) => {
                   e.target.src = '/favicon.png';
                 }}
               />
-              <div>
-                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                  <span className="font-display text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight text-white group-hover:text-emerald-300 transition-colors">
-                    GrainWise <span className="text-amber-400 font-black">AI</span>
+              <div className="flex flex-col justify-center">
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-nowrap">
+                  <span className="font-display text-sm sm:text-base md:text-lg font-black tracking-tight text-white group-hover:text-emerald-300 transition-colors leading-none whitespace-nowrap">
+                    GrainWish <span className="text-amber-400 font-black">AI</span>
                   </span>
-                  <MadeInIndiaTag variant="navbar" />
+                  <MadeInIndiaTag variant="navbar" className="scale-85 sm:scale-90 origin-left py-0.5 px-2 shrink-0" />
                 </div>
-                <span className="text-[9px] sm:text-[10px] text-slate-300 tracking-wider uppercase block -mt-0.5 font-medium">
+                <span className="text-[7px] sm:text-[8px] text-emerald-400/80 tracking-[0.18em] uppercase block mt-0.5 font-semibold leading-none">
                   {t('nav_smart_farming')}
                 </span>
               </div>
             </a>
-
-            {/* Brand Theme Switcher Badge */}
-            <button
-              onClick={() => setBrandModalOpen(true)}
-              className="hidden lg:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-950/70 hover:bg-emerald-900 text-emerald-300 hover:text-white border border-emerald-700/40 hover:border-emerald-500/60 transition-all shadow-sm group/theme ml-1"
-              title="Explore Logo Options & Brand Palette"
-            >
-              <Palette className="w-3 h-3 text-amber-400 group-hover/theme:rotate-12 transition-transform" />
-              <span>Theme</span>
-            </button>
           </div>
 
           {/* Desktop Nav Links */}
@@ -284,16 +274,6 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
               <a href="#case-studies" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-slate-200 hover:bg-emerald-900">Farmer Stories</a>
               <a href="#calendar" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-slate-200 hover:bg-emerald-900">Agri Calendar</a>
               <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-slate-200 hover:bg-emerald-900">FAQ</a>
-              <button 
-                onClick={() => {
-                  setBrandModalOpen(true);
-                  setMobileMenuOpen(false);
-                }} 
-                className="col-span-2 px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-900/50 text-amber-300 border border-emerald-600/40 flex items-center justify-center gap-1.5 hover:bg-emerald-800"
-              >
-                <Palette className="w-3.5 h-3.5 text-amber-400" />
-                <span>Brand Suite &amp; Theme</span>
-              </button>
             </div>
 
             {/* Mobile Language Selector */}
