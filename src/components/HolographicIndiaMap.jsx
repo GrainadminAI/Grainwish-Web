@@ -1,13 +1,16 @@
 import React, { useState } from 'react';
 import { Sparkles, Activity, ShieldCheck, MapPin, Radio, TrendingUp, Flame, ArrowUpRight, Filter, Info } from 'lucide-react';
+import { INDIA_MAP_LOCATIONS, INDIA_MAP_VIEWBOX, INDIA_BORDER_PATH } from '../lib/indiaMapData';
 
-// Geographically accurate projected boundary for India (Equirectangular projection)
-export const INDIA_BORDER_PATH = "M 161.9,45.5 L 179.2,49.7 L 196.6,62.3 L 214.0,77.0 L 231.4,87.5 L 238.4,102.2 L 234.9,119.0 L 226.2,133.7 L 231.4,150.5 L 234.9,167.3 L 255.8,182.0 L 269.7,190.4 L 261.0,196.7 L 274.9,217.7 L 290.6,230.3 L 313.2,245.0 L 339.3,251.3 L 365.4,259.7 L 391.5,263.9 L 393.2,257.6 L 395.0,245.0 L 401.9,240.8 L 405.4,245.0 L 407.1,257.6 L 422.8,263.9 L 452.4,266.0 L 461.1,255.5 L 469.8,245.0 L 492.4,236.6 L 509.8,224.0 L 530.7,215.6 L 551.6,230.3 L 555.1,240.8 L 539.4,257.6 L 516.8,278.6 L 504.6,299.6 L 495.9,320.6 L 485.5,341.6 L 478.5,362.6 L 475.0,368.9 L 468.1,358.4 L 464.6,341.6 L 457.6,329.0 L 452.4,320.6 L 447.2,324.8 L 447.2,335.3 L 443.7,301.7 L 422.8,299.6 L 422.8,287.0 L 421.1,278.6 L 400.2,293.3 L 395.0,308.0 L 400.2,324.8 L 405.4,345.8 L 410.7,362.6 L 405.4,375.2 L 391.5,375.2 L 374.1,383.6 L 367.1,398.3 L 353.2,413.0 L 339.3,425.6 L 325.4,440.3 L 309.7,457.1 L 292.3,471.8 L 273.2,488.6 L 261.0,497.0 L 254.0,518.0 L 255.8,545.3 L 257.5,553.7 L 248.8,576.8 L 248.8,597.8 L 241.8,612.5 L 238.4,633.5 L 220.9,644.0 L 208.7,658.7 L 198.3,650.3 L 187.8,629.3 L 184.3,612.5 L 179.1,591.5 L 165.2,564.2 L 161.7,553.7 L 154.7,528.5 L 144.3,507.5 L 142.5,494.9 L 135.6,480.2 L 128.6,448.7 L 126.9,427.7 L 125.1,406.7 L 123.4,385.7 L 104.2,389.9 L 91.9,392.0 L 74.5,375.2 L 60.5,360.5 L 69.2,354.2 L 83.2,347.9 L 74.5,343.7 L 57.0,337.4 L 46.5,329.0 L 53.5,318.5 L 86.5,318.5 L 98.8,318.5 L 95.3,308.0 L 86.5,287.0 L 77.8,266.0 L 91.9,249.2 L 109.3,234.5 L 133.7,207.2 L 151.1,186.2 L 158.0,171.5 L 156.3,154.7 L 151.1,140.0 L 144.1,123.2 L 144.1,102.2 L 147.6,81.2 L 161.9,45.5 Z";
+// Re-export INDIA_BORDER_PATH for testing suites and external consumers
+export { INDIA_BORDER_PATH };
 
 // 12+ Key Indian Agricultural Hubs with real crop products and pan-India demand telemetry
+// Positions precisely calibrated to the official Survey of India equirectangular coordinates
 export const AGRI_HUBS = [
   {
     id: 'punjab',
+    stateId: 'pb',
     name: 'Punjab',
     sub: 'Wheat & Basmati Bowl of India',
     crop: 'Wheat (PBW-725) & Basmati Rice',
@@ -22,13 +25,14 @@ export const AGRI_HUBS = [
     status: 'High Procurement',
     rate: '₹2,425/q',
     msp: '₹2,275/q',
-    x: 177.0,
-    y: 168.7,
+    x: 151.0,
+    y: 152.0,
     color: '#fbbf24',
     demandColor: '#ef4444'
   },
   {
     id: 'haryana',
+    stateId: 'hr',
     name: 'Haryana',
     sub: 'Mustard & Pearl Millet Belt',
     crop: 'Mustard (Giriraj) & Bajra',
@@ -43,13 +47,14 @@ export const AGRI_HUBS = [
     status: 'Oil Mills Active',
     rate: '₹5,650/q',
     msp: '₹5,650/q',
-    x: 195.0,
-    y: 198.0,
+    x: 168.0,
+    y: 195.0,
     color: '#10b981',
     demandColor: '#f59e0b'
   },
   {
     id: 'up',
+    stateId: 'up',
     name: 'Uttar Pradesh',
     sub: 'Gangetic Sugarcane & Wheat Belt',
     crop: 'Sugarcane (Co-0238) & Wheat',
@@ -64,13 +69,14 @@ export const AGRI_HUBS = [
     status: 'Ethanol Offtake',
     rate: '₹3,150/q',
     msp: '₹3,050/q',
-    x: 267.2,
-    y: 249.7,
+    x: 258.0,
+    y: 248.0,
     color: '#34d399',
     demandColor: '#f97316'
   },
   {
     id: 'rajasthan',
+    stateId: 'rj',
     name: 'Rajasthan',
     sub: 'Mustard & Guar Gum Hub',
     crop: 'Mustard, Guar Gum & Bajra',
@@ -85,13 +91,14 @@ export const AGRI_HUBS = [
     status: 'Trader Inflow High',
     rate: '₹5,820/q',
     msp: '₹5,650/q',
-    x: 141.5,
-    y: 256.1,
+    x: 130.0,
+    y: 260.0,
     color: '#f59e0b',
     demandColor: '#ef4444'
   },
   {
     id: 'gujarat',
+    stateId: 'gj',
     name: 'Gujarat',
     sub: 'Groundnut & Cotton Giant',
     crop: 'Groundnut (G-20) & Cotton (Shankar-6)',
@@ -101,151 +108,158 @@ export const AGRI_HUBS = [
     demand: 'Surge Demand',
     demandGrowth: '+26% YoY',
     demandScore: 91,
-    demandReason: 'Consumer Peanut Oil Preference & Textile Mill Offtake',
+    demandReason: 'Saurashtra Crushing Expansion & Mill Offtake',
     mandi: 'Rajkot APMC',
-    status: 'Export Grade Buying',
-    rate: '₹6,800/q',
+    status: 'Heavy Volume',
+    rate: '₹6,450/q',
     msp: '₹6,377/q',
-    x: 100.8,
-    y: 343.6,
-    color: '#10b981',
-    demandColor: '#f97316'
-  },
-  {
-    id: 'mp',
-    name: 'Madhya Pradesh',
-    sub: 'Soybean & Pulses Heart of India',
-    crop: 'Soybean (JS-2034) & Chana (Gram)',
-    cropShort: 'Soybean · Chana',
-    cropIcon: '🌱',
-    category: 'oilseed',
-    demand: 'Peak Demand',
-    demandGrowth: '+42% YoY',
-    demandScore: 98,
-    demandReason: 'High-Protein De-oiled Cake Deficit & National Pulses Stocking',
-    mandi: 'Indore Mandi',
-    status: 'Heavy Spot Bidding',
-    rate: '₹4,890/q',
-    msp: '₹4,600/q',
-    x: 205.3,
-    y: 335.1,
-    color: '#10b981',
-    demandColor: '#ef4444'
-  },
-  {
-    id: 'maharashtra',
-    name: 'Maharashtra',
-    sub: 'Cotton, Soybean & Onion Hub',
-    crop: 'Cotton, Soybean & Nashik Red Onion',
-    cropShort: 'Cotton · Onion',
-    cropIcon: '🧅',
-    category: 'cash',
-    demand: 'Critical Demand',
-    demandGrowth: '+35% YoY',
-    demandScore: 94,
-    demandReason: 'Metro Consumer Retail Deficit & South Asian Export Clearance',
-    mandi: 'Nagpur APMC',
-    status: 'High Procurement',
-    rate: '₹7,120/q',
-    msp: '₹6,620/q',
-    x: 177.0,
-    y: 409.7,
+    x: 75.0,
+    y: 350.0,
     color: '#34d399',
     demandColor: '#ef4444'
   },
   {
-    id: 'wb',
-    name: 'West Bengal & Bihar',
-    sub: 'Kharif Rice & Jute Basin',
-    crop: 'Paddy (Swarna), Jute & Maize',
-    cropShort: 'Paddy · Jute',
-    cropIcon: '🌾',
+    id: 'mp',
+    stateId: 'mp',
+    name: 'Madhya Pradesh',
+    sub: 'Soybean & Chana Capital',
+    crop: 'Soybean (JS-2034) & Desi Chana',
+    cropShort: 'Soybean · Chana',
+    cropIcon: '🟡',
     category: 'grain',
-    demand: 'High Demand',
-    demandGrowth: '+19% YoY',
-    demandScore: 84,
-    demandReason: 'PDS National Foodgrain Allocation & Starch Processing Units',
-    mandi: 'Burdwan Mandi',
-    status: 'Steady Offtake',
-    rate: '₹2,300/q',
-    msp: '₹2,183/q',
-    x: 384.1,
-    y: 307.3,
-    color: '#fbbf24',
-    demandColor: '#f59e0b'
+    demand: 'Surge Demand',
+    demandGrowth: '+42% YoY',
+    demandScore: 98,
+    demandReason: 'Soymeal Export Parity & Record Pulses Buffer Procurement',
+    mandi: 'Indore Mandi',
+    status: 'Active Buying',
+    rate: '₹4,890/q',
+    msp: '₹4,600/q',
+    x: 214.0,
+    y: 320.0,
+    color: '#f59e0b',
+    demandColor: '#ef4444'
   },
   {
-    id: 'assam',
-    name: 'Assam & NE',
-    sub: 'Brahmaputra Valley Organic Hub',
-    crop: 'Assam Green Tea & Black Rice',
-    cropShort: 'Tea · Black Rice',
-    cropIcon: '🍃',
+    id: 'maharashtra',
+    stateId: 'mh',
+    name: 'Maharashtra',
+    sub: 'Cotton, Onion & Pulses Hub',
+    crop: 'Cotton, Lasalgaon Onion & Tur',
+    cropShort: 'Cotton · Onion',
+    cropIcon: '🧅',
     category: 'cash',
-    demand: 'Premium Demand',
-    demandGrowth: '+25% YoY',
-    demandScore: 89,
-    demandReason: 'National Specialty Wellness Demand & Export Auctions',
-    mandi: 'Guwahati Auction',
-    status: 'Premium Grade Active',
-    rate: '₹280/kg',
-    msp: 'Auction Rate',
-    x: 479.7,
-    y: 271.1,
-    color: '#10b981',
-    demandColor: '#10b981'
+    demand: 'Heavy Demand',
+    demandGrowth: '+35% YoY',
+    demandScore: 94,
+    demandReason: 'Export Lifting & Domestic Festival Kitchen Demand',
+    mandi: 'Lasalgaon Mandi',
+    status: 'High Movement',
+    rate: '₹2,680/q',
+    msp: '₹2,100/q',
+    x: 175.0,
+    y: 430.0,
+    color: '#f43f5e',
+    demandColor: '#ef4444'
   },
   {
     id: 'ap',
+    stateId: 'ap',
     name: 'Andhra & Telangana',
-    sub: 'Guntur Chilli & Cotton Belt',
-    crop: 'Guntur Red Chilli & Cotton',
+    sub: 'Chilli & Fine Cotton Capital',
+    crop: 'Guntur Teja Red Chilli & Cotton',
     cropShort: 'Red Chilli · Cotton',
     cropIcon: '🌶️',
     category: 'cash',
-    demand: 'Skyrocketing Demand',
+    demand: 'Historic Demand',
     demandGrowth: '+48% YoY',
     demandScore: 99,
-    demandReason: 'Global Oleoresin Extraction Boom & Pan-India Spice Spike',
+    demandReason: 'Asian Spice Export Shipments & Guntur Spot Premium',
     mandi: 'Guntur Yard',
-    status: 'Mega Inflow Demand',
-    rate: '₹18,500/q',
-    msp: 'Market Rate',
-    x: 242.5,
-    y: 478.0,
-    color: '#f97316',
+    status: 'Bullish Momentum',
+    rate: '₹19,800/q',
+    msp: 'Trade Driven',
+    x: 248.0,
+    y: 495.0,
+    color: '#f43f5e',
     demandColor: '#ef4444'
   },
   {
     id: 'karnataka',
+    stateId: 'ka',
     name: 'Karnataka',
-    sub: 'Millets, Maize & Coffee Zone',
-    crop: 'Ragi (Finger Millet) & Maize',
+    sub: 'Ragi & Maize Plateau',
+    crop: 'Finger Millet (Ragi) & Hybrid Maize',
     cropShort: 'Ragi · Maize',
-    cropIcon: '🌾',
+    cropIcon: '🌽',
     category: 'grain',
-    demand: 'High Demand',
+    demand: 'Consistent Demand',
     demandGrowth: '+27% YoY',
-    demandScore: 90,
-    demandReason: 'National Millet Year Adoption & Poultry Feed Requirements',
-    mandi: 'Shimoga Mandi',
-    status: 'FMCG Buying Active',
-    rate: '₹3,200/q',
-    msp: '₹2,500/q',
-    x: 180.5,
-    y: 520.7,
-    color: '#fbbf24',
+    demandScore: 89,
+    demandReason: 'Shree Anna Millet Mission Offtake & Poultry Feed',
+    mandi: 'Davangere APMC',
+    status: 'Stable Flow',
+    rate: '₹2,340/q',
+    msp: '₹2,090/q',
+    x: 172.0,
+    y: 520.0,
+    color: '#10b981',
     demandColor: '#f59e0b'
   },
   {
-    id: 'tamilnadu',
-    name: 'Tamil Nadu & Kerala',
-    sub: 'Kaveri Delta & Spices Hub',
-    crop: 'Paddy (ADT-45) & Spices',
-    cropShort: 'Paddy · Spices',
-    cropIcon: '🥥',
+    id: 'wb',
+    stateId: 'wb',
+    name: 'West Bengal & Bihar',
+    sub: 'Golden Fiber & Paddy Delta',
+    crop: 'Aman Paddy & Raw Jute (TD-5)',
+    cropShort: 'Paddy · Jute',
+    cropIcon: '🌾',
     category: 'grain',
-    demand: 'Strong Demand',
+    demand: 'High Procurement',
+    demandGrowth: '+19% YoY',
+    demandScore: 87,
+    demandReason: 'Compulsory Jute Packaging Act & Public Distribution Procurement',
+    mandi: 'Burdwan Mandi',
+    status: 'Govt Lifting',
+    rate: '₹5,200/q',
+    msp: '₹5,050/q',
+    x: 375.0,
+    y: 325.0,
+    color: '#fbbf24',
+    demandColor: '#10b981'
+  },
+  {
+    id: 'assam',
+    stateId: 'as',
+    name: 'Assam & NE',
+    sub: 'Brahmaputra Tea & Specialty Rice',
+    crop: 'CTC Orthodox Tea & Black Rice',
+    cropShort: 'Tea · Black Rice',
+    cropIcon: '🍃',
+    category: 'cash',
+    demand: 'Global Demand',
+    demandGrowth: '+25% YoY',
+    demandScore: 90,
+    demandReason: 'Guwahati Tea Auction Global Bidding & Organic Superfood Demand',
+    mandi: 'Guwahati Auction',
+    status: 'Export Premium',
+    rate: '₹265/kg',
+    msp: 'Auction Driven',
+    x: 512.0,
+    y: 270.0,
+    color: '#10b981',
+    demandColor: '#10b981'
+  },
+  {
+    id: 'tamilnadu',
+    stateId: 'tn',
+    name: 'Tamil Nadu & Kerala',
+    sub: 'Cauvery Delta & Spice Coast',
+    crop: 'Kuruvai Paddy & Black Pepper',
+    cropShort: 'Paddy · Spices',
+    cropIcon: '🍚',
+    category: 'grain',
+    demand: 'Steady Demand',
     demandGrowth: '+21% YoY',
     demandScore: 86,
     demandReason: 'Southern Culinary Staples & Rice Bran Oil Processing',
@@ -253,13 +267,14 @@ export const AGRI_HUBS = [
     status: 'Fast Clearance',
     rate: '₹2,450/q',
     msp: '₹2,183/q',
-    x: 219.4,
-    y: 599.6,
+    x: 211.0,
+    y: 605.0,
     color: '#34d399',
     demandColor: '#10b981'
   },
   {
     id: 'jk',
+    stateId: 'jk',
     name: 'J&K & Ladakh',
     sub: 'Kashmir Valley Horticulture',
     crop: 'Kashmiri GI Saffron & Apple',
@@ -274,8 +289,8 @@ export const AGRI_HUBS = [
     status: 'Protected GI',
     rate: '₹220/g',
     msp: 'GI Protected',
-    x: 189.3,
-    y: 102.5,
+    x: 175.0,
+    y: 65.0,
     color: '#fbbf24',
     demandColor: '#ef4444'
   }
@@ -299,7 +314,7 @@ export const TELEMETRY_LINKS = [
 export default function HolographicIndiaMap({ className = "" }) {
   const [activeHub, setActiveHub] = useState(AGRI_HUBS[0]);
   const [hoveredHub, setHoveredHub] = useState(null);
-  const [categoryFilter, setCategoryFilter] = useState('all'); // 'all', 'high-demand', 'grain', 'oilseed-cash'
+  const [categoryFilter, setCategoryFilter] = useState('all');
 
   const displayHub = hoveredHub || activeHub;
 
@@ -394,10 +409,10 @@ export default function HolographicIndiaMap({ className = "" }) {
       </div>
 
       {/* The Central Holographic Map Container (Auto-adjusts for mobile screens 4.5" to 7.5") */}
-      <div className="relative w-full max-w-[300px] xs:max-w-[340px] sm:max-w-[390px] md:max-w-[420px] lg:max-w-[450px] aspect-[600/700] mx-auto filter drop-shadow-[0_0_35px_rgba(16,185,129,0.35)]">
+      <div className="relative w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[400px] md:max-w-[440px] lg:max-w-[460px] aspect-[612/696] mx-auto filter drop-shadow-[0_0_35px_rgba(16,185,129,0.35)]">
         
         <svg
-          viewBox="0 0 600 700"
+          viewBox={INDIA_MAP_VIEWBOX}
           className="w-full h-full overflow-visible transition-transform duration-700 hover:scale-[1.01]"
         >
           <defs>
@@ -441,24 +456,60 @@ export default function HolographicIndiaMap({ className = "" }) {
 
           {/* Radar Scanner Concentric Range Rings */}
           <g opacity="0.32" className="pointer-events-none">
-            <circle cx="250" cy="360" r="90" fill="none" stroke="#10b981" strokeWidth="1" strokeDasharray="3 3" />
-            <circle cx="250" cy="360" r="160" fill="none" stroke="#10b981" strokeWidth="1" strokeDasharray="4 4" />
-            <circle cx="250" cy="360" r="240" fill="none" stroke="#10b981" strokeWidth="1" strokeDasharray="6 6" />
-            <line x1="250" y1="120" x2="250" y2="600" stroke="#10b981" strokeWidth="0.8" strokeDasharray="3 3" />
-            <line x1="50" y1="360" x2="450" y2="360" stroke="#10b981" strokeWidth="0.8" strokeDasharray="3 3" />
+            <circle cx="260" cy="350" r="90" fill="none" stroke="#10b981" strokeWidth="1" strokeDasharray="3 3" />
+            <circle cx="260" cy="350" r="170" fill="none" stroke="#10b981" strokeWidth="1" strokeDasharray="4 4" />
+            <circle cx="260" cy="350" r="260" fill="none" stroke="#10b981" strokeWidth="1" strokeDasharray="6 6" />
+            <line x1="260" y1="50" x2="260" y2="650" stroke="#10b981" strokeWidth="0.8" strokeDasharray="3 3" />
+            <line x1="30" y1="350" x2="580" y2="350" stroke="#10b981" strokeWidth="0.8" strokeDasharray="3 3" />
           </g>
 
           {/* Animated Sweeping Radar Beam */}
-          <g transform="translate(250, 360)" className="pointer-events-none opacity-40">
-            <circle r="220" fill="url(#radar-glow)" />
+          <g transform="translate(260, 350)" className="pointer-events-none opacity-40">
+            <circle r="240" fill="url(#radar-glow)" />
           </g>
 
-          {/* Base India Geographic Boundary Fill */}
-          <path
-            d={INDIA_BORDER_PATH}
-            fill="url(#india-fill)"
-            className="transition-all duration-500"
-          />
+          {/* Actual Geographic Indian States & Union Territories (All 36 States/UTs) */}
+          <g id="actual-indian-states" className="transition-all duration-300">
+            {INDIA_MAP_LOCATIONS.map((loc) => {
+              const isSelected = activeHub?.stateId === loc.id;
+              const isHovered = hoveredHub?.stateId === loc.id;
+              return (
+                <path
+                  key={loc.id}
+                  id={`state-${loc.id}`}
+                  d={loc.path}
+                  fill={
+                    isSelected
+                      ? 'rgba(245, 158, 11, 0.45)'
+                      : isHovered
+                      ? 'rgba(52, 211, 153, 0.4)'
+                      : 'url(#india-fill)'
+                  }
+                  stroke={
+                    isSelected
+                      ? '#fbbf24'
+                      : isHovered
+                      ? '#34d399'
+                      : 'rgba(52, 211, 153, 0.35)'
+                  }
+                  strokeWidth={isSelected ? '1.8' : '0.8'}
+                  strokeLinejoin="round"
+                  className="transition-colors duration-300 cursor-pointer"
+                  onClick={() => {
+                    const hub = AGRI_HUBS.find(h => h.stateId === loc.id);
+                    if (hub) setActiveHub(hub);
+                  }}
+                  onMouseEnter={() => {
+                    const hub = AGRI_HUBS.find(h => h.stateId === loc.id);
+                    if (hub) setHoveredHub(hub);
+                  }}
+                  onMouseLeave={() => setHoveredHub(null)}
+                >
+                  <title>{loc.name}</title>
+                </path>
+              );
+            })}
+          </g>
 
           {/* Overlay Grid Pattern within India Boundary */}
           <path
@@ -467,15 +518,15 @@ export default function HolographicIndiaMap({ className = "" }) {
             className="pointer-events-none"
           />
 
-          {/* Glowing National Perimeter Outline */}
+          {/* Glowing National Perimeter Outline according to actual Survey of India map */}
           <path
             d={INDIA_BORDER_PATH}
             fill="none"
             stroke="url(#border-glow)"
-            strokeWidth="3.2"
+            strokeWidth="2.4"
             strokeLinecap="round"
             strokeLinejoin="round"
-            className="drop-shadow-[0_0_12px_rgba(16,185,129,0.8)]"
+            className="pointer-events-none drop-shadow-[0_0_12px_rgba(16,185,129,0.8)]"
           />
 
           {/* Inner Secondary Technical Pulse Stroke */}
@@ -483,26 +534,11 @@ export default function HolographicIndiaMap({ className = "" }) {
             d={INDIA_BORDER_PATH}
             fill="none"
             stroke="#34d399"
-            strokeWidth="1.2"
+            strokeWidth="1.0"
             strokeDasharray="8 12"
             opacity="0.6"
-            className="animate-pulse"
+            className="pointer-events-none animate-pulse"
           />
-
-          {/* Island Territories (Lakshadweep & Andaman & Nicobar) */}
-          <g opacity="0.85">
-            {/* Lakshadweep */}
-            <circle cx="120" cy="570" r="3" fill="#10b981" />
-            <circle cx="125" cy="585" r="2.5" fill="#10b981" />
-            <circle cx="122" cy="600" r="2" fill="#10b981" />
-            <text x="70" y="590" fill="#94a3b8" fontSize="8" fontFamily="monospace">Lakshadweep</text>
-
-            {/* Andaman & Nicobar */}
-            <ellipse cx="505" cy="530" rx="4" ry="12" fill="#10b981" />
-            <ellipse cx="515" cy="580" rx="3.5" ry="10" fill="#10b981" />
-            <circle cx="522" cy="625" r="3" fill="#10b981" />
-            <text x="495" y="645" fill="#94a3b8" fontSize="8" fontFamily="monospace">A&amp;N Islands</text>
-          </g>
 
           {/* Animated Laser Telemetry Links connecting Mandis */}
           <g className="pointer-events-none">
@@ -519,28 +555,28 @@ export default function HolographicIndiaMap({ className = "" }) {
                     y1={fromHub.y}
                     x2={toHub.x}
                     y2={toHub.y}
-                    stroke="rgba(16, 185, 129, 0.22)"
+                    stroke="rgba(16, 185, 129, 0.25)"
                     strokeWidth="1.2"
+                    strokeDasharray="3 3"
                   />
-                  {/* Pulsing Light Beam */}
+                  {/* Active High-Energy Pulse Line */}
                   <line
                     x1={fromHub.x}
                     y1={fromHub.y}
                     x2={toHub.x}
                     y2={toHub.y}
-                    stroke={fromHub.demandScore > 92 ? '#f43f5e' : '#fbbf24'}
-                    strokeWidth="1.6"
+                    stroke={fromHub.id === displayHub.id || toHub.id === displayHub.id ? '#fbbf24' : '#10b981'}
+                    strokeWidth={fromHub.id === displayHub.id || toHub.id === displayHub.id ? '2' : '1.2'}
                     strokeDasharray="6 14"
-                    opacity="0.75"
                     className="animate-pulse"
-                    style={{ animationDuration: `${2 + (idx % 3)}s` }}
+                    opacity={fromHub.id === displayHub.id || toHub.id === displayHub.id ? '0.9' : '0.45'}
                   />
                 </g>
               );
             })}
           </g>
 
-          {/* Agricultural State Hub Markers & Demand Badges */}
+          {/* Interactive Agricultural Mandi Hub Markers */}
           {filteredHubs.map((hub) => {
             const isSelected = displayHub.id === hub.id;
             const isHighDemand = hub.demandScore >= 92;
@@ -549,33 +585,29 @@ export default function HolographicIndiaMap({ className = "" }) {
               <g
                 key={hub.id}
                 transform={`translate(${hub.x}, ${hub.y})`}
-                className="cursor-pointer group"
                 onClick={() => setActiveHub(hub)}
                 onMouseEnter={() => setHoveredHub(hub)}
                 onMouseLeave={() => setHoveredHub(null)}
+                className="cursor-pointer group/node"
               >
-                {/* Invisible generous click/touch target */}
-                <circle r="18" fill="transparent" />
-
-                {/* Expanding Radar Wave Ping */}
-                <circle
-                  r={isSelected ? "18" : "11"}
-                  fill="none"
-                  stroke={isHighDemand ? hub.demandColor : hub.color}
-                  strokeWidth={isSelected ? "2.2" : "1"}
-                  opacity="0.65"
-                  className="animate-ping"
-                  style={{ animationDuration: isSelected ? '1.8s' : '3s' }}
-                />
-
-                {/* Second Wave for selected state */}
+                {/* Ping Radiation Wave for Selected / High-Demand Hubs */}
                 {isSelected && (
                   <circle
-                    r="26"
+                    r="15"
                     fill="none"
-                    stroke="#fbbf24"
-                    strokeWidth="1.2"
-                    opacity="0.45"
+                    stroke={hub.demandColor || "#fbbf24"}
+                    strokeWidth="1.5"
+                    className="animate-ping"
+                    style={{ animationDuration: '2s' }}
+                  />
+                )}
+
+                {isHighDemand && !isSelected && (
+                  <circle
+                    r="11"
+                    fill="none"
+                    stroke="#f43f5e"
+                    strokeWidth="1"
                     className="animate-ping"
                     style={{ animationDuration: '2.5s', animationDelay: '0.6s' }}
                   />
@@ -641,110 +673,110 @@ export default function HolographicIndiaMap({ className = "" }) {
             );
           })}
 
-          {/* Central Ashoka Precision Crosshair (Geographic Heart of India) */}
-          <g transform="translate(205.3, 335.1)" className="pointer-events-none opacity-80">
+          {/* Central Precision Crosshair (Geographic Center of India) */}
+          <g transform="translate(260, 350)" className="pointer-events-none opacity-80">
             <circle r="12" fill="none" stroke="#fbbf24" strokeWidth="0.8" strokeDasharray="2 2" />
             <line x1="-15" y1="0" x2="15" y2="0" stroke="#fbbf24" strokeWidth="0.8" />
             <line x1="0" y1="-15" x2="0" y2="15" stroke="#fbbf24" strokeWidth="0.8" />
           </g>
         </svg>
 
-        {/* Floating Real-Time Hub Telemetry Card: Shows Crop Products & Demand in India */}
-        <div className="absolute -bottom-2 sm:bottom-0 inset-x-1 sm:inset-x-2 bg-gradient-to-r from-[#031d10]/98 via-[#06291a]/98 to-[#031d10]/98 backdrop-blur-xl border border-emerald-500/50 rounded-2xl p-2.5 sm:p-3 shadow-2xl shadow-black/90 text-xs animate-slide-up">
-          
-          {/* Top Line: State + Demand Status in India */}
-          <div className="flex items-center justify-between gap-2 mb-1.5 pb-1.5 border-b border-emerald-800/40">
-            <div className="flex items-center gap-1.5 min-w-0">
-              <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-950/90 border border-emerald-400/50 flex items-center justify-center shrink-0 shadow-md">
-                <span className="text-sm">{displayHub.cropIcon}</span>
-              </div>
-              <div className="min-w-0">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                  <span className="font-extrabold text-white text-xs sm:text-sm truncate">
-                    {displayHub.name}
-                  </span>
-                  <span className="text-[9px] px-1.5 py-0.2 rounded font-semibold bg-emerald-900/60 text-emerald-300 border border-emerald-600/30">
-                    {displayHub.sub}
-                  </span>
-                </div>
-              </div>
-            </div>
+      </div>
 
-            {/* Demand in India Badge */}
-            <div className="flex items-center gap-1 shrink-0">
-              <span className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1 ${
-                displayHub.demandScore >= 92 
-                  ? 'bg-rose-950/90 text-rose-300 border border-rose-500/50' 
-                  : 'bg-amber-950/90 text-amber-300 border border-amber-500/50'
-              }`}>
-                <Flame className="w-3 h-3 text-rose-400 animate-pulse" />
-                <span>{displayHub.demand}</span>
-                <span className="font-mono text-emerald-300">{displayHub.demandGrowth}</span>
-              </span>
+      {/* Real-Time Hub Telemetry Card: Positioned Cleanly Beneath the Map (Fully Unobstructed View of Entire India) */}
+      <div className="w-full max-w-[420px] sm:max-w-[450px] mt-2.5 bg-gradient-to-r from-[#031d10]/98 via-[#06291a]/98 to-[#031d10]/98 backdrop-blur-xl border border-emerald-500/50 rounded-2xl p-2.5 sm:p-3 shadow-2xl shadow-black/90 text-xs animate-slide-up">
+        
+        {/* Top Line: State + Demand Status in India */}
+        <div className="flex items-center justify-between gap-2 mb-1.5 pb-1.5 border-b border-emerald-800/40">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-950/90 border border-emerald-400/50 flex items-center justify-center shrink-0 shadow-md">
+              <span className="text-sm">{displayHub.cropIcon}</span>
             </div>
-          </div>
-
-          {/* Middle Line: Major Crop Produced & Mandi Rate */}
-          <div className="grid grid-cols-12 gap-2 items-center">
-            {/* Crops Produced */}
-            <div className="col-span-8 min-w-0">
-              <div className="text-[9px] text-slate-400 uppercase font-semibold tracking-wider">
-                Crops Produced
-              </div>
-              <div className="text-xs sm:text-[13px] font-bold text-amber-300 truncate">
-                {displayHub.crop}
-              </div>
-              <div className="text-[10px] text-emerald-300/90 truncate flex items-center gap-1 mt-0.5">
-                <TrendingUp className="w-3 h-3 text-emerald-400 shrink-0" />
-                <span className="truncate">{displayHub.demandReason}</span>
-              </div>
-            </div>
-
-            {/* Mandi Rate vs MSP */}
-            <div className="col-span-4 text-right shrink-0">
-              <div className="text-[9px] text-slate-400 uppercase font-semibold tracking-wider">
-                Mandi Rate
-              </div>
-              <div className="text-xs sm:text-sm font-extrabold text-emerald-300 font-mono">
-                {displayHub.rate}
-              </div>
-              <div className="text-[9px] text-slate-400 font-mono">
-                MSP: {displayHub.msp}
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="font-extrabold text-white text-xs sm:text-sm truncate">
+                  {displayHub.name}
+                </span>
+                <span className="text-[9px] px-1.5 py-0.2 rounded font-semibold bg-emerald-900/60 text-emerald-300 border border-emerald-600/30">
+                  {displayHub.sub}
+                </span>
               </div>
             </div>
           </div>
 
-          {/* Bottom Demand Intensity Progress Bar */}
-          <div className="mt-2 pt-1.5 border-t border-emerald-900/40 flex items-center justify-between gap-2 text-[9px] text-slate-400 font-mono">
-            <span className="flex items-center gap-1 text-slate-300">
-              <span>National Demand Index:</span>
-              <strong className="text-amber-400 font-mono">{displayHub.demandScore}/100</strong>
+          {/* Demand in India Badge */}
+          <div className="flex items-center gap-1 shrink-0">
+            <span className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1 ${
+              displayHub.demandScore >= 92 
+                ? 'bg-rose-950/90 text-rose-300 border border-rose-500/50' 
+                : 'bg-amber-950/90 text-amber-300 border border-amber-500/50'
+            }`}>
+              <Flame className="w-3 h-3 text-rose-400 animate-pulse" />
+              <span>{displayHub.demand}</span>
+              <span className="font-mono text-emerald-300">{displayHub.demandGrowth}</span>
             </span>
-            <div className="w-24 sm:w-32 h-1.5 bg-emerald-950 rounded-full overflow-hidden border border-emerald-800/40">
-              <div
-                className={`h-full rounded-full transition-all duration-500 ${
-                  displayHub.demandScore >= 92 
-                    ? 'bg-gradient-to-r from-amber-400 to-rose-500' 
-                    : 'bg-gradient-to-r from-emerald-400 to-amber-400'
-                }`}
-                style={{ width: `${displayHub.demandScore}%` }}
-              />
+          </div>
+        </div>
+
+        {/* Middle Line: Major Crop Produced & Mandi Rate */}
+        <div className="grid grid-cols-12 gap-2 items-center">
+          {/* Crops Produced */}
+          <div className="col-span-8 min-w-0">
+            <div className="text-[9px] text-slate-400 uppercase font-semibold tracking-wider">
+              Crops Produced
+            </div>
+            <div className="text-xs sm:text-[13px] font-bold text-amber-300 truncate">
+              {displayHub.crop}
+            </div>
+            <div className="text-[10px] text-emerald-300/90 truncate flex items-center gap-1 mt-0.5">
+              <TrendingUp className="w-3 h-3 text-emerald-400 shrink-0" />
+              <span className="truncate">{displayHub.demandReason}</span>
             </div>
           </div>
 
+          {/* Mandi Rate vs MSP */}
+          <div className="col-span-4 text-right shrink-0">
+            <div className="text-[9px] text-slate-400 uppercase font-semibold tracking-wider">
+              Mandi Rate
+            </div>
+            <div className="text-xs sm:text-sm font-extrabold text-emerald-300 font-mono">
+              {displayHub.rate}
+            </div>
+            <div className="text-[9px] text-slate-400 font-mono">
+              MSP: {displayHub.msp}
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Demand Intensity Progress Bar */}
+        <div className="mt-2 pt-1.5 border-t border-emerald-900/40 flex items-center justify-between gap-2 text-[9px] text-slate-400 font-mono">
+          <span className="flex items-center gap-1 text-slate-300">
+            <span>National Demand Index:</span>
+            <strong className="text-amber-400 font-mono">{displayHub.demandScore}/100</strong>
+          </span>
+          <div className="w-24 sm:w-32 h-1.5 bg-emerald-950 rounded-full overflow-hidden border border-emerald-800/40">
+            <div
+              className={`h-full rounded-full transition-all duration-500 ${
+                displayHub.demandScore >= 92 
+                  ? 'bg-gradient-to-r from-amber-400 to-rose-500' 
+                  : 'bg-gradient-to-r from-emerald-400 to-amber-400'
+              }`}
+              style={{ width: `${displayHub.demandScore}%` }}
+            />
+          </div>
         </div>
 
       </div>
 
       {/* Bottom Coordinates & Accuracy HUD */}
-      <div className="relative z-10 mt-3 sm:mt-4 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-[9px] sm:text-[10px] text-slate-300 font-mono px-2 text-center">
+      <div className="relative z-10 mt-2 sm:mt-3 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-[9px] sm:text-[10px] text-slate-300 font-mono px-2 text-center">
         <span className="flex items-center gap-1 text-emerald-300">
-          <ShieldCheck className="w-3 h-3 text-emerald-400 shrink-0" /> 100% Verified MSP Radar
+          <ShieldCheck className="w-3 h-3 text-emerald-400 shrink-0" /> Official Survey of India Map
         </span>
         <span className="text-slate-600 hidden xs:inline">•</span>
-        <span className="text-slate-300 hidden sm:inline">LAT 20.59° N · LON 78.96° E</span>
+        <span className="text-slate-300 hidden sm:inline">LAT 8.4°N – 37.6°N · LON 68.7°E – 97.4°E</span>
         <span className="text-slate-600 hidden sm:inline">•</span>
-        <span className="text-amber-400">22 Native Languages Synced</span>
+        <span className="text-amber-400">All 36 States &amp; UTs</span>
       </div>
 
     </div>
