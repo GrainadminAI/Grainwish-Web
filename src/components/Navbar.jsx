@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut } from 'lucide-react';
+import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut, Palette } from 'lucide-react';
 import { supabase, signOutUser, getLoggedInUser, recordFeatureUsageToDB } from '../lib/supabase';
 import AuthModal from './AuthModal';
 
@@ -13,9 +13,11 @@ const LANGUAGES = [
 
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
+import { useBrandTheme } from '../lib/BrandThemeContext';
 
 export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedLang }) {
   const { t } = useLanguage();
+  const { currentOption, setBrandModalOpen } = useBrandTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
@@ -32,8 +34,25 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
     getLoggedInUser().then(u => setCurrentUser(u));
 
     // Auth State Listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setCurrentUser(session?.user || null);
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (session?.user) {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('grainwise_guest_user');
+          // Clean OAuth URL params if returning from Google redirect
+          if (window.location.search.includes('code=') || window.location.hash.includes('access_token=')) {
+            window.history.replaceState(null, '', window.location.pathname);
+          }
+        }
+        setCurrentUser(session.user);
+      } else if (event === 'SIGNED_OUT') {
+        if (typeof window !== 'undefined') {
+          localStorage.removeItem('grainwise_guest_user');
+        }
+        setCurrentUser(null);
+      } else {
+        const fallbackUser = await getLoggedInUser();
+        setCurrentUser(fallbackUser);
+      }
     });
 
     return () => {
@@ -50,29 +69,41 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
         <div className="flex items-center justify-between">
           
           {/* Logo & Domain */}
-          <a href="/" className="flex items-center gap-2.5 sm:gap-4 group">
-            <img 
-              src="/assets/grainwise_icon_transparent.png" 
-              alt="GrainWise AI Logo - Smart Agriculture Intelligence Platform" 
-              width="64"
-              height="64"
-              className="h-10 w-10 sm:h-14 sm:w-14 md:h-16 md:w-16 object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_18px_rgba(16,185,129,0.5)] shrink-0"
-              onError={(e) => {
-                e.target.src = '/favicon.png';
-              }}
-            />
-            <div>
-              <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                <span className="font-display text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white group-hover:text-emerald-300 transition-colors">
-                  GrainWise <span className="text-amber-400 font-black">AI</span>
+          <div className="flex items-center gap-2">
+            <a href="/" className="flex items-center gap-2.5 sm:gap-4 group">
+              <img 
+                src={currentOption.src} 
+                alt="GrainWise AI Logo - Smart Agriculture Intelligence Platform" 
+                width="64"
+                height="64"
+                className="h-10 w-10 sm:h-14 sm:w-14 md:h-16 md:w-16 object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_18px_rgba(16,185,129,0.5)] shrink-0"
+                onError={(e) => {
+                  e.target.src = '/favicon.png';
+                }}
+              />
+              <div>
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                  <span className="font-display text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white group-hover:text-emerald-300 transition-colors">
+                    GrainWise <span className="text-amber-400 font-black">AI</span>
+                  </span>
+                  <MadeInIndiaTag variant="navbar" />
+                </div>
+                <span className="text-[10px] sm:text-xs text-slate-300 tracking-wider uppercase block -mt-0.5 font-medium">
+                  {t('nav_smart_farming')}
                 </span>
-                <MadeInIndiaTag variant="navbar" />
               </div>
-              <span className="text-[10px] sm:text-xs text-slate-300 tracking-wider uppercase block -mt-0.5 font-medium">
-                {t('nav_smart_farming')}
-              </span>
-            </div>
-          </a>
+            </a>
+
+            {/* Brand Theme Switcher Badge */}
+            <button
+              onClick={() => setBrandModalOpen(true)}
+              className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-950/70 hover:bg-emerald-900 text-emerald-300 hover:text-white border border-emerald-700/40 hover:border-emerald-500/60 transition-all shadow-sm group/theme ml-1"
+              title="Explore Logo Options & Brand Palette"
+            >
+              <Palette className="w-3.5 h-3.5 text-amber-400 group-hover/theme:rotate-12 transition-transform" />
+              <span>Theme</span>
+            </button>
+          </div>
 
           {/* Desktop Nav Links */}
           <nav className="hidden md:flex items-center space-x-1 lg:space-x-2 bg-emerald-950/40 p-1.5 rounded-full border border-emerald-800/30 backdrop-blur-sm">
@@ -90,21 +121,32 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
           {/* Actions: 22 Languages & Download Button */}
           <div className="hidden lg:flex items-center gap-3">
             
-            {/* User Profile if Logged In */}
-            {currentUser && (
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-950/80 border border-emerald-700/50 rounded-xl text-xs">
+            {/* User Profile if Logged In / Sign In button if Not */}
+            {currentUser ? (
+              <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-950/80 border border-emerald-700/50 rounded-xl text-xs shadow-md">
                 <User className="w-3.5 h-3.5 text-amber-400" />
-                <span className="text-emerald-300 font-semibold truncate max-w-[110px]">
-                  {currentUser.email?.split('@')[0]}
+                <span className="text-emerald-300 font-semibold truncate max-w-[120px]" title={currentUser.email}>
+                  {currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0]}
                 </span>
                 <button
-                  onClick={() => signOutUser()}
+                  onClick={async () => {
+                    await signOutUser();
+                    setCurrentUser(null);
+                  }}
                   title="Sign Out"
                   className="p-1 text-slate-400 hover:text-red-400 transition-colors ml-1"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                 </button>
               </div>
+            ) : (
+              <button
+                onClick={() => setAuthModalOpen(true)}
+                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/60 hover:border-emerald-500 text-emerald-200 text-xs font-bold transition-all shadow-md active:scale-95"
+              >
+                <LogIn className="w-3.5 h-3.5 text-amber-400" />
+                <span>Sign In</span>
+              </button>
             )}
 
             {/* Language Picker */}
@@ -206,8 +248,9 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                     </div>
                   </div>
                   <button
-                    onClick={() => {
-                      signOutUser();
+                    onClick={async () => {
+                      await signOutUser();
+                      setCurrentUser(null);
                       setMobileMenuOpen(false);
                     }}
                     className="px-3 py-1.5 rounded-lg bg-red-950/80 border border-red-800 text-red-300 text-xs font-semibold flex items-center gap-1"
@@ -241,6 +284,16 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
               <a href="#case-studies" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-slate-200 hover:bg-emerald-900">Farmer Stories</a>
               <a href="#calendar" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-slate-200 hover:bg-emerald-900">Agri Calendar</a>
               <a href="#faq" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-slate-200 hover:bg-emerald-900">FAQ</a>
+              <button 
+                onClick={() => {
+                  setBrandModalOpen(true);
+                  setMobileMenuOpen(false);
+                }} 
+                className="col-span-2 px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-900/50 text-amber-300 border border-emerald-600/40 flex items-center justify-center gap-1.5 hover:bg-emerald-800"
+              >
+                <Palette className="w-3.5 h-3.5 text-amber-400" />
+                <span>Brand Suite &amp; Theme</span>
+              </button>
             </div>
 
             {/* Mobile Language Selector */}

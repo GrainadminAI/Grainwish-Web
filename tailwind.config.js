@@ -8,18 +8,36 @@ export default {
     extend: {
       colors: {
         agri: {
-          dark: '#03140c',
+          dark: '#021109',
+          darker: '#010b06',
+          surface: '#051d11',
           card: '#082317',
+          cardHover: '#0b2f1f',
           border: '#14452f',
+          borderGlow: '#10b98140',
           primary: '#10b981',
           primaryHover: '#059669',
           accent: '#84cc16',
           gold: '#f59e0b',
           goldGlow: '#fbbf24',
+          goldMuted: '#d97706',
+          terracotta: '#e0633b',
+          terracottaLight: '#f97316',
+          terracottaDark: '#c2410c',
+          earth: '#5c3d2e',
+          earthDark: '#382215',
+          earthRich: '#78350f',
           cyan: '#06b6d4',
           neon: '#34d399',
-          textMuted: '#94a3b8'
+          textMuted: '#94a3b8',
+          textBright: '#f8fafc'
         }
+      },
+      boxShadow: {
+        'glow-agri': '0 0 25px rgba(16, 185, 129, 0.35)',
+        'glow-gold': '0 0 25px rgba(245, 158, 11, 0.35)',
+        'glow-terracotta': '0 0 25px rgba(224, 99, 59, 0.35)',
+        '3d-badge': '0 12px 36px -4px rgba(0, 0, 0, 0.7), 0 0 24px rgba(16, 185, 129, 0.35)',
       },
       fontFamily: {
         sans: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],

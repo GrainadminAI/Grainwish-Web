@@ -317,55 +317,51 @@ export async function signInWithEmail(email, password) {
 
 export async function signInWithGoogle() {
   try {
+    // Clear legacy guest session so real OAuth takes precedence
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('grainwise_guest_user');
+    }
+
+    const redirectOrigin = typeof window !== 'undefined' ? window.location.origin : 'https://www.grainwish.com';
+
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${window.location.origin}`
+        redirectTo: redirectOrigin,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent'
+        }
       }
     });
-    if (error) throw error;
-    
-    // Notify Express backend auth API
-    try {
-      await fetch('http://localhost:5000/api/auth/google', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          provider: 'google',
-          redirectUrl: window.location.origin
-        })
-      });
-    } catch (e) {
-      // API call warning handled silently
-    }
 
-    return { success: true, data };
+    if (error) throw error;
+    return { success: true, data, redirecting: true };
   } catch (err) {
     console.error('Supabase Google OAuth Error:', err);
-    
-    // Fallback Demo Google Authentication if Google OAuth Client ID is pending in Supabase Dashboard
-    const mockGoogleUser = {
-      id: 'google-' + Date.now(),
-      email: 'farmer.google@Grainwish.com',
-      user_metadata: {
-        full_name: 'Verified Google Farmer',
-        avatar_url: 'https://lh3.googleusercontent.com/a/default-user',
-        provider: 'google'
-      }
-    };
-    localStorage.setItem('grainwise_guest_user', JSON.stringify(mockGoogleUser));
-
-    // Send to backend API
-    try {
-      await fetch('http://localhost:5000/api/auth/google', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(mockGoogleUser)
-      });
-    } catch (e) {}
-
-    return { success: true, user: mockGoogleUser, isFallback: true };
+    return { success: false, error: err.message || 'Failed to initiate Google OAuth sign-in.' };
   }
+}
+
+/**
+ * Instant Demo Google Farmer Account for quick testing & preview
+ * when Google Cloud Console redirect URI is pending authorization.
+ */
+export async function signInWithDemoGoogleAccount() {
+  const mockGoogleUser = {
+    id: 'google-demo-' + Date.now(),
+    email: 'farmer.demo@grainwish.com',
+    user_metadata: {
+      full_name: 'Verified Google Farmer (Demo)',
+      avatar_url: 'https://lh3.googleusercontent.com/a/default-user',
+      provider: 'google',
+      email_verified: true
+    }
+  };
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('grainwise_guest_user', JSON.stringify(mockGoogleUser));
+  }
+  return { success: true, user: mockGoogleUser, isFallback: true };
 }
 
 export async function signInAsGuestFarmer() {
@@ -373,6 +369,9 @@ export async function signInAsGuestFarmer() {
     // Try Anonymous sign in first
     const { data, error } = await supabase.auth.signInAnonymously();
     if (!error && data?.user) {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('grainwise_guest_user');
+      }
       return { success: true, user: data.user };
     }
   } catch (e) {
@@ -384,15 +383,21 @@ export async function signInAsGuestFarmer() {
     email: 'farmer.guest@Grainwish.com',
     user_metadata: { name: 'Guest Farmer' }
   };
-  localStorage.setItem('grainwise_guest_user', JSON.stringify(mockGuest));
+  if (typeof window !== 'undefined') {
+    localStorage.setItem('grainwise_guest_user', JSON.stringify(mockGuest));
+  }
   return { success: true, user: mockGuest };
 }
 
 export async function signOutUser() {
   try {
-    localStorage.removeItem('grainwise_guest_user');
+    if (typeof window !== 'undefined') {
+      localStorage.removeItem('grainwise_guest_user');
+    }
     const { error } = await supabase.auth.signOut();
-    if (error) throw error;
+    if (error) {
+      console.warn('Supabase Sign Out Notice:', error.message);
+    }
     return { success: true };
   } catch (err) {
     return { success: false, error: err.message };
@@ -401,11 +406,28 @@ export async function signOutUser() {
 
 export async function getLoggedInUser() {
   try {
-    const localGuest = localStorage.getItem('grainwise_guest_user');
-    if (localGuest) return JSON.parse(localGuest);
+    // 1. Check live Supabase session first
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.user) {
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('grainwise_guest_user');
+      }
+      return session.user;
+    }
 
-    const { data: { user } } = await supabase.auth.getUser();
-    return user;
+    // 2. Check local guest/demo account if no Supabase session exists
+    if (typeof window !== 'undefined') {
+      const localGuest = localStorage.getItem('grainwise_guest_user');
+      if (localGuest) {
+        try {
+          return JSON.parse(localGuest);
+        } catch (e) {
+          localStorage.removeItem('grainwise_guest_user');
+        }
+      }
+    }
+
+    return null;
   } catch (err) {
     return null;
   }

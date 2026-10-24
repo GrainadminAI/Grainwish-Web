@@ -66,6 +66,16 @@ test('Supabase Client Helpers: Verify query and mutation functions exist', async
   await t.test('Exports saveFeedbackToDB', () => {
     assert.match(supabaseCode, /export (async )?function saveFeedbackToDB/, 'saveFeedbackToDB should be exported');
   });
+
+  await t.test('Exports signInWithGoogle and signInWithDemoGoogleAccount', () => {
+    assert.match(supabaseCode, /export (async )?function signInWithGoogle/, 'signInWithGoogle should be exported');
+    assert.match(supabaseCode, /export (async )?function signInWithDemoGoogleAccount/, 'signInWithDemoGoogleAccount should be exported');
+  });
+
+  await t.test('Exports signOutUser and getLoggedInUser', () => {
+    assert.match(supabaseCode, /export (async )?function signOutUser/, 'signOutUser should be exported');
+    assert.match(supabaseCode, /export (async )?function getLoggedInUser/, 'getLoggedInUser should be exported');
+  });
 });
 
 // Test Suite 3: Screens and UI Components Integrity

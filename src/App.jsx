@@ -20,6 +20,8 @@ import SecurityPolicyPage from './components/SecurityPolicyPage';
 import NotFoundPage from './components/NotFoundPage';
 import { recordUserVisitToDB } from './lib/supabase';
 import { LanguageProvider, useLanguage } from './lib/LanguageContext';
+import { BrandThemeProvider } from './lib/BrandThemeContext';
+import BrandThemeModal from './components/BrandThemeModal';
 
 function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy }) {
   const { selectedLang, setSelectedLang } = useLanguage();
@@ -241,7 +243,10 @@ function RootApp() {
 export default function App() {
   return (
     <LanguageProvider>
-      <RootApp />
+      <BrandThemeProvider>
+        <RootApp />
+        <BrandThemeModal />
+      </BrandThemeProvider>
     </LanguageProvider>
   );
 }

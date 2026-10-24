@@ -112,13 +112,14 @@ function FarmFieldGrid() {
         // Skip middle area for orb
         if (Math.abs(x) < 2 && Math.abs(z) < 2) continue;
         const h = 1.8 + Math.random() * 0.8;
-        const isGold = Math.random() > 0.6;
+        const rand = Math.random();
+        const stalkColor = rand > 0.82 ? "#e0633b" : rand > 0.52 ? "#f59e0b" : "#10b981";
         arr.push({
           id: `${x}-${z}`,
           position: [x + (Math.random() * 0.3 - 0.15), 0, z + (Math.random() * 0.3 - 0.15)],
           height: h,
           delay: Math.random() * 5,
-          color: isGold ? "#f59e0b" : "#10b981"
+          color: stalkColor
         });
       }
     }
@@ -153,8 +154,9 @@ export default function ThreeFarmCanvas() {
         }}
         className="w-full h-full pointer-events-none"
       >
-        <ambientLight intensity={0.6} />
+        <ambientLight intensity={0.65} />
         <directionalLight position={[10, 15, 10]} intensity={1.5} color="#fbbf24" />
+        <directionalLight position={[-10, 8, -6]} intensity={1.0} color="#e0633b" />
         <pointLight position={[-5, 5, -5]} intensity={1} color="#10b981" />
         
         {/* Glowing Hologram Core */}
@@ -166,6 +168,7 @@ export default function ThreeFarmCanvas() {
         {/* Floating Agricultural Dust / Pollen Sparkles */}
         <Sparkles count={isMobile ? 35 : 120} scale={[12, 10, 12]} size={3} speed={0.4} color="#f59e0b" opacity={0.6} />
         <Sparkles count={isMobile ? 25 : 80} scale={[10, 8, 10]} size={2} speed={0.6} color="#34d399" opacity={0.8} />
+        <Sparkles count={isMobile ? 15 : 40} scale={[10, 7, 10]} size={2} speed={0.3} color="#e0633b" opacity={0.6} />
 
         <OrbitControls
           enableZoom={false}

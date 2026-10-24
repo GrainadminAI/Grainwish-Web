@@ -20,9 +20,10 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
         </Suspense>
       </div>
 
-      {/* Decorative Glow Orbs */}
+      {/* Decorative Glow Orbs matching Brand Palette */}
       <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none animate-pulse-slow" />
       <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl pointer-events-none animate-pulse-slow" style={{ animationDelay: '2s' }} />
+      <div className="absolute top-1/2 right-1/3 w-80 h-80 bg-orange-600/10 rounded-full blur-3xl pointer-events-none animate-pulse-slow" style={{ animationDelay: '3.5s' }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-center">

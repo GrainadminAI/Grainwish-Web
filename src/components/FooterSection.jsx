@@ -1,10 +1,12 @@
 import React from 'react';
-import { Smartphone, ShieldCheck, Heart, ArrowUp, Lock, FileText, Cookie, Mail } from 'lucide-react';
+import { Smartphone, ShieldCheck, Heart, ArrowUp, Lock, FileText, Cookie, Mail, Palette } from 'lucide-react';
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
+import { useBrandTheme } from '../lib/BrandThemeContext';
 
 export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy }) {
   const { t } = useLanguage();
+  const { currentOption, setBrandModalOpen } = useBrandTheme();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -59,13 +61,15 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
           <div className="space-y-4">
             <div className="flex items-center gap-4">
               <img 
-                src="/assets/grainwise_icon_transparent.png" 
+                src={currentOption.src} 
                 alt="GrainWise AI Logo - Trusted Indian AgriTech Platform" 
                 loading="lazy"
                 decoding="async"
                 width="84"
                 height="84"
-                className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 object-contain drop-shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0"
+                className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 object-contain drop-shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0 cursor-pointer hover:scale-105 transition-transform"
+                onClick={() => setBrandModalOpen(true)}
+                title="Click to explore Brand Suite & Theme options"
               />
               <div>
                 <div className="font-display text-2xl sm:text-3xl font-extrabold text-white">GrainWise AI</div>
@@ -155,6 +159,15 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left"
                 >
                   <Cookie className="w-3.5 h-3.5 text-amber-400" /> Cookie Preferences
+                </button>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => setBrandModalOpen(true)}
+                  className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left text-amber-300/90 font-medium"
+                >
+                  <Palette className="w-3.5 h-3.5 text-amber-400" /> Brand Suite &amp; Theme
                 </button>
               </li>
               <li>

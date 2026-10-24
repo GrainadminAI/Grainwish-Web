@@ -8,7 +8,7 @@ if (typeof process.loadEnvFile === 'function') {
 }
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 
 // Security: Disable Express fingerprinting
 app.disable('x-powered-by');
@@ -31,6 +31,8 @@ const ALLOWED_ORIGINS = [
   'https://grainwish.com',
   'http://localhost:5173',
   'http://127.0.0.1:5173',
+  'http://localhost:5001',
+  'http://127.0.0.1:5001',
   'http://localhost:5000',
   'http://127.0.0.1:5000',
   'http://localhost:3000',
