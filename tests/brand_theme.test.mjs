@@ -79,5 +79,6 @@ describe('Brand Theme & Logo Suite Verification', () => {
     assert.ok(content.includes('hero_agri_3d_bg.jpg'), 'HeroSection must have Image 2 background');
     assert.ok(content.includes('real_crops_field.mp4') || content.includes('real_wheat_field.webm'), 'HeroSection must have real crop field video');
     assert.ok(content.includes('HolographicIndiaMap'), 'HeroSection must include HolographicIndiaMap');
+    assert.ok(content.includes('soybean_leaf_mosaic.jpg'), 'HeroSection must showcase soybean_leaf_mosaic.jpg in live diagnostics card');
   });
 });

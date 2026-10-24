@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { Sparkles, Camera, Smartphone, CheckCircle2, Play, Globe, ShieldCheck, TrendingUp } from 'lucide-react';
+import { Sparkles, Camera, Smartphone, CheckCircle2, Play, Globe, ShieldCheck, TrendingUp, Leaf, Droplets, BarChart3 } from 'lucide-react';
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
 import HolographicIndiaMap from './HolographicIndiaMap';
@@ -151,16 +151,83 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
                 </span>
               </div>
 
-              {/* Graphic Showcase: Image 2 Live Crop Scan */}
-              <div className="relative rounded-2xl overflow-hidden border border-emerald-500/30 aspect-[4/3] bg-emerald-950 shadow-inner group-hover:border-emerald-400/60 transition-all">
+              {/* Graphic Showcase: Soybean Leaf Mosaic AI Live Diagnostics */}
+              <div className="relative rounded-2xl overflow-hidden border border-emerald-500/40 aspect-[4/3] bg-emerald-950 shadow-inner group-hover:border-emerald-400/70 transition-all">
+                {/* Soybean Leaf Mosaic Image */}
                 <img
-                  src="/assets/live_crop_scan_preview.jpg"
-                  alt="Real-time AI crop diagnostics scan with computer vision reticle"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                  src="/assets/soybean_leaf_mosaic.jpg"
+                  alt="Real-time AI crop diagnostics scan of Soybean Yellow Mosaic leaf"
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 filter brightness-105 contrast-105"
                 />
-                
+
+                {/* Vignette Overlay for Readability */}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/35 pointer-events-none" />
+
                 {/* Real-time Scanning Laser Line */}
-                <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_12px_#10b981] animate-scan pointer-events-none" />
+                <div className="absolute left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-emerald-400 to-transparent shadow-[0_0_14px_#10b981] animate-scan pointer-events-none" />
+
+                {/* Top-Left Floating Badge: Crop Scan Active */}
+                <div className="absolute top-2.5 left-2.5 bg-emerald-950/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-emerald-500/50 text-[10px] text-emerald-200 font-semibold flex items-center gap-1.5 shadow-lg">
+                  <Leaf className="w-3 h-3 text-emerald-400 animate-pulse" />
+                  <span>Crop Scan Active</span>
+                </div>
+
+                {/* Top-Right Floating Badge: Identified Condition */}
+                <div className="absolute top-2.5 right-2.5 bg-amber-950/90 backdrop-blur-md px-2.5 py-1 rounded-full border border-amber-500/50 text-[9px] sm:text-[10px] text-amber-300 font-semibold shadow-lg flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
+                  <span>Soybean Mosaic</span>
+                </div>
+
+                {/* Holographic Computer Vision HUD Overlay */}
+                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                  {/* Outer Orbit Ring with floating telemetry nodes */}
+                  <div className="relative w-44 h-44 sm:w-48 sm:h-48 rounded-full border border-emerald-400/30 flex items-center justify-center">
+                    
+                    {/* Top-Left Orbit Node: Leaf Chlorophyll */}
+                    <div className="absolute -top-1.5 left-6 w-6 h-6 rounded-full bg-emerald-950/90 border border-emerald-400/60 flex items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.5)]">
+                      <Leaf className="w-3 h-3 text-emerald-300" />
+                    </div>
+
+                    {/* Top-Right Orbit Node: Water Hydration */}
+                    <div className="absolute -top-1.5 right-6 w-6 h-6 rounded-full bg-emerald-950/90 border border-cyan-400/60 flex items-center justify-center shadow-[0_0_10px_rgba(6,182,212,0.5)]">
+                      <Droplets className="w-3 h-3 text-cyan-300" />
+                    </div>
+
+                    {/* Bottom-Left Orbit Node: NPK Nutrients */}
+                    <div className="absolute bottom-2 left-4 px-1.5 py-0.5 rounded-full bg-emerald-950/90 border border-emerald-400/60 text-[8px] font-bold text-emerald-300 tracking-wider shadow-[0_0_10px_rgba(16,185,129,0.5)]">
+                      NPK
+                    </div>
+
+                    {/* Bottom-Right Orbit Node: Leaf Health */}
+                    <div className="absolute bottom-2 right-4 w-6 h-6 rounded-full bg-emerald-950/90 border border-emerald-400/60 flex items-center justify-center shadow-[0_0_10px_rgba(16,185,129,0.5)]">
+                      <Leaf className="w-3 h-3 text-emerald-300" />
+                    </div>
+
+                    {/* Central Targeting Reticle */}
+                    <div className="relative w-24 h-24 sm:w-28 sm:h-28 rounded-full border border-emerald-400/60 flex items-center justify-center shadow-[0_0_16px_rgba(16,185,129,0.3)]">
+                      {/* Corner Target Brackets */}
+                      <div className="absolute top-1 left-1 w-3 h-3 border-t-2 border-l-2 border-emerald-300" />
+                      <div className="absolute top-1 right-1 w-3 h-3 border-t-2 border-r-2 border-emerald-300" />
+                      <div className="absolute bottom-1 left-1 w-3 h-3 border-b-2 border-l-2 border-emerald-300" />
+                      <div className="absolute bottom-1 right-1 w-3 h-3 border-b-2 border-r-2 border-emerald-300" />
+
+                      {/* Inner Tech Reticle */}
+                      <div className="w-16 h-16 rounded-full border border-dashed border-emerald-400/50 flex items-center justify-center animate-spin-slow" />
+
+                      {/* Diagnostic Confidence Pill */}
+                      <div className="absolute bg-black/85 backdrop-blur-md px-2 py-0.5 rounded-full border border-emerald-400/60 shadow-lg">
+                        <span className="text-[9px] font-mono font-bold text-emerald-300">99.4% Match</span>
+                      </div>
+                    </div>
+
+                  </div>
+                </div>
+
+                {/* Bottom-Right Floating Badge: Yield Insight */}
+                <div className="absolute bottom-2.5 right-2.5 bg-black/85 backdrop-blur-md px-2.5 py-1 rounded-xl border border-amber-500/40 text-[10px] text-amber-300 font-semibold shadow-lg flex items-center gap-1.5">
+                  <BarChart3 className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Yield Insight</span>
+                </div>
               </div>
 
               {/* Bottom Split Feature Chips matching Image 2 */}
