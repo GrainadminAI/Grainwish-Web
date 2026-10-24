@@ -16,7 +16,6 @@ import {
 import {
   INDIAN_LOCALE_MAP,
   VOICE_CADENCE_PRESETS,
-  getIndianFemaleVoice,
   speakWithIndianFemaleVoice,
   stopIndianFemaleSpeech
 } from '../lib/ananyaVoiceEngine';
@@ -69,7 +68,6 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isMicActive, setIsMicActive] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(null);
-  const [activeVoiceInfo, setActiveVoiceInfo] = useState(() => getIndianFemaleVoice(selectedLang));
   const messagesEndRef = useRef(null);
   const chatContainerRef = useRef(null);
 
@@ -101,25 +99,6 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
     });
   }, [selectedLang]);
 
-  // Synchronize Indian Female Voice engine with system available voices
-  useEffect(() => {
-    const refreshVoice = () => {
-      const resolved = getIndianFemaleVoice(selectedLang);
-      setActiveVoiceInfo(resolved);
-    };
-
-    refreshVoice();
-
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      window.speechSynthesis.onvoiceschanged = refreshVoice;
-    }
-
-    return () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.onvoiceschanged = null;
-      }
-    };
-  }, [selectedLang]);
 
   // Text-To-Speech Synthesis using Ananya Indian Female Voice Engine with Gentle/Suitable Cadence
   const speakText = (text, lang) => {
@@ -144,18 +123,6 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
       onEnd: () => setIsSpeaking(false),
       onError: () => setIsSpeaking(false)
     });
-  };
-
-  // Preview Ananya's Indian Female Voice with regional greeting
-  const handleVoicePreview = () => {
-    if (isSpeaking) {
-      stopIndianFemaleSpeech();
-      setIsSpeaking(false);
-      return;
-    }
-
-    const textToSpeak = NATIVE_ANANYA_GREETINGS[selectedLang] || NATIVE_ANANYA_GREETINGS.English;
-    speakText(textToSpeak, selectedLang);
   };
 
   const handleSend = (customText) => {
@@ -390,101 +357,6 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
                 </div>
               </div>
 
-              {/* Indian Female Voice Engine Card */}
-              <div className="bg-[#02180d]/90 p-3 sm:p-3.5 rounded-2xl border border-amber-500/40 text-left space-y-2.5 shadow-lg">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
-                    <span className="text-xs font-extrabold text-amber-300">Indian Female Voice</span>
-                  </div>
-                  <span className="text-[10px] font-mono text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded border border-emerald-800/80">
-                    {activeVoiceInfo?.voiceName || 'Calibrated Indian Female'}
-                  </span>
-                </div>
-
-                <div className="text-[11px] text-slate-300 leading-tight">
-                  Authentic Indian cadence &amp; pronunciation calibrated for agricultural terms &amp; 22 languages.
-                </div>
-
-                {/* Voice Status Indicator / Equalizer or Action Buttons */}
-                {isSpeaking ? (
-                  <div className="p-2.5 bg-amber-500/20 rounded-xl border border-amber-400/50 flex items-center justify-between gap-2 animate-pulse">
-                    <div className="flex items-center gap-2">
-                      <Volume2 className="w-4 h-4 text-amber-400 shrink-0" />
-                      <span className="text-xs font-bold text-amber-300">Speaking in {selectedLang}...</span>
-                      <div className="flex items-center gap-0.5 h-3.5">
-                        <span className="w-1 bg-amber-400 h-full animate-pulse" />
-                        <span className="w-1 bg-amber-400 h-1/2 animate-pulse" />
-                        <span className="w-1 bg-amber-400 h-3/4 animate-pulse" />
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => speakText('', selectedLang)}
-                      className="px-2.5 py-1 rounded-lg bg-amber-400 text-black font-extrabold text-[10px] hover:bg-amber-300 transition-colors shadow"
-                    >
-                      Stop
-                    </button>
-                  </div>
-                ) : (
-                  <div className="grid grid-cols-2 gap-2">
-                    <button
-                      onClick={handleVoicePreview}
-                      className="p-2 rounded-xl bg-amber-500/20 hover:bg-amber-500/30 border border-amber-400/50 text-[11px] font-bold text-amber-300 flex items-center justify-center gap-1.5 transition-all active:scale-95 touch-manipulation"
-                      title="Preview Indian Female Voice"
-                    >
-                      <Volume2 className="w-3.5 h-3.5 text-amber-400" />
-                      <span>Preview Voice</span>
-                    </button>
-                    <button
-                      onClick={() => speakText(messages[messages.length - 1]?.spokenSummary || messages[messages.length - 1]?.text, selectedLang)}
-                      className="p-2 rounded-xl bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-[11px] font-bold text-emerald-300 flex items-center justify-center gap-1.5 transition-all active:scale-95 touch-manipulation"
-                      title="Hear Last Answer Spoken Aloud"
-                    >
-                      <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-                      <span>Hear Answer</span>
-                    </button>
-                  </div>
-                )}
-                {/* Voice Cadence / Pace Selector */}
-                <div className="pt-2 border-t border-amber-500/30 flex items-center justify-between text-[10px]">
-                  <span className="text-amber-200/80 font-bold">Speech Speed:</span>
-                  <div className="inline-flex rounded-lg bg-black/60 p-0.5 border border-emerald-800">
-                    <button
-                      onClick={() => setVoiceCadence('sweet')}
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
-                        voiceCadence === 'sweet'
-                          ? 'bg-amber-400 text-black shadow-sm font-extrabold'
-                          : 'text-slate-400 hover:text-amber-300'
-                      }`}
-                      title="Gentle, sweet and relaxed speech rate (0.76x)"
-                    >
-                      Sweet (0.76x)
-                    </button>
-                    <button
-                      onClick={() => setVoiceCadence('suitable')}
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
-                        voiceCadence === 'suitable'
-                          ? 'bg-emerald-500 text-black shadow-sm font-extrabold'
-                          : 'text-slate-400 hover:text-emerald-300'
-                      }`}
-                      title="Suitable, clear and comfortable speech rate (0.82x)"
-                    >
-                      Suitable (0.82x)
-                    </button>
-                    <button
-                      onClick={() => setVoiceCadence('standard')}
-                      className={`px-2 py-0.5 rounded text-[10px] font-bold transition-all ${
-                        voiceCadence === 'standard'
-                          ? 'bg-emerald-600 text-white shadow-sm font-extrabold'
-                          : 'text-slate-400 hover:text-slate-200'
-                      }`}
-                      title="Standard speech rate (0.90x)"
-                    >
-                      0.90x
-                    </button>
-                  </div>
-                </div>
-              </div>
 
               {/* Active 22-Language Selector Box - Updates Entire Page */}
               <div className="bg-black/50 p-3 rounded-2xl border border-emerald-800/60 text-left space-y-1.5 shadow-md">
