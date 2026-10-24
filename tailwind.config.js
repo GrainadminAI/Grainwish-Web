@@ -6,6 +6,10 @@ export default {
   ],
   theme: {
     extend: {
+      screens: {
+        '2xs': '320px', // 4.5" screens
+        'xs': '360px',  // 5.0" screens
+      },
       colors: {
         agri: {
           dark: '#021109',

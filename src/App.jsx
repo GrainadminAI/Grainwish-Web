@@ -63,7 +63,7 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
         <div className="absolute inset-0 bg-gradient-to-b from-[#021109]/70 via-transparent to-[#021109]/80" />
       </div>
 
-      <div className="relative z-10">
+      <div className="relative z-10 pb-16 md:pb-0">
         {/* Navigation */}
         <Navbar
           onOpenDownloadModal={onOpenDownloadModal}
