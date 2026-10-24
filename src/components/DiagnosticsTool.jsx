@@ -1064,9 +1064,9 @@ export default function DiagnosticsTool() {
           </div>
         )}
 
-        {/* Model Categories Bar matching User's 4 Detection Categories + Healthy Leaf */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-4 px-2">
-          <span className="text-[11px] font-mono text-slate-400 font-semibold mr-1">
+        {/* Model Categories Bar matching User's 4 Detection Categories + Healthy Leaf - Compact */}
+        <div className="flex flex-wrap items-center justify-center gap-1.5 mb-2 px-1">
+          <span className="text-[10px] font-mono text-slate-400 font-semibold mr-1">
             Detector Classes:
           </span>
           {[
@@ -1084,34 +1084,34 @@ export default function DiagnosticsTool() {
                   const found = CROP_SAMPLES.find(s => s.id === cat.id || s.category === cat.label);
                   if (found) handleSelectSample(found);
                 }}
-                className={`px-3 py-1.5 rounded-xl border text-[11px] font-bold font-mono transition-all active:scale-95 flex items-center gap-1.5 touch-manipulation ${
+                className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold font-mono transition-all active:scale-95 flex items-center gap-1 touch-manipulation ${
                   isMatch && inputMode === 'sample'
-                    ? 'bg-white text-black border-white shadow-lg shadow-white/20 font-black'
+                    ? 'bg-white text-black border-white shadow-md font-black'
                     : `${cat.bg} hover:brightness-125`
                 }`}
               >
-                <span className="w-2.5 h-2.5 rounded-full shadow-sm" style={{ backgroundColor: cat.color }} />
+                <span className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: cat.color }} />
                 <span>{DIAGNOSTICS_CATEGORY_I18N[selectedLang]?.[cat.label] || cat.label}</span>
               </button>
             );
           })}
         </div>
 
-        {/* Sample Crops Carousel (Horizontally swipeable on mobile, flex-wrap on desktop) */}
+        {/* Sample Crops Carousel - Compact */}
         {inputMode === 'sample' && (
-          <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-6 sm:mb-8 max-w-5xl mx-auto px-1 sm:flex-wrap sm:justify-center scrollbar-none snap-x snap-mandatory">
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 mb-3 sm:mb-4 max-w-5xl mx-auto px-1 sm:flex-wrap sm:justify-center scrollbar-none snap-x snap-mandatory">
             {CROP_SAMPLES.map((sample) => (
               <button
                 key={sample.id}
                 onClick={() => handleSelectSample(sample)}
-                className={`flex-shrink-0 snap-center px-3 sm:px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 border min-h-[40px] touch-manipulation ${
+                className={`flex-shrink-0 snap-center px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1.5 border touch-manipulation ${
                   selectedCrop.id === sample.id
-                    ? 'bg-emerald-600 border-emerald-400 text-white shadow-lg shadow-emerald-600/30 ring-2 ring-emerald-400/40'
+                    ? 'bg-emerald-600 border-emerald-400 text-white shadow-md ring-2 ring-emerald-400/40'
                     : 'bg-[#042516] border-emerald-800/60 text-slate-300 hover:border-emerald-600 hover:text-white'
                 }`}
               >
                 <span>{sample.crop}</span>
-                <span className="text-[10px] font-mono text-amber-400 bg-black/40 px-1.5 py-0.5 rounded">
+                <span className="text-[9px] font-mono text-amber-400 bg-black/50 px-1 py-0.2 rounded">
                   {sample.confidence}
                 </span>
               </button>
@@ -1119,8 +1119,8 @@ export default function DiagnosticsTool() {
           </div>
         )}
 
-        {/* Main Work Area: Left HUD Camera Viewport & Right Diagnostic 100% Breakdown */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-start">
+        {/* Main Work Area: Left HUD Camera Viewport & Right Diagnostic 100% Breakdown - Compact Gap */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5 items-start">
           
           {/* LEFT COLUMN: Futuristic AI Scanner Frame */}
           <div className="lg:col-span-6 flex flex-col items-center w-full">
@@ -1129,7 +1129,7 @@ export default function DiagnosticsTool() {
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
-              className={`w-full max-w-lg bg-[#031e11] border-2 transition-all rounded-2xl sm:rounded-3xl p-2.5 sm:p-4 shadow-2xl overflow-hidden relative ${
+              className={`w-full max-w-lg bg-[#031e11] border-2 transition-all rounded-2xl p-2 sm:p-3 shadow-2xl overflow-hidden relative ${
                 isDragging
                   ? 'border-amber-400 ring-4 ring-amber-400/30 bg-[#052b19]'
                   : 'border-emerald-500/40'
@@ -1137,7 +1137,7 @@ export default function DiagnosticsTool() {
             >
               
               {/* TOP HUD STATUS BAR */}
-              <div className="flex items-center justify-between px-2.5 sm:px-3.5 py-1.5 sm:py-2 bg-emerald-950/90 rounded-xl mb-2.5 sm:mb-3 border border-emerald-800/60 text-xs">
+              <div className="flex items-center justify-between px-2.5 py-1 bg-emerald-950/90 rounded-lg mb-2 border border-emerald-800/60 text-xs">
                 <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
                   <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${
                     isScanning
@@ -1506,9 +1506,9 @@ export default function DiagnosticsTool() {
 
               </div>
 
-              {/* Real-time Spectrum Metrics Gauge Bar */}
-              <div className="mt-3 sm:mt-4 p-3 sm:p-3.5 rounded-xl sm:rounded-2xl bg-emerald-950/70 border border-emerald-800/50 space-y-2 text-xs">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] sm:text-xs">
+              {/* Real-time Spectrum Metrics Gauge Bar - Compact */}
+              <div className="mt-2 sm:mt-2.5 p-2 sm:p-2.5 rounded-xl bg-emerald-950/70 border border-emerald-800/50 space-y-1.5 text-xs">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-0.5 text-[10px] sm:text-[11px]">
                   <span className="text-slate-300 font-medium">
                     {inputMode === 'webcam'
                       ? 'Live Viewfinder Optical Spectrum:'
@@ -1913,25 +1913,25 @@ export default function DiagnosticsTool() {
               </div>
             ) : (
 
-              /* SCENARIO C: 100% VERIFIED CROP PATHOLOGY REPORT */
-              <div className="space-y-4 sm:space-y-5">
+              /* SCENARIO C: 100% VERIFIED CROP PATHOLOGY REPORT - ULTRA COMPACT */
+              <div className="space-y-2.5 sm:space-y-3">
                 {/* Header Card: Disease Match & 100% Confidence */}
-                <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-br from-[#06331e] to-[#042013] border-2 border-emerald-500/50 shadow-2xl space-y-3.5 sm:space-y-4">
+                <div className="p-3 sm:p-3.5 rounded-2xl bg-gradient-to-br from-[#06331e] to-[#042013] border-2 border-emerald-500/50 shadow-xl space-y-2.5">
                   
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                    <div className="flex items-start gap-2.5 sm:gap-3">
-                      <div className="p-2.5 sm:p-3 rounded-xl sm:rounded-2xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-inner mt-0.5 shrink-0">
-                        <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+                    <div className="flex items-start gap-2 sm:gap-2.5 min-w-0">
+                      <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 shadow-inner mt-0.5 shrink-0">
+                        <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5" />
                       </div>
                       <div className="min-w-0">
-                        <div className="text-[10px] sm:text-[11px] font-mono font-extrabold uppercase text-amber-400 tracking-wider flex items-center gap-1">
-                          <Sparkles className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-amber-400 shrink-0" />
+                        <div className="text-[10px] font-mono font-extrabold uppercase text-amber-400 tracking-wider flex items-center gap-1">
+                          <Sparkles className="w-3 h-3 text-amber-400 shrink-0" />
                           <span>100.0% VERIFIED PATHOLOGY MATCH</span>
                         </div>
-                        <h3 className="text-lg sm:text-2xl font-extrabold text-white mt-0.5 break-words">
+                        <h3 className="text-base sm:text-xl font-black text-white mt-0.5 leading-snug break-words">
                           {selectedCrop.disease}
                         </h3>
-                        <div className="text-xs text-slate-300 mt-1 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                        <div className="text-[11px] text-slate-300 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
                           <span>Crop: <strong className="text-emerald-300">{selectedCrop.crop}</strong></span>
                           <span>·</span>
                           <span>Pathogen: <strong className="text-slate-200">{selectedCrop.pathogenType || 'Fungal Spore'}</strong></span>
@@ -1939,104 +1939,106 @@ export default function DiagnosticsTool() {
                       </div>
                     </div>
 
-                    <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-1 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-emerald-800/40">
-                      <span className="inline-block px-2.5 sm:px-3 py-1 bg-emerald-500/20 text-emerald-300 font-mono text-sm sm:text-base font-extrabold rounded-xl border border-emerald-400/50 shadow-lg">
+                    <div className="flex sm:flex-col items-center sm:items-end justify-between sm:justify-start gap-0.5 shrink-0 pt-1 sm:pt-0 border-t sm:border-t-0 border-emerald-800/40">
+                      <span className="inline-block px-2 sm:px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 font-mono text-xs sm:text-sm font-extrabold rounded-lg border border-emerald-400/50 shadow">
                         {selectedCrop.confidence}
                       </span>
-                      <div className="text-[10px] text-emerald-400 font-semibold">100% Calibrated</div>
+                      <div className="text-[9px] text-emerald-400 font-semibold">100% Calibrated</div>
                     </div>
                   </div>
 
                   {/* 3 Metric Chips */}
-                  <div className="grid grid-cols-3 gap-1.5 sm:gap-2.5 text-xs pt-3 border-t border-emerald-800/60">
-                    <div className="bg-emerald-950/60 p-2 sm:p-2.5 rounded-xl border border-emerald-900/80">
-                      <div className="text-[9px] sm:text-[10px] text-slate-400">Severity Status</div>
-                      <div className="text-amber-300 font-bold text-[11px] sm:text-xs truncate mt-0.5">{selectedCrop.severity}</div>
+                  <div className="grid grid-cols-3 gap-1.5 text-xs pt-2 border-t border-emerald-800/60">
+                    <div className="bg-emerald-950/60 p-1.5 sm:p-2 rounded-lg border border-emerald-900/80">
+                      <div className="text-[8.5px] sm:text-[9.5px] text-slate-400 uppercase font-semibold">Severity</div>
+                      <div className="text-amber-300 font-bold text-[10px] sm:text-[11px] truncate mt-0.5">{selectedCrop.severity}</div>
                     </div>
 
-                    <div className="bg-emerald-950/60 p-2 sm:p-2.5 rounded-xl border border-emerald-900/80">
-                      <div className="text-[9px] sm:text-[10px] text-slate-400">Yield Protected</div>
-                      <div className="text-emerald-300 font-bold text-[11px] sm:text-xs truncate mt-0.5">{selectedCrop.yieldProtected}</div>
+                    <div className="bg-emerald-950/60 p-1.5 sm:p-2 rounded-lg border border-emerald-900/80">
+                      <div className="text-[8.5px] sm:text-[9.5px] text-slate-400 uppercase font-semibold">Yield Protected</div>
+                      <div className="text-emerald-300 font-bold text-[10px] sm:text-[11px] truncate mt-0.5">{selectedCrop.yieldProtected}</div>
                     </div>
 
-                    <div className="bg-emerald-950/60 p-2 sm:p-2.5 rounded-xl border border-emerald-900/80">
-                      <div className="text-[9px] sm:text-[10px] text-slate-400">Recovery Time</div>
-                      <div className="text-cyan-300 font-bold text-[11px] sm:text-xs truncate mt-0.5">{selectedCrop.recoveryDays}</div>
+                    <div className="bg-emerald-950/60 p-1.5 sm:p-2 rounded-lg border border-emerald-900/80">
+                      <div className="text-[8.5px] sm:text-[9.5px] text-slate-400 uppercase font-semibold">Recovery Time</div>
+                      <div className="text-cyan-300 font-bold text-[10px] sm:text-[11px] truncate mt-0.5">{selectedCrop.recoveryDays}</div>
                     </div>
                   </div>
 
-                  {/* Voice Readout, WhatsApp & Print Controls - Stacked grid for mobile thumbs */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2 border-t border-emerald-900/50">
+                  {/* Voice Readout, WhatsApp & Print Controls */}
+                  <div className="grid grid-cols-3 gap-1.5 pt-1.5 border-t border-emerald-900/50">
                     <button
                       onClick={speakDiagnosis}
-                      className={`w-full px-3 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 border min-h-[42px] touch-manipulation ${
+                      className={`w-full px-2 py-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all flex items-center justify-center gap-1 border min-h-[34px] touch-manipulation ${
                         isSpeaking
                           ? 'bg-amber-500 text-black border-amber-300 animate-pulse'
                           : 'bg-emerald-900/60 hover:bg-emerald-900 text-emerald-200 border-emerald-700/60'
                       }`}
                     >
-                      {isSpeaking ? <VolumeX className="w-4 h-4 shrink-0" /> : <Volume2 className="w-4 h-4 text-amber-400 shrink-0" />}
-                      <span>{isSpeaking ? 'Stop Audio' : `Listen (${selectedLang})`}</span>
+                      {isSpeaking ? <VolumeX className="w-3.5 h-3.5 shrink-0" /> : <Volume2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
+                      <span className="truncate">{isSpeaking ? 'Stop Audio' : `Listen (${selectedLang})`}</span>
                     </button>
 
                     <button
                       onClick={handleShareWhatsApp}
-                      className="w-full px-3 py-2.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold border border-emerald-500/50 shadow-md flex items-center justify-center gap-1.5 transition-colors min-h-[42px] touch-manipulation"
+                      className="w-full px-2 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-[10px] sm:text-[11px] font-bold border border-emerald-500/50 shadow flex items-center justify-center gap-1 transition-colors min-h-[34px] touch-manipulation"
                     >
                       <MessageSquare className="w-3.5 h-3.5 text-emerald-200 shrink-0" />
-                      <span>WhatsApp Share</span>
+                      <span className="truncate">WhatsApp Share</span>
                     </button>
 
                     <button
                       onClick={handlePrintReport}
-                      className="w-full px-3 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold border border-emerald-400/40 shadow-lg flex items-center justify-center gap-1.5 transition-colors min-h-[42px] touch-manipulation"
+                      className="w-full px-2 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[10px] sm:text-[11px] font-bold border border-emerald-400/40 shadow flex items-center justify-center gap-1 transition-colors min-h-[34px] touch-manipulation"
                     >
                       <Printer className="w-3.5 h-3.5 shrink-0" />
-                      <span>PDF Report</span>
+                      <span className="truncate">PDF Report</span>
                     </button>
                   </div>
 
                 </div>
 
-                {/* Symptoms & Environmental Trigger Card */}
-                <div className="p-4 sm:p-5 rounded-2xl bg-[#042416] border border-emerald-800/60 space-y-2.5 sm:space-y-3 shadow-lg">
-                  <h4 className="text-xs font-bold text-slate-300 uppercase tracking-wider flex items-center gap-2">
-                    <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                {/* Symptoms & Environmental Trigger - Compact 2-Col Grid */}
+                <div className="p-2.5 sm:p-3 rounded-xl bg-[#042416] border border-emerald-800/60 space-y-1.5 shadow-md">
+                  <h4 className="text-[10px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+                    <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0" />
                     <span>Symptoms &amp; Environmental Trigger</span>
                   </h4>
                   
-                  <div className="text-xs text-slate-200 leading-relaxed bg-emerald-950/40 p-2.5 sm:p-3 rounded-xl border border-emerald-900/60">
-                    <strong className="text-amber-300 block mb-1">Observed Symptoms:</strong>
-                    {selectedCrop.symptoms}
-                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] leading-snug">
+                    <div className="bg-emerald-950/50 p-2 sm:p-2.5 rounded-lg border border-emerald-900/60">
+                      <strong className="text-amber-300 block mb-0.5 text-[10px] uppercase font-mono">Observed Symptoms:</strong>
+                      <span className="text-slate-200">{selectedCrop.symptoms}</span>
+                    </div>
 
-                  <div className="text-xs text-slate-300 leading-relaxed bg-emerald-950/40 p-2.5 sm:p-3 rounded-xl border border-emerald-900/60">
-                    <strong className="text-emerald-400 block mb-1">Root Environmental Trigger:</strong>
-                    {selectedCrop.causes}
+                    <div className="bg-emerald-950/50 p-2 sm:p-2.5 rounded-lg border border-emerald-900/60">
+                      <strong className="text-emerald-400 block mb-0.5 text-[10px] uppercase font-mono">Root Trigger:</strong>
+                      <span className="text-slate-300">{selectedCrop.causes}</span>
+                    </div>
                   </div>
                 </div>
 
-                {/* THE RIGHT WAY TO FIX THE PROBLEM (Agronomic Prescription) */}
-                <div className="p-4 sm:p-6 rounded-2xl sm:rounded-3xl bg-gradient-to-r from-emerald-950 via-[#052b1b] to-emerald-950 border-2 border-emerald-500/50 space-y-4 shadow-2xl">
+                {/* THE RIGHT WAY TO FIX THE PROBLEM (Side-by-Side Chemical & Bio Solutions) */}
+                <div className="p-3 sm:p-3.5 rounded-2xl bg-gradient-to-r from-emerald-950 via-[#052b1b] to-emerald-950 border-2 border-emerald-500/50 space-y-2.5 shadow-xl">
                   
-                  <div className="flex flex-wrap items-center justify-between gap-2 border-b border-emerald-800/60 pb-3">
-                    <div className="flex items-center gap-2">
-                      <div className="p-2 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
-                        <Pill className="w-5 h-5 text-emerald-300" />
+                  <div className="flex flex-wrap items-center justify-between gap-1.5 border-b border-emerald-800/60 pb-2">
+                    <div className="flex items-center gap-1.5">
+                      <div className="p-1.5 rounded-lg bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+                        <Pill className="w-4 h-4 text-emerald-300" />
                       </div>
                       <div>
-                        <h4 className="text-xs sm:text-sm font-black text-white uppercase tracking-wider flex items-center gap-1.5">
+                        <h4 className="text-xs sm:text-sm font-black text-white uppercase tracking-wider flex items-center gap-1">
                           <span>The Right Way to Fix the Problem</span>
                         </h4>
-                        <p className="text-[11px] text-emerald-300 font-medium">
+                        <p className="text-[10px] text-emerald-300 font-medium">
                           Calibrated for <strong className="text-white">{categoryKey}</strong>
                         </p>
                       </div>
                     </div>
                     
                     {/* Land Acreage Stepper */}
-                    <div className="flex items-center gap-2 bg-black/70 px-3 py-1.5 rounded-xl border border-emerald-700 shadow-inner">
-                      <span className="text-[11px] text-slate-300 font-medium">Land Area:</span>
+                    <div className="flex items-center gap-1.5 bg-black/70 px-2.5 py-1 rounded-lg border border-emerald-700 shadow-inner">
+                      <span className="text-[10px] text-slate-300 font-medium">Land:</span>
                       <input
                         type="number"
                         min="0.5"
@@ -2044,101 +2046,108 @@ export default function DiagnosticsTool() {
                         step="0.5"
                         value={acreage}
                         onChange={(e) => setAcreage(Math.max(0.5, parseFloat(e.target.value) || 1))}
-                        className="w-14 bg-emerald-950 border border-emerald-600 text-amber-300 text-sm font-mono font-bold rounded-lg px-2 py-0.5 text-center focus:outline-none focus:border-amber-400 touch-manipulation"
+                        className="w-12 bg-emerald-950 border border-emerald-600 text-amber-300 text-xs font-mono font-bold rounded px-1.5 py-0.5 text-center focus:outline-none focus:border-amber-400 touch-manipulation"
                       />
-                      <span className="text-[11px] text-emerald-300 font-bold">Acre(s)</span>
+                      <span className="text-[10px] text-emerald-300 font-bold">Acre(s)</span>
                     </div>
                   </div>
 
-                  {/* 1. Chemical Spray Solution */}
-                  <div className="p-3.5 bg-emerald-900/40 rounded-2xl border border-emerald-700/60 text-xs text-slate-200 space-y-2">
-                    <div className="flex flex-wrap items-center justify-between gap-1">
-                      <span className="text-[11px] font-extrabold uppercase text-emerald-400 flex items-center gap-1">
-                        <Zap className="w-3.5 h-3.5 text-amber-400" />
-                        <span>{activeFix.chemicalFix.headline}</span>
-                      </span>
-                      <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded-full font-mono font-bold border border-emerald-600/40">
-                        {acreage} Acre Mix
-                      </span>
-                    </div>
-                    
-                    <div className="text-white font-bold text-xs">
-                      {activeFix.chemicalFix.sprayName}
-                    </div>
+                  {/* Dual Solution Side-by-Side Grid (Chemical + Organic) */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                    {/* 1. Chemical Spray Solution */}
+                    <div className="p-2.5 bg-emerald-900/40 rounded-xl border border-emerald-700/60 text-xs space-y-1.5 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between gap-1 mb-1">
+                          <span className="text-[10px] font-extrabold uppercase text-emerald-400 flex items-center gap-1 truncate">
+                            <Zap className="w-3 h-3 text-amber-400 shrink-0" />
+                            <span>{activeFix.chemicalFix.headline}</span>
+                          </span>
+                          <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.2 rounded font-mono font-bold shrink-0">
+                            {acreage} Ac Mix
+                          </span>
+                        </div>
+                        
+                        <div className="text-white font-bold text-[11px] leading-tight">
+                          {activeFix.chemicalFix.sprayName}
+                        </div>
 
-                    <div className="p-2.5 bg-black/50 rounded-xl border border-emerald-800/80 font-mono text-[11px] text-amber-300">
-                      <strong>Calculated Dosage Mix:</strong> {activeFix.chemicalFix.dosageFormula(acreage)}
-                      <div className="text-slate-400 font-sans text-[10px] mt-0.5">
-                        Standard concentration: {activeFix.chemicalFix.dosagePerLiter}
+                        <div className="p-1.5 bg-black/60 rounded-lg border border-emerald-800/80 font-mono text-[10px] text-amber-300 mt-1">
+                          <strong>Dosage:</strong> {activeFix.chemicalFix.dosageFormula(acreage)}
+                          <div className="text-slate-400 font-sans text-[9px] mt-0.5">
+                            {activeFix.chemicalFix.dosagePerLiter}
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="text-[10px] text-slate-300 leading-tight italic pt-1 border-t border-emerald-800/40">
+                        💡 <strong>Tip:</strong> {activeFix.chemicalFix.applicationTip}
                       </div>
                     </div>
 
-                    <div className="text-[11px] text-slate-300 leading-relaxed italic">
-                      💡 <strong>Application Pro-Tip:</strong> {activeFix.chemicalFix.applicationTip}
-                    </div>
-                  </div>
+                    {/* 2. 100% Organic & Biological Alternative */}
+                    <div className="p-2.5 bg-amber-950/40 rounded-xl border border-amber-800/60 text-xs space-y-1.5 flex flex-col justify-between">
+                      <div>
+                        <div className="flex items-center justify-between gap-1 mb-1">
+                          <span className="text-[10px] font-extrabold uppercase text-amber-400 flex items-center gap-1 truncate">
+                            <Leaf className="w-3 h-3 text-emerald-400 shrink-0" />
+                            <span>{activeFix.organicFix.headline}</span>
+                          </span>
+                          <span className="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.2 rounded font-mono font-bold shrink-0">
+                            Zero Residue
+                          </span>
+                        </div>
 
-                  {/* 2. 100% Organic & Biological Alternative */}
-                  <div className="p-3.5 bg-amber-950/40 rounded-2xl border border-amber-800/60 text-xs text-slate-200 space-y-2">
-                    <div className="flex flex-wrap items-center justify-between gap-1">
-                      <span className="text-[11px] font-extrabold uppercase text-amber-400 flex items-center gap-1">
-                        <Leaf className="w-3.5 h-3.5 text-emerald-400" />
-                        <span>{activeFix.organicFix.headline}</span>
-                      </span>
-                      <span className="text-[10px] bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-mono font-bold border border-amber-700/50">
-                        Zero Residue
-                      </span>
-                    </div>
+                        <div className="text-slate-100 font-bold text-[11px] leading-tight">
+                          {activeFix.organicFix.sprayName}
+                        </div>
 
-                    <div className="text-slate-100 font-bold text-xs">
-                      {activeFix.organicFix.sprayName}
-                    </div>
-
-                    <div className="p-2.5 bg-black/50 rounded-xl border border-amber-900/80 font-mono text-[11px] text-emerald-300">
-                      <strong>Calculated Bio-Mix:</strong> {activeFix.organicFix.dosageFormula(acreage)}
-                      <div className="text-slate-400 font-sans text-[10px] mt-0.5">
-                        Standard bio-rate: {activeFix.organicFix.dosagePerLiter}
+                        <div className="p-1.5 bg-black/60 rounded-lg border border-amber-900/80 font-mono text-[10px] text-emerald-300 mt-1">
+                          <strong>Bio-Mix:</strong> {activeFix.organicFix.dosageFormula(acreage)}
+                          <div className="text-slate-400 font-sans text-[9px] mt-0.5">
+                            {activeFix.organicFix.dosagePerLiter}
+                          </div>
+                        </div>
                       </div>
-                    </div>
 
-                    <div className="text-[11px] text-slate-300 leading-relaxed italic">
-                      🌱 <strong>Bio-Action:</strong> {activeFix.organicFix.applicationTip}
+                      <div className="text-[10px] text-slate-300 leading-tight italic pt-1 border-t border-amber-800/40">
+                        🌱 <strong>Bio-Action:</strong> {activeFix.organicFix.applicationTip}
+                      </div>
                     </div>
                   </div>
 
                   {/* 3. Cultural & Field Prevention Practices */}
                   {activeFix.culturalFix && activeFix.culturalFix.length > 0 && (
-                    <div className="p-3.5 bg-black/45 rounded-2xl border border-emerald-900/60 space-y-1.5 text-xs">
-                      <div className="text-[11px] font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-1.5">
-                        <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <div className="p-2 sm:p-2.5 bg-black/45 rounded-xl border border-emerald-900/60 space-y-1 text-xs">
+                      <div className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-1">
+                        <ShieldCheck className="w-3 h-3 text-emerald-400 shrink-0" />
                         <span>Cultural &amp; Field Prevention Steps:</span>
                       </div>
-                      <ul className="space-y-1 text-[11px] text-slate-300 list-disc list-inside">
+                      <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-0.5 text-[10px] text-slate-300 list-disc list-inside">
                         {activeFix.culturalFix.map((step, idx) => (
-                          <li key={idx} className="leading-relaxed">{step}</li>
+                          <li key={idx} className="leading-tight">{step}</li>
                         ))}
                       </ul>
                     </div>
                   )}
 
                   {/* 4. Phased Recovery Timeline Steps */}
-                  <div className="space-y-1.5">
-                    <div className="text-[11px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-cyan-400" />
+                  <div className="space-y-1">
+                    <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1">
+                      <Calendar className="w-3 h-3 text-cyan-400" />
                       <span>Phased Recovery Milestones:</span>
                     </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs">
-                      <div className="bg-emerald-950/80 p-2.5 rounded-xl border border-emerald-900 text-left">
-                        <span className="text-amber-400 font-extrabold block text-[11px]">Day 1: Quarantine &amp; Spray</span>
-                        <span className="text-slate-300 text-[10px] leading-relaxed mt-0.5 block">{activeFix.recoveryTimeline?.day1 || 'Apply initial curative spray.'}</span>
+                    <div className="grid grid-cols-3 gap-1.5 text-xs">
+                      <div className="bg-emerald-950/80 p-1.5 sm:p-2 rounded-lg border border-emerald-900 text-left">
+                        <span className="text-amber-400 font-extrabold block text-[10px]">Day 1: Quarantine</span>
+                        <span className="text-slate-300 text-[9px] leading-tight mt-0.5 block truncate">{activeFix.recoveryTimeline?.day1 || 'Initial curative spray.'}</span>
                       </div>
-                      <div className="bg-emerald-950/80 p-2.5 rounded-xl border border-emerald-900 text-left">
-                        <span className="text-amber-400 font-extrabold block text-[11px]">Day 7: Symptom Arrest Check</span>
-                        <span className="text-slate-300 text-[10px] leading-relaxed mt-0.5 block">{activeFix.recoveryTimeline?.day7 || 'Inspect new foliage growth.'}</span>
+                      <div className="bg-emerald-950/80 p-1.5 sm:p-2 rounded-lg border border-emerald-900 text-left">
+                        <span className="text-amber-400 font-extrabold block text-[10px]">Day 7: Symptom Arrest</span>
+                        <span className="text-slate-300 text-[9px] leading-tight mt-0.5 block truncate">{activeFix.recoveryTimeline?.day7 || 'Inspect new foliage.'}</span>
                       </div>
-                      <div className="bg-emerald-950/80 p-2.5 rounded-xl border border-emerald-900 text-left">
-                        <span className="text-emerald-400 font-extrabold block text-[11px]">Day 14: Canopy Nutrition</span>
-                        <span className="text-slate-300 text-[10px] leading-relaxed mt-0.5 block">{activeFix.recoveryTimeline?.day14 || 'Apply balanced foliar nutrition.'}</span>
+                      <div className="bg-emerald-950/80 p-1.5 sm:p-2 rounded-lg border border-emerald-900 text-left">
+                        <span className="text-emerald-400 font-extrabold block text-[10px]">Day 14: Canopy Nutrition</span>
+                        <span className="text-slate-300 text-[9px] leading-tight mt-0.5 block truncate">{activeFix.recoveryTimeline?.day14 || 'Foliar nutrition.'}</span>
                       </div>
                     </div>
                   </div>
