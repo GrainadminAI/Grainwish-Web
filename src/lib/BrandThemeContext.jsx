@@ -4,28 +4,12 @@ const BrandThemeContext = createContext(null);
 
 export const BRAND_LOGO_OPTIONS = [
   {
-    id: 'option2',
-    title: 'Option 2: Sleek & Modernized 3D App Icon',
-    subtitle: 'Optimized for Dark Theme & High-End Tech Branding',
-    src: '/assets/grainwise_3d_badge_transparent.png',
-    fullSrc: '/assets/grainwise_logo_option2_3d.jpg',
-    tag: 'Recommended / Dark Theme',
-    badgeColor: 'emerald',
-    description: 'A luminous golden wheat stalk resting on rolling farm soil layers, frosted glass, subtle glowing emerald circuit tracks, futuristic scanning eye glyph, and precision target reticle.',
-    colors: [
-      { name: 'Harvest Gold', hex: '#FBBF24' },
-      { name: 'Emerald Circuit', hex: '#10B981' },
-      { name: 'Deep Furrow', hex: '#064E3B' },
-      { name: 'Soil Core', hex: '#021109' }
-    ]
-  },
-  {
     id: 'option1',
-    title: 'Option 1: Vector Flat Design',
-    subtitle: 'Balanced Circular Vector Composition',
+    title: 'Option 1: Official Company Logo',
+    subtitle: 'Classic Balanced Circular Vector Design',
     src: '/assets/grainwise_logo_option1_flat.png',
     fullSrc: '/assets/grainwise_logo_option1_flat.png',
-    tag: 'Classic Vector Flat',
+    tag: 'Official Platform Logo',
     badgeColor: 'amber',
     description: 'Stylized golden-yellow wheat stalk flanked by terracotta orange and deep earth brown leaves, minimal green circuitry, computer vision eye, and targeting crosshair reticle on curved green furrows.',
     colors: [
@@ -33,6 +17,22 @@ export const BRAND_LOGO_OPTIONS = [
       { name: 'Warm Terracotta', hex: '#E0633B' },
       { name: 'Deep Earth Brown', hex: '#5C3D2E' },
       { name: 'Forest Green', hex: '#2D5A27' }
+    ]
+  },
+  {
+    id: 'option2',
+    title: 'Option 2: Sleek & Modernized 3D App Icon',
+    subtitle: 'Optimized for Dark Theme & High-End Tech Branding',
+    src: '/assets/grainwise_3d_badge_transparent.png',
+    fullSrc: '/assets/grainwise_logo_option2_3d.jpg',
+    tag: '3D Dark Emblem',
+    badgeColor: 'emerald',
+    description: 'A luminous golden wheat stalk resting on rolling farm soil layers, frosted glass, subtle glowing emerald circuit tracks, futuristic scanning eye glyph, and precision target reticle.',
+    colors: [
+      { name: 'Harvest Gold', hex: '#FBBF24' },
+      { name: 'Emerald Circuit', hex: '#10B981' },
+      { name: 'Deep Furrow', hex: '#064E3B' },
+      { name: 'Soil Core', hex: '#021109' }
     ]
   },
   {
@@ -57,11 +57,11 @@ export function BrandThemeProvider({ children }) {
   const [activeLogo, setActiveLogo] = useState(() => {
     if (typeof window !== 'undefined') {
       const saved = localStorage.getItem('grainwise_active_logo');
-      if (saved && BRAND_LOGO_OPTIONS.some(o => o.id === saved)) {
-        return saved;
+      if (saved && saved === 'option1') {
+        return 'option1';
       }
     }
-    return 'option2'; // Default: Modern 3D icon that matches dark website theme
+    return 'option1'; // Default: Official previous company logo (Option 1)
   });
 
   const [brandModalOpen, setBrandModalOpen] = useState(false);

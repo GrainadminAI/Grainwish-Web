@@ -59,4 +59,24 @@ describe('Brand Theme & Logo Suite Verification', () => {
     assert.ok(content.includes('.gradient-text-agri'), 'CSS must include .gradient-text-agri');
     assert.ok(content.includes('.gradient-text-harvest'), 'CSS must include .gradient-text-harvest');
   });
+
+  test('HolographicIndiaMap component exists and defines 12 agricultural state hubs and telemetry links', () => {
+    const mapFile = path.join(rootDir, 'src/components/HolographicIndiaMap.jsx');
+    assert.ok(fs.existsSync(mapFile), 'HolographicIndiaMap.jsx must exist');
+    const content = fs.readFileSync(mapFile, 'utf8');
+
+    assert.ok(content.includes('INDIA_BORDER_PATH'), 'Must define geographic INDIA_BORDER_PATH');
+    assert.ok(content.includes('AGRI_HUBS'), 'Must define agricultural hubs');
+    assert.ok(content.includes('TELEMETRY_LINKS'), 'Must define telemetry links');
+    assert.ok(content.includes('Punjab'), 'Must include Punjab hub');
+    assert.ok(content.includes('Maharashtra'), 'Must include Maharashtra hub');
+  });
+
+  test('HeroSection incorporates real crop field animation video and HolographicIndiaMap', () => {
+    const heroFile = path.join(rootDir, 'src/components/HeroSection.jsx');
+    const content = fs.readFileSync(heroFile, 'utf8');
+
+    assert.ok(content.includes('Sustainable_farm_sunset.mp4'), 'HeroSection must have real crop field video');
+    assert.ok(content.includes('HolographicIndiaMap'), 'HeroSection must include HolographicIndiaMap');
+  });
 });

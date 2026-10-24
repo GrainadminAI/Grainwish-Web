@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { Sparkles, Camera, Smartphone, CheckCircle2, Play, Globe, ShieldCheck, TrendingUp } from 'lucide-react';
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
+import HolographicIndiaMap from './HolographicIndiaMap';
 
 const ThreeFarmCanvas = lazy(() => import('./ThreeFarmCanvas'));
 
@@ -11,8 +12,24 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
   const [videoFailed, setVideoFailed] = React.useState(false);
 
   return (
-    <section className="relative min-h-[auto] lg:min-h-screen pt-24 pb-10 sm:pt-32 sm:pb-16 lg:pt-40 lg:pb-24 flex items-center overflow-hidden">
+    <section className="relative min-h-[auto] lg:min-h-screen pt-24 pb-10 sm:pt-32 sm:pb-16 lg:pt-36 lg:pb-20 flex items-center overflow-hidden">
       
+      {/* Real Cinematic Crop Field Video Animation Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="auto"
+          className="w-full h-full object-cover opacity-35 lg:opacity-45 mix-blend-screen scale-105 filter brightness-95 contrast-110 transition-opacity duration-1000"
+          src="/assets/Sustainable_farm_sunset.mp4"
+        />
+        {/* Dark Cinematic Gradient Overlays to guarantee high-contrast text */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#021109] via-[#021109]/75 to-[#021109]/85" />
+        <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#021109]/60 to-[#021109]" />
+      </div>
+
       {/* 3D Background Canvas Layer */}
       <div className="absolute inset-0 z-0 pointer-events-none">
         <Suspense fallback={<div className="absolute inset-0 bg-[#021109]" />}>
@@ -26,10 +43,10 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
       <div className="absolute top-1/2 right-1/3 w-80 h-80 bg-orange-600/10 rounded-full blur-3xl pointer-events-none animate-pulse-slow" style={{ animationDelay: '3.5s' }} />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 lg:gap-6 items-center">
           
           {/* Left Column: Copy & Actions */}
-          <div className="lg:col-span-7 space-y-4 sm:space-y-6 text-center lg:text-left">
+          <div className="lg:col-span-5 space-y-4 sm:space-y-6 text-center lg:text-left">
             
             {/* Top Pill Badge */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2">
@@ -100,11 +117,16 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
 
           </div>
 
+          {/* Center Column: Animated Holographic Indian Map with Telemetry */}
+          <div className="lg:col-span-4 flex items-center justify-center my-6 lg:my-0">
+            <HolographicIndiaMap />
+          </div>
+
           {/* Right Column: 3D Interactive Phone & Video Showcase */}
-          <div className="lg:col-span-5 relative flex justify-center">
+          <div className="lg:col-span-3 relative flex justify-center">
             
             {/* Holographic Frame Card */}
-            <div className="relative w-full max-w-md bg-gradient-to-b from-emerald-900/30 to-[#031d10]/90 p-4 rounded-3xl border border-emerald-500/30 shadow-2xl backdrop-blur-xl group hover:border-emerald-400/60 transition-all">
+            <div className="relative w-full max-w-sm bg-gradient-to-b from-emerald-900/30 to-[#031d10]/90 p-3 sm:p-4 rounded-3xl border border-emerald-500/30 shadow-2xl backdrop-blur-xl group hover:border-emerald-400/60 transition-all">
               
               {/* Top Banner Tag */}
               <div className="flex items-center justify-between px-3 py-2 bg-emerald-950/80 rounded-xl mb-3 border border-emerald-800/40">

@@ -3,136 +3,28 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import { Float, OrbitControls, Sparkles, MeshWobbleMaterial } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Procedural 3D Crop Stalk Mesh
-function CropStalk({ position, height = 2, delay = 0, color = "#10b981" }) {
-  const meshRef = useRef();
-
-  useFrame(({ clock }) => {
-    const t = clock.getElapsedTime() + delay;
-    if (meshRef.current) {
-      meshRef.current.rotation.z = Math.sin(t * 1.5) * 0.08;
-      meshRef.current.rotation.x = Math.cos(t * 1.2) * 0.05;
-    }
-  });
-
-  return (
-    <group position={position}>
-      {/* Stem */}
-      <mesh ref={meshRef} position={[0, height / 2, 0]}>
-        <cylinderGeometry args={[0.04, 0.08, height, 8]} />
-        <meshStandardMaterial
-          color={color}
-          roughness={0.4}
-          metalness={0.2}
-          emissive="#042f1e"
-          emissiveIntensity={0.5}
-        />
-      </mesh>
-      {/* Golden Grain Spike at Top */}
-      <mesh position={[0, height + 0.3, 0]}>
-        <coneGeometry args={[0.15, 0.7, 8]} />
-        <meshStandardMaterial
-          color="#f59e0b"
-          roughness={0.3}
-          metalness={0.4}
-          emissive="#d97706"
-          emissiveIntensity={0.8}
-        />
-      </mesh>
-    </group>
-  );
-}
-
-// 3D Holographic AI Scanner Sphere
-function HologramScannerOrb() {
-  const orbRef = useRef();
-  const ringRef = useRef();
+// Low-profile rolling field furrows
+function LowProfileFieldGrid() {
+  const gridRef = useRef();
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
-    if (orbRef.current) {
-      orbRef.current.rotation.y = t * 0.8;
-      orbRef.current.rotation.x = t * 0.4;
-    }
-    if (ringRef.current) {
-      ringRef.current.rotation.z = t * 1.2;
-      ringRef.current.rotation.x = t * 0.6;
+    if (gridRef.current) {
+      gridRef.current.rotation.y = t * 0.04;
+      gridRef.current.position.y = -3.2 + Math.sin(t * 0.8) * 0.08;
     }
   });
 
   return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={1.5} position={[0, 1.2, 0]}>
-      {/* Outer Hologram Ring */}
-      <mesh ref={ringRef}>
-        <torusGeometry args={[1.6, 0.04, 16, 100]} />
-        <meshStandardMaterial
-          color="#34d399"
-          emissive="#10b981"
-          emissiveIntensity={2}
-          wireframe
-        />
+    <group ref={gridRef} position={[0, -3.2, -2]}>
+      {/* Expansive Regenerative Soil Field Matrix */}
+      <gridHelper args={[32, 32, "#10b981", "#052617"]} position={[0, 0, 0]} />
+      
+      {/* Secondary concentric contour rings */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]}>
+        <ringGeometry args={[2, 14, 32]} />
+        <meshBasicMaterial color="#064e3b" wireframe transparent opacity={0.25} />
       </mesh>
-
-      {/* Core Glowing Orb */}
-      <mesh ref={orbRef}>
-        <icosahedronGeometry args={[0.9, 2]} />
-        <MeshWobbleMaterial
-          color="#10b981"
-          emissive="#059669"
-          emissiveIntensity={1.5}
-          factor={0.4}
-          speed={2}
-          wireframe
-          transparent
-          opacity={0.8}
-        />
-      </mesh>
-
-      {/* Inner AI Core */}
-      <mesh>
-        <sphereGeometry args={[0.5, 32, 32]} />
-        <meshStandardMaterial
-          color="#fbbf24"
-          emissive="#f59e0b"
-          emissiveIntensity={3}
-        />
-      </mesh>
-    </Float>
-  );
-}
-
-// Interactive Field Grid
-function FarmFieldGrid() {
-  const crops = useMemo(() => {
-    const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
-    const step = isMobile ? 2.4 : 1.4;
-    const arr = [];
-    for (let x = -7; x <= 7; x += step) {
-      for (let z = -7; z <= 7; z += step) {
-        // Skip middle area for orb
-        if (Math.abs(x) < 2 && Math.abs(z) < 2) continue;
-        const h = 1.8 + Math.random() * 0.8;
-        const rand = Math.random();
-        const stalkColor = rand > 0.82 ? "#e0633b" : rand > 0.52 ? "#f59e0b" : "#10b981";
-        arr.push({
-          id: `${x}-${z}`,
-          position: [x + (Math.random() * 0.3 - 0.15), 0, z + (Math.random() * 0.3 - 0.15)],
-          height: h,
-          delay: Math.random() * 5,
-          color: stalkColor
-        });
-      }
-    }
-    return arr;
-  }, []);
-
-  return (
-    <group position={[0, -2, 0]}>
-      {crops.map((c) => (
-        <CropStalk key={c.id} position={c.position} height={c.height} delay={c.delay} color={c.color} />
-      ))}
-      {/* Ground Grid */}
-      <gridHelper args={[20, 20, "#10b981", "#083320"]} position={[0, 0, 0]} />
     </group>
   );
 }
@@ -159,11 +51,8 @@ export default function ThreeFarmCanvas() {
         <directionalLight position={[-10, 8, -6]} intensity={1.0} color="#e0633b" />
         <pointLight position={[-5, 5, -5]} intensity={1} color="#10b981" />
         
-        {/* Glowing Hologram Core */}
-        <HologramScannerOrb />
-
-        {/* 3D Crop Field */}
-        <FarmFieldGrid />
+        {/* Low-profile Agricultural Ground Grid & Depth */}
+        <LowProfileFieldGrid />
 
         {/* Floating Agricultural Dust / Pollen Sparkles */}
         <Sparkles count={isMobile ? 35 : 120} scale={[12, 10, 12]} size={3} speed={0.4} color="#f59e0b" opacity={0.6} />
