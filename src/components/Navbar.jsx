@@ -63,32 +63,32 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
 
   return (
     <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      isScrolled ? 'bg-[#021109]/90 backdrop-blur-md border-b border-emerald-900/40 py-2 sm:py-3 shadow-xl' : 'bg-transparent py-2.5 sm:py-5'
+      isScrolled ? 'bg-[#021109]/95 backdrop-blur-md border-b border-emerald-900/40 py-1.5 sm:py-2 shadow-xl' : 'bg-transparent py-1.5 sm:py-2.5'
     }`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           
           {/* Logo & Domain */}
           <div className="flex items-center gap-2">
-            <a href="/" className="flex items-center gap-2.5 sm:gap-4 group">
+            <a href="/" className="flex items-center gap-2 sm:gap-3 group">
               <img 
                 src={currentOption.src} 
                 alt="GrainWise AI Logo - Smart Agriculture Intelligence Platform" 
-                width="64"
-                height="64"
-                className="h-10 w-10 sm:h-14 sm:w-14 md:h-16 md:w-16 object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_18px_rgba(16,185,129,0.5)] shrink-0"
+                width="48"
+                height="48"
+                className="h-8 w-8 sm:h-10 sm:w-10 md:h-11 md:w-11 object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_14px_rgba(16,185,129,0.5)] shrink-0"
                 onError={(e) => {
                   e.target.src = '/favicon.png';
                 }}
               />
               <div>
                 <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
-                  <span className="font-display text-xl sm:text-2xl md:text-3xl font-extrabold tracking-tight text-white group-hover:text-emerald-300 transition-colors">
+                  <span className="font-display text-lg sm:text-xl md:text-2xl font-extrabold tracking-tight text-white group-hover:text-emerald-300 transition-colors">
                     GrainWise <span className="text-amber-400 font-black">AI</span>
                   </span>
                   <MadeInIndiaTag variant="navbar" />
                 </div>
-                <span className="text-[10px] sm:text-xs text-slate-300 tracking-wider uppercase block -mt-0.5 font-medium">
+                <span className="text-[9px] sm:text-[10px] text-slate-300 tracking-wider uppercase block -mt-0.5 font-medium">
                   {t('nav_smart_farming')}
                 </span>
               </div>
@@ -97,35 +97,35 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
             {/* Brand Theme Switcher Badge */}
             <button
               onClick={() => setBrandModalOpen(true)}
-              className="hidden lg:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-950/70 hover:bg-emerald-900 text-emerald-300 hover:text-white border border-emerald-700/40 hover:border-emerald-500/60 transition-all shadow-sm group/theme ml-1"
+              className="hidden lg:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-950/70 hover:bg-emerald-900 text-emerald-300 hover:text-white border border-emerald-700/40 hover:border-emerald-500/60 transition-all shadow-sm group/theme ml-1"
               title="Explore Logo Options & Brand Palette"
             >
-              <Palette className="w-3.5 h-3.5 text-amber-400 group-hover/theme:rotate-12 transition-transform" />
+              <Palette className="w-3 h-3 text-amber-400 group-hover/theme:rotate-12 transition-transform" />
               <span>Theme</span>
             </button>
           </div>
 
           {/* Desktop Nav Links */}
-          <nav className="hidden md:flex items-center space-x-1 lg:space-x-2 bg-emerald-950/40 p-1.5 rounded-full border border-emerald-800/30 backdrop-blur-sm">
-            <a href="#features" className="px-3.5 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-800/30 rounded-full transition-all">{t('nav_features')}</a>
-            <a href="#diagnostics" className="px-3.5 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-800/30 rounded-full transition-all flex items-center gap-1">
+          <nav className="hidden md:flex items-center space-x-0.5 lg:space-x-1.5 bg-emerald-950/50 p-1 rounded-full border border-emerald-800/30 backdrop-blur-sm">
+            <a href="#features" className="px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-800/30 rounded-full transition-all">{t('nav_features')}</a>
+            <a href="#diagnostics" className="px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-800/30 rounded-full transition-all flex items-center gap-1">
               <Sparkles className="w-3 h-3 text-amber-400" /> {t('nav_ai_scan')}
             </a>
-            <a href="#npk-calc" className="px-3.5 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-800/30 rounded-full transition-all">{t('nav_npk_calc')}</a>
-            <a href="#ananya-ai" className="px-3.5 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-800/30 rounded-full transition-all">{t('nav_ananya_ai')}</a>
-            <a href="#mandi" className="px-3.5 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-800/30 rounded-full transition-all">{t('nav_mandi')}</a>
-            <a href="#case-studies" className="px-3.5 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-800/30 rounded-full transition-all">{t('nav_farmer_stories')}</a>
-            <a href="#faq" className="px-3.5 py-1.5 text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-800/30 rounded-full transition-all">{t('nav_faq')}</a>
+            <a href="#npk-calc" className="px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-800/30 rounded-full transition-all">{t('nav_npk_calc')}</a>
+            <a href="#ananya-ai" className="px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-800/30 rounded-full transition-all">{t('nav_ananya_ai')}</a>
+            <a href="#mandi" className="px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-800/30 rounded-full transition-all">{t('nav_mandi')}</a>
+            <a href="#case-studies" className="px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-800/30 rounded-full transition-all">{t('nav_farmer_stories')}</a>
+            <a href="#faq" className="px-2.5 sm:px-3 py-1 text-[11px] sm:text-xs font-medium text-slate-300 hover:text-white hover:bg-emerald-800/30 rounded-full transition-all">{t('nav_faq')}</a>
           </nav>
 
           {/* Actions: 22 Languages & Download Button */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-2 sm:gap-2.5">
             
             {/* User Profile if Logged In / Sign In button if Not */}
             {currentUser ? (
-              <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-950/80 border border-emerald-700/50 rounded-xl text-xs shadow-md">
+              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-950/80 border border-emerald-700/50 rounded-xl text-xs shadow-md">
                 <User className="w-3.5 h-3.5 text-amber-400" />
-                <span className="text-emerald-300 font-semibold truncate max-w-[120px]" title={currentUser.email}>
+                <span className="text-emerald-300 font-semibold truncate max-w-[110px]" title={currentUser.email}>
                   {currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0]}
                 </span>
                 <button
@@ -134,7 +134,7 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                     setCurrentUser(null);
                   }}
                   title="Sign Out"
-                  className="p-1 text-slate-400 hover:text-red-400 transition-colors ml-1"
+                  className="p-0.5 text-slate-400 hover:text-red-400 transition-colors ml-0.5"
                 >
                   <LogOut className="w-3.5 h-3.5" />
                 </button>
@@ -142,7 +142,7 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
             ) : (
               <button
                 onClick={() => setAuthModalOpen(true)}
-                className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/60 hover:border-emerald-500 text-emerald-200 text-xs font-bold transition-all shadow-md active:scale-95"
+                className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/60 hover:border-emerald-500 text-emerald-200 text-xs font-bold transition-all shadow-md active:scale-95"
               >
                 <LogIn className="w-3.5 h-3.5 text-amber-400" />
                 <span>Sign In</span>
@@ -153,11 +153,11 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
             <div className="relative">
               <button
                 onClick={() => setLangDropdownOpen(!langDropdownOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-700/40 rounded-lg text-xs font-medium text-emerald-200 transition-colors"
+                className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-700/40 rounded-lg text-xs font-medium text-emerald-200 transition-colors"
               >
-                <Globe2 className="w-4 h-4 text-emerald-400" />
+                <Globe2 className="w-3.5 h-3.5 text-emerald-400" />
                 <span>{selectedLang}</span>
-                <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${langDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${langDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {langDropdownOpen && (
@@ -199,26 +199,26 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
               className="relative group overflow-hidden rounded-xl p-px font-semibold text-xs tracking-wide shadow-lg shadow-emerald-600/30 active:scale-95 transition-transform"
             >
               <span className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-amber-400 to-emerald-400 rounded-xl animate-shimmer" />
-              <span className="relative flex items-center gap-2 px-4 py-2 bg-[#042114] group-hover:bg-opacity-80 rounded-[11px] text-emerald-300 group-hover:text-white transition-colors">
-                <Smartphone className="w-4 h-4 text-amber-400 group-hover:animate-bounce" />
+              <span className="relative flex items-center gap-1.5 px-3.5 py-1.5 bg-[#042114] group-hover:bg-opacity-80 rounded-[11px] text-emerald-300 group-hover:text-white transition-colors">
+                <Smartphone className="w-3.5 h-3.5 text-amber-400 group-hover:animate-bounce" />
                 {t('nav_download_app')}
               </span>
             </button>
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="flex md:hidden items-center gap-2">
+          <div className="flex md:hidden items-center gap-1.5">
             <button
               onClick={onOpenDownloadModal}
-              className="px-3 py-1.5 text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg flex items-center gap-1 shadow-md shadow-emerald-600/20"
+              className="px-2.5 py-1 text-[11px] font-semibold bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg flex items-center gap-1 shadow-md shadow-emerald-600/20"
             >
-              <Smartphone className="w-3.5 h-3.5" /> App
+              <Smartphone className="w-3 h-3" /> App
             </button>
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="p-2 rounded-lg bg-emerald-950 border border-emerald-800 text-slate-300 hover:text-white"
+              className="p-1.5 rounded-lg bg-emerald-950 border border-emerald-800 text-slate-300 hover:text-white"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
 

@@ -7,7 +7,7 @@ import { useLanguage } from '../lib/LanguageContext';
  */
 export function IndianFlagIcon({ className = "w-4 h-3" }) {
   return (
-    <svg viewBox="0 0 30 20" className={`inline-block rounded-[2px] shadow-sm shrink-0 ${className}`}>
+    <svg viewBox="0 0 30 20" width="16" height="12" className={`inline-block rounded-[2px] shadow-sm shrink-0 ${className}`}>
       {/* Saffron Top Band */}
       <rect width="30" height="6.67" fill="#FF9933" />
       {/* White Middle Band */}

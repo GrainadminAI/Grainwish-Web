@@ -76,7 +76,7 @@ describe('Brand Theme & Logo Suite Verification', () => {
     const heroFile = path.join(rootDir, 'src/components/HeroSection.jsx');
     const content = fs.readFileSync(heroFile, 'utf8');
 
-    assert.ok(content.includes('Sustainable_farm_sunset.mp4'), 'HeroSection must have real crop field video');
+    assert.ok(content.includes('real_crops_field.mp4') || content.includes('real_wheat_field.webm'), 'HeroSection must have real crop field video');
     assert.ok(content.includes('HolographicIndiaMap'), 'HeroSection must include HolographicIndiaMap');
   });
 });
