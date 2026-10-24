@@ -280,7 +280,7 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
     : POPULAR_PROMPTS.filter(p => p.category === activeCategory);
 
   return (
-    <section id="ananya-ai" className="py-10 sm:py-16 md:py-20 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
+    <section id="ananya-ai" className="py-10 sm:py-16 md:py-20 bg-[#02180d]/85 backdrop-blur-[2px] relative overflow-hidden border-b border-emerald-900/40">
       
       {/* Background Radial Glow */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[700px] h-[700px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />

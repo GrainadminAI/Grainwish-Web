@@ -262,7 +262,7 @@ export default function MandiPrices() {
   };
 
   return (
-    <section id="mandi" className="py-10 sm:py-16 md:py-24 bg-[#061a14] relative overflow-hidden border-b border-emerald-900/50">
+    <section id="mandi" className="py-10 sm:py-16 md:py-24 bg-[#061a14]/85 backdrop-blur-[2px] relative overflow-hidden border-b border-emerald-900/50">
       
       {/* Background Glow Accents */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />

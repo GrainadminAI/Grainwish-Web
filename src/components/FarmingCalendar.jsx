@@ -45,7 +45,7 @@ export default function FarmingCalendar() {
   };
 
   return (
-    <section id="calendar" className="py-10 sm:py-16 md:py-24 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
+    <section id="calendar" className="py-10 sm:py-16 md:py-24 bg-[#02180d]/85 backdrop-blur-[2px] relative overflow-hidden border-b border-emerald-900/40">
       
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         

@@ -65,7 +65,7 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
   ];
 
   return (
-    <section className="py-10 sm:py-16 md:py-24 bg-[#021109] relative overflow-hidden">
+    <section className="py-10 sm:py-16 md:py-24 bg-[#021109]/85 backdrop-blur-[2px] relative overflow-hidden">
       
       {/* Background Glow */}
       <div className="absolute top-1/2 right-0 w-96 h-96 bg-emerald-600/10 rounded-full blur-3xl pointer-events-none" />

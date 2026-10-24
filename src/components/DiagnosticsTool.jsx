@@ -917,7 +917,7 @@ export default function DiagnosticsTool() {
   };
 
   return (
-    <section id="diagnostics" className="py-8 sm:py-16 lg:py-20 bg-[#02180d] relative overflow-hidden border-b border-emerald-900/40">
+    <section id="diagnostics" className="py-8 sm:py-16 lg:py-20 bg-[#02180d]/85 backdrop-blur-[2px] relative overflow-hidden border-b border-emerald-900/40">
       
       {/* Offscreen Canvas for software-backed pixel analysis */}
       <canvas ref={canvasRef} className="hidden" />

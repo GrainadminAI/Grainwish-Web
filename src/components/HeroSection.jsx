@@ -1,10 +1,8 @@
-import React, { lazy, Suspense } from 'react';
+import React from 'react';
 import { Sparkles, Camera, Smartphone, CheckCircle2, Play, Globe, ShieldCheck, TrendingUp, Leaf, Droplets, BarChart3 } from 'lucide-react';
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
 import HolographicIndiaMap from './HolographicIndiaMap';
-
-const ThreeFarmCanvas = lazy(() => import('./ThreeFarmCanvas'));
 
 export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
   const { t } = useLanguage();
@@ -14,39 +12,34 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
   return (
     <section className="relative min-h-[auto] lg:min-h-screen pt-16 pb-8 sm:pt-20 sm:pb-12 lg:pt-22 lg:pb-14 flex items-center overflow-hidden">
       
-      {/* Background Layer: Image 2 Cinematic Agricultural Landscape + Real Crop Wind Motion */}
+      {/* Background Layer: Google Flow AI Cinematic Agricultural Landscape + Real Crop Wind Motion */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
-        {/* Base Image 2 Photorealistic Landscape */}
+        {/* Base Photorealistic Landscape Poster Fallback */}
         <img
           src="/assets/hero_agri_3d_bg.jpg"
           alt="GrainWise AI Smart Agriculture Field"
           className="w-full h-full object-cover object-center scale-105 filter brightness-100 contrast-110 saturate-110"
         />
 
-        {/* Real Crop Field Video Animation Overlay with Mix-Blend-Screen for Gentle Waving Wind Motion */}
+        {/* Google Flow AI Living Farm Background Video (Wind, Moving Leaves, Sunlight, Farmers) - Without Audio */}
         <video
           autoPlay
           loop
           muted
           playsInline
           preload="auto"
-          poster="/assets/hero_agri_3d_bg.jpg"
-          className="absolute inset-0 w-full h-full object-cover opacity-25 mix-blend-screen filter brightness-110 contrast-125 saturate-125 transition-opacity duration-1000 pointer-events-none"
+          poster="/assets/flow_farm_poster.jpg"
+          className="absolute inset-0 w-full h-full object-cover opacity-85 filter brightness-105 contrast-115 saturate-115 transition-opacity duration-1000 pointer-events-none"
         >
+          <source src="/assets/flow_farm_background.mp4" type="video/mp4" />
+          <source src="https://flow-content.google/video/5cd2638b-4b4c-4ace-b9f4-b6126ef94611?Expires=1792852818&KeyName=labs-flow-prod-cdn-key&Signature=bOEf06Hwg7HNhfowrxjPf91Kr6Q" type="video/mp4" />
           <source src="/assets/real_crops_field.mp4" type="video/mp4" />
           <source src="/assets/real_wheat_field.webm" type="video/webm" />
         </video>
 
-        {/* Rich Cinematic Vignette Overlays matching Image 2 Dark Aesthetic */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#021109] via-[#021109]/50 to-[#021109]/70" />
-        <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#021109]/35 to-[#021109]/85" />
-      </div>
-
-      {/* 3D Background Canvas Layer (Cyber Perspective Farm Grid, Pollen Particles & Mouse Parallax) */}
-      <div className="absolute inset-0 z-0 pointer-events-none">
-        <Suspense fallback={null}>
-          <ThreeFarmCanvas />
-        </Suspense>
+        {/* Rich Cinematic Vignette Overlays matching Dark Agri Aesthetic */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#021109] via-transparent to-[#021109]/40" />
+        <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#021109]/15 to-[#021109]/60" />
       </div>
 
       {/* Decorative Glow Orbs matching Brand Palette */}
