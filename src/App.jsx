@@ -22,6 +22,7 @@ import { recordUserVisitToDB } from './lib/supabase';
 import { LanguageProvider, useLanguage } from './lib/LanguageContext';
 import { BrandThemeProvider } from './lib/BrandThemeContext';
 import BrandThemeModal from './components/BrandThemeModal';
+import WebsiteBackground from './components/WebsiteBackground';
 
 function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy }) {
   const { selectedLang, setSelectedLang } = useLanguage();
@@ -33,6 +34,10 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
 
   return (
     <div className="relative min-h-screen bg-[#021109] text-slate-100 font-sans selection:bg-emerald-500 selection:text-black">
+      
+      {/* 3D Real Video & Smart AgriTech Website Background Layer */}
+      <WebsiteBackground />
+
       <div className="relative z-10 pb-16 md:pb-0">
         {/* Navigation */}
         <Navbar

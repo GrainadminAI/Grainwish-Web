@@ -265,3 +265,85 @@
   border-radius: 0 8px 8px 0;
   line-height: 1.45;
 }
+
+/* 3D Smart AgriTech Background Keyframes */
+@keyframes droneFloat {
+  0%, 100% {
+    transform: translateY(0px) rotate(0deg);
+  }
+  25% {
+    transform: translateY(-8px) rotate(-1.5deg);
+  }
+  75% {
+    transform: translateY(6px) rotate(1.5deg);
+  }
+}
+
+@keyframes tractorMove {
+  0% {
+    transform: translateX(-35px);
+  }
+  50% {
+    transform: translateX(35px);
+  }
+  100% {
+    transform: translateX(-35px);
+  }
+}
+
+@keyframes satelliteOrbit {
+  0% {
+    transform: translate(-25px, 0px);
+  }
+  50% {
+    transform: translate(25px, -8px);
+  }
+  100% {
+    transform: translate(-25px, 0px);
+  }
+}
+
+@keyframes sunRaysPulse {
+  0%, 100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.9;
+    transform: scale(1.08);
+  }
+}
+
+@keyframes photonStream {
+  0% {
+    transform: translateY(-10px);
+    opacity: 0;
+  }
+  40% {
+    opacity: 0.85;
+  }
+  100% {
+    transform: translateY(140px);
+    opacity: 0;
+  }
+}
+
+.animate-drone-float {
+  animation: droneFloat 5s ease-in-out infinite;
+}
+
+.animate-tractor-move {
+  animation: tractorMove 16s ease-in-out infinite;
+}
+
+.animate-satellite-orbit {
+  animation: satelliteOrbit 22s ease-in-out infinite;
+}
+
+.animate-sun-pulse {
+  animation: sunRaysPulse 6s ease-in-out infinite;
+}
+
+.animate-photon-stream {
+  animation: photonStream 2.5s ease-in infinite;
+}
