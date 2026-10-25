@@ -21,6 +21,7 @@ import NotFoundPage from './components/NotFoundPage';
 import { recordUserVisitToDB } from './lib/supabase';
 import { LanguageProvider, useLanguage } from './lib/LanguageContext';
 import { BrandThemeProvider } from './lib/BrandThemeContext';
+import WebsiteBackground from './components/WebsiteBackground';
 import BrandThemeModal from './components/BrandThemeModal';
 
 function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy }) {
@@ -33,6 +34,9 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
 
   return (
     <div className="relative min-h-screen bg-[#021109] text-slate-100 font-sans selection:bg-emerald-500 selection:text-black">
+      {/* Animated Agricultural Landscape Background with Farm Video, Generated Poster & Futuristic Green/Gold AI Effects */}
+      <WebsiteBackground />
+
       <div className="relative z-10 pb-16 md:pb-0">
         {/* Navigation */}
         <Navbar

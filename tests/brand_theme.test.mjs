@@ -72,21 +72,34 @@ describe('Brand Theme & Logo Suite Verification', () => {
     assert.ok(content.includes('Maharashtra'), 'Must include Maharashtra hub');
   });
 
-  test('HeroSection incorporates HolographicIndiaMap with clean dark theme and no background image or video animations', () => {
+  test('HeroSection incorporates HolographicIndiaMap with crisp typography and live diagnostics card', () => {
     const heroFile = path.join(rootDir, 'src/components/HeroSection.jsx');
     const content = fs.readFileSync(heroFile, 'utf8');
 
-    assert.ok(!content.includes('<video'), 'HeroSection must not have background video animations');
-    assert.ok(!content.includes('hero_agri_3d_bg.jpg'), 'HeroSection must not have background landscape image');
     assert.ok(content.includes('HolographicIndiaMap'), 'HeroSection must include HolographicIndiaMap');
     assert.ok(content.includes('soybean_leaf_mosaic.jpg'), 'HeroSection must showcase soybean_leaf_mosaic.jpg in live diagnostics card');
   });
 
-  test('App has clean dark theme and no background video or background layer', () => {
+  test('App renders WebsiteBackground with animated farm video, generated poster, and AI technology effects', () => {
     const appFile = path.join(rootDir, 'src/App.jsx');
-    const content = fs.readFileSync(appFile, 'utf8');
+    const appContent = fs.readFileSync(appFile, 'utf8');
+    assert.ok(appContent.includes('<WebsiteBackground'), 'App must render WebsiteBackground');
 
-    assert.ok(!content.includes('<WebsiteBackground'), 'App must not render WebsiteBackground');
-    assert.ok(!content.includes('<video'), 'App must not render background video');
+    const bgFile = path.join(rootDir, 'src/components/WebsiteBackground.jsx');
+    assert.ok(fs.existsSync(bgFile), 'WebsiteBackground.jsx must exist');
+    const bgContent = fs.readFileSync(bgFile, 'utf8');
+
+    // Video, generated image, and AI effects
+    assert.ok(bgContent.includes('grainwish-farm.mp4'), 'WebsiteBackground must use grainwish-farm.mp4');
+    assert.ok(bgContent.includes('grainwish-background.png'), 'WebsiteBackground must use grainwish-background.png');
+    assert.ok(bgContent.includes('farm-overlay'), 'WebsiteBackground must have dark left overlay');
+    assert.ok(bgContent.includes('AI DRONE'), 'WebsiteBackground must include AI scanning drone');
+    assert.ok(bgContent.includes('animate-scan-ring'), 'WebsiteBackground must include crop-scanning rings');
+    assert.ok(bgContent.includes('animate-grid-pulse'), 'WebsiteBackground must include connected field grid animation');
+    assert.ok(bgContent.includes('animate-sensor-pulse'), 'WebsiteBackground must include subtle glowing sensor points');
+
+    // Verify assets on disk
+    assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/grainwish-farm.mp4')), 'grainwish-farm.mp4 must exist');
+    assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/grainwish-background.png')), 'grainwish-background.png must exist');
   });
 });

@@ -1,0 +1,118 @@
+.farm-hero {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  isolation: isolate;
+  background: #031b15
+    url("/assets/grainwish-background.png")
+    center / cover no-repeat;
+  color: white;
+}
+
+.farm-video,
+.farm-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.farm-video {
+  z-index: -2;
+  object-fit: cover;
+}
+
+.farm-overlay {
+  z-index: -1;
+  background: linear-gradient(
+    90deg,
+    rgba(2, 22, 16, 0.94) 0%,
+    rgba(2, 28, 19, 0.76) 42%,
+    rgba(2, 25, 18, 0.2) 100%
+  );
+}
+
+.farm-content {
+  width: min(900px, 100%);
+  padding: clamp(28px, 7vw, 100px);
+}
+
+.farm-label {
+  display: inline-block;
+  color: #a7f5c1;
+  border: 1px solid rgba(119, 239, 166, 0.55);
+  border-radius: 30px;
+  padding: 10px 16px;
+  font-size: 12px;
+  letter-spacing: 1px;
+}
+
+.farm-content h1 {
+  margin: 26px 0 18px;
+  font-size: clamp(42px, 6vw, 82px);
+  line-height: 1.04;
+  font-weight: 800;
+  letter-spacing: -2px;
+}
+
+.farm-content h1 span {
+  color: #80f0ac;
+}
+
+.farm-content p {
+  max-width: 650px;
+  color: #e0e9e3;
+  font-size: clamp(16px, 1.5vw, 21px);
+  line-height: 1.7;
+}
+
+.farm-button {
+  display: inline-block;
+  margin-top: 18px;
+  padding: 16px 25px;
+  border-radius: 12px;
+  color: #032015;
+  background: linear-gradient(110deg, #6df0b1, #ffe17a);
+  font-weight: 750;
+  text-decoration: none;
+  transition: transform 0.25s ease;
+}
+
+.farm-button:hover {
+  transform: translateY(-3px);
+}
+
+.farm-glow {
+  position: absolute;
+  right: 8%;
+  bottom: 8%;
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(109, 240, 177, 0.22) 0%, rgba(255, 225, 122, 0.12) 50%, transparent 75%);
+  filter: blur(55px);
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .farm-button {
+    transition: none;
+  }
+}
+
+@media (max-width: 600px) {
+  .farm-content {
+    padding: 28px 22px;
+  }
+
+  .farm-content h1 {
+    letter-spacing: -1px;
+  }
+
+  .farm-overlay {
+    background: rgba(2, 24, 17, 0.68);
+  }
+}
