@@ -33,6 +33,26 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
 
   return (
     <div className="relative min-h-screen bg-[#021109] text-slate-100 font-sans selection:bg-emerald-500 selection:text-black">
+      {/* Website Background using the uploaded Indian agricultural tech landscape image */}
+      <div
+        className="fixed inset-0 z-0 pointer-events-none bg-cover bg-center bg-no-repeat"
+        style={{
+          backgroundImage: "url('/assets/grainwish_bg.jpg')",
+          opacity: 0.45,
+          filter: "brightness(0.95) contrast(1.15)"
+        }}
+        aria-hidden="true"
+      />
+      {/* Subtle directional gradient overlays ensuring 100% typography contrast while preserving background visuals */}
+      <div
+        className="fixed inset-0 z-0 pointer-events-none bg-gradient-to-r from-[#021109]/95 via-[#021109]/75 to-transparent"
+        aria-hidden="true"
+      />
+      <div
+        className="fixed inset-0 z-0 pointer-events-none bg-gradient-to-b from-[#021109]/80 via-transparent to-[#021109]/90"
+        aria-hidden="true"
+      />
+
       <div className="relative z-10 pb-16 md:pb-0">
         {/* Navigation */}
         <Navbar

@@ -82,12 +82,14 @@ describe('Brand Theme & Logo Suite Verification', () => {
     assert.ok(content.includes('soybean_leaf_mosaic.jpg'), 'HeroSection must showcase soybean_leaf_mosaic.jpg in live diagnostics card');
   });
 
-  test('App has clean dark theme and no background video or background layer', () => {
+  test('App renders the given agricultural landscape image as website background with no video', () => {
     const appFile = path.join(rootDir, 'src/App.jsx');
     const content = fs.readFileSync(appFile, 'utf8');
 
-    assert.ok(!content.includes('<WebsiteBackground'), 'App must not render WebsiteBackground');
+    assert.ok(content.includes('grainwish_bg.jpg'), 'App must use grainwish_bg.jpg as background image');
     assert.ok(!content.includes('<video'), 'App must not render background video');
+    assert.ok(!content.includes('<WebsiteBackground'), 'App must not render WebsiteBackground');
     assert.ok(!content.includes('<FarmBackground'), 'App must not render FarmBackground');
+    assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/grainwish_bg.jpg')), 'grainwish_bg.jpg must exist in public/assets');
   });
 });
