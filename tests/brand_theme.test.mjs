@@ -103,4 +103,25 @@ describe('Brand Theme & Logo Suite Verification', () => {
     assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/Sustainable_farm_sunset.mp4')), 'Farm video must exist');
     assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/grainwish-background.png')), 'grainwish-background.png must exist');
   });
+
+  test('FarmBackground component and CSS files exist with decorative scan interface and particles', () => {
+    const farmCompFile = path.join(rootDir, 'src/FarmBackground.jsx');
+    assert.ok(fs.existsSync(farmCompFile), 'src/FarmBackground.jsx must exist');
+    const compContent = fs.readFileSync(farmCompFile, 'utf8');
+
+    assert.ok(compContent.includes('farm-hero'), 'Must include farm-hero');
+    assert.ok(compContent.includes('farm-particles'), 'Must include farm-particles');
+    assert.ok(compContent.includes('farm-tech-card'), 'Must include farm-tech-card');
+    assert.ok(compContent.includes('LIVE AI DIAGNOSTICS'), 'Must include LIVE AI DIAGNOSTICS');
+    assert.ok(compContent.includes('scan-window'), 'Must include scan-window');
+
+    const farmCssFile = path.join(rootDir, 'src/FarmBackground.css');
+    assert.ok(fs.existsSync(farmCssFile), 'src/FarmBackground.css must exist');
+    const cssContent = fs.readFileSync(farmCssFile, 'utf8');
+
+    assert.ok(cssContent.includes('.farm-hero'), 'CSS must define .farm-hero');
+    assert.ok(cssContent.includes('.farm-tech-card'), 'CSS must define .farm-tech-card');
+    assert.ok(cssContent.includes('grid-drift'), 'CSS must include grid-drift keyframe');
+    assert.ok(cssContent.includes('particle-float'), 'CSS must include particle-float keyframe');
+  });
 });

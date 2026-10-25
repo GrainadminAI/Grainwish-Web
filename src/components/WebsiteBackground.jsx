@@ -32,14 +32,29 @@ export default function WebsiteBackground() {
         className="absolute inset-0 w-full h-full object-cover object-center opacity-35 mix-blend-screen filter brightness-110 contrast-120 saturate-125 pointer-events-none"
       />
 
-      {/* Layer 3: Interactive 3D WebGL Canvas (Wind-Swaying Crops, Procedural Furrows, Volumetric Solar Rays & Sparkles) */}
+      {/* Layer 3: Animated Technology Effects - Drifting Tech Grid & Floating AI Particles */}
+      <div className="farm-grid" aria-hidden="true" />
+      <div className="farm-particles" aria-hidden="true">
+        {Array.from({ length: 18 }, (_, i) => (
+          <span
+            key={i}
+            style={{
+              "--i": i,
+              "--x": `${(i * 37 + 7) % 100}%`,
+              "--y": `${(i * 23 + 11) % 100}%`,
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Layer 4: Interactive 3D WebGL Canvas (Wind-Swaying Crops, Procedural Furrows, Volumetric Solar Rays & Sparkles) */}
       <div className="absolute inset-0 opacity-80 pointer-events-none">
         <Suspense fallback={null}>
           <ThreeFarmCanvas />
         </Suspense>
       </div>
 
-      {/* Layer 4: AI Technology Effects (Field Grid, Crop-Scanning Rings, Glowing Sensor Points, Drone, Sun Energy) */}
+      {/* Layer 5: AI Technology Effects (Field Grid, Crop-Scanning Rings, Glowing Sensor Points, Drone, Sun Energy) */}
       {showTechHUD && (
         <div className="absolute inset-0 pointer-events-none">
 
