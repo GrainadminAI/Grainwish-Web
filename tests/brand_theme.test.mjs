@@ -72,56 +72,22 @@ describe('Brand Theme & Logo Suite Verification', () => {
     assert.ok(content.includes('Maharashtra'), 'Must include Maharashtra hub');
   });
 
-  test('HeroSection incorporates HolographicIndiaMap with crisp typography and live diagnostics card', () => {
+  test('HeroSection incorporates HolographicIndiaMap with clean dark theme and no background image or video animations', () => {
     const heroFile = path.join(rootDir, 'src/components/HeroSection.jsx');
     const content = fs.readFileSync(heroFile, 'utf8');
 
+    assert.ok(!content.includes('<video'), 'HeroSection must not have background video animations');
+    assert.ok(!content.includes('hero_agri_3d_bg.jpg'), 'HeroSection must not have background landscape image');
     assert.ok(content.includes('HolographicIndiaMap'), 'HeroSection must include HolographicIndiaMap');
     assert.ok(content.includes('soybean_leaf_mosaic.jpg'), 'HeroSection must showcase soybean_leaf_mosaic.jpg in live diagnostics card');
   });
 
-  test('App renders WebsiteBackground with animated farm video, generated poster, and AI technology effects', () => {
+  test('App has clean dark theme and no background video or background layer', () => {
     const appFile = path.join(rootDir, 'src/App.jsx');
-    const appContent = fs.readFileSync(appFile, 'utf8');
-    assert.ok(appContent.includes('<WebsiteBackground'), 'App must render WebsiteBackground');
+    const content = fs.readFileSync(appFile, 'utf8');
 
-    const bgFile = path.join(rootDir, 'src/components/WebsiteBackground.jsx');
-    assert.ok(fs.existsSync(bgFile), 'WebsiteBackground.jsx must exist');
-    const bgContent = fs.readFileSync(bgFile, 'utf8');
-
-    // Video, generated image, and AI effects
-    assert.ok(bgContent.includes('Sustainable_farm_sunset.mp4'), 'WebsiteBackground must use farm video source');
-    assert.ok(bgContent.includes('grainwish-background.png'), 'WebsiteBackground must use grainwish-background.png');
-    assert.ok(!bgContent.includes('grainwish-farm.mp4'), 'WebsiteBackground must not include grainwish-farm.mp4');
-    assert.ok(bgContent.includes('farm-overlay'), 'WebsiteBackground must have dark left overlay');
-    assert.ok(bgContent.includes('AI DRONE'), 'WebsiteBackground must include AI scanning drone');
-    assert.ok(bgContent.includes('animate-scan-ring'), 'WebsiteBackground must include crop-scanning rings');
-    assert.ok(bgContent.includes('animate-grid-pulse'), 'WebsiteBackground must include connected field grid animation');
-    assert.ok(bgContent.includes('animate-sensor-pulse'), 'WebsiteBackground must include subtle glowing sensor points');
-
-    // Verify assets on disk
-    assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/Sustainable_farm_sunset.mp4')), 'Farm video must exist');
-    assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/grainwish-background.png')), 'grainwish-background.png must exist');
-  });
-
-  test('FarmBackground component and CSS files exist with decorative scan interface and particles', () => {
-    const farmCompFile = path.join(rootDir, 'src/FarmBackground.jsx');
-    assert.ok(fs.existsSync(farmCompFile), 'src/FarmBackground.jsx must exist');
-    const compContent = fs.readFileSync(farmCompFile, 'utf8');
-
-    assert.ok(compContent.includes('farm-hero'), 'Must include farm-hero');
-    assert.ok(compContent.includes('farm-particles'), 'Must include farm-particles');
-    assert.ok(compContent.includes('farm-tech-card'), 'Must include farm-tech-card');
-    assert.ok(compContent.includes('LIVE AI DIAGNOSTICS'), 'Must include LIVE AI DIAGNOSTICS');
-    assert.ok(compContent.includes('scan-window'), 'Must include scan-window');
-
-    const farmCssFile = path.join(rootDir, 'src/FarmBackground.css');
-    assert.ok(fs.existsSync(farmCssFile), 'src/FarmBackground.css must exist');
-    const cssContent = fs.readFileSync(farmCssFile, 'utf8');
-
-    assert.ok(cssContent.includes('.farm-hero'), 'CSS must define .farm-hero');
-    assert.ok(cssContent.includes('.farm-tech-card'), 'CSS must define .farm-tech-card');
-    assert.ok(cssContent.includes('grid-drift'), 'CSS must include grid-drift keyframe');
-    assert.ok(cssContent.includes('particle-float'), 'CSS must include particle-float keyframe');
+    assert.ok(!content.includes('<WebsiteBackground'), 'App must not render WebsiteBackground');
+    assert.ok(!content.includes('<video'), 'App must not render background video');
+    assert.ok(!content.includes('<FarmBackground'), 'App must not render FarmBackground');
   });
 });
