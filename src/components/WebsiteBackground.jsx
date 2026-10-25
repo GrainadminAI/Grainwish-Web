@@ -1,5 +1,5 @@
 import React, { useState, lazy, Suspense } from 'react';
-import { Sun, Radio, Disc3, ShieldCheck, Cpu, Eye, EyeOff, Activity, Wifi, Layers } from 'lucide-react';
+import { Sun, Radio, ShieldCheck, Eye, EyeOff, Activity, Wifi, Layers, Droplets } from 'lucide-react';
 
 const ThreeFarmCanvas = lazy(() => import('./ThreeFarmCanvas'));
 
@@ -9,249 +9,193 @@ export default function WebsiteBackground() {
   return (
     <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none bg-[#021109]">
       
-      {/* Layer 1: Farm Video Background with gently moving crops, sunlight, and Indian farmers */}
-      <video
-        autoPlay
-        loop
-        muted
-        playsInline
-        preload="metadata"
-        poster="/assets/grainwish-background.png"
-        className="farm-video absolute inset-0 w-full h-full object-cover object-center opacity-70 filter brightness-105 contrast-115 saturate-125 transform-gpu transition-opacity duration-1000"
-      >
-        <source src="/assets/Sustainable_farm_sunset.mp4" type="video/mp4" />
-        <source src="/assets/flow_farm_background.mp4" type="video/mp4" />
-        <source src="/assets/real_crops_field.mp4" type="video/mp4" />
-        <source src="/assets/real_wheat_field.webm" type="video/webm" />
-      </video>
+      {/* Cinematic Gliding Wrapper: Creates slow forward camera glide above crops with subtle depth and parallax */}
+      <div className="absolute inset-0 w-full h-full animate-camera-glide pointer-events-none">
+        
+        {/* Layer 1: Farm Video Background with living crops, gentle breeze, and natural movement */}
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          preload="metadata"
+          poster="/assets/grainwish-background.png"
+          className="farm-video absolute inset-0 w-full h-full object-cover object-center opacity-75 filter brightness-105 contrast-115 saturate-125 transform-gpu transition-opacity duration-1000"
+        >
+          <source src="/assets/Sustainable_farm_sunset.mp4" type="video/mp4" />
+          <source src="/assets/flow_farm_background.mp4" type="video/mp4" />
+          <source src="/assets/real_crops_field.mp4" type="video/mp4" />
+          <source src="/assets/real_wheat_field.webm" type="video/webm" />
+        </video>
 
-      {/* Layer 2: Photorealistic Generated Smart Field Background Blend */}
-      <img
-        src="/assets/grainwish-background.png"
-        alt="GrainWish AI Agricultural Landscape with Indian Farmers, Moving Crops and Drone"
-        className="absolute inset-0 w-full h-full object-cover object-center opacity-35 mix-blend-screen filter brightness-110 contrast-120 saturate-125 pointer-events-none"
-      />
+        {/* Layer 2: Exact Uploaded Starting Frame Image Blend (Lush Indian fields, golden sunrise, distant mountains) */}
+        <img
+          src="/assets/grainwish-background.png"
+          alt="GrainWish AI Agricultural Landscape - Lush Indian Fields, Golden Sunrise, Drone, and Digital Globe"
+          className="absolute inset-0 w-full h-full object-cover object-center opacity-85 mix-blend-screen filter brightness-105 contrast-110 saturate-120 pointer-events-none"
+        />
 
-      {/* Layer 3: Animated Technology Effects - Drifting Tech Grid & Floating AI Particles */}
-      <div className="farm-grid" aria-hidden="true" />
-      <div className="farm-particles" aria-hidden="true">
-        {Array.from({ length: 18 }, (_, i) => (
-          <span
-            key={i}
-            style={{
-              "--i": i,
-              "--x": `${(i * 37 + 7) % 100}%`,
-              "--y": `${(i * 23 + 11) % 100}%`,
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Layer 4: Interactive 3D WebGL Canvas (Wind-Swaying Crops, Procedural Furrows, Volumetric Solar Rays & Sparkles) */}
-      <div className="absolute inset-0 opacity-80 pointer-events-none">
-        <Suspense fallback={null}>
-          <ThreeFarmCanvas />
-        </Suspense>
-      </div>
-
-      {/* Layer 5: AI Technology Effects (Field Grid, Crop-Scanning Rings, Glowing Sensor Points, Drone, Sun Energy) */}
-      {showTechHUD && (
-        <div className="absolute inset-0 pointer-events-none">
-
-          {/* AI Effect 1: Connected Field-Grid Animation across farmland */}
-          <div className="absolute bottom-0 left-0 right-0 h-[48%] overflow-hidden opacity-35 pointer-events-none">
-            <svg
-              className="w-full h-full animate-grid-pulse"
-              viewBox="0 0 1200 500"
-              preserveAspectRatio="none"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {/* Perspective Furrow Grid Lines */}
-              <defs>
-                <linearGradient id="gridGradGreen" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#10b981" stopOpacity="0.1" />
-                  <stop offset="50%" stopColor="#6df0b1" stopOpacity="0.75" />
-                  <stop offset="100%" stopColor="#ffe17a" stopOpacity="0.3" />
-                </linearGradient>
-                <linearGradient id="beamGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" stopColor="#80f0ac" stopOpacity="0" />
-                  <stop offset="50%" stopColor="#ffe17a" stopOpacity="0.9" />
-                  <stop offset="100%" stopColor="#80f0ac" stopOpacity="0" />
-                </linearGradient>
-              </defs>
-
-              {/* Horizontal Field Scanlines */}
-              <line x1="0" y1="120" x2="1200" y2="120" stroke="url(#gridGradGreen)" strokeWidth="1" strokeDasharray="6 6" />
-              <line x1="0" y1="200" x2="1200" y2="200" stroke="url(#gridGradGreen)" strokeWidth="1.2" strokeDasharray="8 6" />
-              <line x1="0" y1="300" x2="1200" y2="300" stroke="url(#gridGradGreen)" strokeWidth="1.5" />
-              <line x1="0" y1="420" x2="1200" y2="420" stroke="url(#gridGradGreen)" strokeWidth="2" />
-
-              {/* Perspective Furrow Convergence Rays towards vanishing horizon */}
-              <line x1="200" y1="500" x2="520" y2="80" stroke="url(#gridGradGreen)" strokeWidth="1.2" />
-              <line x1="420" y1="500" x2="580" y2="80" stroke="url(#gridGradGreen)" strokeWidth="1.2" />
-              <line x1="680" y1="500" x2="650" y2="80" stroke="url(#gridGradGreen)" strokeWidth="1.2" />
-              <line x1="940" y1="500" x2="720" y2="80" stroke="url(#gridGradGreen)" strokeWidth="1.2" />
-              <line x1="1160" y1="500" x2="800" y2="80" stroke="url(#gridGradGreen)" strokeWidth="1.2" />
-
-              {/* Connected Telemetry Vector Links between field sectors */}
-              <path
-                d="M 680 340 L 820 270 L 980 320 L 1090 220"
-                stroke="url(#beamGrad)"
-                strokeWidth="1.5"
-                strokeDasharray="4 4"
-              />
-              <circle cx="680" cy="340" r="4" fill="#80f0ac" />
-              <circle cx="820" cy="270" r="4" fill="#ffe17a" />
-              <circle cx="980" cy="320" r="4" fill="#80f0ac" />
-              <circle cx="1090" cy="220" r="4" fill="#ffe17a" />
-            </svg>
-          </div>
-
-          {/* AI Effect 2: Crop-Scanning Rings (Expanding sonar/radar pulses over the crops) */}
-          <div className="absolute top-[42%] right-[18%] sm:right-[24%] pointer-events-none flex items-center justify-center">
-            {/* Concentric Pulsing Rings */}
-            <div className="absolute w-24 h-24 rounded-full border border-emerald-400/80 animate-scan-ring" />
-            <div className="absolute w-24 h-24 rounded-full border border-amber-300/60 animate-scan-ring" style={{ animationDelay: '1.1s' }} />
-            <div className="absolute w-24 h-24 rounded-full border border-cyan-400/50 animate-scan-ring" style={{ animationDelay: '2.2s' }} />
-            
-            {/* Core Reticle */}
-            <div className="relative w-4 h-4 rounded-full bg-emerald-400/80 shadow-lg shadow-emerald-400/80 flex items-center justify-center">
-              <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping" />
-            </div>
-            
-            {/* Crop Canopy Scan Telemetry Tag */}
-            <div className="absolute top-6 left-6 hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md bg-black/75 border border-emerald-400/60 text-[9px] font-mono text-emerald-300 backdrop-blur-md shadow-md">
-              <Activity className="w-2.5 h-2.5 text-emerald-400 animate-pulse" />
-              <span>AI SCAN RADAR · CANOPY VIGOR 96%</span>
-            </div>
-          </div>
-
-          {/* AI Effect 3: Subtle Glowing Sensor Points with Live Agronomic Telemetry */}
-          {/* Sensor Node 1: Soil NPK & Moisture in Center-Right Field */}
-          <div className="absolute top-[62%] right-[32%] hidden md:flex items-center gap-2 pointer-events-none">
-            <div className="relative flex items-center justify-center">
-              <span className="w-3.5 h-3.5 rounded-full bg-emerald-400 animate-sensor-pulse" />
-              <span className="absolute w-1.5 h-1.5 rounded-full bg-white" />
-            </div>
-            <div className="flex items-center gap-1 px-2 py-0.5 rounded bg-black/70 border border-emerald-500/50 backdrop-blur-md text-[9px] font-mono text-emerald-300 shadow-md">
-              <Layers className="w-2.5 h-2.5 text-emerald-400" />
-              <span>SOIL IOT #4 · NPK [48:24:32] · MOISTURE 64%</span>
-            </div>
-          </div>
-
-          {/* Sensor Node 2: Leaf Temperature & Micro-Climate */}
-          <div className="absolute top-[75%] right-[14%] hidden lg:flex items-center gap-2 pointer-events-none">
-            <div className="relative flex items-center justify-center">
-              <span className="w-3.5 h-3.5 rounded-full bg-amber-400 animate-sensor-pulse" style={{ animationDelay: '0.9s' }} />
-              <span className="absolute w-1.5 h-1.5 rounded-full bg-white" />
-            </div>
-            <div className="flex items-center gap-1 px-2 py-0.5 rounded bg-black/70 border border-amber-400/50 backdrop-blur-md text-[9px] font-mono text-amber-300 shadow-md">
-              <Wifi className="w-2.5 h-2.5 text-amber-400" />
-              <span>LEAF SENSOR · 27.8°C · TRANSPIRATION NOMINAL</span>
-            </div>
-          </div>
-
-          {/* AI Effect 4: Radiant Golden Sun Giving Energy to Crops */}
-          <div className="absolute top-2 left-6 sm:top-6 sm:left-16 pointer-events-none flex flex-col items-start">
-            {/* Volumetric Sun Flare Glow */}
-            <div className="relative w-36 sm:w-56 h-36 sm:h-56 rounded-full bg-amber-400/25 blur-3xl animate-sun-pulse" />
-            
-            {/* Radiating Photon Energy Streams Cascading to Crops */}
-            <div className="absolute top-10 left-12 w-64 h-72 pointer-events-none overflow-hidden opacity-75">
-              <div className="w-1.5 h-16 bg-gradient-to-b from-amber-300 via-yellow-200 to-transparent rounded-full blur-[1px] animate-photon-stream ml-4" />
-              <div className="w-1 h-20 bg-gradient-to-b from-amber-400 via-amber-200 to-transparent rounded-full blur-[1px] animate-photon-stream ml-14" style={{ animationDelay: '0.8s' }} />
-              <div className="w-2 h-14 bg-gradient-to-b from-yellow-300 via-emerald-300 to-transparent rounded-full blur-[1px] animate-photon-stream ml-28" style={{ animationDelay: '1.4s' }} />
-            </div>
-
-            {/* Sun Energy Telemetry HUD Badge */}
-            <div className="absolute top-2 sm:top-4 left-2 sm:left-4 hidden md:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/60 border border-amber-400/50 backdrop-blur-md shadow-lg text-[10px] font-mono text-amber-300">
-              <Sun className="w-3.5 h-3.5 text-amber-400 animate-spin-slow shrink-0" />
-              <span className="font-bold">SOLAR ENERGY FLUX: 1,180 W/m²</span>
-              <span className="text-emerald-400 font-bold">· PHOTOSYNTHESIS OPTIMAL</span>
-            </div>
-          </div>
-
-          {/* AI Effect 5: High-Tech Agricultural Drone Scanning Crops */}
-          <div className="absolute top-1/4 right-[15%] sm:right-[26%] pointer-events-none animate-drone-float">
-            <div className="relative flex flex-col items-center">
-              {/* Drone Scanning Laser Cone Beaming Down with Green-to-Gold Gradient */}
-              <div
-                className="w-28 sm:w-36 h-32 sm:h-44 bg-gradient-to-b from-emerald-400/40 via-amber-300/20 to-transparent blur-[1px] pointer-events-none"
-                style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}
-              />
-              
-              {/* Drone Body & Rotating Propellers */}
-              <div className="absolute top-0 -translate-y-2 flex items-center justify-center">
-                <div className="relative w-10 sm:w-12 h-3 sm:h-3.5 bg-slate-900 border border-emerald-400/70 rounded-md shadow-lg shadow-emerald-500/30 flex items-center justify-between px-1">
-                  <span className="w-1 h-1 rounded-full bg-emerald-400 animate-ping" />
-                  <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
-                  <span className="w-1 h-1 rounded-full bg-red-400" />
-                </div>
-                {/* Propeller Blades Spinning Blur */}
-                <div className="absolute -left-2 w-4 h-0.5 bg-emerald-300/80 rounded-full animate-spin" />
-                <div className="absolute -right-2 w-4 h-0.5 bg-emerald-300/80 rounded-full animate-spin" />
-              </div>
-
-              {/* Drone Telemetry HUD Label */}
-              <div className="hidden lg:flex items-center gap-1 mt-1 px-2 py-0.5 rounded bg-emerald-950/85 border border-emerald-500/60 text-[9px] font-mono text-emerald-300 shadow-md">
-                <Radio className="w-2.5 h-2.5 text-emerald-400 animate-pulse" />
-                <span>AI DRONE #01 · 4K NDVI CANOPY SCAN</span>
-              </div>
-            </div>
-          </div>
-
-          {/* AI Effect 6: Autonomous Smart Tractor Moving Along Field Furrows */}
-          <div className="absolute top-[48%] sm:top-[50%] right-[6%] sm:right-[12%] pointer-events-none animate-tractor-move">
-            <div className="relative flex flex-col items-center">
-              {/* Forward Furrow Guide Lasers */}
-              <div className="w-24 sm:w-36 h-0.5 bg-gradient-to-r from-emerald-400/80 via-amber-400/60 to-transparent mb-1" />
-              
-              {/* Smart Tractor Telemetry Tag */}
-              <div className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded bg-[#031d10]/90 border border-amber-500/50 text-[9px] font-mono text-amber-300 shadow-md">
-                <Disc3 className="w-2.5 h-2.5 text-amber-400 animate-spin" />
-                <span>AUTO-STEER TRACTOR · RTK-GPS · FURROW ROW 18</span>
-              </div>
-            </div>
-          </div>
-
-          {/* AI Effect 7: High-Altitude ISRO AgriSat Orbiting Satellite */}
-          <div className="absolute top-4 sm:top-8 right-6 sm:right-16 pointer-events-none animate-satellite-orbit">
-            <div className="relative flex flex-col items-center">
-              {/* Satellite Multispectral Field Scan Cone */}
-              <div
-                className="w-20 sm:w-28 h-44 sm:h-64 bg-gradient-to-b from-cyan-400/30 via-emerald-400/10 to-transparent pointer-events-none blur-[1px]"
-                style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}
-              />
-              
-              {/* Satellite Body & Solar Arrays */}
-              <div className="absolute top-0 -translate-y-2 flex items-center gap-0.5">
-                <div className="w-3.5 sm:w-5 h-2 sm:h-2.5 bg-cyan-700 border border-cyan-300/80 rounded-xs shadow-sm shadow-cyan-400/50" />
-                <div className="w-2.5 sm:w-3 h-2.5 sm:h-3 bg-slate-200 border border-white rounded-full flex items-center justify-center shadow-md">
-                  <span className="w-1 h-1 rounded-full bg-cyan-400 animate-ping" />
-                </div>
-                <div className="w-3.5 sm:w-5 h-2 sm:h-2.5 bg-cyan-700 border border-cyan-300/80 rounded-xs shadow-sm shadow-cyan-400/50" />
-              </div>
-
-              {/* Satellite Telemetry HUD Label */}
-              <div className="hidden lg:flex items-center gap-1 mt-1 px-2 py-0.5 rounded bg-[#011422]/90 border border-cyan-400/60 text-[9px] font-mono text-cyan-300 shadow-md">
-                <Cpu className="w-2.5 h-2.5 text-cyan-300 animate-pulse" />
-                <span>ISRO AGRISAT · MULTISPECTRAL FIELD SCAN</span>
-              </div>
-            </div>
-          </div>
-
-          {/* AI Effect 8: 2 Indian Farmers Cooperative Harvest Badge */}
-          <div className="absolute bottom-20 left-4 sm:left-12 hidden xl:flex items-center gap-2 p-1.5 px-3 rounded-xl bg-black/60 border border-emerald-500/40 backdrop-blur-md shadow-xl text-[10px] font-mono text-emerald-300">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-            <span className="font-bold">INDIAN FARMERS COOPERATIVE HARVEST</span>
-            <span className="text-amber-300 font-bold">· CROP YIELD +38%</span>
-          </div>
-
+        {/* Layer 3: Drifting Precision Field Grid & Floating Ambient Agro-Particles */}
+        <div className="farm-grid animate-grid-pulse" aria-hidden="true" />
+        <div className="farm-particles" aria-hidden="true">
+          {Array.from({ length: 18 }, (_, i) => (
+            <span
+              key={i}
+              style={{
+                "--i": i,
+                "--x": `${(i * 37 + 7) % 100}%`,
+                "--y": `${(i * 23 + 11) % 100}%`,
+              }}
+            />
+          ))}
         </div>
-      )}
 
-      {/* Layer 5: Premium Dark Left Gradient Overlay (Ensures 100% legibility of headlines on the left while showcasing bright farmland on the right) */}
+        {/* Layer 4: Interactive 3D WebGL Canvas (Wind-Swaying Crops, Procedural Furrows, Volumetric Solar Rays & Sparkles) */}
+        <div className="absolute inset-0 opacity-70 pointer-events-none">
+          <Suspense fallback={null}>
+            <ThreeFarmCanvas />
+          </Suspense>
+        </div>
+
+        {/* Layer 5: High-Tech Photorealistic 3D Overlays (Digital Globe, Drone Laser Scan, Precision Sensor Rings, Golden Sunrise) */}
+        {showTechHUD && (
+          <div className="absolute inset-0 pointer-events-none">
+
+            {/* Effect 1: Golden Sunrise Atmospheric Bloom on Right Horizon */}
+            <div className="absolute top-[38%] right-[4%] pointer-events-none flex items-center justify-center">
+              <div className="w-48 sm:w-72 h-48 sm:h-72 rounded-full bg-gradient-to-r from-amber-400/40 via-yellow-300/30 to-amber-500/20 blur-3xl animate-sun-bloom" />
+              <div className="absolute w-24 h-24 rounded-full bg-yellow-200/50 blur-xl animate-sun-bloom" />
+            </div>
+
+            {/* Effect 2: Rotating Digital Wireframe Globe Highlighting India in Sky */}
+            <div className="absolute top-[4%] right-[14%] sm:right-[18%] w-56 sm:w-80 h-56 sm:h-80 pointer-events-none opacity-85">
+              <div className="relative w-full h-full flex items-center justify-center">
+                {/* Rotating Globe Outer Rings */}
+                <div className="absolute inset-0 rounded-full border border-emerald-400/30 animate-globe-rotate" />
+                <div className="absolute inset-4 rounded-full border border-dashed border-emerald-300/40 animate-globe-rotate" style={{ animationDuration: '30s', animationDirection: 'reverse' }} />
+                
+                {/* Globe Longitude & Latitude Wireframe Arcs */}
+                <svg className="absolute inset-0 w-full h-full animate-globe-rotate opacity-75" viewBox="0 0 200 200" fill="none">
+                  <circle cx="100" cy="100" r="95" stroke="#80f0ac" strokeWidth="0.8" strokeOpacity="0.4" />
+                  <ellipse cx="100" cy="100" rx="95" ry="45" stroke="#80f0ac" strokeWidth="0.7" strokeOpacity="0.35" />
+                  <ellipse cx="100" cy="100" rx="95" ry="18" stroke="#80f0ac" strokeWidth="0.7" strokeOpacity="0.3" />
+                  <ellipse cx="100" cy="100" rx="45" ry="95" stroke="#80f0ac" strokeWidth="0.7" strokeOpacity="0.35" />
+                  <ellipse cx="100" cy="100" rx="18" ry="95" stroke="#80f0ac" strokeWidth="0.7" strokeOpacity="0.3" />
+                  {/* Constellation Data Nodes */}
+                  <circle cx="100" cy="85" r="2.5" fill="#ffe17a" className="animate-ping" />
+                  <circle cx="120" cy="70" r="1.5" fill="#80f0ac" />
+                  <circle cx="85" cy="115" r="1.5" fill="#80f0ac" />
+                  <circle cx="130" cy="120" r="2" fill="#ffe17a" />
+                  <circle cx="65" cy="90" r="1.5" fill="#80f0ac" />
+                </svg>
+
+                {/* India Map Holographic Highlight at Core */}
+                <div className="relative z-10 flex flex-col items-center">
+                  <span className="text-[10px] sm:text-xs font-mono font-bold tracking-widest text-emerald-300 drop-shadow-[0_0_8px_#80f0ac]">
+                    INDIA · 28 STATES
+                  </span>
+                  <span className="text-[8px] font-mono text-amber-300 opacity-90">
+                    PRECISION AGRI-NET ACTIVE
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Effect 3: Agricultural Drone Scanning Crops with Soft Green Laser Lines */}
+            <div className="absolute top-[34%] right-[20%] sm:right-[24%] pointer-events-none animate-drone-float">
+              <div className="relative flex flex-col items-center">
+                
+                {/* Soft Green Laser Scan Beams Cascading to Crops */}
+                <div
+                  className="w-32 sm:w-44 h-36 sm:h-52 bg-gradient-to-b from-emerald-400/50 via-emerald-300/20 to-transparent blur-[0.5px] pointer-events-none animate-laser-scan"
+                  style={{ clipPath: 'polygon(50% 0%, 0% 100%, 100% 100%)' }}
+                />
+                
+                {/* Laser Scanning Line Sweeping Over Crops */}
+                <div className="absolute bottom-2 w-36 h-1 bg-gradient-to-r from-transparent via-emerald-400 to-transparent blur-[1px] animate-pulse" />
+
+                {/* Drone Body & Spinning Propellers */}
+                <div className="absolute top-0 -translate-y-2 flex items-center justify-center">
+                  <div className="relative w-11 sm:w-14 h-3.5 sm:h-4 bg-slate-900 border border-emerald-400/80 rounded-md shadow-lg shadow-emerald-500/40 flex items-center justify-between px-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
+                  </div>
+                  {/* Propellers blur */}
+                  <div className="absolute -left-2.5 w-5 h-0.5 bg-emerald-300/80 rounded-full animate-spin" />
+                  <div className="absolute -right-2.5 w-5 h-0.5 bg-emerald-300/80 rounded-full animate-spin" />
+                </div>
+
+                {/* Drone Telemetry Badge */}
+                <div className="hidden lg:flex items-center gap-1 mt-1 px-2 py-0.5 rounded bg-emerald-950/90 border border-emerald-500/60 text-[9px] font-mono text-emerald-300 shadow-md">
+                  <Radio className="w-2.5 h-2.5 text-emerald-400 animate-pulse" />
+                  <span>AI DRONE #01 · 4K CANOPY SCAN</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Effect 4: Green Crop-Health & Irrigation Sensor Rings Pulsing Above Farmland */}
+            
+            {/* Sensor 1: Crop Health (Leaf Icon) */}
+            <div className="absolute top-[59%] right-[32%] sm:right-[34%] pointer-events-none flex items-center justify-center">
+              <div className="absolute w-16 sm:w-20 h-16 sm:h-20 rounded-full border border-emerald-400/75 animate-scan-ring animate-sensor-ripple" />
+              <div className="absolute w-16 sm:w-20 h-16 sm:h-20 rounded-full border border-emerald-300/45 animate-scan-ring animate-sensor-ripple" style={{ animationDelay: '1.2s' }} />
+              <div className="relative w-7 h-7 rounded-full bg-emerald-950/90 border border-emerald-400 shadow-[0_0_12px_#80f0ac] flex items-center justify-center">
+                <span className="text-[12px]">🌿</span>
+              </div>
+              <div className="absolute top-8 hidden sm:inline-flex items-center px-1.5 py-0.5 rounded bg-black/75 border border-emerald-500/50 text-[8px] font-mono text-emerald-300 whitespace-nowrap shadow-md">
+                CROP HEALTH: 98%
+              </div>
+            </div>
+
+            {/* Sensor 2: Irrigation & Moisture (Droplet Icon) */}
+            <div className="absolute top-[62%] right-[12%] sm:right-[14%] pointer-events-none flex items-center justify-center">
+              <div className="absolute w-16 sm:w-20 h-16 sm:h-20 rounded-full border border-cyan-400/75 animate-sensor-ripple" style={{ animationDelay: '0.6s' }} />
+              <div className="absolute w-16 sm:w-20 h-16 sm:h-20 rounded-full border border-cyan-300/45 animate-sensor-ripple" style={{ animationDelay: '1.8s' }} />
+              <div className="relative w-7 h-7 rounded-full bg-[#022421]/90 border border-cyan-400 shadow-[0_0_12px_#38bdf8] flex items-center justify-center">
+                <Droplets className="w-3.5 h-3.5 text-cyan-300" />
+              </div>
+              <div className="absolute top-8 hidden sm:inline-flex items-center px-1.5 py-0.5 rounded bg-black/75 border border-cyan-500/50 text-[8px] font-mono text-cyan-300 whitespace-nowrap shadow-md">
+                IRRIGATION: OPTIMAL
+              </div>
+            </div>
+
+            {/* Sensor 3: Solar & Photosynthesis (Sun/Energy Icon) */}
+            <div className="absolute top-[56%] right-[5%] sm:right-[6%] pointer-events-none flex items-center justify-center">
+              <div className="absolute w-16 sm:w-20 h-16 sm:h-20 rounded-full border border-amber-400/75 animate-sensor-ripple" style={{ animationDelay: '1s' }} />
+              <div className="relative w-7 h-7 rounded-full bg-[#241a02]/90 border border-amber-400 shadow-[0_0_12px_#fbbf24] flex items-center justify-center">
+                <Sun className="w-3.5 h-3.5 text-amber-300 animate-spin-slow" />
+              </div>
+              <div className="absolute top-8 hidden sm:inline-flex items-center px-1.5 py-0.5 rounded bg-black/75 border border-amber-500/50 text-[8px] font-mono text-amber-300 whitespace-nowrap shadow-md">
+                SUN FLUX: 1,180 W/m²
+              </div>
+            </div>
+
+            {/* Sensor 4: Soil NPK & Micro-Climate Vector Link */}
+            <div className="absolute top-[76%] right-[40%] sm:right-[42%] hidden md:flex items-center gap-1.5 pointer-events-none">
+              <div className="relative flex items-center justify-center">
+                <span className="w-3.5 h-3.5 rounded-full bg-emerald-400 animate-sensor-pulse" />
+                <span className="absolute w-1.5 h-1.5 rounded-full bg-white" />
+              </div>
+              <div className="flex items-center gap-1 px-2 py-0.5 rounded bg-black/75 border border-emerald-500/50 backdrop-blur-md text-[8.5px] font-mono text-emerald-300 shadow-md">
+                <Layers className="w-2.5 h-2.5 text-emerald-400" />
+                <span>NPK [48:24:32] · SOIL pH 6.8</span>
+              </div>
+            </div>
+
+            {/* Effect 5: Farmers Cooperative Harvest Badge */}
+            <div className="absolute bottom-20 left-4 sm:left-12 hidden xl:flex items-center gap-2 p-1.5 px-3 rounded-xl bg-black/65 border border-emerald-500/40 backdrop-blur-md shadow-xl text-[10px] font-mono text-emerald-300">
+              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+              <span className="font-bold">INDIAN FARMERS COOPERATIVE HARVEST</span>
+              <span className="text-amber-300 font-bold">· CROP YIELD +38%</span>
+            </div>
+
+          </div>
+        )}
+
+      </div>
+
+      {/* Layer 6: Premium Dark Left Gradient Overlay (Preserves 100% legibility of headlines on the left while showcasing bright farmland on the right) */}
       <div className="farm-overlay pointer-events-none" />
 
       {/* Futuristic Green-and-Gold Ambient Glow Orb */}

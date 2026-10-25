@@ -516,4 +516,91 @@
   }
 }
 
+/* Cinematic 3D Animation Keyframes (Forward Camera Glide, Digital Globe, Sunrise Bloom, Sensor Rings) */
+@keyframes cameraGlide {
+  0% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+  50% {
+    transform: scale(1.045) translate3d(0, -1.2%, 0);
+  }
+  100% {
+    transform: scale(1) translate3d(0, 0, 0);
+  }
+}
+
+@keyframes globeRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes sunBloom {
+  0%, 100% {
+    opacity: 0.65;
+    transform: scale(1);
+    filter: drop-shadow(0 0 45px rgba(255, 225, 122, 0.7));
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.12);
+    filter: drop-shadow(0 0 70px rgba(255, 215, 80, 0.95));
+  }
+}
+
+@keyframes laserScanSweep {
+  0% {
+    transform: rotateX(55deg) translateY(-20px);
+    opacity: 0.4;
+  }
+  50% {
+    transform: rotateX(55deg) translateY(25px);
+    opacity: 0.85;
+  }
+  100% {
+    transform: rotateX(55deg) translateY(-20px);
+    opacity: 0.4;
+  }
+}
+
+@keyframes sensorRingRipple {
+  0% {
+    transform: scale(0.7);
+    opacity: 0.9;
+  }
+  70% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+.animate-camera-glide {
+  animation: cameraGlide 24s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  transform-origin: 65% 55%;
+  will-change: transform;
+}
+
+.animate-globe-rotate {
+  animation: globeRotate 45s linear infinite;
+}
+
+.animate-sun-bloom {
+  animation: sunBloom 7s ease-in-out infinite;
+}
+
+.animate-laser-scan {
+  animation: laserScanSweep 3.5s ease-in-out infinite;
+}
+
+.animate-sensor-ripple {
+  animation: sensorRingRipple 3s cubic-bezier(0.1, 0.7, 0.4, 1) infinite;
+}
+
+
 
