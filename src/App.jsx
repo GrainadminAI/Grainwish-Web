@@ -33,13 +33,6 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
 
   return (
     <div className="relative min-h-screen bg-[#021109] text-slate-100 font-sans selection:bg-emerald-500 selection:text-black">
-      
-      {/* Global Static Clean Dark Background Layer (No Animations) */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none bg-[#021109]">
-        {/* Subtle Static Vignette & Depth Gradient */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#021109] via-[#02180d]/40 to-[#021109]" />
-      </div>
-
       <div className="relative z-10 pb-16 md:pb-0">
         {/* Navigation */}
         <Navbar

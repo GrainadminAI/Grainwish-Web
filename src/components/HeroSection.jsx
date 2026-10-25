@@ -9,25 +9,6 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
 
   return (
     <section className="relative min-h-[auto] lg:min-h-screen pt-14 pb-6 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12 flex items-center overflow-x-hidden">
-      
-      {/* Background Layer: Photorealistic Agricultural Landscape (Static - No Animations) */}
-      <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
-        {/* Photorealistic Landscape */}
-        <img
-          src="/assets/hero_agri_3d_bg.jpg"
-          alt="GrainWise AI Smart Agriculture Field"
-          className="w-full h-full object-cover object-center scale-105 filter brightness-105 contrast-115 saturate-115 [image-rendering:-webkit-optimize-contrast]"
-        />
-
-        {/* Rich Cinematic Vignette Overlays matching Dark Agri Aesthetic */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#021109] via-transparent to-[#021109]/40" />
-        <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#021109]/15 to-[#021109]/60" />
-      </div>
-
-      {/* Decorative Static Glow Orbs matching Brand Palette */}
-      <div className="absolute top-1/4 left-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
-
       <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full">
         {/* Main 2-Column Responsive Layout: Left Copy (col-span-7) and Right Top-Corner Visual Showcase (col-span-5) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 lg:gap-8 items-start lg:items-center">
