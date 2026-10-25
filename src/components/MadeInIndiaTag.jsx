@@ -65,32 +65,32 @@ export default function MadeInIndiaTag({ variant = "default", className = "" }) 
 
   if (variant === "banner") {
     return (
-      <div className={`relative overflow-hidden rounded-2xl bg-gradient-to-r from-amber-950/40 via-emerald-950/60 to-emerald-900/40 border border-[#FF9933]/40 p-4 shadow-xl backdrop-blur-md ${className}`}>
-        <div className="absolute -top-10 -right-10 w-28 h-28 bg-[#FF9933]/10 rounded-full blur-2xl pointer-events-none" />
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 rounded-xl bg-[#031d10] border border-[#FF9933]/50 shadow-md">
-              <IndianFlagIcon className="w-7 h-5" />
+      <div className={`relative overflow-hidden rounded-xl sm:rounded-2xl bg-gradient-to-r from-amber-950/35 via-emerald-950/50 to-emerald-900/35 border border-[#FF9933]/35 p-2.5 sm:p-3.5 shadow-lg backdrop-blur-md ${className}`}>
+        <div className="absolute -top-10 -right-10 w-24 h-24 bg-[#FF9933]/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 sm:gap-4">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="p-1.5 rounded-lg bg-[#031d10] border border-[#FF9933]/50 shadow-sm shrink-0">
+              <IndianFlagIcon className="w-5 h-3.5 sm:w-6 sm:h-4" />
             </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-[#FF9933] uppercase tracking-widest flex items-center gap-1">
-                  <Sparkles className="w-3.5 h-3.5 text-amber-400" /> Atmanirbhar Krishi Tech
+            <div className="min-w-0">
+              <div className="flex items-center gap-1.5 flex-wrap">
+                <span className="text-[10px] sm:text-[11px] font-bold text-[#FF9933] uppercase tracking-wider flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-amber-400" /> Atmanirbhar Krishi Tech
                 </span>
-                <span className="px-2 py-0.5 text-[9px] font-extrabold bg-[#138808]/30 text-emerald-300 border border-emerald-500/40 rounded-full">
+                <span className="px-1.5 py-0.2 text-[8.5px] sm:text-[9px] font-extrabold bg-[#138808]/30 text-emerald-300 border border-emerald-500/40 rounded-full">
                   {t('indigenous_badge')}
                 </span>
               </div>
-              <h4 className="text-sm sm:text-base font-extrabold text-white mt-0.5">
+              <h4 className="text-xs sm:text-sm font-extrabold text-white truncate mt-0.5">
                 {t('atmanirbhar_title')} 🇮🇳
               </h4>
-              <p className="text-xs text-slate-300 mt-1 max-w-xl">
+              <p className="text-[11px] text-slate-300/90 truncate max-w-xl hidden md:block">
                 {t('atmanirbhar_desc')}
               </p>
             </div>
           </div>
-          <div className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-black/50 border border-emerald-500/30 text-xs font-medium text-amber-300">
-            <ShieldCheck className="w-4 h-4 text-emerald-400" />
+          <div className="shrink-0 flex items-center gap-1 px-2.5 py-1 rounded-lg bg-black/40 border border-emerald-500/30 text-[10.5px] sm:text-xs font-semibold text-amber-300">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
             <span>Desi AI Excellence</span>
           </div>
         </div>
