@@ -1,4 +1,4 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
 import HeroSection from './components/HeroSection';
 import CoreHighlights from './components/CoreHighlights';
@@ -23,8 +23,6 @@ import { LanguageProvider, useLanguage } from './lib/LanguageContext';
 import { BrandThemeProvider } from './lib/BrandThemeContext';
 import BrandThemeModal from './components/BrandThemeModal';
 
-const ThreeFarmCanvas = lazy(() => import('./components/ThreeFarmCanvas'));
-
 function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy }) {
   const { selectedLang, setSelectedLang } = useLanguage();
 
@@ -36,31 +34,10 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
   return (
     <div className="relative min-h-screen bg-[#021109] text-slate-100 font-sans selection:bg-emerald-500 selection:text-black">
       
-      {/* Global Smart AgriTech 4K HDR Living Background Layer (Video + Three.js Cyber Farm Grid) */}
-      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none">
-        {/* Living Google Flow Farm Video Layer Without Audio - 4K HDR Filter */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          poster="/assets/flow_farm_poster.jpg"
-          className="w-full h-full object-cover opacity-60 filter brightness-108 contrast-120 saturate-130 [image-rendering:-webkit-optimize-contrast] transform-gpu"
-        >
-          <source src="/assets/flow_farm_background.mp4" type="video/mp4" />
-          <source src="https://flow-content.google/video/5cd2638b-4b4c-4ace-b9f4-b6126ef94611?Expires=1792852818&KeyName=labs-flow-prod-cdn-key&Signature=bOEf06Hwg7HNhfowrxjPf91Kr6Q" type="video/mp4" />
-        </video>
-
-        {/* 3D Smart AgriTech Canvas (Wind Crops, Solar Rays, Furrow Grid, Pollen Sparkles) */}
-        <div className="absolute inset-0">
-          <Suspense fallback={null}>
-            <ThreeFarmCanvas />
-          </Suspense>
-        </div>
-
-        {/* Dark Vignette Overlay for Crisp Readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#021109]/70 via-transparent to-[#021109]/80" />
+      {/* Global Static Clean Dark Background Layer (No Animations) */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden select-none bg-[#021109]">
+        {/* Subtle Static Vignette & Depth Gradient */}
+        <div className="absolute inset-0 bg-gradient-to-b from-[#021109] via-[#02180d]/40 to-[#021109]" />
       </div>
 
       <div className="relative z-10 pb-16 md:pb-0">
@@ -143,6 +120,13 @@ function RootApp() {
     let timer50, timer200;
 
     if (typeof window !== 'undefined') {
+      // Silence and cancel any speech synthesis per user request ("remove the website audio")
+      if ('speechSynthesis' in window) {
+        try {
+          window.speechSynthesis.cancel();
+        } catch (_) {}
+      }
+
       // Force manual scroll restoration so browsers do not restore scroll position down to #ananya-ai
       if ('scrollRestoration' in window.history) {
         window.history.scrollRestoration = 'manual';

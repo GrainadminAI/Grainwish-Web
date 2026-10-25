@@ -72,12 +72,12 @@ describe('Brand Theme & Logo Suite Verification', () => {
     assert.ok(content.includes('Maharashtra'), 'Must include Maharashtra hub');
   });
 
-  test('HeroSection incorporates Image 2 background, real crop wind animation, and HolographicIndiaMap', () => {
+  test('HeroSection incorporates Image 2 static background and HolographicIndiaMap without background video animations', () => {
     const heroFile = path.join(rootDir, 'src/components/HeroSection.jsx');
     const content = fs.readFileSync(heroFile, 'utf8');
 
     assert.ok(content.includes('hero_agri_3d_bg.jpg'), 'HeroSection must have Image 2 background');
-    assert.ok(content.includes('real_crops_field.mp4') || content.includes('real_wheat_field.webm'), 'HeroSection must have real crop field video');
+    assert.ok(!content.includes('<video'), 'HeroSection must not have background video animations');
     assert.ok(content.includes('HolographicIndiaMap'), 'HeroSection must include HolographicIndiaMap');
     assert.ok(content.includes('soybean_leaf_mosaic.jpg'), 'HeroSection must showcase soybean_leaf_mosaic.jpg in live diagnostics card');
   });

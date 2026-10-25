@@ -10,39 +10,23 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
   return (
     <section className="relative min-h-[auto] lg:min-h-screen pt-14 pb-6 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12 flex items-center overflow-x-hidden">
       
-      {/* Background Layer: Google Flow AI Cinematic Agricultural Landscape + Real Crop Wind Motion */}
+      {/* Background Layer: Photorealistic Agricultural Landscape (Static - No Animations) */}
       <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none select-none">
-        {/* Base Photorealistic Landscape Poster Fallback */}
+        {/* Photorealistic Landscape */}
         <img
           src="/assets/hero_agri_3d_bg.jpg"
           alt="GrainWise AI Smart Agriculture Field"
           className="w-full h-full object-cover object-center scale-105 filter brightness-105 contrast-115 saturate-115 [image-rendering:-webkit-optimize-contrast]"
         />
 
-        {/* Google Flow AI Living Farm Background Video (Wind, Moving Leaves, Sunlight, Farmers) - Without Audio */}
-        <video
-          autoPlay
-          loop
-          muted
-          playsInline
-          preload="auto"
-          poster="/assets/flow_farm_poster.jpg"
-          className="absolute inset-0 w-full h-full object-cover opacity-85 filter brightness-108 contrast-120 saturate-130 [image-rendering:-webkit-optimize-contrast] transform-gpu transition-opacity duration-1000 pointer-events-none"
-        >
-          <source src="/assets/flow_farm_background.mp4" type="video/mp4" />
-          <source src="https://flow-content.google/video/5cd2638b-4b4c-4ace-b9f4-b6126ef94611?Expires=1792852818&KeyName=labs-flow-prod-cdn-key&Signature=bOEf06Hwg7HNhfowrxjPf91Kr6Q" type="video/mp4" />
-          <source src="/assets/real_crops_field.mp4" type="video/mp4" />
-          <source src="/assets/real_wheat_field.webm" type="video/webm" />
-        </video>
-
         {/* Rich Cinematic Vignette Overlays matching Dark Agri Aesthetic */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#021109] via-transparent to-[#021109]/40" />
         <div className="absolute inset-0 bg-radial-gradient from-transparent via-[#021109]/15 to-[#021109]/60" />
       </div>
 
-      {/* Decorative Glow Orbs matching Brand Palette */}
-      <div className="absolute top-1/4 left-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none animate-pulse-slow" />
-      <div className="absolute bottom-1/4 right-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none animate-pulse-slow" style={{ animationDelay: '2s' }} />
+      {/* Decorative Static Glow Orbs matching Brand Palette */}
+      <div className="absolute top-1/4 left-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-1/4 right-1/4 w-72 sm:w-96 h-72 sm:h-96 bg-amber-500/15 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 w-full">
         {/* Main 2-Column Responsive Layout: Left Copy (col-span-7) and Right Top-Corner Visual Showcase (col-span-5) */}

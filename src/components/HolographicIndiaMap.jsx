@@ -413,7 +413,7 @@ export default function HolographicIndiaMap({ className = "" }) {
         
         <svg
           viewBox={INDIA_MAP_VIEWBOX}
-          className="w-full h-full overflow-visible transition-transform duration-700 hover:scale-[1.01]"
+          className="w-full h-full overflow-hidden transition-transform duration-700 hover:scale-[1.01]"
         >
           <defs>
             {/* Holographic Scanline Grid Pattern */}
@@ -455,12 +455,10 @@ export default function HolographicIndiaMap({ className = "" }) {
           </defs>
 
           {/* Radar Scanner Concentric Range Rings */}
-          <g opacity="0.32" className="pointer-events-none">
+          <g opacity="0.25" className="pointer-events-none">
             <circle cx="260" cy="350" r="90" fill="none" stroke="#10b981" strokeWidth="1" strokeDasharray="3 3" />
             <circle cx="260" cy="350" r="170" fill="none" stroke="#10b981" strokeWidth="1" strokeDasharray="4 4" />
             <circle cx="260" cy="350" r="260" fill="none" stroke="#10b981" strokeWidth="1" strokeDasharray="6 6" />
-            <line x1="260" y1="50" x2="260" y2="650" stroke="#10b981" strokeWidth="0.8" strokeDasharray="3 3" />
-            <line x1="30" y1="350" x2="580" y2="350" stroke="#10b981" strokeWidth="0.8" strokeDasharray="3 3" />
           </g>
 
           {/* Animated Sweeping Radar Beam */}
@@ -468,7 +466,7 @@ export default function HolographicIndiaMap({ className = "" }) {
             <circle r="240" fill="url(#radar-glow)" />
           </g>
 
-          {/* Actual Geographic Indian States & Union Territories (All 36 States/UTs) */}
+          {/* Actual Geographic Indian States & Union Territories */}
           <g id="actual-indian-states" className="transition-all duration-300">
             {INDIA_MAP_LOCATIONS.map((loc) => {
               const isSelected = activeHub?.stateId === loc.id;
@@ -516,28 +514,6 @@ export default function HolographicIndiaMap({ className = "" }) {
             d={INDIA_BORDER_PATH}
             fill="url(#agri-grid)"
             className="pointer-events-none"
-          />
-
-          {/* Glowing National Perimeter Outline according to actual Survey of India map */}
-          <path
-            d={INDIA_BORDER_PATH}
-            fill="none"
-            stroke="url(#border-glow)"
-            strokeWidth="2.4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="pointer-events-none drop-shadow-[0_0_12px_rgba(16,185,129,0.8)]"
-          />
-
-          {/* Inner Secondary Technical Pulse Stroke */}
-          <path
-            d={INDIA_BORDER_PATH}
-            fill="none"
-            stroke="#34d399"
-            strokeWidth="1.0"
-            strokeDasharray="8 12"
-            opacity="0.6"
-            className="pointer-events-none animate-pulse"
           />
 
           {/* Animated Laser Telemetry Links connecting Mandis */}
@@ -776,7 +752,7 @@ export default function HolographicIndiaMap({ className = "" }) {
         <span className="text-slate-600 hidden xs:inline">•</span>
         <span className="text-slate-300 hidden sm:inline">LAT 8.4°N – 37.6°N · LON 68.7°E – 97.4°E</span>
         <span className="text-slate-600 hidden sm:inline">•</span>
-        <span className="text-amber-400">All 36 States &amp; UTs</span>
+        <span className="text-amber-400">Mainland India · 28 States &amp; UTs</span>
       </div>
 
     </div>

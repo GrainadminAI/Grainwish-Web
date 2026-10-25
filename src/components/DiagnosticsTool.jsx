@@ -5,7 +5,7 @@ import {
   Eye, Flame, Layers, Scan, Download, FileText, Zap, Crosshair,
   Sliders, Video, VideoOff, RotateCcw, Check, Info, ShieldCheck, Activity,
   Printer, Share2, Sparkle, Maximize2, Cpu, CheckSquare, Flashlight,
-  Sun, MessageSquare, Copy, CheckCircle, Leaf, XCircle
+  Sun, MessageSquare, Copy, CheckCircle, Leaf, XCircle, Globe
 } from 'lucide-react';
 import { saveDiagnosticScanToDB, recordFeatureUsageToDB, isSupabaseConfigured } from '../lib/supabase';
 import { useLanguage, SUPPORTED_LANGUAGES } from '../lib/LanguageContext';
@@ -301,24 +301,9 @@ export default function DiagnosticsTool() {
     };
   }, [inputMode, webcamStream, acreage, isFrozen]);
 
-  // Synthesize Web Audio camera shutter sound
+  // Camera shutter sound disabled per user request ("remove the website audio")
   const playShutterSound = () => {
-    try {
-      const AudioCtx = window.AudioContext || window.webkitAudioContext;
-      if (!AudioCtx) return;
-      const ctx = new AudioCtx();
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(880, ctx.currentTime);
-      osc.frequency.exponentialRampToValueAtTime(320, ctx.currentTime + 0.08);
-      gain.gain.setValueAtTime(0.25, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start();
-      osc.stop(ctx.currentTime + 0.09);
-    } catch (e) {}
+    // Silent
   };
 
   // Trigger haptic vibration on mobile
@@ -752,39 +737,13 @@ export default function DiagnosticsTool() {
   );
   const activeFix = selectedCrop.rightWayToFix || CROP_FIX_RECOMMENDATIONS[categoryKey] || CROP_FIX_RECOMMENDATIONS['RUST DISEASE'];
 
-  // Text-to-Speech 22-Language Voice Assistant (Ananya Indian Female Voice in selectedLang)
+  // Text-to-Speech audio disabled per user request ("remove the website audio")
   const speakDiagnosis = () => {
     if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-      if (isSpeaking) {
-        stopIndianFemaleSpeech();
-        setIsSpeaking(false);
-        return;
-      }
-      
-      const fix = activeFix;
-      const textToRead = generateSpokenDiagnosis({
-        crop: selectedCrop.crop,
-        disease: selectedCrop.disease,
-        category: categoryKey,
-        chemicalSpray: fix.chemicalFix.sprayName,
-        dosageFormula: fix.chemicalFix.dosageFormula(acreage),
-        organicSpray: fix.organicFix.sprayName,
-        acreage: acreage,
-        recoveryDays: fix.recoveryDays,
-        language: selectedLang
-      });
-      
-      speakWithIndianFemaleVoice(textToRead, {
-        language: selectedLang,
-        rate: 0.82, // gentle, sweet cadence for farmers
-        pitch: 1.06,
-        onStart: () => setIsSpeaking(true),
-        onEnd: () => setIsSpeaking(false),
-        onError: () => setIsSpeaking(false)
-      });
-    } else {
-      alert('Speech synthesis is not supported on this browser.');
+      window.speechSynthesis.cancel();
     }
+    stopIndianFemaleSpeech();
+    setIsSpeaking(false);
   };
 
   // Share Diagnostic Report via WhatsApp to Krishi Vigyan Kendra (KVK) / FPO
@@ -991,8 +950,8 @@ export default function DiagnosticsTool() {
               <span>Real-Time GLI &amp; VARI</span>
             </div>
             <div className="flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-800/60 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl">
-              <Volume2 className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-              <span>22 Languages Audio ({selectedLang})</span>
+              <Globe className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+              <span>22 Regional Languages ({selectedLang})</span>
             </div>
           </div>
         </div>
@@ -1965,20 +1924,8 @@ export default function DiagnosticsTool() {
                     </div>
                   </div>
 
-                  {/* Voice Readout, WhatsApp & Print Controls */}
-                  <div className="grid grid-cols-3 gap-1.5 pt-1.5 border-t border-emerald-900/50">
-                    <button
-                      onClick={speakDiagnosis}
-                      className={`w-full px-2 py-1.5 rounded-lg text-[10px] sm:text-[11px] font-bold transition-all flex items-center justify-center gap-1 border min-h-[34px] touch-manipulation ${
-                        isSpeaking
-                          ? 'bg-amber-500 text-black border-amber-300 animate-pulse'
-                          : 'bg-emerald-900/60 hover:bg-emerald-900 text-emerald-200 border-emerald-700/60'
-                      }`}
-                    >
-                      {isSpeaking ? <VolumeX className="w-3.5 h-3.5 shrink-0" /> : <Volume2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />}
-                      <span className="truncate">{isSpeaking ? 'Stop Audio' : `Listen (${selectedLang})`}</span>
-                    </button>
-
+                  {/* WhatsApp & Print Controls */}
+                  <div className="grid grid-cols-2 gap-2 pt-1.5 border-t border-emerald-900/50">
                     <button
                       onClick={handleShareWhatsApp}
                       className="w-full px-2 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-[10px] sm:text-[11px] font-bold border border-emerald-500/50 shadow flex items-center justify-center gap-1 transition-colors min-h-[34px] touch-manipulation"

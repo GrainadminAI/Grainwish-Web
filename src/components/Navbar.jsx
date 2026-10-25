@@ -197,7 +197,7 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
               onClick={onOpenDownloadModal}
               className="relative group overflow-hidden rounded-lg p-px font-semibold text-xs tracking-wide shadow-md shadow-emerald-600/25 active:scale-95 transition-transform shrink-0"
             >
-              <span className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-amber-400 to-emerald-400 rounded-lg animate-shimmer" />
+              <span className="absolute inset-0 bg-gradient-to-r from-emerald-500 via-amber-400 to-emerald-400 rounded-lg" />
               <span className="relative flex items-center gap-1.5 px-3 py-1 bg-[#042114] group-hover:bg-opacity-80 rounded-[7px] text-emerald-300 group-hover:text-white transition-colors whitespace-nowrap">
                 <Smartphone className="w-3.5 h-3.5 text-amber-400 group-hover:animate-bounce shrink-0" />
                 <span className="xl:hidden">App</span>

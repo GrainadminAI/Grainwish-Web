@@ -217,31 +217,8 @@ export function getIndianFemaleVoice(language = 'English', providedVoices = null
  * (Signals Ananya AI assistant is speaking and provides instant tactile feedback)
  */
 export function playChimeTone() {
-  if (typeof window === 'undefined') return;
-  try {
-    const AudioContext = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContext) return;
-    const ctx = new AudioContext();
-
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-
-    osc.type = 'sine';
-    // Warm musical notes: 523Hz (C5) gliding to 659Hz (E5)
-    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(659.25, ctx.currentTime + 0.12);
-
-    gain.gain.setValueAtTime(0.04, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.22);
-
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-
-    osc.start();
-    osc.stop(ctx.currentTime + 0.22);
-  } catch {
-    // Ignore audio context auto-play policy blocks silently
-  }
+  // Website audio disabled per user request
+  return;
 }
 
 /**
@@ -249,7 +226,11 @@ export function playChimeTone() {
  */
 export function stopIndianFemaleSpeech() {
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    window.speechSynthesis.cancel();
+    try {
+      window.speechSynthesis.cancel();
+    } catch {
+      // Ignore errors silently
+    }
   }
 }
 
@@ -264,84 +245,19 @@ export const VOICE_CADENCE_PRESETS = {
 
 /**
  * Speak text with Ananya's calibrated Indian female voice
- * 
- * @param {string} text Text to read
- * @param {Object} options Configuration options
- * @param {string} [options.language='English'] Language name
- * @param {Function} [options.onStart] Callback when speech starts
- * @param {Function} [options.onEnd] Callback when speech finishes
- * @param {Function} [options.onError] Callback on error
- * @param {number} [options.rate=0.82] Natural calm spoken cadence suited for farmers
- * @param {number} [options.pitch=1.06] Sweet, warm feminine vocal pitch
- * @param {boolean} [options.withChime=true] Play subtle arrival chime
- * @returns {SpeechSynthesisUtterance|null}
+ * Muted/silenced per user request ("remove the website audio")
  */
 export function speakWithIndianFemaleVoice(text, options = {}) {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
-    console.warn('Web Speech API is not supported in this browser.');
-    return null;
+  // Cancel any active speech synthesis and remain silent
+  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    try {
+      window.speechSynthesis.cancel();
+    } catch {
+      // Ignore
+    }
   }
-
-  const {
-    language = 'English',
-    onStart,
-    onEnd,
-    onError,
-    rate = 0.82,
-    pitch = 1.06,
-    withChime = true
-  } = options;
-
-  try {
-    // Cancel any active speech
-    window.speechSynthesis.cancel();
-
-    if (withChime) {
-      playChimeTone();
-    }
-
-    const cleanText = cleanAgronomyTextForSpeech(text).slice(0, 500);
-    if (!cleanText) {
-      if (onEnd) onEnd();
-      return null;
-    }
-
-    const utterance = new SpeechSynthesisUtterance(cleanText);
-    const targetLocale = INDIAN_LOCALE_MAP[language] || 'en-IN';
-
-    // Resolve best Indian female voice
-    const voiceInfo = getIndianFemaleVoice(language);
-    if (voiceInfo.voice) {
-      utterance.voice = voiceInfo.voice;
-      utterance.lang = voiceInfo.voice.lang || targetLocale;
-    } else {
-      utterance.lang = targetLocale;
-    }
-
-    // Acoustic calibration for natural Indian feminine tone
-    utterance.rate = rate;
-    utterance.pitch = pitch;
-
-    utterance.onstart = () => {
-      if (onStart) onStart(voiceInfo);
-    };
-
-    utterance.onend = () => {
-      if (onEnd) onEnd();
-    };
-
-    utterance.onerror = (err) => {
-      console.warn('Speech synthesis utterance error:', err);
-      if (onError) onError(err);
-      if (onEnd) onEnd();
-    };
-
-    window.speechSynthesis.speak(utterance);
-    return utterance;
-  } catch (err) {
-    console.warn('Failed to speak with Indian female voice:', err);
-    if (onError) onError(err);
-    if (onEnd) onEnd();
-    return null;
+  if (options && options.onEnd) {
+    options.onEnd();
   }
+  return null;
 }

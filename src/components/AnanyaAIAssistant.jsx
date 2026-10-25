@@ -167,9 +167,6 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
 
       setMessages(prev => [...prev, ananyaMsg]);
 
-      // Automatically speak summary for accessibility if voice mode preferred
-      speakText(smartResponse.spokenSummary, selectedLang);
-
       // Persist to Supabase Database
       try {
         await saveAnanyaChatToDB({
@@ -600,18 +597,9 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
                         </div>
                       )}
 
-                      {/* Action Bar: Listen Audio, Copy, WhatsApp */}
+                      {/* Action Bar: Copy, WhatsApp */}
                       <div className="flex items-center justify-between border-t border-emerald-900/70 pt-1.5 text-[9px] text-slate-400">
                         <div className="flex items-center gap-1.5">
-                          <button
-                            onClick={() => speakText(msg.spokenSummary || msg.text, msg.lang)}
-                            className="px-2 py-0.5 rounded bg-emerald-950 hover:bg-emerald-900 text-amber-300 flex items-center gap-1 border border-emerald-800 transition-colors shadow-sm touch-manipulation"
-                            title="Listen to response in Indian Female Voice"
-                          >
-                            <Volume2 className={`w-3 h-3 text-amber-400 ${isSpeaking ? 'animate-bounce' : ''}`} />
-                            <span>{isSpeaking ? 'Stop' : 'Listen'}</span>
-                          </button>
-
                           <button
                             onClick={() => copyToClipboard(msg.text, i)}
                             className="px-2 py-0.5 rounded bg-emerald-950 hover:bg-emerald-900 text-slate-300 hover:text-white flex items-center gap-1 border border-emerald-800 transition-colors touch-manipulation"

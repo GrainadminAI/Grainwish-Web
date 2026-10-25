@@ -164,14 +164,21 @@ export default function FarmerStories() {
   const [selectedCase, setSelectedCase] = useState(INITIAL_STORIES[0]);
   const [caseVideoPlaying, setCaseVideoPlaying] = useState(false);
   const [caseVideoFailed, setCaseVideoFailed] = useState(false);
+  const [selectedState, setSelectedState] = useState('All');
   const scrollContainerRef = useRef(null);
 
+  const stateList = ['All', ...Array.from(new Set(stories.map(s => s.state).filter(Boolean)))];
+
+  const filteredStories = selectedState === 'All'
+    ? stories
+    : stories.filter(s => s.state === selectedState || (s.isUserSubmission && selectedState === 'All'));
+
   const handleScrollUp = () => {
-    scrollContainerRef.current?.scrollBy({ top: -260, behavior: 'smooth' });
+    scrollContainerRef.current?.scrollBy({ top: -180, behavior: 'smooth' });
   };
 
   const handleScrollDown = () => {
-    scrollContainerRef.current?.scrollBy({ top: 260, behavior: 'smooth' });
+    scrollContainerRef.current?.scrollBy({ top: 180, behavior: 'smooth' });
   };
 
   const handleSelectCase = (story) => {
@@ -293,36 +300,36 @@ export default function FarmerStories() {
   };
 
   return (
-    <section id="case-studies" className="py-10 sm:py-16 md:py-24 bg-[#021109]/85 backdrop-blur-[2px] relative overflow-hidden border-b border-emerald-900/40">
+    <section id="case-studies" className="py-6 sm:py-10 md:py-14 bg-[#021109]/85 backdrop-blur-[2px] relative overflow-hidden border-b border-emerald-900/40">
       
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto mb-6 sm:mb-12 space-y-2 sm:space-y-4">
-          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1 rounded-full bg-emerald-950 border border-emerald-500/40 text-[11px] sm:text-xs font-semibold text-emerald-300">
-            <Award className="w-3.5 h-3.5 text-amber-400" /> Real Fields, Real Results
+        {/* Section Header - Ultra-Compact */}
+        <div className="text-center max-w-3xl mx-auto mb-4 sm:mb-6 space-y-1.5 sm:space-y-2">
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950 border border-emerald-500/40 text-[10px] sm:text-[11px] font-semibold text-emerald-300">
+            <Award className="w-3 h-3 text-amber-400" /> Real Fields, Real Results
           </div>
-          <h2 className="font-display text-2xl sm:text-3xl md:text-4xl font-extrabold text-white">
+          <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-extrabold text-white">
             Farmer Stories & <span className="gradient-text-agri">Community Feedback</span>
           </h2>
-          <p className="text-slate-300 text-xs sm:text-base">
+          <p className="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto">
             Farmers across India share their experiences using GrainWise AI. Add your own feedback directly below!
           </p>
 
-          <div className="pt-1 sm:pt-2">
+          <div className="pt-0.5 sm:pt-1">
             <button
               onClick={() => setShowAddForm(!showAddForm)}
-              className="px-5 sm:px-6 py-2.5 sm:py-3 bg-amber-400 hover:bg-amber-300 text-black font-extrabold rounded-2xl shadow-lg shadow-amber-400/20 text-xs sm:text-sm inline-flex items-center gap-2 transition-all hover:scale-105 active:scale-95"
+              className="px-4 py-1.5 sm:py-2 bg-amber-400 hover:bg-amber-300 text-black font-extrabold rounded-xl shadow-md shadow-amber-400/20 text-xs inline-flex items-center gap-1.5 transition-all hover:scale-105 active:scale-95"
             >
               {showAddForm ? (
                 <>Close Feedback Form</>
               ) : hasExistingUserFeedback ? (
                 <>
-                  <Edit3 className="w-4 h-4 text-black" /> Update Your Submitted Feedback
+                  <Edit3 className="w-3.5 h-3.5 text-black" /> Update Your Submitted Feedback
                 </>
               ) : (
                 <>
-                  <PlusCircle className="w-4 h-4 text-black" /> Add Your Own Feedback
+                  <PlusCircle className="w-3.5 h-3.5 text-black" /> Add Your Own Feedback
                 </>
               )}
             </button>
@@ -331,219 +338,262 @@ export default function FarmerStories() {
 
         {/* User Success Notice */}
         {successNotice && (
-          <div className="max-w-xl mx-auto mb-6 sm:mb-8 p-3 rounded-2xl bg-emerald-900/80 border border-emerald-500 text-emerald-200 text-xs font-semibold text-center animate-fade-in flex items-center justify-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-amber-400" /> {successNotice}
+          <div className="max-w-xl mx-auto mb-3 p-2 rounded-xl bg-emerald-900/80 border border-emerald-500 text-emerald-200 text-xs font-semibold text-center animate-fade-in flex items-center justify-center gap-2">
+            <CheckCircle2 className="w-3.5 h-3.5 text-amber-400" /> {successNotice}
           </div>
         )}
 
-        {/* Interactive Form to Add Own Feedback */}
+        {/* Interactive Form to Add Own Feedback - Ultra-Compact */}
         {showAddForm && (
-          <form onSubmit={handleUserFeedbackSubmit} className="max-w-2xl mx-auto mb-8 sm:mb-16 bg-[#031d10] border-2 border-amber-400/60 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 shadow-2xl space-y-3 sm:space-y-4 animate-fade-in">
-            <div className="flex items-center justify-between border-b border-emerald-900/60 pb-3">
-              <h3 className="font-display text-lg font-bold text-white flex items-center gap-2">
-                <MessageSquare className="w-5 h-5 text-amber-400" />
+          <form onSubmit={handleUserFeedbackSubmit} className="max-w-xl mx-auto mb-5 bg-[#031d10] border border-amber-400/60 rounded-2xl p-3.5 sm:p-5 shadow-2xl space-y-2.5 animate-fade-in">
+            <div className="flex items-center justify-between border-b border-emerald-900/60 pb-2">
+              <h3 className="font-display text-sm sm:text-base font-bold text-white flex items-center gap-1.5">
+                <MessageSquare className="w-4 h-4 text-amber-400" />
                 {hasExistingUserFeedback ? 'Update Your Feedback' : 'Add Your Own Feedback & Experience'}
               </h3>
-              <span className="text-[10px] text-amber-400 font-mono bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
+              <span className="text-[9px] text-amber-400 font-mono bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
                 Live Community Sync
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">Your Name</label>
+                <label className="block text-[11px] font-medium text-slate-300 mb-0.5">Your Name</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Rajesh Kumar"
                   value={userName}
                   onChange={(e) => setUserName(e.target.value)}
-                  className="w-full bg-black/60 border border-emerald-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                  className="w-full bg-black/60 border border-emerald-800 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">Your Location</label>
+                <label className="block text-[11px] font-medium text-slate-300 mb-0.5">Your Location</label>
                 <input
                   type="text"
                   required
                   placeholder="e.g. Karnal, Haryana"
                   value={userLocation}
                   onChange={(e) => setUserLocation(e.target.value)}
-                  className="w-full bg-black/60 border border-emerald-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                  className="w-full bg-black/60 border border-emerald-800 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-2.5">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">Crop / Category</label>
+                <label className="block text-[11px] font-medium text-slate-300 mb-0.5">Crop / Category</label>
                 <input
                   type="text"
                   placeholder="e.g. Wheat, Mustard, Paddy"
                   value={userCrop}
                   onChange={(e) => setUserCrop(e.target.value)}
-                  className="w-full bg-black/60 border border-emerald-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                  className="w-full bg-black/60 border border-emerald-800 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">Mobile Phone Number (Optional)</label>
+                <label className="block text-[11px] font-medium text-slate-300 mb-0.5">Mobile Phone (Optional)</label>
                 <input
                   type="tel"
                   placeholder="+91 9876543210"
                   value={userPhone}
                   onChange={(e) => setUserPhone(e.target.value)}
-                  className="w-full bg-black/60 border border-emerald-800 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                  className="w-full bg-black/60 border border-emerald-800 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Star Rating</label>
-              <div className="flex items-center gap-2">
+              <label className="block text-[11px] font-medium text-slate-300 mb-0.5">Star Rating</label>
+              <div className="flex items-center gap-1.5">
                 {[1, 2, 3, 4, 5].map((star) => (
                   <button
                     key={star}
                     type="button"
                     onClick={() => setUserRating(star)}
-                    className="p-1 hover:scale-110 transition-transform"
+                    className="p-0.5 hover:scale-110 transition-transform"
                   >
-                    <Star className={`w-5 h-5 ${star <= userRating ? 'text-amber-400 fill-amber-400' : 'text-slate-600'}`} />
+                    <Star className={`w-4 h-4 ${star <= userRating ? 'text-amber-400 fill-amber-400' : 'text-slate-600'}`} />
                   </button>
                 ))}
-                <span className="text-xs text-amber-300 font-bold ml-2">{userRating} / 5 Stars</span>
+                <span className="text-xs text-amber-300 font-bold ml-1.5">{userRating} / 5</span>
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Your Feedback / Story</label>
+              <label className="block text-[11px] font-medium text-slate-300 mb-0.5">Your Feedback / Story</label>
               <textarea
                 required
-                rows={3}
-                placeholder="Share how GrainWise AI helped your crops, diagnosed issues, or saved fertilizer costs..."
+                rows={2}
+                placeholder="Share how GrainWise AI helped your crops or saved fertilizer costs..."
                 value={userFeedback}
                 onChange={(e) => setUserFeedback(e.target.value)}
-                className="w-full bg-black/60 border border-emerald-800 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
+                className="w-full bg-black/60 border border-emerald-800 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
               />
             </div>
 
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 transition-all active:scale-95"
+              className="w-full py-2 bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-xs rounded-xl shadow-md flex items-center justify-center gap-2 transition-all active:scale-95"
             >
               {isSubmitting ? (
-                <div className="w-4 h-4 border-2 border-black border-t-transparent rounded-full animate-spin" />
+                <div className="w-3.5 h-3.5 border-2 border-black border-t-transparent rounded-full animate-spin" />
               ) : (
                 <>
-                  <Send className="w-4 h-4" /> {hasExistingUserFeedback ? 'Update My Feedback' : 'Publish My Feedback'}
+                  <Send className="w-3.5 h-3.5" /> {hasExistingUserFeedback ? 'Update My Feedback' : 'Publish My Feedback'}
                 </>
               )}
             </button>
           </form>
         )}
 
-        {/* Vertical Scroll Feedback Showcase */}
-        <div className="mb-8 sm:mb-14 space-y-3.5">
-          {/* Vertical Scroll Feed Header */}
-          <div className="flex items-center justify-between gap-3 bg-[#031d10] px-3.5 sm:px-5 py-3 sm:py-3.5 rounded-2xl border border-emerald-800/60 shadow-xl">
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
-              <div className="flex items-center gap-2 truncate">
+        {/* Compact Vertical Scroll Feedback Showcase */}
+        <div className="mb-5 sm:mb-8 space-y-2">
+          {/* Vertical Scroll Feed Header Bar */}
+          <div className="flex flex-wrap items-center justify-between gap-2 bg-[#031d10] px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-emerald-800/60 shadow-lg">
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              <div className="flex items-center gap-1.5 truncate">
                 <span className="font-display font-bold text-white text-xs sm:text-sm truncate">
                   Farmer Feedback Stream
                 </span>
-                <span className="text-[10px] font-mono text-amber-300 bg-amber-400/10 px-2 py-0.5 rounded-full border border-amber-400/30 shrink-0 font-semibold">
-                  {stories.length} Verified Reviews
+                <span className="text-[9px] font-mono text-amber-300 bg-amber-400/10 px-1.5 py-0.5 rounded-full border border-amber-400/30 shrink-0 font-semibold">
+                  {filteredStories.length} {filteredStories.length === 1 ? 'Review' : 'Verified Reviews'}
                 </span>
               </div>
             </div>
 
+            {/* Quick State Filter Pills */}
+            <div className="hidden sm:flex items-center gap-1 overflow-x-auto text-[10px] font-mono scrollbar-none py-0.5">
+              {stateList.map((st) => (
+                <button
+                  key={st}
+                  onClick={() => setSelectedState(st)}
+                  className={`px-2 py-0.5 rounded-md transition-all whitespace-nowrap ${
+                    selectedState === st
+                      ? 'bg-amber-400 text-black font-bold shadow-sm'
+                      : 'bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800/60 text-slate-300 hover:text-white'
+                  }`}
+                >
+                  {st}
+                </button>
+              ))}
+            </div>
+
             {/* Quick Scroll Buttons & Indicator */}
-            <div className="flex items-center gap-2 shrink-0">
-              <div className="hidden sm:flex text-[11px] text-emerald-300 font-mono items-center gap-1.5 mr-1">
-                <span>↕ Vertical Feed</span>
-              </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <span className="hidden lg:inline text-[10px] text-emerald-400 font-mono">↕ Scroll</span>
               <button
                 onClick={handleScrollUp}
                 title="Scroll Up Feedback"
                 aria-label="Scroll feedback up"
-                className="w-8 h-8 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-slate-200 hover:text-white flex items-center justify-center transition-all active:scale-95 touch-manipulation"
+                className="w-7 h-7 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-slate-200 hover:text-white flex items-center justify-center transition-all active:scale-95"
               >
-                <ChevronUp className="w-4 h-4 text-emerald-300" />
+                <ChevronUp className="w-3.5 h-3.5 text-emerald-300" />
               </button>
               <button
                 onClick={handleScrollDown}
                 title="Scroll Down Feedback"
                 aria-label="Scroll feedback down"
-                className="w-8 h-8 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-slate-200 hover:text-white flex items-center justify-center transition-all active:scale-95 touch-manipulation"
+                className="w-7 h-7 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-slate-200 hover:text-white flex items-center justify-center transition-all active:scale-95"
               >
-                <ChevronDown className="w-4 h-4 text-emerald-300" />
+                <ChevronDown className="w-3.5 h-3.5 text-emerald-300" />
               </button>
             </div>
           </div>
 
-          {/* Vertical Scrollable Feed Viewport (Vertical feed on mobile, 2 cols on md+) */}
+          {/* Mobile State Filter Scrollbar */}
+          <div className="flex sm:hidden items-center gap-1 overflow-x-auto pb-1 text-[10px] font-mono scrollbar-none">
+            {stateList.map((st) => (
+              <button
+                key={st}
+                onClick={() => setSelectedState(st)}
+                className={`px-2 py-0.5 rounded-md transition-all whitespace-nowrap ${
+                  selectedState === st
+                    ? 'bg-amber-400 text-black font-bold shadow-sm'
+                    : 'bg-emerald-950/80 border border-emerald-800 text-slate-300'
+                }`}
+              >
+                {st}
+              </button>
+            ))}
+          </div>
+
+          {/* Ultra-Compact Vertical Scrollable Feed Viewport */}
           <div
             ref={scrollContainerRef}
             tabIndex={0}
             role="region"
             aria-label="Farmer stories vertical scrollable feed"
-            className="relative max-h-[500px] sm:max-h-[560px] md:max-h-[620px] overflow-y-auto overscroll-contain pr-1.5 sm:pr-2.5 rounded-2xl sm:rounded-3xl bg-[#031d10]/95 border-2 border-emerald-500/30 p-3 sm:p-5 shadow-2xl scrollbar-thin scrollbar-thumb-emerald-600/80 scrollbar-track-emerald-950/60 focus:outline-none focus:ring-1 focus:ring-emerald-500/50"
+            className="relative max-h-[290px] sm:max-h-[330px] md:max-h-[350px] overflow-y-auto overscroll-contain pr-1 sm:pr-1.5 rounded-xl sm:rounded-2xl bg-[#031d10]/95 border border-emerald-500/30 p-2 sm:p-2.5 shadow-xl scrollbar-thin scrollbar-thumb-emerald-600/80 scrollbar-track-emerald-950/60 focus:outline-none focus:ring-1 focus:ring-emerald-500/50"
           >
-            <div className="flex flex-col md:grid md:grid-cols-2 gap-3.5 sm:gap-4">
-              {stories.map((s) => (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5">
+              {filteredStories.map((s) => (
                 <div
                   key={s.id}
                   onClick={() => handleSelectStory(s)}
-                  className={`cursor-pointer rounded-2xl p-4 sm:p-5 transition-all duration-300 border flex flex-col justify-between relative overflow-hidden group touch-manipulation ${
+                  className={`cursor-pointer rounded-xl p-2.5 sm:p-3 transition-all duration-200 border flex flex-col justify-between relative group touch-manipulation ${
                     selectedCase.id === s.id
-                      ? 'bg-gradient-to-b from-[#06331e] to-[#042013] border-amber-400 shadow-xl shadow-amber-400/10 ring-2 ring-amber-400/50 scale-[1.01]'
+                      ? 'bg-gradient-to-b from-[#06331e] to-[#042013] border-amber-400 shadow-md shadow-amber-400/10 ring-1 ring-amber-400/50'
                       : 'bg-[#042013]/90 border-emerald-800/60 hover:border-emerald-500/70 hover:bg-[#052818]/90'
                   }`}
                 >
-                  {s.isUserSubmission ? (
-                    <span className="absolute top-3 right-3 text-[9px] font-bold px-2 py-0.5 rounded-full bg-amber-400 text-black shadow">
-                      ✨ Your Feedback
-                    </span>
-                  ) : s.state ? (
-                    <span className="absolute top-3 right-3 text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-950 border border-emerald-700 text-amber-300 shadow">
-                      {s.state}
-                    </span>
-                  ) : null}
-
-                  <div>
-                    <div className="flex items-center gap-1 mb-2">
-                      {[1, 2, 3, 4, 5].map((st) => (
-                        <Star key={st} className="w-3.5 h-3.5 text-amber-400 fill-amber-400" />
-                      ))}
-                      <span className="text-[10px] font-mono text-emerald-400 font-bold ml-1.5">5.0 Verified</span>
+                  {/* Top Bar: Stars + Rating + State Pill */}
+                  <div className="flex items-center justify-between gap-1.5 mb-1.5">
+                    <div className="flex items-center gap-1">
+                      <div className="flex items-center">
+                        {[1, 2, 3, 4, 5].map((st) => (
+                          <Star key={st} className="w-3 h-3 text-amber-400 fill-amber-400" />
+                        ))}
+                      </div>
+                      <span className="text-[10px] font-mono text-emerald-400 font-bold ml-1">5.0 Verified</span>
                     </div>
-                    <Quote className="w-6 h-6 sm:w-7 sm:h-7 text-amber-400/40 mb-2" />
-                    <p className="text-xs sm:text-sm text-slate-200 italic leading-relaxed mb-4 font-serif">
-                      {s.quote}
+
+                    {s.isUserSubmission ? (
+                      <span className="text-[9px] font-bold px-1.5 py-0.5 rounded bg-amber-400 text-black shadow-sm shrink-0">
+                        ✨ Your Feedback
+                      </span>
+                    ) : s.state ? (
+                      <span className="text-[9px] font-mono font-bold px-1.5 py-0.5 rounded bg-emerald-950 border border-emerald-700/70 text-amber-300 shadow-sm shrink-0">
+                        {s.state}
+                      </span>
+                    ) : null}
+                  </div>
+
+                  {/* Middle: Compact 2-line quote */}
+                  <div className="my-1">
+                    <p
+                      title={s.quote}
+                      className="text-[11px] sm:text-xs text-slate-200 italic leading-relaxed line-clamp-2 font-serif group-hover:text-amber-100 transition-colors"
+                    >
+                      <Quote className="w-3 h-3 text-amber-400/60 inline mr-1 -mt-0.5 shrink-0" />
+                      {s.quote.replace(/^[“"]|[”"]$/g, '')}
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-emerald-900/60 flex items-center justify-between gap-2">
+                  {/* Bottom: Farmer info + Metric tag */}
+                  <div className="pt-2 mt-1 border-t border-emerald-900/50 flex items-center justify-between gap-2">
                     <div className="min-w-0 flex-1">
-                      <div className="font-display font-extrabold text-white text-sm sm:text-base group-hover:text-amber-300 transition-colors truncate">
+                      <div className="font-display font-bold text-white text-xs group-hover:text-amber-300 transition-colors truncate">
                         {s.name}
                       </div>
-                      <div className="text-[10px] sm:text-[11px] text-slate-400 flex items-center gap-1 mt-0.5 truncate">
-                        <MapPin className="w-3 h-3 text-emerald-400 shrink-0" />
+                      <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5 truncate">
+                        <MapPin className="w-2.5 h-2.5 text-emerald-400 shrink-0" />
                         <span className="truncate">{s.location}</span>
                         <span className="text-slate-600">·</span>
                         <span className="text-amber-300 font-medium shrink-0">{s.crop}</span>
                       </div>
                     </div>
 
-                    <div className="text-right shrink-0">
-                      <div className="px-2.5 py-1 bg-amber-500/20 text-amber-300 text-[10px] sm:text-[11px] font-bold rounded-lg border border-amber-500/30">
+                    <div className="text-right shrink-0 flex flex-col items-end">
+                      <div className="px-2 py-0.5 bg-amber-500/15 text-amber-300 text-[10px] font-bold rounded border border-amber-500/30 whitespace-nowrap">
                         {s.metric}
                       </div>
-                      <div className="text-[9px] text-emerald-400 mt-1 font-mono group-hover:underline">
+                      <div className="text-[9px] text-emerald-400 font-mono group-hover:underline flex items-center gap-0.5 mt-0.5">
                         View Breakdown →
                       </div>
                     </div>
@@ -553,11 +603,11 @@ export default function FarmerStories() {
             </div>
           </div>
 
-          {/* Scroll Instruction Bar */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px] text-slate-400 px-2 pt-0.5">
+          {/* Scroll Instruction Bar - Ultra-Compact */}
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[10px] text-slate-400 px-1 pt-0.5">
             <span className="flex items-center gap-1.5">
               <Sparkles className="w-3 h-3 text-amber-400 shrink-0" />
-              <span>Scroll vertically to view all feedback from West Bengal, Bihar, and across India</span>
+              <span>Scroll vertically to view all feedback across Indian states</span>
             </span>
             <span className="font-mono text-emerald-400 text-[10px]">
               Tap any feedback card to spotlight full case study below ↓
@@ -565,31 +615,30 @@ export default function FarmerStories() {
           </div>
         </div>
 
-        {/* Detailed Case Study Deep Dive Breakdown Card */}
-        <div className="bg-gradient-to-br from-[#042516] via-[#083821] to-[#031d10] border-2 border-emerald-500/40 rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-10 shadow-2xl">
+        {/* Detailed Case Study Deep Dive Breakdown Card - Compact */}
+        <div className="bg-gradient-to-br from-[#042516] via-[#083821] to-[#031d10] border border-emerald-500/40 rounded-2xl p-3.5 sm:p-5 md:p-6 shadow-xl">
           
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-3 sm:gap-4 pb-4 sm:pb-6 border-b border-emerald-800/50">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-emerald-800/50">
             <div>
-              <div className="text-xs font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
-                <Sparkles className="w-4 h-4 text-amber-400" /> Detailed Case Study Analysis
+              <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="w-3 h-3 text-amber-400" /> Detailed Case Study Analysis
               </div>
-              <h3 className="font-display text-xl sm:text-3xl font-extrabold text-white mt-1">
+              <h3 className="font-display text-base sm:text-xl font-extrabold text-white mt-0.5">
                 {selectedCase.crop} in {selectedCase.location}
               </h3>
-              <div className="text-xs sm:text-sm text-emerald-300 font-semibold mt-0.5">Farmer: {selectedCase.name}</div>
+              <div className="text-[11px] text-emerald-300 font-semibold mt-0.5">Farmer: {selectedCase.name}</div>
             </div>
 
-            <div className="px-4 sm:px-5 py-2 sm:py-2.5 rounded-2xl bg-amber-400 text-black font-extrabold text-xs sm:text-base shadow-lg shadow-amber-400/20">
+            <div className="px-3 py-1 sm:py-1.5 rounded-xl bg-amber-400 text-black font-extrabold text-xs shadow-md shadow-amber-400/20 shrink-0 self-start sm:self-center">
               Measurable Outcome: {selectedCase.metricTag}
             </div>
           </div>
 
           {/* Grid Layout: Media + Steps */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-8 items-center mt-5 sm:mt-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-5 items-center mt-3.5 sm:mt-4">
             
             {/* Left: Video / Image Showcase with Guaranteed Image Display */}
-            <div className="lg:col-span-5 relative rounded-2xl overflow-hidden border border-emerald-500/30 aspect-video bg-emerald-950 shadow-xl">
-              {/* Fallback Image is ALWAYS loaded and visible */}
+            <div className="lg:col-span-5 relative rounded-xl overflow-hidden border border-emerald-500/30 aspect-video bg-emerald-950 shadow-md">
               <img
                 src={selectedCase.image}
                 alt={`Portrait of farmer ${selectedCase.name} sharing their crop yield experience from ${selectedCase.location}`}
@@ -611,13 +660,27 @@ export default function FarmerStories() {
                   muted
                   playsInline
                   preload="metadata"
+                  ref={(el) => {
+                    if (el) {
+                      el.muted = true;
+                      el.volume = 0;
+                    }
+                  }}
                   poster={selectedCase.image}
                   className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
                     caseVideoPlaying ? 'opacity-100' : 'opacity-0'
                   }`}
                   src={selectedCase.video}
-                  onPlay={() => setCaseVideoPlaying(true)}
-                  onPlaying={() => setCaseVideoPlaying(true)}
+                  onPlay={(e) => {
+                    e.currentTarget.muted = true;
+                    e.currentTarget.volume = 0;
+                    setCaseVideoPlaying(true);
+                  }}
+                  onPlaying={(e) => {
+                    e.currentTarget.muted = true;
+                    e.currentTarget.volume = 0;
+                    setCaseVideoPlaying(true);
+                  }}
                   onError={() => {
                     setCaseVideoFailed(true);
                     setCaseVideoPlaying(false);
@@ -626,34 +689,34 @@ export default function FarmerStories() {
               )}
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-3 left-3 bg-black/80 px-3 py-1 rounded-lg border border-emerald-500/40 text-xs text-amber-300 font-mono">
+              <div className="absolute bottom-2 left-2 bg-black/80 px-2 py-0.5 rounded border border-emerald-500/40 text-[10px] text-amber-300 font-mono">
                 GrainWise AI Verified Field Data
               </div>
             </div>
 
             {/* Right: Detected Issue -> Actions -> Result */}
-            <div className="lg:col-span-7 space-y-4">
+            <div className="lg:col-span-7 space-y-2">
               
-              <div className="p-4 rounded-xl bg-red-950/40 border border-red-800/40 text-xs space-y-1">
-                <div className="font-bold text-red-400 uppercase tracking-wider">Detected Issue</div>
+              <div className="p-2.5 sm:p-3 rounded-xl bg-red-950/40 border border-red-800/40 text-[11px] sm:text-xs space-y-0.5">
+                <div className="font-bold text-red-400 uppercase tracking-wider text-[10px]">Detected Issue</div>
                 <div className="text-slate-200 font-semibold">{selectedCase.detectedIssue}</div>
               </div>
 
-              <div className="p-4 rounded-xl bg-emerald-950/60 border border-emerald-800/50 text-xs space-y-2">
-                <div className="font-bold text-amber-400 uppercase tracking-wider">Actions Taken with GrainWise AI</div>
-                <ul className="space-y-1.5 text-slate-200">
+              <div className="p-2.5 sm:p-3 rounded-xl bg-emerald-950/60 border border-emerald-800/50 text-[11px] sm:text-xs space-y-1">
+                <div className="font-bold text-amber-400 uppercase tracking-wider text-[10px]">Actions Taken with GrainWise AI</div>
+                <ul className="space-y-1 text-slate-200">
                   {selectedCase.actionsTaken.map((act, i) => (
-                    <li key={i} className="flex items-start gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                    <li key={i} className="flex items-start gap-1.5">
+                      <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                       <span>{act}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs space-y-1">
-                <div className="font-bold text-amber-300 uppercase tracking-wider">Final Measurable Result</div>
-                <div className="text-white font-extrabold text-sm">{selectedCase.result}</div>
+              <div className="p-2.5 sm:p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-[11px] sm:text-xs space-y-0.5">
+                <div className="font-bold text-amber-300 uppercase tracking-wider text-[10px]">Final Measurable Result</div>
+                <div className="text-white font-extrabold text-xs sm:text-sm">{selectedCase.result}</div>
               </div>
 
             </div>
