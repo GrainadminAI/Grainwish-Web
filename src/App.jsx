@@ -33,16 +33,25 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
 
   return (
     <div className="relative min-h-screen bg-[#021109] text-slate-100 font-sans selection:bg-emerald-500 selection:text-black">
-      {/* Website Background using the uploaded Indian agricultural tech landscape image */}
-      <div
-        className="fixed inset-0 z-0 pointer-events-none bg-cover bg-center bg-no-repeat"
-        style={{
-          backgroundImage: "url('/assets/grainwish_bg.jpg')",
-          opacity: 0.45,
-          filter: "brightness(0.95) contrast(1.15)"
-        }}
-        aria-hidden="true"
-      />
+      {/* Website Background using watermark-free Google Flow agricultural video */}
+      <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden" aria-hidden="true">
+        <video
+          className="w-full h-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          preload="auto"
+          poster="/assets/grainwish_farm_flow_poster.jpg"
+          style={{
+            opacity: 0.55,
+            filter: "brightness(0.95) contrast(1.15)"
+          }}
+          aria-hidden="true"
+        >
+          <source src="/assets/grainwish_farm_flow.mp4" type="video/mp4" />
+        </video>
+      </div>
       {/* Subtle directional gradient overlays ensuring 100% typography contrast while preserving background visuals */}
       <div
         className="fixed inset-0 z-0 pointer-events-none bg-gradient-to-r from-[#021109]/95 via-[#021109]/75 to-transparent"

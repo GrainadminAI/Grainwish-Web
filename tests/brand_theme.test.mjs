@@ -82,14 +82,14 @@ describe('Brand Theme & Logo Suite Verification', () => {
     assert.ok(content.includes('soybean_leaf_mosaic.jpg'), 'HeroSection must showcase soybean_leaf_mosaic.jpg in live diagnostics card');
   });
 
-  test('App renders the given agricultural landscape image as website background with no video', () => {
+  test('App renders the watermark-free Google Flow video as website background with poster fallback', () => {
     const appFile = path.join(rootDir, 'src/App.jsx');
     const content = fs.readFileSync(appFile, 'utf8');
 
-    assert.ok(content.includes('grainwish_bg.jpg'), 'App must use grainwish_bg.jpg as background image');
-    assert.ok(!content.includes('<video'), 'App must not render background video');
-    assert.ok(!content.includes('<WebsiteBackground'), 'App must not render WebsiteBackground');
-    assert.ok(!content.includes('<FarmBackground'), 'App must not render FarmBackground');
-    assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/grainwish_bg.jpg')), 'grainwish_bg.jpg must exist in public/assets');
+    assert.ok(content.includes('grainwish_farm_flow.mp4'), 'App must render grainwish_farm_flow.mp4');
+    assert.ok(content.includes('grainwish_farm_flow_poster.jpg'), 'App must include poster fallback');
+    assert.ok(content.includes('<video'), 'App must render background video');
+    assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/grainwish_farm_flow.mp4')), 'grainwish_farm_flow.mp4 must exist in public/assets');
+    assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/grainwish_farm_flow_poster.jpg')), 'grainwish_farm_flow_poster.jpg must exist in public/assets');
   });
 });
