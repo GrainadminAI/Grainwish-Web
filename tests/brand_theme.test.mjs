@@ -82,18 +82,11 @@ describe('Brand Theme & Logo Suite Verification', () => {
     assert.ok(content.includes('soybean_leaf_mosaic.jpg'), 'HeroSection must showcase soybean_leaf_mosaic.jpg in live diagnostics card');
   });
 
-  test('WebsiteBackground renders 3D real video, sun energy, 2 farmers, flying drone, moving tractor, and satellite telemetry', () => {
-    const bgFile = path.join(rootDir, 'src/components/WebsiteBackground.jsx');
-    assert.ok(fs.existsSync(bgFile), 'WebsiteBackground.jsx must exist');
-    const content = fs.readFileSync(bgFile, 'utf8');
+  test('App has clean dark theme and no background video or background layer', () => {
+    const appFile = path.join(rootDir, 'src/App.jsx');
+    const content = fs.readFileSync(appFile, 'utf8');
 
-    assert.ok(content.includes('<video'), 'Must include 3D real video element');
-    assert.ok(content.includes('agri_smart_field_bg.jpg'), 'Must include 3D photorealistic smart field image');
-    assert.ok(content.includes('ThreeFarmCanvas'), 'Must include ThreeFarmCanvas 3D webgl canvas');
-    assert.ok(content.includes('SOLAR ENERGY'), 'Must show sun energy flux to fields');
-    assert.ok(content.includes('2 FARMERS'), 'Must feature 2 farmers working happily');
-    assert.ok(content.includes('AI DRONE') || content.includes('DRONE'), 'Must include flying agricultural drone');
-    assert.ok(content.includes('TRACTOR'), 'Must include moving autonomous tractor');
-    assert.ok(content.includes('AGRISAT') || content.includes('Satellite'), 'Must include orbital satellite checking the field');
+    assert.ok(!content.includes('<WebsiteBackground'), 'App must not render WebsiteBackground');
+    assert.ok(!content.includes('<video'), 'App must not render background video');
   });
 });
