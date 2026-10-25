@@ -90,8 +90,9 @@ describe('Brand Theme & Logo Suite Verification', () => {
     const bgContent = fs.readFileSync(bgFile, 'utf8');
 
     // Video, generated image, and AI effects
-    assert.ok(bgContent.includes('grainwish-farm.mp4'), 'WebsiteBackground must use grainwish-farm.mp4');
+    assert.ok(bgContent.includes('Sustainable_farm_sunset.mp4'), 'WebsiteBackground must use farm video source');
     assert.ok(bgContent.includes('grainwish-background.png'), 'WebsiteBackground must use grainwish-background.png');
+    assert.ok(!bgContent.includes('grainwish-farm.mp4'), 'WebsiteBackground must not include grainwish-farm.mp4');
     assert.ok(bgContent.includes('farm-overlay'), 'WebsiteBackground must have dark left overlay');
     assert.ok(bgContent.includes('AI DRONE'), 'WebsiteBackground must include AI scanning drone');
     assert.ok(bgContent.includes('animate-scan-ring'), 'WebsiteBackground must include crop-scanning rings');
@@ -99,7 +100,7 @@ describe('Brand Theme & Logo Suite Verification', () => {
     assert.ok(bgContent.includes('animate-sensor-pulse'), 'WebsiteBackground must include subtle glowing sensor points');
 
     // Verify assets on disk
-    assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/grainwish-farm.mp4')), 'grainwish-farm.mp4 must exist');
+    assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/Sustainable_farm_sunset.mp4')), 'Farm video must exist');
     assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/grainwish-background.png')), 'grainwish-background.png must exist');
   });
 });

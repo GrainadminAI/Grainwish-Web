@@ -19,7 +19,6 @@ export default function WebsiteBackground() {
         poster="/assets/grainwish-background.png"
         className="farm-video absolute inset-0 w-full h-full object-cover object-center opacity-70 filter brightness-105 contrast-115 saturate-125 transform-gpu transition-opacity duration-1000"
       >
-        <source src="/assets/grainwish-farm.mp4" type="video/mp4" />
         <source src="/assets/Sustainable_farm_sunset.mp4" type="video/mp4" />
         <source src="/assets/flow_farm_background.mp4" type="video/mp4" />
         <source src="/assets/real_crops_field.mp4" type="video/mp4" />

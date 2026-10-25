@@ -21,10 +21,6 @@ export default function FarmBackground({
         poster="/assets/grainwish-background.png"
       >
         <source
-          src="/assets/grainwish-farm.mp4"
-          type="video/mp4"
-        />
-        <source
           src="/assets/Sustainable_farm_sunset.mp4"
           type="video/mp4"
         />
