@@ -1,27 +1,26 @@
 # Grainwish AI — Information Security Policy & Governance Charter
 
-**Document Classification:** Internal / Public Security Charter  
+**Document Classification:** Internal  
 **Policy Owner:** Technology and Operations Lead  
 **Approver:** Authorized Company Management  
-**Approval Status:** Draft — Pending Organizational Review and Approval  
-**Effective Review Frequency:** At least every six months and upon significant architectural changes  
+**Approval Status:** Draft — pending organizational review and approval  
+**Effective Review Frequency:** At least every six months and whenever significant changes occur  
 **Official Reporting Contact:** [security@grainwish.com](mailto:security@grainwish.com) / [support@grainwish.com](mailto:support@grainwish.com)  
 
 ---
 
 ## 1. Purpose
 Grainwish AI is committed to protecting the confidentiality, integrity, and availability of its website, application, business data, customer information, and technology infrastructure.
-
 These policies establish security requirements for employees, developers, administrators, contractors, and authorized third parties.
 
 ---
 
 ## 2. Scope
 These policies apply to:
-- The Grainwish website and application (`www.grainwish.com`).
-- Source code hosted on GitHub (`GrainadminAI/Grainwish-Web`).
+- The Grainwish website and application.
+- Source code hosted on GitHub.
 - Application hosting and deployment through Vercel.
-- Databases (including Supabase), APIs, cloud storage, and integrations.
+- Databases, APIs, cloud storage, and integrations.
 - Grain quality assessment records, pricing information, and transaction data.
 - Customer, farmer, mill, trader, and business partner information.
 - Employee devices, accounts, credentials, and internal systems.
@@ -41,7 +40,7 @@ These policies apply to:
 ## 4. Password and Secret Management
 - Strong, unique passwords must be used for all business accounts.
 - API keys, database passwords, authentication secrets, and private tokens must never be committed to GitHub.
-- Secrets must be stored using approved environment-variable or secret-management facilities (e.g., Vercel Project Secrets, Supabase Vault).
+- Secrets must be stored using approved environment-variable or secret-management facilities.
 - Production and development credentials should be separated.
 - Exposed credentials must be revoked or rotated immediately.
 - Sensitive credentials must not be included in application logs, screenshots, or error messages.
@@ -49,9 +48,9 @@ These policies apply to:
 ---
 
 ## 5. Website and Application Security
-- All public application traffic must use HTTPS (`Strict-Transport-Security: max-age=63072000; includeSubDomains; preload`).
+- All public application traffic must use HTTPS.
 - User input must be validated and safely processed.
-- Database queries must use parameterized queries or equivalent safe mechanisms (e.g., Supabase PostgREST client with parameter binding).
+- Database queries must use parameterized queries or equivalent safe mechanisms.
 - Authentication and authorization checks must be applied to protected endpoints.
 - Cross-site scripting (XSS), injection, cross-site request forgery (CSRF), and other relevant application risks must be addressed.
 - Security headers and appropriate Content Security Policy (CSP) settings should be configured.
@@ -63,9 +62,9 @@ These policies apply to:
 ## 6. Data Protection and Privacy
 - Only information necessary for legitimate business purposes should be collected.
 - Personal and commercially sensitive information must be accessible only to authorized personnel.
-- Data must be encrypted in transit (TLS 1.3/1.2) and protected at rest using appropriate controls (AES-256).
+- Data must be encrypted in transit and protected at rest using appropriate controls.
 - Production data must not be copied into development or testing environments without authorization and suitable safeguards.
-- Data retention and deletion must follow documented business, contractual, and applicable legal requirements (DPDP Act 2023, GDPR).
+- Data retention and deletion must follow documented business, contractual, and applicable legal requirements.
 - Customer information must not be disclosed to unauthorized parties.
 - AI services and third-party processors must be reviewed before confidential information is shared with them.
 
@@ -75,16 +74,16 @@ These policies apply to:
 - Repository access must be limited to approved contributors.
 - Multi-factor authentication must be enabled for repository administrators.
 - Pull requests and code reviews should be required for changes to production code.
-- Dependency vulnerabilities must be monitored and addressed according to risk (automated `npm audit`, Dependabot).
+- Dependency vulnerabilities must be monitored and addressed according to risk.
 - Automated secret scanning and dependency scanning should be enabled where available.
-- Branch protection should be configured for the production branch (`main`).
+- Branch protection should be configured for the production branch.
 - Unreviewed or unauthorized changes must not be deployed to production.
 
 ---
 
 ## 8. Vercel and Cloud Infrastructure Security
 - Production deployments must use authorized projects and accounts.
-- Environment variables must be configured securely and separated by environment (Production vs Preview vs Development).
+- Environment variables must be configured securely and separated by environment.
 - Production deployment permissions must be restricted.
 - Preview deployments must not expose production secrets or confidential customer information.
 - Domain registrar and DNS access must be protected with MFA and restricted permissions.
@@ -99,23 +98,23 @@ These policies apply to:
 - API keys must have the minimum permissions required.
 - Third-party providers must be assessed for security, privacy, and business suitability.
 - Unnecessary API access must be disabled.
-- External service failures must be handled gracefully without exposing confidential information.
-- Webhooks must be authenticated or cryptographically verified where supported (HMAC signatures).
+- External service failures must be handled without exposing confidential information.
+- Webhooks must be authenticated or cryptographically verified where supported.
 
 ---
 
 ## 10. Security Monitoring and Incident Response
-All suspected security incidents must be reported promptly to the designated security or technology lead at [security@grainwish.com](mailto:security@grainwish.com).
+All suspected security incidents must be reported promptly to the designated security or technology lead.
+The incident response process consists of:
 
-### Incident Response Lifecycle:
-1. **Identify**: Detect and document the incident with timestamps, affected assets, and vector.
-2. **Contain**: Restrict affected accounts, services, or systems immediately.
-3. **Investigate**: Determine the root cause, scope of compromise, and potential impact.
-4. **Recover**: Restore secure operations, verify system integrity, and rotate compromised credentials.
-5. **Notify**: Inform affected parties and relevant authorities (including CERT-In when applicable) as required by law or contract.
-6. **Review**: Document lessons learned, post-mortem analysis, and implement preventive measures.
+- **Identify**: Detect and document the incident.
+- **Contain**: Restrict affected accounts, services, or systems.
+- **Investigate**: Determine the cause and potential impact.
+- **Recover**: Restore secure operations and rotate compromised credentials.
+- **Notify**: Inform affected parties and relevant authorities when required by applicable law or contract.
+- **Review**: Document lessons learned and implement preventive measures.
 
-Security incidents must be recorded in an internal register with their timeline, impact, actions taken, and resolution.
+Security incidents must be recorded with their timeline, impact, actions taken, and resolution.
 
 ---
 
@@ -123,25 +122,25 @@ Security incidents must be recorded in an internal register with their timeline,
 - Critical business data must be backed up according to an approved schedule.
 - Backup access must be restricted and backups protected from unauthorized changes.
 - Restoration procedures must be tested periodically.
-- Recovery priorities and acceptable downtime must be documented (RTO / RPO metrics).
+- Recovery priorities and acceptable downtime must be documented.
 - Critical services must have a documented recovery plan.
 
 ---
 
 ## 12. Employee and Developer Responsibilities
 All employees and contractors must:
-- Protect company devices and credentials with full-disk encryption and strong passphrases.
+- Protect company devices and credentials.
 - Avoid installing unauthorized or untrusted software.
 - Report suspicious emails, phishing attempts, and unexpected access requests.
-- Follow secure coding and data-handling practices (OWASP Top 10 guidelines).
+- Follow secure coding and data-handling practices.
 - Complete security awareness training where required.
-- Return company assets and surrender access immediately when their engagement ends.
+- Return company assets and surrender access when their engagement ends.
 
 ---
 
 ## 13. Vulnerability Management
 - Security updates must be reviewed and applied according to severity and exposure.
-- Critical vulnerabilities affecting production systems must be prioritized for urgent remediation (within 24–48 hours).
+- Critical vulnerabilities affecting production systems must be prioritized for urgent remediation.
 - Dependency updates must be tested before production deployment.
 - Security testing must be conducted before major releases and when significant changes warrant it.
 - Confirmed vulnerabilities must be tracked until remediation or formally approved risk acceptance.
@@ -149,9 +148,9 @@ All employees and contractors must:
 ---
 
 ## 14. Compliance and Policy Enforcement
-- All users within the scope of this policy must comply with its requirements.
-- Violations may result in access suspension, corrective action, contractual remedies, or other measures permitted by applicable law.
-- The organization must review applicable Indian data protection (Digital Personal Data Protection Act 2023), cybersecurity (CERT-In directions), contractual, and sector-specific requirements and maintain any necessary supporting procedures.
+All users within the scope of this policy must comply with its requirements.
+Violations may result in access suspension, corrective action, contractual remedies, or other measures permitted by applicable law.
+The organization must review applicable Indian data protection, cybersecurity, contractual, and sector-specific requirements and maintain any necessary supporting procedures.
 
 ---
 
