@@ -55,10 +55,10 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
 
       {/* Main Footer Links */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 pb-8 sm:pb-12 border-b border-emerald-900/60 text-xs">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-6 sm:gap-8 pb-8 sm:pb-12 border-b border-emerald-900/60 text-xs">
           
           {/* Brand Col */}
-          <div className="space-y-4">
+          <div className="space-y-4 lg:col-span-5">
             <div className="flex items-center gap-4">
               <img 
                 src={currentOption.src} 
@@ -98,7 +98,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
           </div>
 
           {/* Core Features */}
-          <div className="space-y-3">
+          <div className="space-y-3 lg:col-span-3 lg:col-start-7">
             <div className="font-bold text-white uppercase tracking-wider text-xs">Features &amp; Tools</div>
             <ul className="space-y-2 text-slate-300">
               <li><a href="#diagnostics" className="hover:text-emerald-300 transition-colors">AI Crop Diagnostics</a></li>
@@ -109,20 +109,8 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
             </ul>
           </div>
 
-          {/* Crops Supported */}
-          <div className="space-y-3">
-            <div className="font-bold text-white uppercase tracking-wider text-xs">Crops &amp; Regions</div>
-            <ul className="space-y-2 text-slate-300">
-              <li>Wheat (Maharashtra &amp; Punjab)</li>
-              <li>Paddy / Rice (Telangana &amp; Andhra)</li>
-              <li>Cotton (Bathinda &amp; Gujarat)</li>
-              <li>Turmeric (Erode, Tamil Nadu)</li>
-              <li>Sugarcane &amp; High-Value Vegetables</li>
-            </ul>
-          </div>
-
           {/* Legal & Compliance Links */}
-          <div className="space-y-3">
+          <div className="space-y-3 lg:col-span-3">
             <div className="font-bold text-white uppercase tracking-wider text-xs">Legal &amp; Trust</div>
             <ul className="space-y-2 text-slate-300">
               <li>
