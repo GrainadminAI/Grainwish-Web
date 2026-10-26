@@ -21,7 +21,6 @@ import NotFoundPage from './components/NotFoundPage';
 import { recordUserVisitToDB } from './lib/supabase';
 import { LanguageProvider, useLanguage } from './lib/LanguageContext';
 import { BrandThemeProvider } from './lib/BrandThemeContext';
-import BrandThemeModal from './components/BrandThemeModal';
 
 function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy }) {
   const { selectedLang, setSelectedLang } = useLanguage();
@@ -282,7 +281,6 @@ export default function App() {
     <LanguageProvider>
       <BrandThemeProvider>
         <RootApp />
-        <BrandThemeModal />
       </BrandThemeProvider>
     </LanguageProvider>
   );

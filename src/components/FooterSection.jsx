@@ -1,12 +1,12 @@
 import React from 'react';
-import { Smartphone, ShieldCheck, Heart, ArrowUp, Lock, FileText, Cookie, Mail, Palette } from 'lucide-react';
+import { Smartphone, ShieldCheck, Heart, ArrowUp, Lock, FileText, Cookie, Mail } from 'lucide-react';
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
 import { useBrandTheme } from '../lib/BrandThemeContext';
 
 export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy }) {
   const { t } = useLanguage();
-  const { currentOption, setBrandModalOpen } = useBrandTheme();
+  const { currentOption } = useBrandTheme();
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -67,9 +67,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                 decoding="async"
                 width="84"
                 height="84"
-                className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 object-contain drop-shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0 cursor-pointer hover:scale-105 transition-transform"
-                onClick={() => setBrandModalOpen(true)}
-                title="Click to explore Brand Suite & Theme options"
+                className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 object-contain drop-shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0"
               />
               <div>
                 <div className="font-display text-2xl sm:text-3xl font-extrabold text-white">GrainWise AI</div>
@@ -119,7 +117,8 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                   onClick={onOpenPrivacyPolicy}
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left"
                 >
-                  <Lock className="w-3.5 h-3.5 text-amber-400" /> Privacy Policy (DPDP &amp; GDPR)
+                  <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>Privacy Policy (DPDP &amp; GDPR)</span>
                 </button>
               </li>
               <li>
@@ -128,7 +127,8 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                   onClick={onOpenTerms}
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left"
                 >
-                  <FileText className="w-3.5 h-3.5 text-amber-400" /> Terms &amp; Conditions
+                  <FileText className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>Terms &amp; Conditions</span>
                 </button>
               </li>
               <li>
@@ -137,7 +137,8 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                   onClick={onOpenSecurityPolicy}
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left text-slate-300"
                 >
-                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400" /> Security Policy &amp; Charter
+                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>Security Policy &amp; Charter</span>
                 </button>
               </li>
               <li>
@@ -146,16 +147,8 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                   onClick={handleOpenCookiePreferences}
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left"
                 >
-                  <Cookie className="w-3.5 h-3.5 text-amber-400" /> Cookie Preferences
-                </button>
-              </li>
-              <li>
-                <button
-                  type="button"
-                  onClick={() => setBrandModalOpen(true)}
-                  className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left text-amber-300/90 font-medium"
-                >
-                  <Palette className="w-3.5 h-3.5 text-amber-400" /> Brand Suite &amp; Theme
+                  <Cookie className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>Cookie Preferences</span>
                 </button>
               </li>
               <li>
@@ -163,7 +156,8 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                   href="mailto:support@grainwish.com"
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left text-slate-300"
                 >
-                  <Mail className="w-3.5 h-3.5 text-amber-400" /> Support: support@grainwish.com
+                  <Mail className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>Support: support@grainwish.com</span>
                 </a>
               </li>
             </ul>
