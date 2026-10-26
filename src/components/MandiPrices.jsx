@@ -262,45 +262,45 @@ export default function MandiPrices() {
   };
 
   return (
-    <section id="mandi" className="py-10 sm:py-16 md:py-24 bg-[#061a14]/85 backdrop-blur-[2px] relative overflow-hidden border-b border-emerald-900/50">
+    <section id="mandi" className="py-6 sm:py-10 md:py-12 bg-[#061a14]/85 backdrop-blur-[2px] relative overflow-hidden border-b border-emerald-900/50">
       
       {/* Background Glow Accents */}
       <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-6 sm:space-y-10">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-10 space-y-3 sm:space-y-4">
         
         {/* =========================================================================
-            HEADER & TITLE
+            HEADER & TITLE - Compact High-Density Header
         ========================================================================= */}
-        <div className="text-center max-w-4xl mx-auto space-y-2 sm:space-y-4">
-          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1 sm:py-1.5 rounded-full bg-emerald-950/90 border border-emerald-700/60 text-[11px] sm:text-xs font-bold text-emerald-300 shadow-xl">
-            <TrendingUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-emerald-400" />
+        <div className="text-center max-w-4xl mx-auto space-y-1 sm:space-y-1.5">
+          <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-emerald-950/90 border border-emerald-700/60 text-[10px] sm:text-[11px] font-bold text-emerald-300 shadow-md">
+            <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
             <span>28 Indian States &amp; UTs Mandi Radar</span>
-            <span className="bg-gradient-to-r from-emerald-400 to-amber-400 text-black px-1.5 sm:px-2 py-0.5 rounded-full font-mono text-[9px] sm:text-[10px] font-extrabold uppercase">
+            <span className="bg-gradient-to-r from-emerald-400 to-amber-400 text-black px-1.5 py-0.2 rounded-full font-mono text-[8.5px] sm:text-[9px] font-extrabold uppercase">
               Agmarknet &amp; e-NAM
             </span>
           </div>
 
-          <h2 className="font-display text-2xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight">
+          <h2 className="font-display text-xl sm:text-3xl md:text-4xl font-extrabold text-white leading-tight">
             Live <span className="gradient-text-agri">Mandi Prices &amp; MSP</span> Intelligence
           </h2>
 
-          <p className="text-slate-300 text-xs sm:text-base leading-relaxed max-w-3xl mx-auto">
+          <p className="text-slate-300 text-xs sm:text-sm leading-normal sm:leading-relaxed max-w-2xl mx-auto">
             Real-time modal rates, official CACP Minimum Support Prices (MSP), and net profit spreads across all <strong>28 Indian States</strong> and key Union Territories. Offline-cached for rural 2G/3G connectivity.
           </p>
 
-          {/* Sync & Connectivity Badges */}
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-1 text-xs">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-950/80 border border-emerald-800 text-slate-300 font-mono text-[11px]">
+          {/* Sync & Connectivity Badges - Compact */}
+          <div className="flex flex-wrap items-center justify-center gap-2 pt-0.5 text-xs">
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-lg bg-emerald-950/80 border border-emerald-800 text-slate-300 font-mono text-[10.5px]">
               {isOfflineCached ? (
                 <>
-                  <WifiOff className="w-3.5 h-3.5 text-amber-400" />
+                  <WifiOff className="w-3 h-3 text-amber-400" />
                   <span className="text-amber-300">Offline Cached Mode (2G/3G Ready)</span>
                 </>
               ) : (
                 <>
-                  <Wifi className="w-3.5 h-3.5 text-emerald-400" />
+                  <Wifi className="w-3 h-3 text-emerald-400" />
                   <span className="text-emerald-300">Live Sync Connected ({processedRecords.length} Mandis)</span>
                 </>
               )}
@@ -309,14 +309,14 @@ export default function MandiPrices() {
             <button
               onClick={loadData}
               disabled={isSyncing}
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/60 text-emerald-300 text-[11px] font-medium transition-colors disabled:opacity-50"
+              className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/60 text-emerald-300 text-[10.5px] font-medium transition-colors disabled:opacity-50"
             >
-              <RefreshCw className={`w-3.5 h-3.5 ${isSyncing ? 'animate-spin text-amber-400' : ''}`} />
+              <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin text-amber-400' : ''}`} />
               <span>{isSyncing ? 'Syncing...' : 'Refresh Rates'}</span>
             </button>
 
             {locationStatus && (
-              <span className="text-[11px] font-mono text-amber-300 bg-amber-950/40 px-2.5 py-1 rounded-lg border border-amber-800/50">
+              <span className="text-[10.5px] font-mono text-amber-300 bg-amber-950/40 px-2 py-0.5 rounded-lg border border-amber-800/50">
                 {locationStatus}
               </span>
             )}
@@ -326,28 +326,28 @@ export default function MandiPrices() {
         {/* =========================================================================
             IMD HYPER-LOCAL WEATHER & TARPAULIN ADVISORY TICKER - 27 STATES PAN-INDIA
         ========================================================================= */}
-        <div className="bg-gradient-to-r from-[#032415] via-[#053820] to-[#032415] border-2 border-emerald-500/40 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-2xl space-y-3 sm:space-y-4 relative overflow-hidden">
-          <div className="flex items-center justify-between flex-wrap gap-3">
-            <div className="flex items-center gap-2.5 text-xs font-mono font-bold uppercase tracking-wider text-amber-400">
-              <span className="relative flex h-2.5 w-2.5">
+        <div className="bg-gradient-to-r from-[#032415] via-[#053820] to-[#032415] border border-emerald-500/40 rounded-xl sm:rounded-2xl p-2.5 sm:p-3.5 shadow-xl space-y-2 relative overflow-hidden">
+          <div className="flex items-center justify-between flex-wrap gap-2">
+            <div className="flex items-center gap-1.5 sm:gap-2 text-[10.5px] sm:text-xs font-mono font-bold uppercase tracking-wider text-amber-400">
+              <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75" />
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
               </span>
-              <Bell className="w-4 h-4 text-amber-400" />
+              <Bell className="w-3.5 h-3.5 text-amber-400" />
               <span>IMD Live Agri-Weather Advisory &amp; Tarpaulin Alerts</span>
-              <span className="px-2.5 py-0.5 rounded-full bg-amber-400/20 text-amber-300 border border-amber-500/40 text-[10px] font-sans font-bold normal-case tracking-normal">
+              <span className="px-2 py-0.2 rounded-full bg-amber-400/20 text-amber-300 border border-amber-500/40 text-[9px] sm:text-[10px] font-sans font-bold normal-case tracking-normal">
                 27 States Pan-India
               </span>
             </div>
 
             {/* Quick State Dropdown & Carousel Navigation Controls */}
-            <div className="flex items-center gap-2 text-xs">
+            <div className="flex items-center gap-1.5 text-xs">
               <div className="relative">
                 <select
                   value={activeWeatherIdx}
                   onChange={(e) => setActiveWeatherIdx(Number(e.target.value))}
                   aria-label="Select state for IMD weather advisory"
-                  className="bg-emerald-950/90 text-emerald-200 border border-emerald-700/80 rounded-lg px-2.5 py-1 text-xs font-medium focus:outline-none focus:border-amber-400 cursor-pointer shadow-inner"
+                  className="bg-emerald-950/90 text-emerald-200 border border-emerald-700/80 rounded-md px-2 py-0.5 text-[11px] sm:text-xs font-medium focus:outline-none focus:border-amber-400 cursor-pointer shadow-inner"
                 >
                   {IMD_WEATHER_ALERTS.map((alert, idx) => (
                     <option key={alert.state} value={idx} className="bg-[#032415] text-slate-200">
@@ -357,43 +357,43 @@ export default function MandiPrices() {
                 </select>
               </div>
 
-              <span className="text-slate-400 text-xs font-mono px-1">
+              <span className="text-slate-400 text-[11px] font-mono px-0.5">
                 {activeWeatherIdx + 1} / {IMD_WEATHER_ALERTS.length}
               </span>
 
               <button
                 onClick={() => setActiveWeatherIdx((prev) => (prev - 1 + IMD_WEATHER_ALERTS.length) % IMD_WEATHER_ALERTS.length)}
-                className="p-1.5 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-slate-300 hover:text-white transition-colors"
+                className="p-1 rounded-md bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-slate-300 hover:text-white transition-colors"
                 title="Previous State Advisory"
                 aria-label="Previous State Advisory"
               >
-                <ChevronLeft className="w-3.5 h-3.5" />
+                <ChevronLeft className="w-3 h-3" />
               </button>
               <button
                 onClick={() => setActiveWeatherIdx((prev) => (prev + 1) % IMD_WEATHER_ALERTS.length)}
-                className="p-1.5 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-slate-300 hover:text-white transition-colors"
+                className="p-1 rounded-md bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-slate-300 hover:text-white transition-colors"
                 title="Next State Advisory"
                 aria-label="Next State Advisory"
               >
-                <ChevronRight className="w-3.5 h-3.5" />
+                <ChevronRight className="w-3 h-3" />
               </button>
             </div>
           </div>
 
-          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-4 pt-1">
-            <div className="flex items-start gap-3.5 flex-1 min-w-0">
-              <span className={`p-3 rounded-2xl border shrink-0 ${
+          <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-2.5 pt-0.5">
+            <div className="flex items-start gap-2.5 flex-1 min-w-0">
+              <span className={`p-2 rounded-xl border shrink-0 ${
                 activeWeather.severity === 'warning' 
                   ? 'bg-red-500/20 text-red-400 border-red-500/40' 
                   : 'bg-amber-500/20 text-amber-400 border-amber-500/40'
               }`}>
-                <CloudSun className="w-6 h-6" />
+                <CloudSun className="w-4 h-4 sm:w-5 sm:h-5" />
               </span>
-              <div className="space-y-2 min-w-0 flex-1">
-                <div className="text-sm font-bold text-white flex items-center flex-wrap gap-2">
-                  <span className="text-emerald-300 font-semibold text-base">{activeWeather.state}</span>
+              <div className="space-y-1.5 min-w-0 flex-1">
+                <div className="text-xs sm:text-sm font-bold text-white flex items-center flex-wrap gap-1.5">
+                  <span className="text-emerald-300 font-semibold text-sm sm:text-base">{activeWeather.state}</span>
                   <span className="text-slate-400 font-normal text-xs">({activeWeather.district})</span>
-                  <span className={`px-2 py-0.5 rounded-full font-mono text-[10px] uppercase font-bold border ${
+                  <span className={`px-1.5 py-0.2 rounded-full font-mono text-[9px] uppercase font-bold border ${
                     activeWeather.severity === 'warning'
                       ? 'bg-red-500/20 text-red-300 border-red-500/40'
                       : 'bg-amber-400/20 text-amber-300 border-amber-500/40'
@@ -401,12 +401,12 @@ export default function MandiPrices() {
                     {activeWeather.condition}
                   </span>
                 </div>
-                <div className="bg-black/35 border border-amber-500/30 rounded-xl px-3.5 py-2.5">
-                  <div className="flex items-start gap-2">
-                    <span className="text-amber-400 font-bold text-xs uppercase tracking-wide shrink-0">
+                <div className="bg-black/35 border border-amber-500/30 rounded-lg px-2.5 py-1.5">
+                  <div className="flex items-start gap-1.5">
+                    <span className="text-amber-400 font-bold text-[11px] sm:text-xs uppercase tracking-wide shrink-0">
                       🚨 Tarpaulin Advisory:
                     </span>
-                    <p className="text-xs text-slate-200 leading-relaxed font-medium">
+                    <p className="text-[11px] sm:text-xs text-slate-200 leading-relaxed font-medium">
                       {activeWeather.advisory}
                     </p>
                   </div>
@@ -414,18 +414,18 @@ export default function MandiPrices() {
               </div>
             </div>
 
-            <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-2.5 shrink-0 w-full lg:w-auto">
-              <div className="font-mono text-xs text-emerald-300 bg-emerald-950/90 px-3.5 py-2 rounded-xl border border-emerald-800 shadow-inner whitespace-nowrap">
+            <div className="flex flex-col sm:flex-row lg:flex-col items-start lg:items-end gap-1.5 shrink-0 w-full lg:w-auto">
+              <div className="font-mono text-[11px] sm:text-xs text-emerald-300 bg-emerald-950/90 px-2.5 py-1 rounded-lg border border-emerald-800 shadow-inner whitespace-nowrap">
                 {activeWeather.metrics}
               </div>
               {selectedState !== activeWeather.state && (
                 <button
                   onClick={() => setSelectedState(activeWeather.state)}
-                  className="text-xs font-semibold text-amber-400 hover:text-amber-300 underline decoration-dotted flex items-center gap-1 transition-colors"
+                  className="text-[11px] font-semibold text-amber-400 hover:text-amber-300 underline decoration-dotted flex items-center gap-1 transition-colors"
                   title={`Filter Mandi table to ${activeWeather.state}`}
                 >
                   <span>Filter Mandis for {activeWeather.state}</span>
-                  <ChevronRight className="w-3.5 h-3.5" />
+                  <ChevronRight className="w-3 h-3" />
                 </button>
               )}
             </div>
@@ -433,22 +433,22 @@ export default function MandiPrices() {
         </div>
 
         {/* =========================================================================
-            SEARCH, FILTER & STATE SELECTOR ROW
+            SEARCH, FILTER & STATE SELECTOR ROW - Compact High-Density Deck
         ========================================================================= */}
-        <div className="bg-[#042013] p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-emerald-800/60 shadow-2xl space-y-3 sm:space-y-4">
+        <div className="bg-[#042013] p-2.5 sm:p-3.5 rounded-xl sm:rounded-2xl border border-emerald-800/60 shadow-xl space-y-2 sm:space-y-2.5">
           
           {/* Top row: Search, State Selector, Locate Button */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-2">
             
             {/* Search Input */}
             <div className="relative md:col-span-5">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="Search commodity, variety, district, or APMC yard..."
-                className="w-full bg-emerald-950/90 border border-emerald-700/60 rounded-xl pl-10 pr-4 py-2.5 text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-amber-400 transition-colors"
+                className="w-full bg-emerald-950/90 border border-emerald-700/60 rounded-lg pl-9 pr-3 py-1.5 sm:py-2 text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-amber-400 transition-colors"
               />
             </div>
 
@@ -457,7 +457,7 @@ export default function MandiPrices() {
               <select
                 value={selectedState}
                 onChange={(e) => setSelectedState(e.target.value)}
-                className="w-full bg-emerald-950/90 border border-emerald-700/60 rounded-xl px-3.5 py-2.5 text-xs text-emerald-300 font-semibold focus:outline-none focus:border-amber-400 transition-colors"
+                className="w-full bg-emerald-950/90 border border-emerald-700/60 rounded-lg px-3 py-1.5 sm:py-2 text-xs text-emerald-300 font-semibold focus:outline-none focus:border-amber-400 transition-colors"
               >
                 {INDIAN_STATES_AND_UTS.map((st) => (
                   <option key={st} value={st} className="bg-[#042013] text-white">
@@ -468,11 +468,11 @@ export default function MandiPrices() {
             </div>
 
             {/* Sort & Geolocation Controls */}
-            <div className="md:col-span-3 flex items-center gap-2">
+            <div className="md:col-span-3 flex items-center gap-1.5">
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="w-full bg-emerald-950/90 border border-emerald-700/60 rounded-xl px-3 py-2.5 text-xs text-amber-300 font-semibold focus:outline-none focus:border-amber-400 transition-colors"
+                className="w-full bg-emerald-950/90 border border-emerald-700/60 rounded-lg px-2.5 py-1.5 sm:py-2 text-xs text-amber-300 font-semibold focus:outline-none focus:border-amber-400 transition-colors"
               >
                 <option value="highest_price" className="bg-[#042013] text-white">Highest Rate</option>
                 <option value="gain_over_msp" className="bg-[#042013] text-white">Gain Above MSP</option>
@@ -483,10 +483,10 @@ export default function MandiPrices() {
               <button
                 onClick={handleDetectLocation}
                 disabled={isLocating}
-                className="px-3 py-2.5 rounded-xl bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-emerald-300 text-xs font-bold transition-all shrink-0 flex items-center gap-1.5"
+                className="px-2.5 py-1.5 sm:py-2 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-emerald-300 text-xs font-bold transition-all shrink-0 flex items-center gap-1"
                 title="Sort mandis closest to your live location"
               >
-                <Compass className={`w-4 h-4 text-amber-400 ${isLocating ? 'animate-spin' : ''}`} />
+                <Compass className={`w-3.5 h-3.5 text-amber-400 ${isLocating ? 'animate-spin' : ''}`} />
                 <span className="hidden lg:inline">{isLocating ? 'Locating...' : 'GPS'}</span>
               </button>
             </div>
@@ -494,17 +494,17 @@ export default function MandiPrices() {
           </div>
 
           {/* Secondary filter pills: Crop Categories & Profitability */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-emerald-900/40">
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-1.5 border-t border-emerald-900/40">
             
             {/* Category Pills */}
-            <div className="flex flex-wrap items-center gap-1.5">
+            <div className="flex flex-wrap items-center gap-1">
               {CROP_CATEGORIES.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all ${
                     selectedCategory === cat
-                      ? 'bg-emerald-500 text-black shadow-md'
+                      ? 'bg-emerald-500 text-black shadow-sm'
                       : 'bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-800 text-slate-300'
                   }`}
                 >
@@ -514,7 +514,7 @@ export default function MandiPrices() {
             </div>
 
             {/* Profitability Filter */}
-            <div className="flex items-center gap-1.5 text-xs">
+            <div className="flex items-center gap-1 text-[11px]">
               <span className="text-slate-400 font-medium hidden sm:inline">MSP Spread:</span>
               {[
                 { id: 'all', label: 'All Margins' },
@@ -524,7 +524,7 @@ export default function MandiPrices() {
                 <button
                   key={p.id}
                   onClick={() => setProfitabilityFilter(p.id)}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-mono transition-colors ${
+                  className={`px-2 py-0.5 rounded-md text-[10.5px] font-mono transition-colors ${
                     profitabilityFilter === p.id
                       ? 'bg-amber-400 text-black font-extrabold'
                       : 'bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-800 text-slate-300'
