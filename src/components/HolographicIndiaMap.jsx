@@ -334,36 +334,36 @@ export default function HolographicIndiaMap({ className = "" }) {
       <div className="absolute inset-0 bg-radial-gradient from-emerald-500/15 via-amber-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
 
       {/* Top Floating Telemetry & Demand Filter Header */}
-      <div className="relative z-10 w-full flex flex-col items-center gap-1.5 mb-2 px-1">
+      <div className="relative z-10 w-full flex flex-col items-center gap-1 mb-1 sm:mb-1.5 px-1">
         {/* Main Title Badge */}
-        <div className="flex items-center justify-between w-full max-w-[420px] px-2.5 py-1 rounded-full bg-emerald-950/85 border border-emerald-500/40 backdrop-blur-md shadow-lg shadow-emerald-950/60 text-[10px] sm:text-xs">
+        <div className="flex items-center justify-between w-full max-w-[360px] sm:max-w-[380px] px-2 py-0.5 rounded-full bg-emerald-950/85 border border-emerald-500/40 backdrop-blur-md shadow-lg shadow-emerald-950/60 text-[9px] sm:text-[10px]">
           <div className="flex items-center gap-1.5 min-w-0">
-            <span className="flex h-2 w-2 relative shrink-0">
+            <span className="flex h-1.5 w-1.5 relative shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75" />
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-rose-500" />
+              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-rose-500" />
             </span>
             <span className="font-extrabold uppercase tracking-wider text-emerald-300 truncate flex items-center gap-1">
-              <Radio className="w-3 h-3 text-amber-400 animate-pulse shrink-0" />
+              <Radio className="w-2.5 h-2.5 text-amber-400 animate-pulse shrink-0" />
               <span>India Crop &amp; Demand Radar</span>
             </span>
           </div>
 
           <div className="flex items-center gap-1 shrink-0">
-            <span className="text-[9px] sm:text-[10px] text-rose-300 font-bold bg-rose-950/70 px-1.5 py-0.5 rounded border border-rose-500/40 flex items-center gap-0.5">
-              <Flame className="w-2.5 h-2.5 text-rose-400 animate-pulse" />
+            <span className="text-[8px] sm:text-[8.5px] text-rose-300 font-bold bg-rose-950/70 px-1 py-0.2 rounded border border-rose-500/40 flex items-center gap-0.5">
+              <Flame className="w-2 h-2 text-rose-400 animate-pulse" />
               Live Demand
             </span>
-            <span className="text-[9px] sm:text-[10px] text-amber-400 font-mono font-bold bg-amber-950/60 px-1.5 py-0.5 rounded border border-amber-500/30">
+            <span className="text-[8px] sm:text-[8.5px] text-amber-400 font-mono font-bold bg-amber-950/60 px-1 py-0.2 rounded border border-amber-500/30">
               28 States
             </span>
           </div>
         </div>
 
         {/* Quick Filter Tabs: Demand & Crop Types */}
-        <div className="flex items-center justify-center gap-1 w-full max-w-[420px] overflow-x-auto py-0.5 scrollbar-none">
+        <div className="flex items-center justify-center gap-1 w-full max-w-[360px] sm:max-w-[380px] overflow-x-auto py-0.5 scrollbar-none">
           <button
             onClick={() => setCategoryFilter('all')}
-            className={`px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-semibold transition-all whitespace-nowrap ${
+            className={`px-1.5 py-0.5 rounded-full text-[8.5px] sm:text-[9px] font-semibold transition-all whitespace-nowrap ${
               categoryFilter === 'all'
                 ? 'bg-emerald-500 text-black shadow-sm'
                 : 'bg-emerald-950/60 text-slate-300 hover:text-white border border-emerald-800/40'
@@ -374,19 +374,19 @@ export default function HolographicIndiaMap({ className = "" }) {
 
           <button
             onClick={() => setCategoryFilter('high-demand')}
-            className={`px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-semibold transition-all flex items-center gap-1 whitespace-nowrap ${
+            className={`px-1.5 py-0.5 rounded-full text-[8.5px] sm:text-[9px] font-semibold transition-all flex items-center gap-0.5 whitespace-nowrap ${
               categoryFilter === 'high-demand'
                 ? 'bg-gradient-to-r from-rose-500 to-amber-500 text-black font-extrabold shadow-sm'
                 : 'bg-rose-950/50 text-rose-300 hover:text-white border border-rose-800/40'
             }`}
           >
-            <Flame className="w-2.5 h-2.5 text-amber-300" />
+            <Flame className="w-2 h-2 text-amber-300" />
             🔥 Surge Demand
           </button>
 
           <button
             onClick={() => setCategoryFilter('grain')}
-            className={`px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-semibold transition-all whitespace-nowrap ${
+            className={`px-1.5 py-0.5 rounded-full text-[8.5px] sm:text-[9px] font-semibold transition-all whitespace-nowrap ${
               categoryFilter === 'grain'
                 ? 'bg-amber-400 text-black shadow-sm'
                 : 'bg-emerald-950/60 text-slate-300 hover:text-white border border-emerald-800/40'
@@ -397,7 +397,7 @@ export default function HolographicIndiaMap({ className = "" }) {
 
           <button
             onClick={() => setCategoryFilter('oilseed-cash')}
-            className={`px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-semibold transition-all whitespace-nowrap ${
+            className={`px-1.5 py-0.5 rounded-full text-[8.5px] sm:text-[9px] font-semibold transition-all whitespace-nowrap ${
               categoryFilter === 'oilseed-cash'
                 ? 'bg-emerald-400 text-black shadow-sm'
                 : 'bg-emerald-950/60 text-slate-300 hover:text-white border border-emerald-800/40'
@@ -408,8 +408,8 @@ export default function HolographicIndiaMap({ className = "" }) {
         </div>
       </div>
 
-      {/* The Central Holographic Map Container (Auto-adjusts for mobile screens 4.5" to 7.5") */}
-      <div className="relative w-full max-w-[320px] xs:max-w-[360px] sm:max-w-[400px] md:max-w-[440px] lg:max-w-[460px] aspect-[612/696] mx-auto filter drop-shadow-[0_0_35px_rgba(16,185,129,0.35)]">
+      {/* The Central Holographic Map Container (Auto-adjusts for compact, balanced display) */}
+      <div className="relative w-full max-w-[270px] xs:max-w-[295px] sm:max-w-[325px] md:max-w-[350px] lg:max-w-[360px] aspect-[612/696] mx-auto filter drop-shadow-[0_0_25px_rgba(16,185,129,0.3)]">
         
         <svg
           viewBox={INDIA_MAP_VIEWBOX}
@@ -659,21 +659,21 @@ export default function HolographicIndiaMap({ className = "" }) {
 
       </div>
 
-      {/* Real-Time Hub Telemetry Card: Positioned Cleanly Beneath the Map (Fully Unobstructed View of Entire India) */}
-      <div className="w-full max-w-[420px] sm:max-w-[450px] mt-2.5 bg-gradient-to-r from-[#031d10]/98 via-[#06291a]/98 to-[#031d10]/98 backdrop-blur-xl border border-emerald-500/50 rounded-2xl p-2.5 sm:p-3 shadow-2xl shadow-black/90 text-xs animate-slide-up">
+      {/* Real-Time Hub Telemetry Card: Positioned Cleanly Beneath the Map (Compact, High-Density HUD) */}
+      <div className="w-full max-w-[360px] sm:max-w-[380px] mt-1.5 sm:mt-2 bg-gradient-to-r from-[#031d10]/98 via-[#06291a]/98 to-[#031d10]/98 backdrop-blur-xl border border-emerald-500/50 rounded-xl p-2 sm:p-2.5 shadow-2xl shadow-black/90 text-xs animate-slide-up">
         
         {/* Top Line: State + Demand Status in India */}
-        <div className="flex items-center justify-between gap-2 mb-1.5 pb-1.5 border-b border-emerald-800/40">
+        <div className="flex items-center justify-between gap-1.5 mb-1 pb-1 border-b border-emerald-800/40">
           <div className="flex items-center gap-1.5 min-w-0">
-            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-emerald-950/90 border border-emerald-400/50 flex items-center justify-center shrink-0 shadow-md">
-              <span className="text-sm">{displayHub.cropIcon}</span>
+            <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-emerald-950/90 border border-emerald-400/50 flex items-center justify-center shrink-0 shadow-sm text-xs">
+              <span>{displayHub.cropIcon}</span>
             </div>
             <div className="min-w-0">
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <span className="font-extrabold text-white text-xs sm:text-sm truncate">
+              <div className="flex items-center gap-1 flex-wrap">
+                <span className="font-extrabold text-white text-xs sm:text-[13px] truncate">
                   {displayHub.name}
                 </span>
-                <span className="text-[9px] px-1.5 py-0.2 rounded font-semibold bg-emerald-900/60 text-emerald-300 border border-emerald-600/30">
+                <span className="text-[8px] sm:text-[8.5px] px-1 py-0.2 rounded font-semibold bg-emerald-900/60 text-emerald-300 border border-emerald-600/30 truncate max-w-[150px] sm:max-w-none">
                   {displayHub.sub}
                 </span>
               </div>
@@ -682,12 +682,12 @@ export default function HolographicIndiaMap({ className = "" }) {
 
           {/* Demand in India Badge */}
           <div className="flex items-center gap-1 shrink-0">
-            <span className={`text-[9px] sm:text-[10px] px-2 py-0.5 rounded-full font-bold flex items-center gap-1 ${
+            <span className={`text-[8px] sm:text-[8.5px] px-1.5 py-0.5 rounded-full font-bold flex items-center gap-0.5 ${
               displayHub.demandScore >= 92 
                 ? 'bg-rose-950/90 text-rose-300 border border-rose-500/50' 
                 : 'bg-amber-950/90 text-amber-300 border border-amber-500/50'
             }`}>
-              <Flame className="w-3 h-3 text-rose-400 animate-pulse" />
+              <Flame className="w-2.5 h-2.5 text-rose-400 animate-pulse" />
               <span>{displayHub.demand}</span>
               <span className="font-mono text-emerald-300">{displayHub.demandGrowth}</span>
             </span>
@@ -695,42 +695,42 @@ export default function HolographicIndiaMap({ className = "" }) {
         </div>
 
         {/* Middle Line: Major Crop Produced & Mandi Rate */}
-        <div className="grid grid-cols-12 gap-2 items-center">
+        <div className="grid grid-cols-12 gap-1.5 items-center">
           {/* Crops Produced */}
           <div className="col-span-8 min-w-0">
-            <div className="text-[9px] text-slate-400 uppercase font-semibold tracking-wider">
+            <div className="text-[8px] text-slate-400 uppercase font-semibold tracking-wider">
               Crops Produced
             </div>
-            <div className="text-xs sm:text-[13px] font-bold text-amber-300 truncate">
+            <div className="text-[11px] sm:text-xs font-bold text-amber-300 truncate">
               {displayHub.crop}
             </div>
-            <div className="text-[10px] text-emerald-300/90 truncate flex items-center gap-1 mt-0.5">
-              <TrendingUp className="w-3 h-3 text-emerald-400 shrink-0" />
+            <div className="text-[9px] text-emerald-300/90 truncate flex items-center gap-1 mt-0.2">
+              <TrendingUp className="w-2.5 h-2.5 text-emerald-400 shrink-0" />
               <span className="truncate">{displayHub.demandReason}</span>
             </div>
           </div>
 
           {/* Mandi Rate vs MSP */}
           <div className="col-span-4 text-right shrink-0">
-            <div className="text-[9px] text-slate-400 uppercase font-semibold tracking-wider">
+            <div className="text-[8px] text-slate-400 uppercase font-semibold tracking-wider">
               Mandi Rate
             </div>
-            <div className="text-xs sm:text-sm font-extrabold text-emerald-300 font-mono">
+            <div className="text-xs sm:text-[13px] font-extrabold text-emerald-300 font-mono">
               {displayHub.rate}
             </div>
-            <div className="text-[9px] text-slate-400 font-mono">
+            <div className="text-[8.5px] text-slate-400 font-mono">
               MSP: {displayHub.msp}
             </div>
           </div>
         </div>
 
         {/* Bottom Demand Intensity Progress Bar */}
-        <div className="mt-2 pt-1.5 border-t border-emerald-900/40 flex items-center justify-between gap-2 text-[9px] text-slate-400 font-mono">
+        <div className="mt-1 pt-1 border-t border-emerald-900/40 flex items-center justify-between gap-2 text-[8.5px] text-slate-400 font-mono">
           <span className="flex items-center gap-1 text-slate-300">
             <span>National Demand Index:</span>
             <strong className="text-amber-400 font-mono">{displayHub.demandScore}/100</strong>
           </span>
-          <div className="w-24 sm:w-32 h-1.5 bg-emerald-950 rounded-full overflow-hidden border border-emerald-800/40">
+          <div className="w-20 sm:w-28 h-1 bg-emerald-950 rounded-full overflow-hidden border border-emerald-800/40">
             <div
               className={`h-full rounded-full transition-all duration-500 ${
                 displayHub.demandScore >= 92 
@@ -744,14 +744,14 @@ export default function HolographicIndiaMap({ className = "" }) {
 
       </div>
 
-      {/* Bottom Coordinates & Accuracy HUD */}
-      <div className="relative z-10 mt-2 sm:mt-3 flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-[9px] sm:text-[10px] text-slate-300 font-mono px-2 text-center">
-        <span className="flex items-center gap-1 text-emerald-300">
-          <ShieldCheck className="w-3 h-3 text-emerald-400 shrink-0" /> Official Survey of India Map
+      {/* Bottom Coordinates & Accuracy HUD - Compact Single-Line */}
+      <div className="relative z-10 mt-1 flex flex-wrap items-center justify-center gap-1.5 text-[8px] sm:text-[8.5px] text-slate-300 font-mono px-1 text-center">
+        <span className="flex items-center gap-0.5 text-emerald-300">
+          <ShieldCheck className="w-2.5 h-2.5 text-emerald-400 shrink-0" /> Official Survey of India Map
         </span>
         <span className="text-slate-600 hidden xs:inline">•</span>
-        <span className="text-slate-300 hidden sm:inline">LAT 8.4°N – 37.6°N · LON 68.7°E – 97.4°E</span>
-        <span className="text-slate-600 hidden sm:inline">•</span>
+        <span className="text-slate-400 hidden md:inline">LAT 8.4°N – 37.6°N · LON 68.7°E – 97.4°E</span>
+        <span className="text-slate-600 hidden md:inline">•</span>
         <span className="text-amber-400">Mainland India · 28 States &amp; UTs</span>
       </div>
 

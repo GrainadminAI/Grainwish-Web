@@ -876,7 +876,7 @@ export default function DiagnosticsTool() {
   };
 
   return (
-    <section id="diagnostics" className="py-8 sm:py-16 lg:py-20 bg-[#02180d]/85 backdrop-blur-[2px] relative overflow-hidden border-b border-emerald-900/40">
+    <section id="diagnostics" className="py-6 sm:py-10 lg:py-12 bg-[#02180d]/85 backdrop-blur-[2px] relative overflow-hidden border-b border-emerald-900/40">
       
       {/* Offscreen Canvas for software-backed pixel analysis */}
       <canvas ref={canvasRef} className="hidden" />
@@ -897,27 +897,28 @@ export default function DiagnosticsTool() {
 
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 relative z-10">
         
-        {/* Section Header */}
-        <div className="text-center max-w-4xl mx-auto mb-4 sm:mb-8 lg:mb-12 space-y-2 sm:space-y-4">
-          <div className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-1.5 rounded-full bg-emerald-950/90 border border-emerald-500/50 text-[11px] sm:text-xs font-bold text-emerald-300 shadow-lg shadow-emerald-900/30 max-w-full">
-            <Cpu className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400 animate-pulse shrink-0" />
+        {/* Section Header - Compact High-Density Header */}
+        <div className="text-center max-w-4xl mx-auto mb-3 sm:mb-4 lg:mb-5 space-y-1.5 sm:space-y-2">
+          <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 rounded-full bg-emerald-950/90 border border-emerald-500/50 text-[10px] sm:text-[11px] font-bold text-emerald-300 shadow-md max-w-full">
+            <Cpu className="w-3.5 h-3.5 text-amber-400 animate-pulse shrink-0" />
             <span className="hidden sm:inline">100% Calibrated Multi-Spectral AI Pathology Vision</span>
             <span className="sm:hidden">100% Multi-Spectral AI Vision</span>
-            <span className="bg-emerald-500 text-black px-1.5 sm:px-2 py-0.5 rounded-full font-mono text-[9px] sm:text-[10px] uppercase font-extrabold shrink-0">v5.0 Enterprise</span>
+            <span className="bg-emerald-500 text-black px-1.5 py-0.2 rounded-full font-mono text-[8.5px] sm:text-[9px] uppercase font-extrabold shrink-0">v5.0 Enterprise</span>
           </div>
           
-          <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white tracking-tight px-1">
+          <h2 className="font-display text-xl sm:text-3xl lg:text-4xl font-extrabold text-white tracking-tight px-1">
             {t('diag_title', 'Camera-Based AI Diagnostics 100%')}
           </h2>
           
-          <p className="text-slate-300 text-xs sm:text-base leading-relaxed max-w-2xl mx-auto px-2">
+          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto px-2">
             {t('diag_sub', 'Point your device camera directly at any crop leaf or upload a photo to detect diseases instantly with 100.0% precision. Multi-spectral RGB chlorophyll indexing, necrosis segmentation, and verified agronomic remedies.')}
           </p>
 
-          {/* 22 Official Languages Selector directly inside Camera Diagnostics */}
-          <div className="pt-1">
-            <div className="inline-flex items-center gap-2 px-3 sm:px-4 py-1.5 bg-[#032012] border border-emerald-500/50 rounded-2xl shadow-lg">
-              <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
+          {/* Unified Compact Diagnostics Language & Telemetry Highlights */}
+          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2.5 pt-0.5 text-[10px] sm:text-[11px] font-semibold text-emerald-300">
+            {/* Language Selector */}
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 bg-[#032012] border border-emerald-500/50 rounded-xl shadow-md">
+              <span className="text-[10px] sm:text-[11px] text-slate-300 flex items-center gap-1 font-bold">
                 <span className="text-amber-400">🌐</span>
                 <span className="hidden sm:inline">Diagnostics Language:</span>
                 <span className="sm:hidden">Language:</span>
@@ -925,7 +926,7 @@ export default function DiagnosticsTool() {
               <select
                 value={selectedLang}
                 onChange={(e) => setSelectedLang(e.target.value)}
-                className="bg-emerald-950 text-amber-300 font-extrabold border border-emerald-600 rounded-xl px-2.5 py-1 text-xs focus:outline-none focus:border-amber-400 cursor-pointer shadow-inner"
+                className="bg-emerald-950 text-amber-300 font-extrabold border border-emerald-600 rounded-lg px-2 py-0.5 text-[10px] sm:text-xs focus:outline-none focus:border-amber-400 cursor-pointer shadow-inner"
               >
                 {SUPPORTED_LANGUAGES.map((lang) => (
                   <option key={lang.code} value={lang.code} className="bg-[#032012] text-slate-100">
@@ -933,55 +934,49 @@ export default function DiagnosticsTool() {
                   </option>
                 ))}
               </select>
-              <span className="text-[10px] font-mono text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded-lg border border-emerald-800 hidden md:inline">
-                22 Languages Synced
+              <span className="text-[9px] font-mono text-emerald-400 bg-emerald-950 px-1.5 py-0.2 rounded border border-emerald-800 hidden md:inline">
+                22 Synced
               </span>
             </div>
-          </div>
 
-          {/* Quick Accuracy Highlights Badge */}
-          <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-4 pt-1 text-[11px] sm:text-xs font-semibold text-emerald-300">
-            <div className="flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-800/60 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl">
-              <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+            {/* Quick Accuracy Highlights */}
+            <div className="flex items-center gap-1 bg-emerald-950/60 border border-emerald-800/60 px-2.5 py-1 rounded-xl">
+              <ShieldCheck className="w-3 h-3 text-emerald-400 shrink-0" />
               <span>100.0% Strain Accuracy</span>
             </div>
-            <div className="flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-800/60 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl">
-              <Activity className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <div className="flex items-center gap-1 bg-emerald-950/60 border border-emerald-800/60 px-2.5 py-1 rounded-xl">
+              <Activity className="w-3 h-3 text-amber-400 shrink-0" />
               <span>Real-Time GLI &amp; VARI</span>
-            </div>
-            <div className="flex items-center gap-1.5 bg-emerald-950/60 border border-emerald-800/60 px-2.5 sm:px-3.5 py-1 sm:py-1.5 rounded-xl">
-              <Globe className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
-              <span>22 Regional Languages ({selectedLang})</span>
             </div>
           </div>
         </div>
 
-        {/* Input Mode Selector Bar - Responsive Grid for mobile, Flex for desktop */}
-        <div className="bg-[#032012] border border-emerald-800/60 p-1.5 sm:p-2 rounded-2xl max-w-3xl mx-auto mb-5 sm:mb-8 shadow-2xl grid grid-cols-2 sm:flex sm:items-center sm:justify-center gap-1.5 sm:gap-2">
+        {/* Input Mode Selector Bar - Compact & Centered */}
+        <div className="bg-[#032012] border border-emerald-800/60 p-1 sm:p-1.5 rounded-xl max-w-2xl mx-auto mb-2.5 sm:mb-3.5 shadow-xl grid grid-cols-2 sm:flex sm:items-center sm:justify-center gap-1 sm:gap-1.5">
           
           {/* Live Camera Button */}
           <button
             onClick={startWebcam}
-            className={`w-full sm:w-auto px-3 sm:px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 min-h-[44px] touch-manipulation border ${
+            className={`w-full sm:w-auto px-3 py-1.5 sm:py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 min-h-[38px] sm:min-h-0 touch-manipulation border ${
               inputMode === 'webcam'
-                ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white border-emerald-400 shadow-lg shadow-emerald-600/30'
+                ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white border-emerald-400 shadow-md shadow-emerald-600/30'
                 : 'bg-[#042d1b] border-emerald-800/70 text-slate-300 hover:text-white hover:border-emerald-600'
             }`}
           >
-            <Camera className="w-4 h-4 text-amber-400 shrink-0" />
+            <Camera className="w-3.5 h-3.5 text-amber-400 shrink-0" />
             <span className="sm:hidden">Live Cam</span>
             <span className="hidden sm:inline">Live Phone/Webcam</span>
           </button>
 
           {/* Upload Image Button */}
           <label
-            className={`w-full sm:w-auto px-3 sm:px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 min-h-[44px] touch-manipulation cursor-pointer border ${
+            className={`w-full sm:w-auto px-3 py-1.5 sm:py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 min-h-[38px] sm:min-h-0 touch-manipulation cursor-pointer border ${
               inputMode === 'upload'
-                ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white border-amber-400 shadow-lg'
+                ? 'bg-gradient-to-r from-amber-600 to-amber-500 text-white border-amber-400 shadow-md'
                 : 'bg-[#042d1b] border-emerald-800/70 text-slate-300 hover:text-white hover:border-emerald-600'
             }`}
           >
-            <Upload className="w-4 h-4 text-amber-400 shrink-0" />
+            <Upload className="w-3.5 h-3.5 text-amber-400 shrink-0" />
             <span className="sm:hidden">Upload Photo</span>
             <span className="hidden sm:inline">Upload Leaf Photo</span>
             <input type="file" accept="image/*" onChange={handleFileUpload} className="hidden" />
@@ -991,9 +986,9 @@ export default function DiagnosticsTool() {
           <button
             onClick={() => nativeCameraInputRef.current?.click()}
             title="Open smartphone native high-res camera"
-            className="w-full sm:w-auto px-3 sm:px-3.5 py-2.5 rounded-xl text-xs font-semibold bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/60 text-slate-300 flex items-center justify-center gap-1.5 min-h-[44px] touch-manipulation"
+            className="w-full sm:w-auto px-2.5 py-1.5 sm:py-2 rounded-lg text-xs font-semibold bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/60 text-slate-300 flex items-center justify-center gap-1.5 min-h-[38px] sm:min-h-0 touch-manipulation"
           >
-            <Maximize2 className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+            <Maximize2 className="w-3 h-3 text-amber-400 shrink-0" />
             <span>Mobile Cam</span>
           </button>
 
@@ -1003,13 +998,13 @@ export default function DiagnosticsTool() {
               stopWebcam();
               setInputMode('sample');
             }}
-            className={`w-full sm:w-auto px-3 sm:px-4 py-2.5 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-1.5 sm:gap-2 min-h-[44px] touch-manipulation border ${
+            className={`w-full sm:w-auto px-3 py-1.5 sm:py-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 min-h-[38px] sm:min-h-0 touch-manipulation border ${
               inputMode === 'sample'
                 ? 'bg-emerald-950 border-emerald-500/80 text-emerald-300'
                 : 'bg-[#042d1b] border-emerald-800/70 text-slate-400 hover:text-white'
             }`}
           >
-            <Database className="w-4 h-4 text-emerald-400 shrink-0" />
+            <Database className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
             <span className="sm:hidden">Sample Crops</span>
             <span className="hidden sm:inline">Sample Library</span>
           </button>
@@ -1018,14 +1013,14 @@ export default function DiagnosticsTool() {
 
         {/* Upload Error Alert */}
         {uploadError && (
-          <div className="max-w-xl mx-auto mb-5 p-3 bg-red-950/80 border border-red-500/80 rounded-2xl text-xs text-red-200 text-center font-semibold animate-fade-in">
+          <div className="max-w-xl mx-auto mb-3 p-2.5 bg-red-950/80 border border-red-500/80 rounded-xl text-xs text-red-200 text-center font-semibold animate-fade-in">
             ⚠️ {uploadError}
           </div>
         )}
 
         {/* Model Categories Bar matching User's 4 Detection Categories + Healthy Leaf - Compact */}
-        <div className="flex flex-wrap items-center justify-center gap-1.5 mb-2 px-1">
-          <span className="text-[10px] font-mono text-slate-400 font-semibold mr-1">
+        <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5 mb-1 sm:mb-1.5 px-1">
+          <span className="text-[9.5px] font-mono text-slate-400 font-semibold mr-0.5">
             Detector Classes:
           </span>
           {[
@@ -1043,13 +1038,13 @@ export default function DiagnosticsTool() {
                   const found = CROP_SAMPLES.find(s => s.id === cat.id || s.category === cat.label);
                   if (found) handleSelectSample(found);
                 }}
-                className={`px-2.5 py-1 rounded-lg border text-[10px] font-bold font-mono transition-all active:scale-95 flex items-center gap-1 touch-manipulation ${
+                className={`px-2 py-0.5 rounded-md border text-[9.5px] font-bold font-mono transition-all active:scale-95 flex items-center gap-1 touch-manipulation ${
                   isMatch && inputMode === 'sample'
-                    ? 'bg-white text-black border-white shadow-md font-black'
+                    ? 'bg-white text-black border-white shadow-sm font-black'
                     : `${cat.bg} hover:brightness-125`
                 }`}
               >
-                <span className="w-2 h-2 rounded-full shadow-sm" style={{ backgroundColor: cat.color }} />
+                <span className="w-1.5 h-1.5 rounded-full shadow-sm" style={{ backgroundColor: cat.color }} />
                 <span>{DIAGNOSTICS_CATEGORY_I18N[selectedLang]?.[cat.label] || cat.label}</span>
               </button>
             );
@@ -1058,19 +1053,19 @@ export default function DiagnosticsTool() {
 
         {/* Sample Crops Carousel - Compact */}
         {inputMode === 'sample' && (
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 mb-3 sm:mb-4 max-w-5xl mx-auto px-1 sm:flex-wrap sm:justify-center scrollbar-none snap-x snap-mandatory">
+          <div className="flex items-center gap-1 overflow-x-auto pb-0.5 mb-2 sm:mb-2.5 max-w-4xl mx-auto px-1 sm:flex-wrap sm:justify-center scrollbar-none snap-x snap-mandatory">
             {CROP_SAMPLES.map((sample) => (
               <button
                 key={sample.id}
                 onClick={() => handleSelectSample(sample)}
-                className={`flex-shrink-0 snap-center px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all flex items-center gap-1.5 border touch-manipulation ${
+                className={`flex-shrink-0 snap-center px-2 py-0.5 rounded-md text-[10px] font-bold transition-all flex items-center gap-1 border touch-manipulation ${
                   selectedCrop.id === sample.id
-                    ? 'bg-emerald-600 border-emerald-400 text-white shadow-md ring-2 ring-emerald-400/40'
+                    ? 'bg-emerald-600 border-emerald-400 text-white shadow-sm ring-1 ring-emerald-400/40'
                     : 'bg-[#042516] border-emerald-800/60 text-slate-300 hover:border-emerald-600 hover:text-white'
                 }`}
               >
                 <span>{sample.crop}</span>
-                <span className="text-[9px] font-mono text-amber-400 bg-black/50 px-1 py-0.2 rounded">
+                <span className="text-[8.5px] font-mono text-amber-400 bg-black/50 px-1 py-0.2 rounded">
                   {sample.confidence}
                 </span>
               </button>

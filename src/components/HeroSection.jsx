@@ -96,10 +96,10 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
             </div>
 
             {/* Desktop Docked Live Diagnostics Strip (Shown directly underneath the map on desktop) */}
-            <div className="hidden lg:block w-full max-w-[450px] mt-2">
-              <div className="flex items-center justify-between p-2 rounded-2xl bg-emerald-950/80 border border-emerald-600/40 backdrop-blur-md shadow-lg">
-                <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="relative w-10 h-10 rounded-xl overflow-hidden border border-emerald-400/50 shrink-0">
+            <div className="hidden lg:block w-full max-w-[360px] sm:max-w-[380px] mt-1.5">
+              <div className="flex items-center justify-between p-1.5 sm:p-2 rounded-xl bg-emerald-950/80 border border-emerald-600/40 backdrop-blur-md shadow-lg">
+                <div className="flex items-center gap-2 min-w-0">
+                  <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-emerald-400/50 shrink-0">
                     <img
                       src="/assets/soybean_leaf_mosaic.jpg"
                       alt="Soybean leaf scan thumbnail"
@@ -110,18 +110,18 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
                   <div className="min-w-0">
                     <div className="flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
-                      <span className="text-[11px] font-bold text-white truncate">AI Crop Vision Active</span>
+                      <span className="text-[10px] sm:text-[11px] font-bold text-white truncate">AI Crop Vision Active</span>
                     </div>
-                    <div className="text-[10px] text-amber-300 font-mono truncate">
+                    <div className="text-[9px] sm:text-[10px] text-amber-300 font-mono truncate">
                       Soybean Mosaic · 99.4% Match
                     </div>
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 shrink-0">
+                <div className="flex items-center gap-1 shrink-0">
                   <a
                     href="#diagnostics"
-                    className="px-2.5 py-1 text-[10px] font-bold rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black transition-colors flex items-center gap-1"
+                    className="px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] font-bold rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black transition-colors flex items-center gap-1"
                   >
                     <Camera className="w-3 h-3" />
                     <span>Scan</span>
