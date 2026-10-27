@@ -3,7 +3,8 @@ import {
   TrendingUp, MapPin, CloudSun, ArrowUpRight, ArrowDownRight, 
   Search, ShieldCheck, Navigation, Bell, Database, Wifi, WifiOff,
   Filter, ChevronRight, ChevronLeft, RefreshCw, AlertTriangle, 
-  Layers, ArrowUpDown, Compass, CheckCircle2, Sparkles, ExternalLink
+  Layers, ArrowUpDown, Compass, CheckCircle2, Sparkles, ExternalLink,
+  X, Copy, Check, Share2
 } from 'lucide-react';
 import { useVirtualizer } from '@tanstack/react-virtual';
 import { 
@@ -18,6 +19,18 @@ import {
 import { fetchMandiPricesFromDB, recordFeatureUsageToDB } from '../lib/supabase';
 import { useLanguage } from '../lib/LanguageContext';
 
+const POPULAR_AGRI_STATES = [
+  'All States & UTs',
+  'Punjab',
+  'Uttar Pradesh',
+  'Madhya Pradesh',
+  'Maharashtra',
+  'Gujarat',
+  'Haryana',
+  'Rajasthan',
+  'Telangana'
+];
+
 export default function MandiPrices() {
   const { t } = useLanguage();
   
@@ -29,6 +42,9 @@ export default function MandiPrices() {
   const [profitabilityFilter, setProfitabilityFilter] = useState('all'); // all, above_msp, high_margin, under_msp
   const [sortBy, setSortBy] = useState('highest_price'); // highest_price, gain_over_msp, distance, daily_change
   
+  // Copy Mandi Rate state
+  const [copiedMandiId, setCopiedMandiId] = useState(null);
+
   // Data State
   const [mandiRecords, setMandiRecords] = useState(COMPREHENSIVE_MANDI_RECORDS);
   const [isOfflineCached, setIsOfflineCached] = useState(false);
@@ -42,6 +58,38 @@ export default function MandiPrices() {
 
   // Weather Advisory Carousel
   const [activeWeatherIdx, setActiveWeatherIdx] = useState(0);
+
+  const hasActiveFilters = Boolean(
+    searchTerm.trim() ||
+    selectedState !== 'All States & UTs' ||
+    selectedCategory !== 'All Crops' ||
+    profitabilityFilter !== 'all' ||
+    sortBy !== 'highest_price'
+  );
+
+  const handleResetFilters = () => {
+    setSearchTerm('');
+    setDebouncedSearch('');
+    setSelectedState('All States & UTs');
+    setSelectedCategory('All Crops');
+    setProfitabilityFilter('all');
+    setSortBy('highest_price');
+  };
+
+  const handleCopyMandiRate = (item) => {
+    const text = `🌾 Mandi Rate Update - ${item.commodity} (${item.variety})
+📍 APMC Market: ${item.market}, ${item.district}, ${item.state}
+💰 Modal Price: ₹${item.modalPrice}/qtl
+🏛️ Govt MSP: ₹${item.msp}/qtl (Spread: ${item.modalPrice >= item.msp ? '+' : ''}₹${item.modalPrice - item.msp})
+📈 24h Trend: ${item.isUp ? '+' : ''}${item.dailyChangePct}%
+Source: Grainwise AI / Agmarknet`;
+
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(text);
+    }
+    setCopiedMandiId(item.id || `${item.commodity}-${item.market}`);
+    setTimeout(() => setCopiedMandiId(null), 2500);
+  };
 
   // Debounce search term by 300ms
   useEffect(() => {
@@ -483,7 +531,7 @@ export default function MandiPrices() {
               <button
                 onClick={handleDetectLocation}
                 disabled={isLocating}
-                className="px-2.5 py-1.5 sm:py-2 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-emerald-300 text-xs font-bold transition-all shrink-0 flex items-center gap-1"
+                className="px-2.5 py-1.5 sm:py-2 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-emerald-300 text-xs font-bold transition-all shrink-0 flex items-center gap-1 active:scale-95"
                 title="Sort mandis closest to your live location"
               >
                 <Compass className={`w-3.5 h-3.5 text-amber-400 ${isLocating ? 'animate-spin' : ''}`} />
@@ -493,8 +541,43 @@ export default function MandiPrices() {
 
           </div>
 
+          {/* Quick State Filter Chips Row */}
+          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none pt-0.5 border-t border-emerald-900/40">
+            <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider shrink-0 flex items-center gap-1">
+              <Filter className="w-3 h-3" /> Quick:
+            </span>
+            <div className="flex items-center gap-1 shrink-0">
+              {POPULAR_AGRI_STATES.map((st) => (
+                <button
+                  key={st}
+                  type="button"
+                  onClick={() => setSelectedState(st)}
+                  className={`px-2 py-0.5 rounded-md text-[10.5px] font-semibold whitespace-nowrap transition-all active:scale-95 ${
+                    selectedState === st
+                      ? 'bg-amber-400 text-black font-extrabold shadow-sm'
+                      : 'bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800 text-slate-300 hover:text-white'
+                  }`}
+                >
+                  {st === 'All States & UTs' ? 'All India' : st}
+                </button>
+              ))}
+            </div>
+
+            {hasActiveFilters && (
+              <button
+                type="button"
+                onClick={handleResetFilters}
+                className="ml-auto px-2 py-0.5 rounded-md bg-rose-500/20 hover:bg-rose-500/30 border border-rose-500/40 text-rose-300 text-[10px] font-bold flex items-center gap-1 shrink-0 transition-colors active:scale-95"
+                title="Reset all search filters"
+              >
+                <X className="w-3 h-3" />
+                <span>Reset Filters</span>
+              </button>
+            )}
+          </div>
+
           {/* Secondary filter pills: Crop Categories & Profitability */}
-          <div className="flex flex-wrap items-center justify-between gap-2 pt-1.5 border-t border-emerald-900/40">
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-1 border-t border-emerald-900/40">
             
             {/* Category Pills */}
             <div className="flex flex-wrap items-center gap-1">
@@ -502,9 +585,9 @@ export default function MandiPrices() {
                 <button
                   key={cat}
                   onClick={() => setSelectedCategory(cat)}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all ${
+                  className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all active:scale-95 ${
                     selectedCategory === cat
-                      ? 'bg-emerald-500 text-black shadow-sm'
+                      ? 'bg-emerald-500 text-black shadow-sm font-bold'
                       : 'bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-800 text-slate-300'
                   }`}
                 >
@@ -524,7 +607,7 @@ export default function MandiPrices() {
                 <button
                   key={p.id}
                   onClick={() => setProfitabilityFilter(p.id)}
-                  className={`px-2 py-0.5 rounded-md text-[10.5px] font-mono transition-colors ${
+                  className={`px-2 py-0.5 rounded-md text-[10.5px] font-mono transition-colors active:scale-95 ${
                     profitabilityFilter === p.id
                       ? 'bg-amber-400 text-black font-extrabold'
                       : 'bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-800 text-slate-300'
@@ -640,11 +723,22 @@ export default function MandiPrices() {
                         </span>
                       </div>
 
-                      {/* Distance & Directions */}
-                      <div className="col-span-1 text-right">
+                      {/* Distance & Directions & Quick Copy */}
+                      <div className="col-span-1 text-right flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => handleCopyMandiRate(item)}
+                          className="p-1.5 bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 rounded-lg text-slate-300 hover:text-amber-400 transition-colors active:scale-95"
+                          title="Copy rate details"
+                        >
+                          {copiedMandiId === (item.id || `${item.commodity}-${item.market}`) ? (
+                            <Check className="w-3.5 h-3.5 text-emerald-400" />
+                          ) : (
+                            <Copy className="w-3.5 h-3.5" />
+                          )}
+                        </button>
                         <button
                           onClick={() => handleOpenGoogleMaps(item.market, item.district, item.state)}
-                          className="px-2.5 py-1.5 bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 rounded-lg text-emerald-300 text-[11px] font-semibold inline-flex items-center gap-1 transition-colors hover:border-emerald-500"
+                          className="px-2 py-1.5 bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 rounded-lg text-emerald-300 text-[11px] font-semibold inline-flex items-center gap-1 transition-colors hover:border-emerald-500 active:scale-95"
                           title="Open Mandi in Google Maps"
                         >
                           <Navigation className="w-3 h-3 text-amber-400" />
@@ -755,14 +849,33 @@ export default function MandiPrices() {
                           </div>
                         </div>
 
-                        {/* Footer: Directions Button */}
-                        <button
-                          onClick={() => handleOpenGoogleMaps(item.market, item.district, item.state)}
-                          className="w-full py-2.5 bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 rounded-xl text-emerald-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 touch-manipulation cursor-pointer"
-                        >
-                          <Navigation className="w-3.5 h-3.5 text-amber-400" />
-                          <span>Navigate to Mandi ({item.computedDistanceKm} km away)</span>
-                        </button>
+                        {/* Footer: Directions & Share Rate Button */}
+                        <div className="flex items-center gap-2 pt-1">
+                          <button
+                            onClick={() => handleCopyMandiRate(item)}
+                            className="px-3 py-2 bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 rounded-xl text-slate-200 text-xs font-semibold flex items-center gap-1.5 transition-colors active:scale-95 shrink-0"
+                            title="Share rate details"
+                          >
+                            {copiedMandiId === (item.id || `${item.commodity}-${item.market}`) ? (
+                              <>
+                                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                                <span className="text-emerald-400 font-bold">Copied!</span>
+                              </>
+                            ) : (
+                              <>
+                                <Copy className="w-3.5 h-3.5 text-amber-400" />
+                                <span>Copy Rate</span>
+                              </>
+                            )}
+                          </button>
+                          <button
+                            onClick={() => handleOpenGoogleMaps(item.market, item.district, item.state)}
+                            className="flex-1 py-2 bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 rounded-xl text-emerald-300 text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-95 touch-manipulation cursor-pointer"
+                          >
+                            <Navigation className="w-3.5 h-3.5 text-amber-400" />
+                            <span>Navigate ({item.computedDistanceKm} km)</span>
+                          </button>
+                        </div>
 
                       </div>
                     </div>

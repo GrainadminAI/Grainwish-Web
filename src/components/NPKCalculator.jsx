@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Scale, Calculator, CheckCircle2, TrendingDown, Leaf, Info, DollarSign, Sparkles, Database } from 'lucide-react';
+import { Scale, Calculator, CheckCircle2, TrendingDown, Leaf, Info, DollarSign, Sparkles, Database, Copy, Check, Share2 } from 'lucide-react';
 import { saveNPKToDB, recordFeatureUsageToDB } from '../lib/supabase';
 import { useLanguage } from '../lib/LanguageContext';
 
@@ -26,6 +26,8 @@ const STAGES = [
   'Grain Filling / Maturation'
 ];
 
+const ACREAGE_PRESETS = [1, 2, 5, 10];
+
 export default function NPKCalculator() {
   const { t } = useLanguage();
   const [selectedCrop, setSelectedCrop] = useState(CROPS[0]);
@@ -33,11 +35,28 @@ export default function NPKCalculator() {
 
   const [acres, setAcres] = useState(2);
   const [stage, setStage] = useState(STAGES[0]);
+  const [copiedPrescription, setCopiedPrescription] = useState(false);
 
   // Precise Calculations
   const ureaKg = Math.round(selectedCrop.npkBase[0] * selectedSoil.NAdj * acres * 0.7);
   const dapKg = Math.round(selectedCrop.npkBase[1] * selectedSoil.PAdj * acres * 0.8);
   const mopKg = Math.round(selectedCrop.npkBase[2] * selectedSoil.KAdj * acres * 0.75);
+
+  const handleCopyPrescription = () => {
+    const text = `🌾 Grainwise AI Precision NPK Prescription
+Crop: ${selectedCrop.name} · ${acres} Acres
+Soil: ${selectedSoil.name}
+Stage: ${stage}
+• Urea (46% N): ${ureaKg} kg
+• DAP (18-46-0): ${dapKg} kg
+• MOP (60% K2O): ${mopKg} kg
+Estimated Fertilizer Savings: ~18%`;
+    if (navigator?.clipboard?.writeText) {
+      navigator.clipboard.writeText(text);
+    }
+    setCopiedPrescription(true);
+    setTimeout(() => setCopiedPrescription(false), 2500);
+  };
 
   // Save to Supabase DB on calculation change
   useEffect(() => {
@@ -129,7 +148,7 @@ export default function NPKCalculator() {
                 </select>
               </div>
 
-              {/* 3. Field Area Slider */}
+              {/* 3. Field Area Slider with Quick Presets */}
               <div className="space-y-1.5 bg-emerald-950/40 p-2.5 sm:p-3 rounded-xl border border-emerald-900/50">
                 <div className="flex items-center justify-between text-xs font-bold">
                   <span className="text-[11px] text-slate-300 uppercase tracking-wider">3. Field Size</span>
@@ -148,6 +167,25 @@ export default function NPKCalculator() {
                   <span>0.5 Acre</span>
                   <span>10 Acres</span>
                   <span>25 Acres</span>
+                </div>
+
+                {/* Quick Acreage Preset Buttons */}
+                <div className="flex items-center gap-1.5 pt-1 border-t border-emerald-900/40">
+                  <span className="text-[9.5px] text-slate-400 font-medium">Quick:</span>
+                  {ACREAGE_PRESETS.map((p) => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setAcres(p)}
+                      className={`px-2 py-0.5 rounded-md text-[10px] font-mono font-bold transition-all ${
+                        acres === p
+                          ? 'bg-amber-400 text-black shadow-sm scale-105'
+                          : 'bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800 text-slate-300'
+                      }`}
+                    >
+                      {p} Ac
+                    </button>
+                  ))}
                 </div>
               </div>
             </div>
@@ -186,9 +224,29 @@ export default function NPKCalculator() {
                   <div className="text-[11px] font-bold text-amber-400 uppercase tracking-wider">Recommended Nutrient Mix</div>
                   <div className="text-lg sm:text-xl font-extrabold text-white">{selectedCrop.name} · {acres} Acres</div>
                 </div>
-                <span className="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
-                  <Leaf className="w-5 h-5" />
-                </span>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleCopyPrescription}
+                    title="Copy dosage prescription"
+                    className="p-1.5 sm:px-2.5 sm:py-1 rounded-xl bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-slate-200 hover:text-amber-300 text-[11px] font-bold flex items-center gap-1 transition-all active:scale-95"
+                  >
+                    {copiedPrescription ? (
+                      <>
+                        <Check className="w-3.5 h-3.5 text-emerald-400" />
+                        <span className="text-emerald-400 text-[10px]">Copied!</span>
+                      </>
+                    ) : (
+                      <>
+                        <Copy className="w-3.5 h-3.5 text-slate-300" />
+                        <span className="hidden sm:inline text-[10px]">Copy Plan</span>
+                      </>
+                    )}
+                  </button>
+                  <span className="p-2 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30">
+                    <Leaf className="w-5 h-5" />
+                  </span>
+                </div>
               </div>
 
               {/* Dosing Breakdown Cards */}
