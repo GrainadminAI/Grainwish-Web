@@ -83,9 +83,18 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
     const handleCustomOpen = () => setIsChatOpen(true);
     window.addEventListener('open-ananya-ai', handleCustomOpen);
 
+    const handleVoiceOpen = () => {
+      setIsChatOpen(true);
+      setTimeout(() => {
+        toggleMic();
+      }, 350);
+    };
+    window.addEventListener('open-ananya-ai-voice', handleVoiceOpen);
+
     return () => {
       window.removeEventListener('hashchange', handleCheckHash);
       window.removeEventListener('open-ananya-ai', handleCustomOpen);
+      window.removeEventListener('open-ananya-ai-voice', handleVoiceOpen);
     };
   }, []);
 
@@ -152,7 +161,7 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
     ]);
   };
 
-  const handleSend = (customText) => {
+  const handleSend = (customText, isVoiceQuery = false) => {
     const textToSend = customText || inputText;
     if (!textToSend.trim()) return;
 
@@ -180,6 +189,12 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
       };
 
       setMessages(prev => [...prev, ananyaMsg]);
+
+      // Automatically speak out the answer with Indian female voice if queried by voice
+      if (isVoiceQuery) {
+        const textToSpeak = smartResponse.spokenSummary || smartResponse.text;
+        speakText(textToSpeak, selectedLang);
+      }
 
       // Persist to Supabase Database
       try {
@@ -220,7 +235,7 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
           const transcript = event.results[0]?.[0]?.transcript;
           if (transcript) {
             setInputText(transcript);
-            handleSend(transcript);
+            handleSend(transcript, true);
           }
           setIsMicActive(false);
         };
@@ -241,7 +256,7 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
     setIsMicActive(!isMicActive);
     if (!isMicActive) {
       setTimeout(() => {
-        handleSend("How to protect crops from leaf diseases and yellow rust?");
+        handleSend("How to protect crops from leaf diseases and yellow rust?", true);
         setIsMicActive(false);
       }, 1800);
     }
@@ -283,13 +298,16 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
           aria-label="Floating Ananya AI Agronomist Launcher"
           className="fixed bottom-20 md:bottom-6 right-3.5 md:right-6 z-50 flex items-center gap-2 animate-slide-up"
         >
-          {/* Subtle Callout Pill on Desktop */}
+          {/* Subtle Callout Pill on Desktop with Instant Voice Trigger */}
           <button
-            onClick={() => setIsChatOpen(true)}
+            onClick={() => {
+              setIsChatOpen(true);
+              setTimeout(() => toggleMic(), 350);
+            }}
             className="hidden sm:flex items-center gap-2 px-3.5 py-2 rounded-full bg-[#021d11]/95 hover:bg-[#042817] border border-amber-400/60 shadow-xl shadow-black/50 text-xs font-bold text-amber-300 whitespace-nowrap backdrop-blur-md transition-all hover:scale-105 active:scale-95 group touch-manipulation"
           >
-            <Sparkles className="w-3.5 h-3.5 text-amber-400 group-hover:rotate-12 transition-transform" />
-            <span>Ask Ananya AI (24/7)</span>
+            <Mic className="w-3.5 h-3.5 text-amber-400 animate-pulse group-hover:scale-110 transition-transform" />
+            <span>Talk to Ananya AI</span>
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
           </button>
 
@@ -578,9 +596,22 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
                         </div>
                       )}
 
-                      {/* Action Bar: Copy, WhatsApp */}
+                      {/* Action Bar: Listen (Voice), Copy, WhatsApp */}
                       <div className="flex items-center justify-between border-t border-emerald-900/70 pt-1.5 text-[9px] text-slate-400">
                         <div className="flex items-center gap-1.5">
+                          <button
+                            onClick={() => speakText(msg.spokenSummary || msg.text, msg.lang || selectedLang)}
+                            className={`px-2 py-0.5 rounded flex items-center gap-1 border transition-colors touch-manipulation active:scale-95 ${
+                              isSpeaking
+                                ? 'bg-amber-400 text-black border-amber-300 font-bold'
+                                : 'bg-emerald-950 hover:bg-emerald-900 text-slate-300 hover:text-white border border-emerald-800'
+                            }`}
+                            title="Listen to Ananya's voice prescription"
+                          >
+                            <Volume2 className={`w-2.5 h-2.5 ${isSpeaking ? 'animate-bounce text-black' : 'text-amber-400'}`} />
+                            <span>{isSpeaking ? 'Stop Voice' : 'Listen'}</span>
+                          </button>
+
                           <button
                             onClick={() => copyToClipboard(msg.text, i)}
                             className="px-2 py-0.5 rounded bg-emerald-950 hover:bg-emerald-900 text-slate-300 hover:text-white flex items-center gap-1 border border-emerald-800 transition-colors touch-manipulation"
@@ -622,6 +653,26 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
               </button>
             ))}
           </div>
+
+          {/* Active Listening Voice Banner */}
+          {isMicActive && (
+            <div className="px-3 py-2 bg-gradient-to-r from-red-950/90 via-amber-950/70 to-red-950/90 border-t border-red-500/60 flex items-center justify-between gap-2 text-xs shrink-0 animate-pulse">
+              <div className="flex items-center gap-2 text-amber-300 font-bold">
+                <span className="relative flex h-2.5 w-2.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75" />
+                  <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-red-500" />
+                </span>
+                <Mic className="w-4 h-4 text-amber-400 animate-bounce" />
+                <span>Listening in {selectedLang}... Speak now</span>
+              </div>
+              <button
+                onClick={toggleMic}
+                className="px-2 py-0.5 rounded bg-red-600 hover:bg-red-500 text-white font-extrabold text-[10px] uppercase tracking-wider active:scale-95 transition-all"
+              >
+                Stop
+              </button>
+            </div>
+          )}
 
           {/* Input Bar */}
           <div className="p-2.5 bg-[#02180d] border-t border-emerald-800/60 flex items-center gap-1.5 shrink-0">

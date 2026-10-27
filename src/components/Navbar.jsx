@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut } from 'lucide-react';
+import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut, Mic } from 'lucide-react';
 import { supabase, signOutUser, getLoggedInUser, recordFeatureUsageToDB } from '../lib/supabase';
 import AuthModal from './AuthModal';
 
@@ -117,8 +117,19 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
             <a href="#faq" className="px-2 xl:px-2.5 py-1 text-[11px] xl:text-xs font-semibold text-slate-300 hover:text-white hover:bg-emerald-800/40 rounded-full transition-all whitespace-nowrap">{t('nav_faq')}</a>
           </nav>
 
-          {/* Actions: 22 Languages & Download Button */}
+          {/* Actions: Voice AI, 22 Languages & Sign In */}
           <div className="hidden lg:flex items-center gap-1.5 xl:gap-2 shrink-0">
+            
+            {/* Quick Voice Assistance Trigger */}
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new CustomEvent('open-ananya-ai-voice'))}
+              className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black text-xs font-black transition-all shadow-md active:scale-95 whitespace-nowrap"
+              title="Talk to Ananya AI with Voice Assistance"
+            >
+              <Mic className="w-3.5 h-3.5 text-black shrink-0 animate-pulse" />
+              <span>Voice AI</span>
+            </button>
             
             {/* User Profile if Logged In / Sign In button if Not */}
             {currentUser ? (
@@ -285,6 +296,16 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
 
             {/* Complete Mobile Navigation Links */}
             <div className="grid grid-cols-2 gap-2 pb-3 border-b border-emerald-900/50">
+              <button
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  window.dispatchEvent(new CustomEvent('open-ananya-ai-voice'));
+                }}
+                className="col-span-2 py-2.5 px-3 rounded-xl text-xs font-black bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-black flex items-center justify-center gap-2 active:scale-95 transition-all shadow-md"
+              >
+                <Mic className="w-4 h-4 text-black animate-pulse" />
+                <span>Talk to Ananya AI (Voice Assistant)</span>
+              </button>
               <a href="#features" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-slate-200 hover:bg-emerald-900">Features</a>
               <a href="#diagnostics" onClick={() => setMobileMenuOpen(false)} className="px-3 py-2 rounded-xl text-xs font-semibold bg-emerald-950/60 text-amber-300 flex items-center gap-1.5 hover:bg-emerald-900">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" /> AI Scan
