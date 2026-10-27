@@ -35,15 +35,16 @@ export const INDIAN_LOCALE_MAP = {
 export const KNOWN_INDIAN_FEMALE_VOICES = [
   // Apple iOS / macOS
   'veena', 'lekha', 'kalyani', 'sangeeta', 'geeta',
-  // Microsoft Edge / Windows
+  // Microsoft Edge / Windows Neural & Standard
   'heera', 'neerja', 'swara', 'kalpana', 'shruti', 'sapna', 'pallavi', 'sandhya',
-  // Android / Google / Custom
+  'aarohi', 'tanishaa', 'dhwani', 'sobhana', 'raavi', 'gurmukhi', 'gul',
+  // Android / Google / Wavenet / Custom
   'priya', 'ananya', 'pooja', 'aditi', 'kavya', 'roshni', 'sunita', 'radha', 'kavita', 'manisha'
 ];
 
 // Male voice keywords to strictly avoid/penalize for female persona
 export const MALE_VOICE_KEYWORDS = [
-  'rishi', 'hemant', 'madhav', 'prabhat', 'male', 'man', 'david', 'guy', 'george', 'stefan', 'mark'
+  'rishi', 'hemant', 'madhav', 'prabhat', 'male', 'man', 'david', 'guy', 'george', 'stefan', 'mark', 'daniel', 'oliver'
 ];
 
 /**
@@ -113,7 +114,7 @@ export function scoreVoiceForIndianFemale(voice, targetLocale = 'en-IN') {
   const targetLower = targetLocale.toLowerCase().replace('_', '-');
   const targetBaseLang = targetLower.split('-')[0];
 
-  // 1. Male voice penalty — disqualify or severely demote
+  // 1. Male voice penalty — strictly disqualify or severely demote
   for (const male of MALE_VOICE_KEYWORDS) {
     if (nameLower.includes(male) || langLower.includes(male)) {
       return -500;
@@ -129,13 +130,13 @@ export function scoreVoiceForIndianFemale(voice, targetLocale = 'en-IN') {
 
   // 3. Indian locale affinity (en-IN, hi-IN, or any -in)
   if (langLower.endsWith('-in')) {
-    score += 40;
+    score += 50;
   }
 
   // 4. Known Indian Female Voice Names (Veena, Lekha, Heera, Swara, Neerja, etc.)
   for (const femaleName of KNOWN_INDIAR_OR_GLOBAL_FEMALE) {
     if (nameLower.includes(femaleName)) {
-      score += 120;
+      score += 140;
       break;
     }
   }
@@ -147,7 +148,7 @@ export function scoreVoiceForIndianFemale(voice, targetLocale = 'en-IN') {
 
   // 6. Neural / Natural / Premium voice boost
   if (nameLower.includes('natural') || nameLower.includes('online') || nameLower.includes('neural') || nameLower.includes('wavenet')) {
-    score += 20;
+    score += 25;
   }
 
   return score;
@@ -161,8 +162,9 @@ const KNOWN_INDIAR_OR_GLOBAL_FEMALE = [
 
 /**
  * Find the best available Indian female voice from the browser's voice list.
+ * Always ensures an authentic Indian female voice is selected in any language.
  * 
- * @param {string} language Selected language name (e.g. 'English', 'Hindi')
+ * @param {string} language Selected language name (e.g. 'English', 'Hindi', 'Tamil')
  * @param {SpeechSynthesisVoice[]} [providedVoices] Optional explicit list of voices
  * @returns {{ voice: SpeechSynthesisVoice|null, voiceName: string, lang: string, isFemale: true, isIndian: true }}
  */
@@ -192,12 +194,15 @@ export function getIndianFemaleVoice(language = 'English', providedVoices = null
     }
   }
 
-  // Fallback to en-IN or hi-IN if best voice score was negative
+  // Fallback to authentic Indian female voice (en-IN or hi-IN female) if best voice score was negative or non-Indian
   if (!bestVoice || highestScore < 0) {
     const indianFallback = voices.find(v => {
       const lang = (v.lang || '').toLowerCase().replace('_', '-');
       const name = (v.name || '').toLowerCase();
-      return (lang === 'en-in' || lang === 'hi-in' || lang.endsWith('-in')) && !name.includes('male') && !name.includes('rishi');
+      const isIndianLang = lang === 'en-in' || lang === 'hi-in' || lang.endsWith('-in');
+      const isMale = MALE_VOICE_KEYWORDS.some(m => name.includes(m));
+      const isKnownFemale = KNOWN_INDIAN_FEMALE_VOICES.some(f => name.includes(f)) || name.includes('female');
+      return isIndianLang && !isMale && (isKnownFemale || !name.includes('male'));
     });
 
     if (indianFallback) {
@@ -263,10 +268,14 @@ export function stopIndianFemaleSpeech() {
 /**
  * Pre-calibrated gentle cadence presets for Indian rural listeners & farmers
  */
+/**
+ * Pre-calibrated gentle cadence presets for Indian girl voice persona
+ * Tuned with authentic female Indian vocal pitch (1.10 - 1.15) and conversational cadence.
+ */
 export const VOICE_CADENCE_PRESETS = {
-  sweet: { rate: 0.76, pitch: 1.08, label: 'Gentle & Sweet (0.76x)' },
-  suitable: { rate: 0.82, pitch: 1.06, label: 'Suitable & Clear (0.82x)' },
-  standard: { rate: 0.90, pitch: 1.04, label: 'Standard (0.90x)' }
+  sweet: { rate: 0.84, pitch: 1.15, label: 'Sweet Indian Girl (0.84x)' },
+  suitable: { rate: 0.88, pitch: 1.12, label: 'Natural Indian Girl (0.88x)' },
+  standard: { rate: 0.92, pitch: 1.10, label: 'Standard Indian Female (0.92x)' }
 };
 
 /**
@@ -300,8 +309,8 @@ export function speakWithIndianFemaleVoice(text, options = {}) {
       utterance.voice = voiceSelection.voice;
     }
     utterance.lang = voiceSelection?.lang || INDIAN_LOCALE_MAP[targetLang] || 'en-IN';
-    utterance.rate = options.rate ?? 0.84;
-    utterance.pitch = options.pitch ?? 1.06;
+    utterance.rate = options.rate ?? 0.88; // Gentle, clear conversational pace
+    utterance.pitch = options.pitch ?? 1.12; // Authentic young Indian female vocal pitch
     utterance.volume = options.volume ?? 1.0;
 
     utterance.onstart = () => {

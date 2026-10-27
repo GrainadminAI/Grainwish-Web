@@ -1092,9 +1092,12 @@ export function LanguageProvider({ children }) {
         changeLanguage(result.language, true);
 
         const regionLabel = result.region ? `${result.region}` : 'your region';
-        const toastMsg = `📍 Detected ${regionLabel} — Switched to ${result.language} & translated page!`;
+        const carrierLabel = result.carrier ? `${result.carrier} · ` : '';
+        const icon = result.isMobile ? '📱' : '🌐';
+        const networkTitle = result.networkType || (result.isMobile ? 'Mobile Network' : 'Internet Connection');
+        const toastMsg = `${icon} Detected via ${carrierLabel}${networkTitle} (${regionLabel}) — Switched to ${result.language} & translated page!`;
         setLocationToast(toastMsg);
-        setTimeout(() => setLocationToast(null), 4500);
+        setTimeout(() => setLocationToast(null), 5000);
         return result;
       }
     } catch (err) {
@@ -1105,7 +1108,7 @@ export function LanguageProvider({ children }) {
     return null;
   };
 
-  // Initial load effect: apply full-page translation or auto-detect by location
+  // Initial load effect: apply full-page translation or auto-detect by location & mobile network
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -1118,14 +1121,16 @@ export function LanguageProvider({ children }) {
       const langCode = LANGUAGE_CODES[cleanLangName] || 'en';
       applyFullPageTranslation(langCode);
     } else if (!userExplicitlyChose) {
-      // First visit: Auto-detect language by location in background
+      // First visit: Auto-detect language by mobile network / internet connection
       detectUserRegionalLanguage(false).then((result) => {
         if (result && result.language && result.language !== 'English') {
           setDetectedLocationInfo(result);
           changeLanguage(result.language, false);
           const regionLabel = result.region ? `${result.region}` : 'your location';
-          setLocationToast(`📍 Auto-detected ${regionLabel}: Selected ${result.language}`);
-          setTimeout(() => setLocationToast(null), 4000);
+          const carrierLabel = result.carrier ? `${result.carrier} · ` : '';
+          const icon = result.isMobile ? '📱' : '🌐';
+          setLocationToast(`${icon} Detected via ${carrierLabel}${regionLabel}: Selected ${result.language}`);
+          setTimeout(() => setLocationToast(null), 4500);
         }
       }).catch(() => {});
     }

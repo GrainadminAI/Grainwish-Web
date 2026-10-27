@@ -129,43 +129,154 @@ export function matchStateToLanguage(regionName = '') {
 }
 
 /**
- * Fast IP-based geolocation lookup (zero permission prompt)
- * Uses high-availability free endpoints with a strict 2.5s timeout
+ * Detect client connection telemetry via Network Information API
+ * Identifies mobile cellular connections (4G, 5G, 3G) and broadband WiFi.
  */
-export async function detectLocationViaIP() {
-  const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
-  const timeoutId = controller ? setTimeout(() => controller.abort(), 2500) : null;
+export function getNetworkConnectionInfo() {
+  if (typeof navigator === 'undefined') {
+    return { type: 'unknown', isMobile: false, effectiveType: 'unknown' };
+  }
 
+  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (!conn) {
+    return { type: 'unknown', isMobile: false, effectiveType: 'unknown' };
+  }
+
+  const type = conn.type || '';
+  const effectiveType = conn.effectiveType || '';
+  const isMobile = type === 'cellular' || effectiveType === '4g' || effectiveType === '3g' || effectiveType === '2g';
+
+  return {
+    type: type || (isMobile ? 'cellular' : 'broadband'),
+    effectiveType: effectiveType || '4g',
+    isMobile
+  };
+}
+
+/**
+ * Clean & format mobile network carrier / ISP display name
+ */
+export function formatNetworkCarrier(carrierStr = '') {
+  if (!carrierStr) return 'Internet';
+  if (/jio/i.test(carrierStr)) return 'Jio 4G/5G';
+  if (/airtel/i.test(carrierStr)) return 'Airtel';
+  if (/vodafone|idea|\bvi\b/i.test(carrierStr)) return 'Vi Cellular';
+  if (/bsnl/i.test(carrierStr)) return 'BSNL';
+  if (/act\s*fiber/i.test(carrierStr)) return 'ACT Fibernet';
+  if (/tata/i.test(carrierStr)) return 'Tata Tele';
+  return carrierStr.split(',')[0].replace(/^AS\d+\s*/i, '').trim();
+}
+
+/**
+ * Detect location via Internet Connections & Mobile Network Operators.
+ * Multi-provider strategy: ipwho.is (instant zero-limit), ipapi.co (rich telemetry), bigdatacloud.
+ */
+export async function detectLocationViaNetwork() {
+  const connectionInfo = getNetworkConnectionInfo();
+
+  // Provider 1: ipwho.is (fast, high availability, no rate-limits)
   try {
-    // 1st candidate: ipapi.co
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeout = controller ? setTimeout(() => controller.abort(), 2200) : null;
+    const res = await fetch('https://ipwho.is/', {
+      signal: controller?.signal
+    });
+    if (timeout) clearTimeout(timeout);
+
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.success !== false) {
+        const region = data.region || data.city || '';
+        const country = data.country || '';
+        const rawCarrier = data.connection?.isp || data.connection?.org || '';
+        const carrier = formatNetworkCarrier(rawCarrier);
+        const isMobile = connectionInfo.isMobile || /jio|airtel|cellular|mobile|vodafone|vi|idea|bsnl mobile|telecom/i.test(rawCarrier);
+        const networkType = isMobile ? 'Mobile Network' : 'Internet Connection';
+        const lang = matchStateToLanguage(region);
+
+        if (lang) {
+          return {
+            language: lang,
+            region,
+            country,
+            carrier,
+            isMobile,
+            networkType,
+            source: isMobile ? 'mobile_network' : 'internet_connection'
+          };
+        }
+        if (data.country_code === 'IN') {
+          return {
+            language: 'Hindi',
+            region: region || 'India',
+            country: 'India',
+            carrier,
+            isMobile,
+            networkType,
+            source: isMobile ? 'mobile_network_india' : 'internet_connection_india'
+          };
+        }
+      }
+    }
+  } catch {
+    // Continue to next provider
+  }
+
+  // Provider 2: ipapi.co (detailed ASN and organizational telemetry)
+  try {
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeout = controller ? setTimeout(() => controller.abort(), 2200) : null;
     const res = await fetch('https://ipapi.co/json/', {
       signal: controller?.signal,
       headers: { 'Accept': 'application/json' }
     });
-    if (timeoutId) clearTimeout(timeoutId);
+    if (timeout) clearTimeout(timeout);
 
     if (res.ok) {
       const data = await res.json();
-      const region = data.region || data.region_name || data.city;
-      const country = data.country_name || data.country_code;
+      const region = data.region || data.region_name || data.city || '';
+      const country = data.country_name || data.country_code || '';
+      const rawCarrier = data.org || data.asn || '';
+      const carrier = formatNetworkCarrier(rawCarrier);
+      const isMobile = connectionInfo.isMobile || /jio|airtel|cellular|mobile|vodafone|vi|idea|bsnl mobile|telecom/i.test(rawCarrier);
+      const networkType = isMobile ? 'Mobile Network' : 'Internet Connection';
       const lang = matchStateToLanguage(region);
+
       if (lang) {
         return {
           language: lang,
-          region: region,
-          country: country,
-          source: 'ip'
+          region,
+          country,
+          carrier,
+          isMobile,
+          networkType,
+          source: isMobile ? 'mobile_network' : 'internet_connection'
         };
       }
-      if (data.country_code === 'IN' && !lang) {
-        return { language: 'Hindi', region: region || 'India', country: 'India', source: 'ip_default' };
+      if (data.country_code === 'IN') {
+        return {
+          language: 'Hindi',
+          region: region || 'India',
+          country: 'India',
+          carrier,
+          isMobile,
+          networkType,
+          source: isMobile ? 'mobile_network_india' : 'internet_connection_india'
+        };
       }
     }
-  } catch (err) {
-    // Timeout or network error - fall through silently
+  } catch {
+    // Fall through
   }
 
   return null;
+}
+
+/**
+ * Fast IP-based geolocation lookup (wrapper for backwards compatibility)
+ */
+export async function detectLocationViaIP() {
+  return detectLocationViaNetwork();
 }
 
 /**
@@ -242,13 +353,13 @@ export function detectLanguageFromBrowser() {
 }
 
 /**
- * Master Language Detection:
- * 1. Checks GPS if requested / allowed
- * 2. Checks fast IP location
+ * Master Language & Location Detection:
+ * 1. Checks Mobile Network & Internet Connection Telemetry (zero-permission)
+ * 2. Checks GPS if requested / allowed
  * 3. Falls back to browser locale / Indian timezone
  * 
  * @param {boolean} [requestGPS=false] If true, requests browser GPS coordinates
- * @returns {Promise<{ language: string, region: string|null, source: string }>}
+ * @returns {Promise<{ language: string, region: string|null, carrier?: string, isMobile?: boolean, source: string }>}
  */
 export async function detectUserRegionalLanguage(requestGPS = false) {
   // 1. GPS if explicit user request
@@ -259,10 +370,10 @@ export async function detectUserRegionalLanguage(requestGPS = false) {
     }
   }
 
-  // 2. IP lookup
-  const ipResult = await detectLocationViaIP();
-  if (ipResult && ipResult.language) {
-    return ipResult;
+  // 2. Internet Connection & Mobile Network Detection
+  const networkResult = await detectLocationViaNetwork();
+  if (networkResult && networkResult.language) {
+    return networkResult;
   }
 
   // 3. Browser locale fallback

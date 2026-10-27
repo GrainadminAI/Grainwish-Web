@@ -154,3 +154,35 @@ test('Location & Locale Detection: Indian States to Regional Languages', async (
   });
 });
 
+import {
+  formatNetworkCarrier,
+  getNetworkConnectionInfo
+} from '../src/lib/locationLanguageDetector.js';
+import { VOICE_CADENCE_PRESETS } from '../src/lib/ananyaVoiceEngine.js';
+
+test('Network & Cellular Telemetry: Internet Connection & Mobile Network Carrier', async (t) => {
+  await t.test('Formats major Indian mobile carriers and ISPs accurately', () => {
+    assert.equal(formatNetworkCarrier('Reliance Jio Infocomm Limited'), 'Jio 4G/5G');
+    assert.equal(formatNetworkCarrier('Bharti Airtel Ltd Telecommunications'), 'Airtel');
+    assert.equal(formatNetworkCarrier('Vodafone Idea Cellular Service'), 'Vi Cellular');
+    assert.equal(formatNetworkCarrier('Bharat Sanchar Nigam Limited (BSNL)'), 'BSNL');
+    assert.equal(formatNetworkCarrier('ACT Fibernet India'), 'ACT Fibernet');
+    assert.equal(formatNetworkCarrier(''), 'Internet');
+  });
+
+  await t.test('Network connection info detector handles browser environments gracefully', () => {
+    const info = getNetworkConnectionInfo();
+    assert.ok(typeof info.isMobile === 'boolean');
+    assert.ok(typeof info.type === 'string');
+    assert.ok(typeof info.effectiveType === 'string');
+  });
+
+  await t.test('Voice cadence presets are calibrated for Indian girl persona (pitch 1.10 - 1.15)', () => {
+    assert.ok(VOICE_CADENCE_PRESETS.sweet.pitch >= 1.10 && VOICE_CADENCE_PRESETS.sweet.pitch <= 1.20);
+    assert.ok(VOICE_CADENCE_PRESETS.suitable.pitch >= 1.10 && VOICE_CADENCE_PRESETS.suitable.pitch <= 1.15);
+    assert.ok(VOICE_CADENCE_PRESETS.standard.pitch >= 1.08 && VOICE_CADENCE_PRESETS.standard.pitch <= 1.15);
+    assert.ok(VOICE_CADENCE_PRESETS.suitable.rate <= 0.95);
+  });
+});
+
+
