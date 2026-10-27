@@ -105,3 +105,52 @@ test('Ananya Voice Engine: Voice Matching & Heuristic Scoring', async (t) => {
     );
   });
 });
+
+import {
+  INDIAN_STATE_TO_LANGUAGE,
+  BROWSER_LOCALE_TO_LANGUAGE,
+  matchStateToLanguage,
+  detectLanguageFromBrowser
+} from '../src/lib/locationLanguageDetector.js';
+
+test('Location & Locale Detection: Indian States to Regional Languages', async (t) => {
+  await t.test('Accurately maps Indian agrarian states to their native official languages', () => {
+    assert.equal(matchStateToLanguage('Punjab'), 'Punjabi');
+    assert.equal(matchStateToLanguage('Tamil Nadu'), 'Tamil');
+    assert.equal(matchStateToLanguage('Andhra Pradesh'), 'Telugu');
+    assert.equal(matchStateToLanguage('Telangana'), 'Telugu');
+    assert.equal(matchStateToLanguage('Maharashtra'), 'Marathi');
+    assert.equal(matchStateToLanguage('Gujarat'), 'Gujarati');
+    assert.equal(matchStateToLanguage('West Bengal'), 'Bengali');
+    assert.equal(matchStateToLanguage('Karnataka'), 'Kannada');
+    assert.equal(matchStateToLanguage('Kerala'), 'Malayalam');
+    assert.equal(matchStateToLanguage('Odisha'), 'Odia');
+    assert.equal(matchStateToLanguage('Assam'), 'Assamese');
+    assert.equal(matchStateToLanguage('Uttar Pradesh'), 'Hindi');
+    assert.equal(matchStateToLanguage('Madhya Pradesh'), 'Hindi');
+    assert.equal(matchStateToLanguage('Haryana'), 'Hindi');
+    assert.equal(matchStateToLanguage('Bihar'), 'Hindi');
+    assert.equal(matchStateToLanguage('Rajasthan'), 'Hindi');
+  });
+
+  await t.test('Handles partial and lowercase state variations', () => {
+    assert.equal(matchStateToLanguage('State of Punjab'), 'Punjabi');
+    assert.equal(matchStateToLanguage('gujarat state'), 'Gujarati');
+    assert.equal(matchStateToLanguage('tamilnadu'), 'Tamil');
+  });
+
+  await t.test('Maps BCP-47 browser locales to regional languages', () => {
+    assert.equal(BROWSER_LOCALE_TO_LANGUAGE['hi'], 'Hindi');
+    assert.equal(BROWSER_LOCALE_TO_LANGUAGE['ta-in'], 'Tamil');
+    assert.equal(BROWSER_LOCALE_TO_LANGUAGE['te-in'], 'Telugu');
+    assert.equal(BROWSER_LOCALE_TO_LANGUAGE['pa-in'], 'Punjabi');
+    assert.equal(BROWSER_LOCALE_TO_LANGUAGE['mr-in'], 'Marathi');
+    assert.equal(BROWSER_LOCALE_TO_LANGUAGE['bn-in'], 'Bengali');
+  });
+
+  await t.test('Browser fallback detector returns supported language string', () => {
+    const lang = detectLanguageFromBrowser();
+    assert.ok(typeof lang === 'string' && lang.length > 0);
+  });
+});
+

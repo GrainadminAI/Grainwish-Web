@@ -956,10 +956,30 @@ export const LANGUAGE_CODES = {
   Sanskrit: 'sa'
 };
 
-// Helper for dynamic script injection
-function loadGoogleTranslateScript(targetCode) {
+import { detectUserRegionalLanguage } from './locationLanguageDetector';
+
+/**
+ * Robust full-page Google Translate script injector & trigger
+ */
+export function applyFullPageTranslation(targetCode) {
   if (typeof window === 'undefined') return;
 
+  const cookieDomain = window.location.hostname;
+  const cookiePath = '/';
+
+  // 1. Set Google Translate cookies
+  if (!targetCode || targetCode === 'en') {
+    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${cookiePath};`;
+    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${cookiePath}; domain=${cookieDomain};`;
+    document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=${cookiePath}; domain=.${cookieDomain};`;
+  } else {
+    const cookieVal = `/en/${targetCode}`;
+    document.cookie = `googtrans=${cookieVal}; path=${cookiePath};`;
+    document.cookie = `googtrans=${cookieVal}; path=${cookiePath}; domain=${cookieDomain};`;
+    document.cookie = `googtrans=${cookieVal}; path=${cookiePath}; domain=.${cookieDomain};`;
+  }
+
+  // 2. Initialize Google Translate Element callback if not already present
   if (!window.googleTranslateElementInit) {
     window.googleTranslateElementInit = function() {
       if (window.google && window.google.translate) {
@@ -968,33 +988,37 @@ function loadGoogleTranslateScript(targetCode) {
           autoDisplay: false,
           layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
         }, 'google_translate_element');
-
-        if (targetCode && targetCode !== 'en') {
-          setTimeout(() => {
-            const selectElem = document.querySelector('.goog-te-combo');
-            if (selectElem) {
-              selectElem.value = targetCode;
-              selectElem.dispatchEvent(new Event('change', { bubbles: true }));
-            }
-          }, 600);
-        }
       }
     };
   }
 
+  // 3. Inject script if not loaded
   if (!document.getElementById('google-translate-script')) {
     const script = document.createElement('script');
     script.id = 'google-translate-script';
     script.type = 'text/javascript';
     script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
     document.body.appendChild(script);
-  } else if (targetCode) {
+  }
+
+  // 4. Repeated polling (every 150ms for up to 4s) to ensure .goog-te-combo is updated
+  let attempts = 0;
+  const maxAttempts = 25;
+  const pollInterval = setInterval(() => {
+    attempts++;
     const selectElem = document.querySelector('.goog-te-combo');
     if (selectElem) {
-      selectElem.value = targetCode;
-      selectElem.dispatchEvent(new Event('change', { bubbles: true }));
+      const codeToApply = targetCode || 'en';
+      if (selectElem.value !== codeToApply) {
+        selectElem.value = codeToApply;
+        selectElem.dispatchEvent(new Event('change', { bubbles: true }));
+        selectElem.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      clearInterval(pollInterval);
+    } else if (attempts >= maxAttempts) {
+      clearInterval(pollInterval);
     }
-  }
+  }, 150);
 }
 
 // Fallback logic for translations
@@ -1022,50 +1046,99 @@ export function LanguageProvider({ children }) {
     return 'English';
   });
 
-  const changeLanguage = (newLang) => {
+  const [isDetectingLocation, setIsDetectingLocation] = useState(false);
+  const [detectedLocationInfo, setDetectedLocationInfo] = useState(null);
+  const [locationToast, setLocationToast] = useState(null);
+
+  const changeLanguage = (newLang, isManualUserChoice = true) => {
     // Normalize language string if passed like "Hindi (हिंदी)"
     const cleanLangName = newLang.split(' ')[0];
     setSelectedLangState(cleanLangName);
 
     if (typeof window !== 'undefined') {
       localStorage.setItem('grainwise_lang', cleanLangName);
+      if (isManualUserChoice) {
+        localStorage.setItem('grainwise_lang_user_chosen', 'true');
+      }
 
       const langCode = LANGUAGE_CODES[cleanLangName] || 'en';
-
-      if (langCode === 'en') {
-        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-        document.cookie = 'googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=' + window.location.hostname + ';';
-        const selectElem = document.querySelector('.goog-te-combo');
-        if (selectElem) {
-          selectElem.value = 'en';
-          selectElem.dispatchEvent(new Event('change', { bubbles: true }));
-        }
-      } else {
-        const cookieVal = '/en/' + langCode;
-        document.cookie = 'googtrans=' + cookieVal + '; path=/;';
-        document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=' + window.location.hostname + ';';
-        loadGoogleTranslateScript(langCode);
-      }
+      applyFullPageTranslation(langCode);
     }
   };
 
-  useEffect(() => {
-    if (typeof window !== 'undefined' && selectedLang && selectedLang !== 'English') {
-      const cleanLangName = selectedLang.split(' ')[0];
-      const langCode = LANGUAGE_CODES[cleanLangName] || 'en';
-      if (langCode !== 'en') {
-        const cookieVal = '/en/' + langCode;
-        document.cookie = 'googtrans=' + cookieVal + '; path=/;';
-        document.cookie = 'googtrans=' + cookieVal + '; path=/; domain=' + window.location.hostname + ';';
-        loadGoogleTranslateScript(langCode);
+  /**
+   * Location-to-Language Detection action
+   */
+  const detectLocationAndSetLanguage = async (requestGPS = false) => {
+    setIsDetectingLocation(true);
+    try {
+      const result = await detectUserRegionalLanguage(requestGPS);
+      if (result && result.language) {
+        setDetectedLocationInfo(result);
+        changeLanguage(result.language, true);
+
+        const regionLabel = result.region ? `${result.region}` : 'your region';
+        const toastMsg = `📍 Detected ${regionLabel} — Switched to ${result.language} & translated page!`;
+        setLocationToast(toastMsg);
+        setTimeout(() => setLocationToast(null), 4500);
+        return result;
       }
+    } catch (err) {
+      console.warn('Location language detection error:', err);
+    } finally {
+      setIsDetectingLocation(false);
+    }
+    return null;
+  };
+
+  // Initial load effect: apply full-page translation or auto-detect by location
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const savedLang = localStorage.getItem('grainwise_lang');
+    const userExplicitlyChose = localStorage.getItem('grainwise_lang_user_chosen');
+
+    if (savedLang && savedLang !== 'English') {
+      // User previously had a language saved, reapply translation
+      const cleanLangName = savedLang.split(' ')[0];
+      const langCode = LANGUAGE_CODES[cleanLangName] || 'en';
+      applyFullPageTranslation(langCode);
+    } else if (!userExplicitlyChose) {
+      // First visit: Auto-detect language by location in background
+      detectUserRegionalLanguage(false).then((result) => {
+        if (result && result.language && result.language !== 'English') {
+          setDetectedLocationInfo(result);
+          changeLanguage(result.language, false);
+          const regionLabel = result.region ? `${result.region}` : 'your location';
+          setLocationToast(`📍 Auto-detected ${regionLabel}: Selected ${result.language}`);
+          setTimeout(() => setLocationToast(null), 4000);
+        }
+      }).catch(() => {});
     }
   }, []);
 
   const t = (key, fallbackText) => getTranslation(selectedLang, key, fallbackText);
 
   return (
-    <LanguageContext.Provider value={{ selectedLang, setSelectedLang: changeLanguage, t, languageCodes: LANGUAGE_CODES }}>
+    <LanguageContext.Provider
+      value={{
+        selectedLang,
+        setSelectedLang: changeLanguage,
+        t,
+        languageCodes: LANGUAGE_CODES,
+        detectLocationAndSetLanguage,
+        isDetectingLocation,
+        detectedLocationInfo,
+        locationToast
+      }}
+    >
+      {/* Auto-location Detection Floating Toast Notification */}
+      {locationToast && (
+        <div className="fixed top-20 right-4 z-50 animate-bounce max-w-sm px-4 py-2.5 bg-emerald-950/95 border-2 border-amber-400 text-amber-200 text-xs font-bold rounded-2xl shadow-2xl flex items-center gap-2 backdrop-blur-md">
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
+          <span>{locationToast}</span>
+        </div>
+      )}
       {children}
     </LanguageContext.Provider>
   );

@@ -122,9 +122,9 @@ export function scoreVoiceForIndianFemale(voice, targetLocale = 'en-IN') {
 
   // 2. Exact target locale match (e.g. 'hi-in' matches 'hi-in')
   if (langLower === targetLower) {
-    score += 80;
+    score += 260;
   } else if (langLower.startsWith(targetBaseLang)) {
-    score += 50;
+    score += 180;
   }
 
   // 3. Indian locale affinity (en-IN, hi-IN, or any -in)
@@ -133,7 +133,7 @@ export function scoreVoiceForIndianFemale(voice, targetLocale = 'en-IN') {
   }
 
   // 4. Known Indian Female Voice Names (Veena, Lekha, Heera, Swara, Neerja, etc.)
-  for (const femaleName of KNOWN_INDIAN_FEMALE_VOICES) {
+  for (const femaleName of KNOWN_INDIAR_OR_GLOBAL_FEMALE) {
     if (nameLower.includes(femaleName)) {
       score += 120;
       break;
@@ -152,6 +152,12 @@ export function scoreVoiceForIndianFemale(voice, targetLocale = 'en-IN') {
 
   return score;
 }
+
+// Global list combining regional and known Indian female voices
+const KNOWN_INDIAR_OR_GLOBAL_FEMALE = [
+  ...KNOWN_INDIAN_FEMALE_VOICES,
+  'aarohi', 'tanishaa', 'dhwani', 'sobhana', 'raavi', 'gurmukhi', 'gul'
+];
 
 /**
  * Find the best available Indian female voice from the browser's voice list.
@@ -213,12 +219,29 @@ export function getIndianFemaleVoice(language = 'English', providedVoices = null
 }
 
 /**
- * Play a gentle, natural Web Audio acoustic chime before speaking
+ * Play a gentle, natural Web Audio acoustic harmonic chime before speaking
  * (Signals Ananya AI assistant is speaking and provides instant tactile feedback)
  */
 export function playChimeTone() {
-  // Website audio disabled per user request
-  return;
+  if (typeof window === 'undefined') return;
+  try {
+    const AudioCtx = window.AudioContext || window.webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(587.33, ctx.currentTime); // D5 note
+    osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.12); // A5 note
+    gain.gain.setValueAtTime(0.035, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.22);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.22);
+  } catch {
+    // Ignore audio permission restrictions silently
+  }
 }
 
 /**
@@ -228,6 +251,9 @@ export function stopIndianFemaleSpeech() {
   if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
     try {
       window.speechSynthesis.cancel();
+      if (window.__currentAnanyaUtterance) {
+        window.__currentAnanyaUtterance = null;
+      }
     } catch {
       // Ignore errors silently
     }
@@ -244,20 +270,70 @@ export const VOICE_CADENCE_PRESETS = {
 };
 
 /**
- * Speak text with Ananya's calibrated Indian female voice
- * Muted/silenced per user request ("remove the website audio")
+ * Speak text with Ananya's calibrated Indian female voice in the user's selected language
+ * 
+ * @param {string} text Plain or agronomic text to speak
+ * @param {Object} [options={}] Options including language, rate, pitch, onStart, onEnd, onError
+ * @returns {{ utterance: SpeechSynthesisUtterance, voice: SpeechSynthesisVoice|null } | null}
  */
 export function speakWithIndianFemaleVoice(text, options = {}) {
-  // Cancel any active speech synthesis and remain silent
-  if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-    try {
-      window.speechSynthesis.cancel();
-    } catch {
-      // Ignore
+  if (typeof window === 'undefined' || !('speechSynthesis' in window)) {
+    if (options && options.onEnd) options.onEnd();
+    return null;
+  }
+
+  const cleanedText = cleanAgronomyTextForSpeech(text);
+  if (!cleanedText) {
+    if (options && options.onEnd) options.onEnd();
+    return null;
+  }
+
+  try {
+    // Cancel any ongoing speech cleanly
+    window.speechSynthesis.cancel();
+
+    const utterance = new SpeechSynthesisUtterance(cleanedText);
+    const targetLang = options.language || 'English';
+    const voiceSelection = getIndianFemaleVoice(targetLang);
+
+    if (voiceSelection?.voice) {
+      utterance.voice = voiceSelection.voice;
     }
+    utterance.lang = voiceSelection?.lang || INDIAN_LOCALE_MAP[targetLang] || 'en-IN';
+    utterance.rate = options.rate ?? 0.84;
+    utterance.pitch = options.pitch ?? 1.06;
+    utterance.volume = options.volume ?? 1.0;
+
+    utterance.onstart = () => {
+      if (options.onStart) options.onStart();
+    };
+
+    utterance.onend = () => {
+      if (window.__currentAnanyaUtterance === utterance) {
+        window.__currentAnanyaUtterance = null;
+      }
+      if (options.onEnd) options.onEnd();
+    };
+
+    utterance.onerror = (e) => {
+      if (window.__currentAnanyaUtterance === utterance) {
+        window.__currentAnanyaUtterance = null;
+      }
+      if (options.onError) options.onError(e);
+      if (options.onEnd) options.onEnd();
+    };
+
+    // Keep global reference to prevent Chrome garbage collection pauses
+    window.__currentAnanyaUtterance = utterance;
+
+    // Play tactile gentle audio chime
+    playChimeTone();
+
+    window.speechSynthesis.speak(utterance);
+    return { utterance, voice: voiceSelection?.voice };
+  } catch (err) {
+    console.warn('Speech synthesis error:', err);
+    if (options && options.onEnd) options.onEnd();
+    return null;
   }
-  if (options && options.onEnd) {
-    options.onEnd();
-  }
-  return null;
 }

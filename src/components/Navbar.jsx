@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut, Mic } from 'lucide-react';
+import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut, Mic, MapPin } from 'lucide-react';
 import { supabase, signOutUser, getLoggedInUser, recordFeatureUsageToDB } from '../lib/supabase';
 import AuthModal from './AuthModal';
 
@@ -16,7 +16,7 @@ import { useLanguage } from '../lib/LanguageContext';
 import { useBrandTheme } from '../lib/BrandThemeContext';
 
 export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedLang }) {
-  const { t } = useLanguage();
+  const { t, detectLocationAndSetLanguage, isDetectingLocation } = useLanguage();
   const { currentOption } = useBrandTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -171,7 +171,24 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
               </button>
 
               {langDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-52 max-h-72 overflow-y-auto bg-[#042013] border border-emerald-600/40 rounded-xl shadow-2xl z-50 p-1 divide-y divide-emerald-900/40">
+                <div className="absolute right-0 mt-2 w-56 max-h-80 overflow-y-auto bg-[#042013] border border-emerald-600/40 rounded-xl shadow-2xl z-50 p-1 divide-y divide-emerald-900/40">
+                  {/* Auto-detect Location CTA */}
+                  <div className="p-1">
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await detectLocationAndSetLanguage(true);
+                        setLangDropdownOpen(false);
+                      }}
+                      disabled={isDetectingLocation}
+                      className="w-full flex items-center justify-center gap-1.5 px-2.5 py-2 rounded-lg bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-black text-xs transition-all shadow-md active:scale-95 disabled:opacity-50"
+                      title="Detect user location and switch to regional language"
+                    >
+                      <MapPin className={`w-3.5 h-3.5 text-black shrink-0 ${isDetectingLocation ? 'animate-bounce' : ''}`} />
+                      <span>{isDetectingLocation ? 'Detecting Location...' : 'Auto-Detect by Location'}</span>
+                    </button>
+                  </div>
+
                   <div className="px-3 py-1.5 text-[10px] font-semibold text-amber-400 uppercase tracking-wider">
                     22 Languages Supported
                   </div>
@@ -320,10 +337,24 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
 
             {/* Mobile Language Selector */}
             <div className="space-y-1.5">
-              <label className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
-                <Globe2 className="w-3.5 h-3.5 text-emerald-400" />
-                <span>Select Language (22 Native Languages):</span>
-              </label>
+              <div className="flex items-center justify-between">
+                <label className="text-[11px] font-semibold text-slate-400 flex items-center gap-1">
+                  <Globe2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Select Language (22 Languages):</span>
+                </label>
+                <button
+                  type="button"
+                  onClick={async () => {
+                    await detectLocationAndSetLanguage(true);
+                  }}
+                  disabled={isDetectingLocation}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black text-[11px] font-black active:scale-95 transition-all shadow-sm disabled:opacity-50"
+                  title="Auto-detect language from your current GPS/location"
+                >
+                  <MapPin className={`w-3 h-3 text-black ${isDetectingLocation ? 'animate-bounce' : ''}`} />
+                  <span>{isDetectingLocation ? 'Detecting...' : 'Auto-Detect'}</span>
+                </button>
+              </div>
               <select
                 value={selectedLang}
                 onChange={(e) => {

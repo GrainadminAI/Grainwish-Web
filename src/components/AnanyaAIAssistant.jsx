@@ -3,7 +3,7 @@ import {
   Bot, Mic, MicOff, Send, Globe, Volume2, Sparkles,
   CheckCircle2, User, Share2, Copy, Check, Pill, Zap,
   Leaf, TrendingUp, Landmark, HelpCircle, ArrowRight, X,
-  MessageCircle, Minimize2, RotateCcw
+  MessageCircle, Minimize2, RotateCcw, MapPin
 } from 'lucide-react';
 import { saveAnanyaChatToDB, recordFeatureUsageToDB } from '../lib/supabase';
 import { useLanguage, SUPPORTED_LANGUAGES } from '../lib/LanguageContext';
@@ -64,6 +64,7 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
 
   const [inputText, setInputText] = useState('');
   const [isSpeaking, setIsSpeaking] = useState(false);
+  const [speakingIndex, setSpeakingIndex] = useState(null);
   const [isMicActive, setIsMicActive] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState(null);
   const messagesEndRef = useRef(null);
@@ -125,31 +126,43 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
     });
   }, [selectedLang]);
 
-  // Text-To-Speech Synthesis using Ananya Indian Female Voice Engine
-  const speakText = (text, lang) => {
+  // Text-To-Speech Synthesis using Ananya Indian Female Voice Engine in user's selected language
+  const speakText = (text, lang, msgIndex = null) => {
     if (typeof window === 'undefined' || !('speechSynthesis' in window)) return;
 
-    if (isSpeaking) {
+    if (isSpeaking && (msgIndex === null || speakingIndex === msgIndex)) {
       stopIndianFemaleSpeech();
       setIsSpeaking(false);
+      setSpeakingIndex(null);
       return;
     }
 
+    stopIndianFemaleSpeech();
     const cadence = VOICE_CADENCE_PRESETS[voiceCadence] || VOICE_CADENCE_PRESETS.suitable;
 
     speakWithIndianFemaleVoice(text, {
       language: lang || selectedLang,
       rate: cadence.rate,
       pitch: cadence.pitch,
-      onStart: () => setIsSpeaking(true),
-      onEnd: () => setIsSpeaking(false),
-      onError: () => setIsSpeaking(false)
+      onStart: () => {
+        setIsSpeaking(true);
+        setSpeakingIndex(msgIndex);
+      },
+      onEnd: () => {
+        setIsSpeaking(false);
+        setSpeakingIndex(null);
+      },
+      onError: () => {
+        setIsSpeaking(false);
+        setSpeakingIndex(null);
+      }
     });
   };
 
   const handleClearChat = () => {
     stopIndianFemaleSpeech();
     setIsSpeaking(false);
+    setSpeakingIndex(null);
     setMessages([
       {
         sender: 'ananya',
@@ -409,6 +422,18 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
                 ))}
               </select>
 
+              {/* Location auto-detect button inside chat */}
+              <button
+                type="button"
+                onClick={() => langContext.detectLocationAndSetLanguage?.(true)}
+                disabled={langContext.isDetectingLocation}
+                className="p-1.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800 text-amber-400 hover:text-amber-300 transition-colors touch-manipulation active:scale-95 disabled:opacity-50"
+                title="Auto-detect language from your location"
+                aria-label="Auto-detect language from location"
+              >
+                <MapPin className={`w-3.5 h-3.5 ${langContext.isDetectingLocation ? 'animate-bounce text-amber-300' : ''}`} />
+              </button>
+
               {/* Clear Chat Button */}
               <button
                 type="button"
@@ -600,16 +625,17 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
                       <div className="flex items-center justify-between border-t border-emerald-900/70 pt-1.5 text-[9px] text-slate-400">
                         <div className="flex items-center gap-1.5">
                           <button
-                            onClick={() => speakText(msg.spokenSummary || msg.text, msg.lang || selectedLang)}
+                            type="button"
+                            onClick={() => speakText(msg.spokenSummary || msg.text, msg.lang || selectedLang, i)}
                             className={`px-2 py-0.5 rounded flex items-center gap-1 border transition-colors touch-manipulation active:scale-95 ${
-                              isSpeaking
-                                ? 'bg-amber-400 text-black border-amber-300 font-bold'
+                              isSpeaking && speakingIndex === i
+                                ? 'bg-amber-400 text-black border-amber-300 font-bold shadow-sm'
                                 : 'bg-emerald-950 hover:bg-emerald-900 text-slate-300 hover:text-white border border-emerald-800'
                             }`}
                             title="Listen to Ananya's voice prescription"
                           >
-                            <Volume2 className={`w-2.5 h-2.5 ${isSpeaking ? 'animate-bounce text-black' : 'text-amber-400'}`} />
-                            <span>{isSpeaking ? 'Stop Voice' : 'Listen'}</span>
+                            <Volume2 className={`w-2.5 h-2.5 ${isSpeaking && speakingIndex === i ? 'animate-bounce text-black' : 'text-amber-400'}`} />
+                            <span>{isSpeaking && speakingIndex === i ? 'Stop' : 'Listen'}</span>
                           </button>
 
                           <button
