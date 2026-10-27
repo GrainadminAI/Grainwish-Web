@@ -3,7 +3,7 @@ import {
   Bot, Mic, MicOff, Send, Globe, Volume2, Sparkles,
   CheckCircle2, User, Share2, Copy, Check, Pill, Zap,
   Leaf, TrendingUp, Landmark, HelpCircle, ArrowRight, X,
-  MessageCircle, Minimize2
+  MessageCircle, Minimize2, RotateCcw
 } from 'lucide-react';
 import { saveAnanyaChatToDB, recordFeatureUsageToDB } from '../lib/supabase';
 import { useLanguage, SUPPORTED_LANGUAGES } from '../lib/LanguageContext';
@@ -136,6 +136,20 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
       onEnd: () => setIsSpeaking(false),
       onError: () => setIsSpeaking(false)
     });
+  };
+
+  const handleClearChat = () => {
+    stopIndianFemaleSpeech();
+    setIsSpeaking(false);
+    setMessages([
+      {
+        sender: 'ananya',
+        text: NATIVE_ANANYA_GREETINGS[selectedLang] || NATIVE_ANANYA_GREETINGS.English,
+        richData: null,
+        lang: selectedLang,
+        timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      }
+    ]);
   };
 
   const handleSend = (customText) => {
@@ -350,11 +364,24 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
             </div>
 
             <div className="flex items-center gap-1.5 shrink-0">
+              {/* Voice Speaking Indicator & Stop Button */}
+              {isSpeaking && (
+                <button
+                  type="button"
+                  onClick={() => { stopIndianFemaleSpeech(); setIsSpeaking(false); }}
+                  className="flex items-center gap-1 px-2 py-0.5 rounded-full bg-amber-400 text-black text-[9.5px] font-black uppercase tracking-wider animate-pulse transition-all active:scale-95 shadow-sm"
+                  title="Stop voice speech"
+                >
+                  <Volume2 className="w-3 h-3" />
+                  <span className="hidden sm:inline">Speaking</span>
+                </button>
+              )}
+
               {/* 22 Languages Dropdown */}
               <select
                 value={selectedLang}
                 onChange={(e) => setSelectedLang(e.target.value)}
-                className="bg-[#032012] border border-emerald-600/70 rounded-lg px-2 py-1 text-[11px] font-bold text-amber-300 focus:outline-none focus:border-amber-400 cursor-pointer shadow-inner max-w-[110px] sm:max-w-[125px] truncate"
+                className="bg-[#032012] border border-emerald-600/70 rounded-lg px-2 py-1 text-[11px] font-bold text-amber-300 focus:outline-none focus:border-amber-400 cursor-pointer shadow-inner max-w-[100px] sm:max-w-[125px] truncate"
                 title="Select from 22 Indian Languages"
               >
                 {SUPPORTED_LANGUAGES.map((lang) => (
@@ -364,10 +391,21 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
                 ))}
               </select>
 
+              {/* Clear Chat Button */}
+              <button
+                type="button"
+                onClick={handleClearChat}
+                className="p-1.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-slate-300 hover:text-amber-400 border border-emerald-800 transition-colors touch-manipulation active:scale-95"
+                title="Restart / Clear Conversation"
+                aria-label="Restart Conversation"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+              </button>
+
               {/* Minimize / Close Button */}
               <button
                 onClick={() => setIsChatOpen(false)}
-                className="p-1.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-slate-300 hover:text-white border border-emerald-800 transition-colors touch-manipulation"
+                className="p-1.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 text-slate-300 hover:text-white border border-emerald-800 transition-colors touch-manipulation active:scale-95"
                 title="Minimize Chat"
                 aria-label="Minimize Chat"
               >
