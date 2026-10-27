@@ -258,65 +258,8 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
 
   return (
     <>
-      {/* ============================================================ */}
-      {/* 1. On-Page Compact Spotlight Banner & Section Anchor         */}
-      {/* ============================================================ */}
-      <section
-        id="ananya-ai"
-        className="py-6 sm:py-8 bg-gradient-to-r from-[#02180d] via-[#042817] to-[#02180d] border-y border-emerald-900/50 relative overflow-hidden scroll-mt-20"
-      >
-        {/* Ambient Glow */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[250px] bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-950/80 via-[#032415] to-emerald-950/80 border border-emerald-500/40 shadow-xl backdrop-blur-md">
-            
-            {/* Left: Avatar & Description */}
-            <div className="flex items-center gap-3.5 w-full md:w-auto">
-              <div className="relative shrink-0">
-                <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl overflow-hidden border-2 border-amber-400 shadow-md ring-2 ring-emerald-500/30 bg-emerald-950">
-                  <img
-                    src="/assets/ananya_hero_ai.png"
-                    alt="Ananya AI 24/7 Virtual Agronomist"
-                    className="w-full h-full object-cover object-top"
-                    onError={(e) => {
-                      e.target.src = '/assets/ananya_avatar.jpg';
-                    }}
-                  />
-                </div>
-                <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#02180d] animate-ping" />
-                <span className="absolute -bottom-1 -right-1 w-3.5 h-3.5 rounded-full bg-emerald-500 border-2 border-[#02180d]" />
-              </div>
-
-              <div className="min-w-0">
-                <div className="flex flex-wrap items-center gap-2">
-                  <h3 className="text-base sm:text-lg font-black text-white">
-                    Meet <span className="gradient-text-gold">Ananya AI</span>
-                  </h3>
-                  <span className="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] font-bold border border-amber-500/40 uppercase tracking-wider">
-                    24/7 Virtual Agronomist
-                  </span>
-                </div>
-                <p className="text-xs text-slate-300 mt-0.5 max-w-xl line-clamp-1 sm:line-clamp-none">
-                  ICAR-calibrated prescriptions, chemical dosages/L, bio-alternatives &amp; mandi rates in <strong>22 Indian languages</strong>.
-                </p>
-              </div>
-            </div>
-
-            {/* Right: Launch Floating Chat Button */}
-            <div className="flex items-center gap-2.5 w-full md:w-auto shrink-0 justify-end">
-              <button
-                onClick={() => setIsChatOpen(true)}
-                className="w-full md:w-auto px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-lg shadow-amber-400/20 active:scale-95 transition-all touch-manipulation"
-              >
-                <Sparkles className="w-4 h-4 text-black shrink-0" />
-                <span>Chat with Ananya AI</span>
-              </button>
-            </div>
-
-          </div>
-        </div>
-      </section>
+      {/* Anchor point for Ananya AI navigation without rendering banner */}
+      <div id="ananya-ai" className="scroll-mt-20" />
 
       {/* ============================================================ */}
       {/* 2. Floating Small Icon (Persistent bottom-right widget)     */}
