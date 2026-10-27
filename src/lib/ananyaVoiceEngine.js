@@ -42,10 +42,60 @@ export const KNOWN_INDIAN_FEMALE_VOICES = [
   'priya', 'ananya', 'pooja', 'aditi', 'kavya', 'roshni', 'sunita', 'radha', 'kavita', 'manisha'
 ];
 
-// Male voice keywords to strictly avoid/penalize for female persona
-export const MALE_VOICE_KEYWORDS = [
-  'rishi', 'hemant', 'madhav', 'prabhat', 'male', 'man', 'david', 'guy', 'george', 'stefan', 'mark', 'daniel', 'oliver'
+// Confirmed global female voices across Windows, Mac, iOS, Android, Linux
+export const KNOWN_GLOBAL_FEMALE_VOICES = [
+  'zira', 'samantha', 'victoria', 'karen', 'tessa', 'moira', 'jenny', 'fiona',
+  'serena', 'ava', 'allison', 'susan', 'cathy', 'agnes', 'vicki', 'monica', 'paulina',
+  'amelie', 'anna', 'helena', 'ioana', 'laura', 'milena', 'kyoko', 'yuna', 'tingting'
 ];
+
+// Male voice keywords and names to strictly block from speaking for Ananya
+export const MALE_VOICE_KEYWORDS = [
+  'rishi', 'hemant', 'madhav', 'prabhat', 'male', 'man', 'david', 'guy', 'george',
+  'stefan', 'mark', 'daniel', 'oliver', 'alex', 'fred', 'tom', 'bruce', 'ralph',
+  'junior', 'albert', 'arthur', 'martin', 'ravi', 'karan', 'deepak', 'vikram',
+  'amit', 'suresh', 'ramesh', 'ajay', 'vijay', 'raj', 'rahul', 'sanjay', 'arun',
+  'anil', 'sunil', 'ashok', 'alok', 'manoj', 'mukesh', 'dinesh', 'naresh', 'mahesh',
+  'kamal', 'vinod', 'pankaj', 'diego', 'jorge', 'juan', 'carlos', 'pablo', 'mario'
+];
+
+/**
+ * Strict verification to reject any male voice
+ * 
+ * @param {SpeechSynthesisVoice} voice
+ * @returns {boolean} True if voice has male markers or male names
+ */
+export function isMaleVoice(voice) {
+  if (!voice) return false;
+  const name = (voice.name || '').toLowerCase();
+  for (const kw of MALE_VOICE_KEYWORDS) {
+    if (new RegExp(`(^|[^a-z])${kw}([^a-z]|$)`, 'i').test(name) || name.includes(kw)) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * Check if a voice is confirmed female
+ * 
+ * @param {SpeechSynthesisVoice} voice
+ * @returns {boolean} True if certified female
+ */
+export function isCertifiedFemaleVoice(voice) {
+  if (!voice || isMaleVoice(voice)) return false;
+  const name = (voice.name || '').toLowerCase();
+  if (name.includes('female') || name.includes('woman') || name.includes('girl')) {
+    return true;
+  }
+  for (const iv of KNOWN_INDIAN_FEMALE_VOICES) {
+    if (name.includes(iv)) return true;
+  }
+  for (const gv of KNOWN_GLOBAL_FEMALE_VOICES) {
+    if (name.includes(gv)) return true;
+  }
+  return false;
+}
 
 /**
  * Clean & normalize agronomic text for natural spoken audio
@@ -103,10 +153,11 @@ export function cleanAgronomyTextForSpeech(text = '') {
  * 
  * @param {SpeechSynthesisVoice} voice 
  * @param {string} targetLocale e.g. 'en-IN', 'hi-IN', 'ta-IN'
- * @returns {number} Score (higher is better match)
+ * @returns {number} Score (higher is better match; negative means strictly disqualified)
  */
 export function scoreVoiceForIndianFemale(voice, targetLocale = 'en-IN') {
   if (!voice) return -999;
+  if (isMaleVoice(voice)) return -1000; // Strict rejection of all male voices
 
   let score = 0;
   const nameLower = (voice.name || '').toLowerCase();
@@ -114,26 +165,19 @@ export function scoreVoiceForIndianFemale(voice, targetLocale = 'en-IN') {
   const targetLower = targetLocale.toLowerCase().replace('_', '-');
   const targetBaseLang = targetLower.split('-')[0];
 
-  // 1. Male voice penalty — strictly disqualify or severely demote
-  for (const male of MALE_VOICE_KEYWORDS) {
-    if (nameLower.includes(male) || langLower.includes(male)) {
-      return -500;
-    }
-  }
-
-  // 2. Exact target locale match (e.g. 'hi-in' matches 'hi-in')
+  // 1. Exact target locale match (e.g. 'hi-in' matches 'hi-in')
   if (langLower === targetLower) {
     score += 260;
   } else if (langLower.startsWith(targetBaseLang)) {
     score += 180;
   }
 
-  // 3. Indian locale affinity (en-IN, hi-IN, or any -in)
+  // 2. Indian locale affinity (en-IN, hi-IN, or any -in)
   if (langLower.endsWith('-in')) {
     score += 50;
   }
 
-  // 4. Known Indian Female Voice Names (Veena, Lekha, Heera, Swara, Neerja, etc.)
+  // 3. Known Indian Female Voice Names (Veena, Lekha, Heera, Swara, Neerja, etc.)
   for (const femaleName of KNOWN_INDIAR_OR_GLOBAL_FEMALE) {
     if (nameLower.includes(femaleName)) {
       score += 140;
@@ -141,12 +185,12 @@ export function scoreVoiceForIndianFemale(voice, targetLocale = 'en-IN') {
     }
   }
 
-  // 5. Generic Female tag in name
-  if (nameLower.includes('female') || nameLower.includes('woman')) {
+  // 4. Generic Female tag in name
+  if (nameLower.includes('female') || nameLower.includes('woman') || nameLower.includes('girl')) {
     score += 60;
   }
 
-  // 6. Neural / Natural / Premium voice boost
+  // 5. Neural / Natural / Premium voice boost
   if (nameLower.includes('natural') || nameLower.includes('online') || nameLower.includes('neural') || nameLower.includes('wavenet')) {
     score += 25;
   }
@@ -162,7 +206,7 @@ const KNOWN_INDIAR_OR_GLOBAL_FEMALE = [
 
 /**
  * Find the best available Indian female voice from the browser's voice list.
- * Always ensures an authentic Indian female voice is selected in any language.
+ * STRICT POLICY: NEVER returns a male voice under any circumstances.
  * 
  * @param {string} language Selected language name (e.g. 'English', 'Hindi', 'Tamil')
  * @param {SpeechSynthesisVoice[]} [providedVoices] Optional explicit list of voices
@@ -182,32 +226,58 @@ export function getIndianFemaleVoice(language = 'English', providedVoices = null
     };
   }
 
-  // Score all voices and find highest match
+  // Strict initial filter: completely exclude all male voices
+  const safeNonMaleVoices = voices.filter(v => !isMaleVoice(v));
+
+  // Tier 1: Search for an exact match for targetLocale among non-male voices
   let bestVoice = null;
   let highestScore = -999;
 
-  for (const v of voices) {
+  for (const v of safeNonMaleVoices) {
     const s = scoreVoiceForIndianFemale(v, targetLocale);
-    if (s > highestScore) {
+    if (s > highestScore && s > 0) {
       highestScore = s;
       bestVoice = v;
     }
   }
 
-  // Fallback to authentic Indian female voice (en-IN or hi-IN female) if best voice score was negative or non-Indian
-  if (!bestVoice || highestScore < 0) {
-    const indianFallback = voices.find(v => {
+  // Tier 2: Search for ANY authentic Indian female voice (en-IN or hi-IN or *-IN female)
+  if (!bestVoice || !isCertifiedFemaleVoice(bestVoice)) {
+    const indianFemale = safeNonMaleVoices.find(v => {
       const lang = (v.lang || '').toLowerCase().replace('_', '-');
       const name = (v.name || '').toLowerCase();
-      const isIndianLang = lang === 'en-in' || lang === 'hi-in' || lang.endsWith('-in');
-      const isMale = MALE_VOICE_KEYWORDS.some(m => name.includes(m));
-      const isKnownFemale = KNOWN_INDIAN_FEMALE_VOICES.some(f => name.includes(f)) || name.includes('female');
-      return isIndianLang && !isMale && (isKnownFemale || !name.includes('male'));
+      const isIndianLocale = lang.endsWith('-in');
+      const isFemale = isCertifiedFemaleVoice(v) || KNOWN_INDIAN_FEMALE_VOICES.some(f => name.includes(f));
+      return isIndianLocale && isFemale && !isMaleVoice(v);
     });
 
-    if (indianFallback) {
-      bestVoice = indianFallback;
+    if (indianFemale) {
+      bestVoice = indianFemale;
     }
+  }
+
+  // Tier 3: Search for ANY Indian locale voice that is NOT male
+  if (!bestVoice) {
+    const anyIndianSafe = safeNonMaleVoices.find(v => {
+      const lang = (v.lang || '').toLowerCase().replace('_', '-');
+      return lang.endsWith('-in') && !isMaleVoice(v);
+    });
+    if (anyIndianSafe) {
+      bestVoice = anyIndianSafe;
+    }
+  }
+
+  // Tier 4: Fallback to ANY certified female voice on the system (e.g. Zira, Samantha, etc.)
+  if (!bestVoice) {
+    const anyFemaleVoice = safeNonMaleVoices.find(v => isCertifiedFemaleVoice(v));
+    if (anyFemaleVoice) {
+      bestVoice = anyFemaleVoice;
+    }
+  }
+
+  // ABSOLUTE SECURITY CHECK: If somehow bestVoice is male, strictly NULL it out!
+  if (bestVoice && isMaleVoice(bestVoice)) {
+    bestVoice = null;
   }
 
   const friendlyName = bestVoice
@@ -306,11 +376,34 @@ export function speakWithIndianFemaleVoice(text, options = {}) {
     const voiceSelection = getIndianFemaleVoice(targetLang);
 
     if (voiceSelection?.voice) {
+      if (isMaleVoice(voiceSelection.voice)) {
+        console.warn('Blocked male voice execution for Ananya AI:', voiceSelection.voice.name);
+        if (options && options.onEnd) options.onEnd();
+        return null;
+      }
       utterance.voice = voiceSelection.voice;
+      utterance.lang = voiceSelection.voice.lang || INDIAN_LOCALE_MAP[targetLang] || 'en-IN';
+    } else {
+      // If voiceSelection.voice is null: find ANY certified female voice on client machine
+      const allVoices = window.speechSynthesis.getVoices();
+      const anyFemale = (allVoices || []).find(v => isCertifiedFemaleVoice(v) && !isMaleVoice(v));
+      if (anyFemale) {
+        utterance.voice = anyFemale;
+        utterance.lang = anyFemale.lang;
+      } else {
+        // Under no circumstances allow a male voice to speak for Ananya!
+        console.warn('No verified female voice available on system; suppressing male voice fallback.');
+        playChimeTone();
+        if (options && options.onStart) options.onStart();
+        setTimeout(() => {
+          if (options && options.onEnd) options.onEnd();
+        }, 1200);
+        return null;
+      }
     }
-    utterance.lang = voiceSelection?.lang || INDIAN_LOCALE_MAP[targetLang] || 'en-IN';
+
     utterance.rate = options.rate ?? 0.88; // Gentle, clear conversational pace
-    utterance.pitch = options.pitch ?? 1.12; // Authentic young Indian female vocal pitch
+    utterance.pitch = options.pitch ?? 1.15; // Authentic youthful Indian female vocal pitch
     utterance.volume = options.volume ?? 1.0;
 
     utterance.onstart = () => {

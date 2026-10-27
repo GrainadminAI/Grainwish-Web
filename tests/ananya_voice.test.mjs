@@ -6,7 +6,9 @@ import {
   MALE_VOICE_KEYWORDS,
   cleanAgronomyTextForSpeech,
   scoreVoiceForIndianFemale,
-  getIndianFemaleVoice
+  getIndianFemaleVoice,
+  isMaleVoice,
+  isCertifiedFemaleVoice
 } from '../src/lib/ananyaVoiceEngine.js';
 
 test('Ananya Voice Engine: Indian Locales & Language Coverage', async (t) => {
@@ -103,6 +105,36 @@ test('Ananya Voice Engine: Voice Matching & Heuristic Scoring', async (t) => {
       selection.voiceName.toLowerCase().includes('veena') || selection.voiceName.toLowerCase().includes('heera'),
       `Expected Veena or Heera for English, got ${selection.voiceName}`
     );
+  });
+
+  await t.test('Strictly excludes all male voices (David, Rishi, George, etc.)', () => {
+    assert.equal(isMaleVoice({ name: 'Microsoft David Desktop - English (United States)' }), true);
+    assert.equal(isMaleVoice({ name: 'Rishi - English (India)' }), true);
+    assert.equal(isMaleVoice({ name: 'Google UK English Male' }), true);
+    assert.equal(isMaleVoice({ name: 'Daniel' }), true);
+    assert.equal(isMaleVoice({ name: 'Veena' }), false);
+    assert.equal(isMaleVoice({ name: 'Microsoft Zira Desktop' }), false);
+  });
+
+  await t.test('Never picks a male voice even if no Indian voice is installed', () => {
+    const genericVoices = [
+      { name: 'Microsoft David Desktop', lang: 'en-US' },
+      { name: 'Microsoft Zira Desktop', lang: 'en-US' }
+    ];
+    const selection = getIndianFemaleVoice('English', genericVoices);
+    assert.ok(selection.voice);
+    assert.ok(selection.voice.name.includes('Zira'), `Expected Zira (Female), got ${selection.voice.name}`);
+    assert.equal(isMaleVoice(selection.voice), false);
+  });
+
+  await t.test('Returns null voice rather than ever selecting a male voice if only male voices exist', () => {
+    const onlyMaleVoices = [
+      { name: 'Microsoft David Desktop', lang: 'en-US' },
+      { name: 'Rishi - English (India)', lang: 'en-IN' },
+      { name: 'Google UK English Male', lang: 'en-GB' }
+    ];
+    const selection = getIndianFemaleVoice('Hindi', onlyMaleVoices);
+    assert.equal(selection.voice, null, 'Must NOT pick any male voice');
   });
 });
 
