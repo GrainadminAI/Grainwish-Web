@@ -42,6 +42,7 @@ const SCHEMES = [
 ];
 
 export default function FarmingCalendar() {
+  const { t } = useLanguage();
   const [activeSeason, setActiveSeason] = useState(0);
   const [copiedSchedule, setCopiedSchedule] = useState(false);
 
@@ -86,29 +87,32 @@ Source: Grainwise AI Seasonal Guidance Engine`;
                 <span className="bg-emerald-500 text-black px-1.5 py-0.2 rounded-full font-mono text-[9px] uppercase font-extrabold">3 Seasons Covered</span>
               </div>
               <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-extrabold text-white">
-                Interactive <span className="gradient-text-agri">Farming Calendar 100%</span>
+                {t('calendar_main_title', 'Interactive Farming Calendar 100%')}
               </h2>
               <p className="text-slate-300 text-xs sm:text-sm">
-                Keeps every operation on schedule with <strong>100% seasonal precision</strong> — covering Kharif, Rabi, and Zaid crop cycles.
+                {t('calendar_main_sub', 'Keeps every operation on schedule with 100% seasonal precision — covering Kharif, Rabi, and Zaid crop cycles.')}
               </p>
             </div>
 
             {/* Season Switcher with Copy Schedule Action */}
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex gap-1.5">
-                {SEASONS.map((s, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => handleSeasonSelect(idx)}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border active:scale-95 ${
-                      activeSeason === idx
-                        ? 'bg-amber-400 text-black border-amber-400 shadow-md font-extrabold'
-                        : 'bg-[#042013] text-slate-300 border-emerald-800/60 hover:border-emerald-600'
-                    }`}
-                  >
-                    {s.name.split('(')[0]}
-                  </button>
-                ))}
+                {SEASONS.map((s, idx) => {
+                  const seasonLabel = idx === 0 ? t('season_kharif_tab', 'Kharif Season') : idx === 1 ? t('season_rabi_tab', 'Rabi Season') : t('season_zaid_tab', 'Zaid Season');
+                  return (
+                    <button
+                      key={idx}
+                      onClick={() => handleSeasonSelect(idx)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all border active:scale-95 ${
+                        activeSeason === idx
+                          ? 'bg-amber-400 text-black border-amber-400 shadow-md font-extrabold'
+                          : 'bg-[#042013] text-slate-300 border-emerald-800/60 hover:border-emerald-600'
+                      }`}
+                    >
+                      {seasonLabel}
+                    </button>
+                  );
+                })}
               </div>
 
               <button
@@ -125,7 +129,7 @@ Source: Grainwise AI Seasonal Guidance Engine`;
                 ) : (
                   <>
                     <Copy className="w-3.5 h-3.5 text-amber-400" />
-                    <span className="text-[11px]">Copy Schedule</span>
+                    <span className="text-[11px]">{t('calendar_copy_btn', 'Copy Schedule')}</span>
                   </>
                 )}
               </button>
@@ -166,10 +170,10 @@ Source: Grainwise AI Seasonal Guidance Engine`;
                 <Landmark className="w-3.5 h-3.5 text-indigo-400" /> Government Schemes &amp; Subsidies
               </div>
               <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-extrabold text-white">
-                Subsidies <span className="gradient-text-gold">Tracker</span>
+                {t('subsidies_tracker_title', 'Subsidies Tracker')}
               </h2>
               <p className="text-slate-300 text-xs sm:text-sm">
-                Direct verified portal links for financial support, crop insurance, and irrigation subsidies.
+                {t('subsidies_tracker_sub', 'Direct verified portal links for financial support, crop insurance, and irrigation subsidies.')}
               </p>
             </div>
 

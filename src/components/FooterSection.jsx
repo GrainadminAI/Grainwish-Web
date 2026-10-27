@@ -24,7 +24,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
           
           <div className="max-w-3xl mx-auto space-y-3 sm:space-y-4">
             <span className="px-3 sm:px-3.5 py-1 rounded-full bg-amber-400/20 text-amber-300 border border-amber-500/40 text-[11px] sm:text-xs font-bold uppercase tracking-wider inline-block">
-              Empower Your Fields Today
+              {t('footer_empower_fields', 'Empower Your Fields Today')}
             </span>
 
             <h2 className="font-display text-2xl sm:text-4xl lg:text-5xl font-extrabold text-white leading-tight">
@@ -45,7 +45,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
               </button>
               <div className="text-[10px] sm:text-xs text-amber-300 font-mono flex items-center gap-1.5 text-center px-2">
                 <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse shrink-0" />
-                <span>Application Phase is Coming Soon · Android Pre-Register will get Free 14 days trial pack</span>
+                <span>{t('footer_trial_note', 'Application Phase is Coming Soon · Android Pre-Register will get Free 14 days trial pack')}</span>
               </div>
             </div>
           </div>
@@ -71,7 +71,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
               />
               <div>
                 <div className="font-display text-2xl sm:text-3xl font-extrabold text-white">GrainWise AI</div>
-                <div className="text-xs sm:text-sm text-amber-400 font-mono font-medium">Smart Farming Intelligence</div>
+                <div className="text-xs sm:text-sm text-amber-400 font-mono font-medium">{t('footer_smart_farming', 'Smart Farming Intelligence')}</div>
               </div>
             </div>
 
@@ -97,7 +97,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
 
           {/* Core Features */}
           <div className="space-y-3 lg:col-span-3 lg:col-start-7">
-            <div className="font-bold text-white uppercase tracking-wider text-xs">Features &amp; Tools</div>
+            <div className="font-bold text-white uppercase tracking-wider text-xs">{t('footer_features_tools', 'Features & Tools')}</div>
             <ul className="space-y-2 text-slate-300">
               <li><a href="#diagnostics" className="hover:text-emerald-300 transition-colors">AI Crop Diagnostics</a></li>
               <li><a href="#npk-calc" className="hover:text-emerald-300 transition-colors">Precision NPK Calculator</a></li>
@@ -109,7 +109,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
 
           {/* Legal & Compliance Links */}
           <div className="space-y-3 lg:col-span-3">
-            <div className="font-bold text-white uppercase tracking-wider text-xs">Legal &amp; Trust</div>
+            <div className="font-bold text-white uppercase tracking-wider text-xs">{t('footer_legal_trust', 'Legal & Trust')}</div>
             <ul className="space-y-2 text-slate-300">
               <li>
                 <button
@@ -118,7 +118,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left"
                 >
                   <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span>Privacy Policy (DPDP &amp; GDPR)</span>
+                  <span>{t('footer_privacy_policy', 'Privacy Policy (DPDP & GDPR)')}</span>
                 </button>
               </li>
               <li>
@@ -128,7 +128,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left"
                 >
                   <FileText className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span>Terms &amp; Conditions</span>
+                  <span>{t('footer_terms_conditions', 'Terms & Conditions')}</span>
                 </button>
               </li>
               <li>
@@ -138,7 +138,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left text-slate-300"
                 >
                   <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span>Security Policy &amp; Charter</span>
+                  <span>{t('footer_security_charter', 'Security Policy & Charter')}</span>
                 </button>
               </li>
               <li>
@@ -148,7 +148,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left"
                 >
                   <Cookie className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span>Cookie Preferences</span>
+                  <span>{t('footer_cookie_prefs', 'Cookie Preferences')}</span>
                 </button>
               </li>
               <li>
@@ -157,7 +157,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left text-slate-300"
                 >
                   <Mail className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span>Support: support@grainwish.com</span>
+                  <span>{t('footer_support', 'Support')}: support@grainwish.com</span>
                 </a>
               </li>
             </ul>

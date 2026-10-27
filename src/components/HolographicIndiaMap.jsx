@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Sparkles, Activity, ShieldCheck, MapPin, Radio, TrendingUp, Flame, ArrowUpRight, Filter, Info } from 'lucide-react';
 import { INDIA_MAP_LOCATIONS, INDIA_MAP_VIEWBOX, INDIA_BORDER_PATH } from '../lib/indiaMapData';
+import { useLanguage } from '../lib/LanguageContext';
 
 // Re-export INDIA_BORDER_PATH for testing suites and external consumers
 export { INDIA_BORDER_PATH };
@@ -312,6 +313,7 @@ export const TELEMETRY_LINKS = [
 ];
 
 export default function HolographicIndiaMap({ className = "" }) {
+  const { t } = useLanguage();
   const [activeHub, setActiveHub] = useState(AGRI_HUBS[0]);
   const [hoveredHub, setHoveredHub] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState('all');
@@ -344,17 +346,17 @@ export default function HolographicIndiaMap({ className = "" }) {
             </span>
             <span className="font-extrabold uppercase tracking-wider text-emerald-300 truncate flex items-center gap-1">
               <Radio className="w-2.5 h-2.5 text-amber-400 animate-pulse shrink-0" />
-              <span>India Crop &amp; Demand Radar</span>
+              <span>{t('map_demand_radar', 'India Crop & Demand Radar')}</span>
             </span>
           </div>
 
           <div className="flex items-center gap-1 shrink-0">
             <span className="text-[8px] sm:text-[8.5px] text-rose-300 font-bold bg-rose-950/70 px-1 py-0.2 rounded border border-rose-500/40 flex items-center gap-0.5">
               <Flame className="w-2 h-2 text-rose-400 animate-pulse" />
-              Live Demand
+              {t('map_live_demand', 'Live Demand')}
             </span>
             <span className="text-[8px] sm:text-[8.5px] text-amber-400 font-mono font-bold bg-amber-950/60 px-1 py-0.2 rounded border border-amber-500/30">
-              28 States
+              {t('map_28_states', '28 States')}
             </span>
           </div>
         </div>
@@ -369,7 +371,7 @@ export default function HolographicIndiaMap({ className = "" }) {
                 : 'bg-emerald-950/60 text-slate-300 hover:text-white border border-emerald-800/40'
             }`}
           >
-            All Crops
+            {t('map_all_crops', 'All Crops')}
           </button>
 
           <button
@@ -381,7 +383,7 @@ export default function HolographicIndiaMap({ className = "" }) {
             }`}
           >
             <Flame className="w-2 h-2 text-amber-300" />
-            🔥 Surge Demand
+            🔥 {t('map_surge_demand', 'Surge Demand')}
           </button>
 
           <button
@@ -392,7 +394,7 @@ export default function HolographicIndiaMap({ className = "" }) {
                 : 'bg-emerald-950/60 text-slate-300 hover:text-white border border-emerald-800/40'
             }`}
           >
-            🌾 Grains
+            🌾 {t('map_grains', 'Grains')}
           </button>
 
           <button
@@ -403,7 +405,7 @@ export default function HolographicIndiaMap({ className = "" }) {
                 : 'bg-emerald-950/60 text-slate-300 hover:text-white border border-emerald-800/40'
             }`}
           >
-            🌱 Oilseeds &amp; Cash
+            🌱 {t('map_oilseeds_cash', 'Oilseeds & Cash')}
           </button>
         </div>
       </div>

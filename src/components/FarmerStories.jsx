@@ -160,6 +160,7 @@ const INITIAL_STORIES = [
 ];
 
 export default function FarmerStories() {
+  const { t } = useLanguage();
   const [stories, setStories] = useState(INITIAL_STORIES);
   const [selectedCase, setSelectedCase] = useState(INITIAL_STORIES[0]);
   const [caseVideoPlaying, setCaseVideoPlaying] = useState(false);
@@ -310,10 +311,10 @@ export default function FarmerStories() {
             <Award className="w-3 h-3 text-amber-400" /> Real Fields, Real Results
           </div>
           <h2 className="font-display text-xl sm:text-2xl md:text-3xl font-extrabold text-white">
-            Farmer Stories & <span className="gradient-text-agri">Community Feedback</span>
+            {t('stories_main_title', 'Farmer Stories & Community Feedback')}
           </h2>
           <p className="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto">
-            Farmers across India share their experiences using GrainWise AI. Add your own feedback directly below!
+            {t('stories_main_sub', 'Farmers across India share their experiences using GrainWise AI. Add your own feedback directly below!')}
           </p>
 
           <div className="pt-0.5 sm:pt-1">
@@ -329,7 +330,7 @@ export default function FarmerStories() {
                 </>
               ) : (
                 <>
-                  <PlusCircle className="w-3.5 h-3.5 text-black" /> Add Your Own Feedback
+                  <PlusCircle className="w-3.5 h-3.5 text-black" /> {t('stories_add_btn', 'Add Your Own Feedback')}
                 </>
               )}
             </button>

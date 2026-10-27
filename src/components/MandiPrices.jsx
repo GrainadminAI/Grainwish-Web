@@ -324,18 +324,18 @@ Source: Grainwise AI / Agmarknet`;
         <div className="text-center max-w-4xl mx-auto space-y-1 sm:space-y-1.5">
           <div className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-0.5 sm:py-1 rounded-full bg-emerald-950/90 border border-emerald-700/60 text-[10px] sm:text-[11px] font-bold text-emerald-300 shadow-md">
             <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-            <span>28 Indian States &amp; UTs Mandi Radar</span>
+            <span>{t('mandi_radar_badge', '28 Indian States & UTs Mandi Radar')}</span>
             <span className="bg-gradient-to-r from-emerald-400 to-amber-400 text-black px-1.5 py-0.2 rounded-full font-mono text-[8.5px] sm:text-[9px] font-extrabold uppercase">
               Agmarknet &amp; e-NAM
             </span>
           </div>
 
           <h2 className="font-display text-xl sm:text-3xl md:text-4xl font-extrabold text-white leading-tight">
-            Live <span className="gradient-text-agri">Mandi Prices &amp; MSP</span> Intelligence
+            {t('mandi_radar_title', 'Live Mandi Prices & MSP Intelligence')}
           </h2>
 
           <p className="text-slate-300 text-xs sm:text-sm leading-normal sm:leading-relaxed max-w-2xl mx-auto">
-            Real-time modal rates, official CACP Minimum Support Prices (MSP), and net profit spreads across all <strong>28 Indian States</strong> and key Union Territories. Offline-cached for rural 2G/3G connectivity.
+            {t('mandi_radar_sub', 'Real-time modal rates, official CACP Minimum Support Prices (MSP), and net profit spreads across all 28 Indian States and key Union Territories. Offline-cached for rural 2G/3G connectivity.')}
           </p>
 
           {/* Sync & Connectivity Badges - Compact */}
@@ -349,7 +349,7 @@ Source: Grainwise AI / Agmarknet`;
               ) : (
                 <>
                   <Wifi className="w-3 h-3 text-emerald-400" />
-                  <span className="text-emerald-300">Live Sync Connected ({processedRecords.length} Mandis)</span>
+                  <span className="text-emerald-300">{t('mandi_sync_connected', 'Live Sync Connected')} ({processedRecords.length} Mandis)</span>
                 </>
               )}
             </div>
@@ -360,7 +360,7 @@ Source: Grainwise AI / Agmarknet`;
               className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-lg bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/60 text-emerald-300 text-[10.5px] font-medium transition-colors disabled:opacity-50"
             >
               <RefreshCw className={`w-3 h-3 ${isSyncing ? 'animate-spin text-amber-400' : ''}`} />
-              <span>{isSyncing ? 'Syncing...' : 'Refresh Rates'}</span>
+              <span>{isSyncing ? 'Syncing...' : t('mandi_refresh_btn', 'Refresh Rates')}</span>
             </button>
 
             {locationStatus && (
@@ -382,7 +382,7 @@ Source: Grainwise AI / Agmarknet`;
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500" />
               </span>
               <Bell className="w-3.5 h-3.5 text-amber-400" />
-              <span>IMD Live Agri-Weather Advisory &amp; Tarpaulin Alerts</span>
+              <span>{t('mandi_weather_ticker', 'IMD Live Agri-Weather Advisory & Tarpaulin Alerts')}</span>
               <span className="px-2 py-0.2 rounded-full bg-amber-400/20 text-amber-300 border border-amber-500/40 text-[9px] sm:text-[10px] font-sans font-bold normal-case tracking-normal">
                 27 States Pan-India
               </span>
@@ -495,7 +495,7 @@ Source: Grainwise AI / Agmarknet`;
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                placeholder="Search commodity, variety, district, or APMC yard..."
+                placeholder={t('mandi_search_placeholder', 'Search crop (e.g. Wheat, Rice, Cotton)...')}
                 className="w-full bg-emerald-950/90 border border-emerald-700/60 rounded-lg pl-9 pr-3 py-1.5 sm:py-2 text-xs text-slate-100 placeholder-slate-400 focus:outline-none focus:border-amber-400 transition-colors"
               />
             </div>
@@ -629,11 +629,11 @@ Source: Grainwise AI / Agmarknet`;
           
           {/* Table Column Headers */}
           <div className="grid grid-cols-12 bg-[#03190f] text-slate-400 font-bold uppercase tracking-wider text-[11px] py-4 px-6 border-b border-emerald-900/60">
-            <div className="col-span-4">Commodity &amp; Variety</div>
-            <div className="col-span-3">Primary APMC Market</div>
-            <div className="col-span-2">Modal Price (₹/qtl)</div>
-            <div className="col-span-2">Govt MSP &amp; Net Spread</div>
-            <div className="col-span-1 text-right">Distance</div>
+            <div className="col-span-4">{t('mandi_col_commodity', 'Commodity & Variety')}</div>
+            <div className="col-span-3">{t('mandi_col_market', 'Primary APMC Market')}</div>
+            <div className="col-span-2">{t('mandi_col_modal_price', 'Modal Price (₹/qtl)')}</div>
+            <div className="col-span-2">{t('mandi_col_msp_spread', 'Govt MSP & Net Spread')}</div>
+            <div className="col-span-1 text-right">{t('mandi_col_distance', 'Distance')}</div>
           </div>
 
           {/* Virtualized Container */}

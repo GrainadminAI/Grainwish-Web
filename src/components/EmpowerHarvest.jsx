@@ -43,9 +43,9 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
     {
       id: 'disease',
       icon: Camera,
-      title: 'Crop disease detection',
-      teaser: 'Instant computer vision scan identifying 300+ crop pathogens with 98.4% precision.',
-      badge: 'Camera AI',
+      title: t('feat_disease_title', 'Crop disease detection'),
+      teaser: t('feat_disease_teaser', 'Instant computer vision scan identifying 300+ crop pathogens with 98.4% precision.'),
+      badge: t('feat_disease_badge', 'Camera AI'),
       accent: 'border-emerald-500/40 text-emerald-400 bg-emerald-500/10',
       glow: 'shadow-emerald-500/20',
       metric: '98.4% Diagnostic Precision',
@@ -62,9 +62,9 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
     {
       id: 'fertilizer',
       icon: Calculator,
-      title: 'Fertilizer calculations',
-      teaser: 'Crop-specific nutrient balancing for Alluvial, Black, Red & Loam soil regions.',
-      badge: 'Soil & Growth',
+      title: t('feat_fertilizer_title', 'Fertilizer calculations'),
+      teaser: t('feat_fertilizer_teaser', 'Crop-specific nutrient balancing for Alluvial, Black, Red & Loam soil regions.'),
+      badge: t('feat_fertilizer_badge', 'Soil & Growth'),
       accent: 'border-amber-500/40 text-amber-400 bg-amber-500/10',
       glow: 'shadow-amber-500/20',
       metric: 'Save up to ₹2,200 / Acre',
@@ -81,9 +81,9 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
     {
       id: 'weather',
       icon: CloudSun,
-      title: 'Live weather alerts',
-      teaser: 'Doppler satellite radar tracking rain, heatwaves, squalls & frost advisories.',
-      badge: 'Hyper-Local',
+      title: t('feat_weather_title', 'Live weather alerts'),
+      teaser: t('feat_weather_teaser', 'Doppler satellite radar tracking rain, heatwaves, squalls & frost advisories.'),
+      badge: t('feat_weather_badge', 'Hyper-Local'),
       accent: 'border-cyan-500/40 text-cyan-400 bg-cyan-500/10',
       glow: 'shadow-cyan-500/20',
       metric: '27 Agricultural States Covered',
@@ -100,9 +100,9 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
     {
       id: 'schemes',
       icon: Landmark,
-      title: 'Government schemes',
-      teaser: 'Direct eligibility tracker for PM-KISAN, PMFBY insurance & drip subsidies.',
-      badge: 'Subsidies',
+      title: t('feat_schemes_title', 'Government schemes'),
+      teaser: t('feat_schemes_teaser', 'Direct eligibility tracker for PM-KISAN, PMFBY insurance & drip subsidies.'),
+      badge: t('feat_schemes_badge', 'Subsidies'),
       accent: 'border-indigo-500/40 text-indigo-400 bg-indigo-500/10',
       glow: 'shadow-indigo-500/20',
       metric: '100% Verified Central & State Schemes',
@@ -119,9 +119,9 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
     {
       id: 'npk',
       icon: Scale,
-      title: 'Precision NPK calculator',
-      teaser: 'Calibrated N-P-K nutrient ratios tailored to your acreage and growth stage.',
-      badge: 'Precision Soil',
+      title: t('feat_npk_title', 'Precision NPK calculator'),
+      teaser: t('feat_npk_teaser', 'Calibrated N-P-K nutrient ratios tailored to your acreage and growth stage.'),
+      badge: t('feat_npk_badge', 'Precision Soil'),
       accent: 'border-lime-500/40 text-lime-400 bg-lime-500/10',
       glow: 'shadow-lime-500/20',
       metric: 'Zero Chemical Over-Dosing',
@@ -138,9 +138,9 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
     {
       id: 'mandi',
       icon: TrendingUp,
-      title: 'Live Mandi prices & MSP locator',
-      teaser: 'Daily modal prices from 2,400+ APMC yards with GPS nearest-center radar.',
-      badge: 'Market Radar',
+      title: t('feat_mandi_title', 'Live Mandi prices & MSP locator'),
+      teaser: t('feat_mandi_teaser', 'Daily modal prices from 2,400+ APMC yards with GPS nearest-center radar.'),
+      badge: t('feat_mandi_badge', 'Market Radar'),
       accent: 'border-amber-400/40 text-amber-300 bg-amber-400/10',
       glow: 'shadow-amber-400/20',
       metric: '2,400+ APMC Yards Active Daily',
@@ -157,9 +157,9 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
     {
       id: 'calendar',
       icon: Calendar,
-      title: 'Interactive farming calendar',
-      teaser: 'Month-by-month Kharif & Rabi operational timeline from sowing to market.',
-      badge: 'Seasonal Timeline',
+      title: t('feat_calendar_title', 'Interactive farming calendar'),
+      teaser: t('feat_calendar_teaser', 'Month-by-month Kharif & Rabi operational timeline from sowing to market.'),
+      badge: t('feat_calendar_badge', 'Seasonal Timeline'),
       accent: 'border-emerald-400/40 text-emerald-300 bg-emerald-400/10',
       glow: 'shadow-emerald-400/20',
       metric: '12-Month Dual Kharif/Rabi Blueprint',
@@ -199,15 +199,15 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
             
             <div className="lg:col-span-8 space-y-2 sm:space-y-3">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/40 text-[10px] sm:text-xs font-semibold text-amber-300">
-                <Sparkles className="w-3.5 h-3.5" /> Comprehensive Agritech Platform
+                <Sparkles className="w-3.5 h-3.5" /> {t('empower_harvest_badge', 'Comprehensive Agritech Platform')}
               </div>
               
               <h2 className="font-display text-xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight">
-                Empower your harvest with <span className="gradient-text-agri">GrainWise AI</span>
+                {t('empower_harvest_title_1', 'Empower your harvest with')} <span className="gradient-text-agri">GrainWise AI</span>
               </h2>
               
               <p className="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed max-w-2xl">
-                From seed to market, GrainWise AI eliminates guesswork. Early pathology diagnostics, precision soil dosing, live mandi rates &amp; government schemes — all in one platform.
+                {t('empower_harvest_sub', 'From seed to market, GrainWise AI eliminates guesswork. Early pathology diagnostics, precision soil dosing, live mandi rates & government schemes — all in one platform.')}
               </p>
             </div>
 
@@ -216,12 +216,12 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
                 onClick={onOpenDownloadModal}
                 className="w-full sm:w-auto px-5 py-2.5 sm:py-3.5 bg-gradient-to-r from-amber-400 to-amber-300 hover:from-amber-300 hover:to-amber-200 text-black font-extrabold rounded-xl sm:rounded-2xl shadow-lg shadow-amber-400/20 transition-all hover:scale-105 active:scale-95 text-xs sm:text-sm flex items-center justify-center gap-2"
               >
-                <span>Tap Download &amp; Take Guesswork Out</span>
+                <span>{t('empower_harvest_cta', 'Tap Download & Take Guesswork Out')}</span>
                 <ArrowRight className="w-4 h-4 text-black" />
               </button>
               <div className="text-[10px] sm:text-[11px] text-amber-300 font-mono flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-800">
                 <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
-                <span>Application Phase Coming Soon · Free 14-day trial pack</span>
+                <span>{t('empower_harvest_trial', 'Application Phase Coming Soon · Free 14-day trial pack')}</span>
               </div>
             </div>
 
@@ -284,7 +284,7 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
                     }}
                     className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-950/90 hover:bg-amber-400 hover:text-black border border-emerald-700/60 hover:border-amber-400 text-amber-400 font-bold transition-all shadow-sm active:scale-95"
                   >
-                    <span>Explore</span>
+                    <span>{t('feat_explore_btn', 'Explore')}</span>
                     <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
                   </button>
                 </div>

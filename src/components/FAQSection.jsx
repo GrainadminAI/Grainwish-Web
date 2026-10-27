@@ -162,12 +162,11 @@ export default function FAQSection() {
           </div>
 
           <h2 className="font-display text-xl sm:text-3xl md:text-4xl font-extrabold text-white">
-            {t('faq_title_1', 'Frequently Asked')}{' '}
-            <span className="gradient-text-gold">{t('faq_title_2', 'Questions')}</span>
+            {t('faq_main_title', 'Frequently Asked Questions')}
           </h2>
 
           <p className="text-slate-300/90 text-xs sm:text-sm">
-            {t('faq_sub', 'Quick answers on AI crop diagnostics, real-time Mandi rates, and Ananya AI.')}
+            {t('faq_main_sub', 'Quick answers on AI crop diagnostics, real-time Mandi rates, and Ananya AI.')}
           </p>
         </div>
 
@@ -181,7 +180,7 @@ export default function FAQSection() {
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search questions (e.g. Mandi, offline, languages)..."
+              placeholder={t('faq_search_placeholder', 'Search questions (e.g. Mandi, offline, languages)...')}
               className="w-full bg-[#031d10]/90 border border-emerald-800/60 focus:border-emerald-400 rounded-full pl-8 pr-8 py-1.5 text-xs text-white placeholder-slate-400 focus:outline-none transition-colors"
             />
             {searchQuery && (
@@ -196,26 +195,30 @@ export default function FAQSection() {
 
           {/* Category Filter Tabs */}
           <div className="flex items-center justify-center gap-1.5 flex-wrap">
-            {CATEGORIES.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setSelectedCategory(cat.id)}
-                className={`px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold transition-all flex items-center gap-1.5 ${
-                  selectedCategory === cat.id
-                    ? 'bg-emerald-500 text-black shadow-md shadow-emerald-500/20'
-                    : 'bg-emerald-950/70 text-slate-300 hover:text-white border border-emerald-800/40 hover:border-emerald-700'
-                }`}
-              >
-                <span>{cat.label}</span>
-                <span
-                  className={`px-1 rounded-full text-[9px] font-mono ${
-                    selectedCategory === cat.id ? 'bg-black/20 text-black' : 'bg-emerald-900/60 text-slate-400'
+            {CATEGORIES.map((cat) => {
+              const catKey = cat.id === 'diagnostics' ? 'faq_cat_diag' : `faq_cat_${cat.id}`;
+              const label = t(catKey, cat.label);
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`px-2.5 py-1 rounded-full text-[10px] sm:text-[11px] font-bold transition-all flex items-center gap-1.5 ${
+                    selectedCategory === cat.id
+                      ? 'bg-emerald-500 text-black shadow-md shadow-emerald-500/20'
+                      : 'bg-emerald-950/70 text-slate-300 hover:text-white border border-emerald-800/40 hover:border-emerald-700'
                   }`}
                 >
-                  {cat.count}
-                </span>
-              </button>
-            ))}
+                  <span>{label}</span>
+                  <span
+                    className={`px-1 rounded-full text-[9px] font-mono ${
+                      selectedCategory === cat.id ? 'bg-black/20 text-black' : 'bg-emerald-900/60 text-slate-400'
+                    }`}
+                  >
+                    {cat.count}
+                  </span>
+                </button>
+              );
+            })}
           </div>
 
         </div>

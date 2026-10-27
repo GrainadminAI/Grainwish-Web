@@ -110,7 +110,7 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
                   <div className="min-w-0">
                     <div className="flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
-                      <span className="text-[10px] sm:text-[11px] font-bold text-white truncate">AI Crop Vision Active</span>
+                      <span className="text-[10px] sm:text-[11px] font-bold text-white truncate">{t('map_crop_vision_active', 'AI Crop Vision Active')}</span>
                     </div>
                     <div className="text-[9px] sm:text-[10px] text-amber-300 font-mono truncate">
                       Soybean Mosaic · 99.4% Match
@@ -124,7 +124,7 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
                     className="px-2 py-0.5 sm:px-2.5 sm:py-1 text-[9px] sm:text-[10px] font-bold rounded-lg bg-emerald-500 hover:bg-emerald-400 text-black transition-colors flex items-center gap-1"
                   >
                     <Camera className="w-3 h-3" />
-                    <span>Scan</span>
+                    <span>{t('btn_scan', 'Scan')}</span>
                   </a>
                 </div>
               </div>

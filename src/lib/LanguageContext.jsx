@@ -1021,16 +1021,30 @@ export function applyFullPageTranslation(targetCode) {
   }, 150);
 }
 
+import { ALL_PAGE_TRANSLATIONS } from './allPageTranslations';
+
 // Fallback logic for translations
 export function getTranslation(lang, key, fallback) {
   // Normalize language string (e.g., 'Hindi (हिंदी)' -> 'Hindi')
   const cleanLang = lang?.split(' ')[0] || lang || 'English';
-  const selectedObj = TRANSLATIONS[cleanLang] || TRANSLATIONS[lang] || TRANSLATIONS.Hindi || TRANSLATIONS.English;
-  if (selectedObj && selectedObj[key]) {
-    return selectedObj[key];
+  
+  // 1. Direct match in core translations
+  if (TRANSLATIONS[cleanLang]?.[key]) {
+    return TRANSLATIONS[cleanLang][key];
+  }
+  // 2. Direct match in all-page comprehensive translations
+  if (ALL_PAGE_TRANSLATIONS[cleanLang]?.[key]) {
+    return ALL_PAGE_TRANSLATIONS[cleanLang][key];
+  }
+  // 3. Regional fallback to Hindi if non-English
+  if (cleanLang !== 'English' && ALL_PAGE_TRANSLATIONS.Hindi?.[key]) {
+    return ALL_PAGE_TRANSLATIONS.Hindi[key];
+  }
+  if (cleanLang !== 'English' && TRANSLATIONS.Hindi?.[key]) {
+    return TRANSLATIONS.Hindi[key];
   }
   if (fallback) return fallback;
-  return TRANSLATIONS.Hindi?.[key] || TRANSLATIONS.English?.[key] || key;
+  return ALL_PAGE_TRANSLATIONS.English?.[key] || TRANSLATIONS.English?.[key] || key;
 }
 
 /**
