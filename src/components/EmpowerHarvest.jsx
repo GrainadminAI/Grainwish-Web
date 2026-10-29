@@ -52,7 +52,7 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
       dataSource: 'ICAR & IARI Plant Pathology Database',
       targetSection: '#diagnostics',
       actionText: 'Launch AI Diagnostics Scanner',
-      desc: 'Point your smartphone camera at any affected leaf, stem, or grain head. Grainwish AI deep neural vision pipeline scans lesion textures, pustule patterns, and chlorosis in under 3 seconds to accurately classify over 300 crop pathogens.',
+      desc: 'Point your smartphone camera at any affected leaf, stem, or grain head. GrainWish AI deep neural vision pipeline scans lesion textures, pustule patterns, and chlorosis in under 3 seconds to accurately classify over 300 crop pathogens.',
       capabilities: [
         'Multi-spectral computer vision for Wheat, Paddy, Cotton, Turmeric & vegetables',
         'Dual-track ICAR prescription: verified chemical dilution (ml/L) & 100% bio-organic alternatives',
@@ -203,11 +203,11 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
               </div>
               
               <h2 className="font-display text-xl sm:text-3xl lg:text-4xl font-extrabold text-white leading-tight">
-                {t('empower_harvest_title_1', 'Empower your harvest with')} <span className="gradient-text-agri">Grainwish AI</span>
+                {t('empower_harvest_title_1', 'Empower your harvest with')} <span className="gradient-text-agri">GrainWish AI</span>
               </h2>
               
               <p className="text-slate-300 text-xs sm:text-sm md:text-base leading-relaxed max-w-2xl">
-                {t('empower_harvest_sub', 'From seed to market, Grainwish AI eliminates guesswork. Early pathology diagnostics, precision soil dosing, live mandi rates & government schemes — all in one platform.')}
+                {t('empower_harvest_sub', 'From seed to market, GrainWish AI eliminates guesswork. Early pathology diagnostics, precision soil dosing, live mandi rates & government schemes — all in one platform.')}
               </p>
             </div>
 
@@ -274,7 +274,7 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
                 <div className="mt-3 pt-2.5 border-t border-emerald-900/40 flex items-center justify-between text-[11px] sm:text-xs">
                   <span className="flex items-center gap-1 text-emerald-400 font-medium">
                     <Check className="w-3.5 h-3.5 text-amber-400" />
-                    <span>Grainwish Verified</span>
+                    <span>GrainWish Verified</span>
                   </span>
 
                   <button
@@ -322,7 +322,7 @@ export default function EmpowerHarvest({ onOpenDownloadModal }) {
                       {selectedFeature.badge}
                     </span>
                     <span className="text-[10px] font-mono text-amber-400 bg-amber-400/10 px-2 py-0.5 rounded border border-amber-400/30">
-                      Grainwish Core Pillar
+                      GrainWish Core Pillar
                     </span>
                   </div>
                   <h2 id="feature-modal-title" className="font-display text-lg sm:text-2xl font-extrabold text-white">
