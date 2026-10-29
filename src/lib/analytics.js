@@ -66,7 +66,7 @@ export function trackEvent(eventName, properties = {}) {
       if (posthog && typeof posthog.capture === 'function') {
         posthog.capture(eventName, {
           ...properties,
-          platform: 'GrainWise Web',
+          platform: 'Grainwish Web',
           timestamp: new Date().toISOString()
         });
       }

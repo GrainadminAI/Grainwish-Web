@@ -102,7 +102,7 @@ const supabase = SUPABASE_ANON_KEY ? createClient(SUPABASE_URL, SUPABASE_ANON_KE
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
-    app: 'GrainWise AI Production Server',
+    app: 'Grainwish AI Production Server',
     domain: 'www.grainwish.com',
     supabaseConnected: true,
     timestamp: new Date().toISOString()
@@ -219,7 +219,7 @@ app.get('*', (req, res) => {
 
 app.listen(PORT, () => {
   console.log(`=======================================================`);
-  console.log(`🌾 GrainWise AI Production Hosting Live!`);
+  console.log(`🌾 Grainwish AI Production Hosting Live!`);
   console.log(`🌐 Primary Domain: https://www.grainwish.com`);
   console.log(`📡 Server Address: http://localhost:${PORT}`);
   console.log(`🔗 Supabase Ref: drhraerbklibrkigbdaw`);

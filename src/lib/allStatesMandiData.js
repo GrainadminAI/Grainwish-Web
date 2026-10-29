@@ -1,5 +1,5 @@
 /**
- * GrainWise AI — 28 Indian States & Union Territories Comprehensive Mandi & Weather Intelligence
+ * Grainwish AI — 28 Indian States & Union Territories Comprehensive Mandi & Weather Intelligence
  * 
  * Inspired by Agmarknet & e-NAM (National Agriculture Market)
  * Covers all 28 states of India + Key Union Territories

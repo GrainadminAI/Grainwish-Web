@@ -103,7 +103,7 @@ export default function CoreHighlights({ selectedLang }) {
                   <div className="relative rounded-xl overflow-hidden mb-2.5 sm:mb-3 h-24 sm:h-28 border border-emerald-800/40">
                     <img
                       src={item.image}
-                      alt={`${item.title} - GrainWise AI Smart Farming Intelligence Feature`}
+                      alt={`${item.title} - Grainwish AI Smart Farming Intelligence Feature`}
                       loading="lazy"
                       decoding="async"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"

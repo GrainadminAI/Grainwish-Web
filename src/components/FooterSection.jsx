@@ -62,7 +62,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
             <div className="flex items-center gap-4">
               <img 
                 src={currentOption.src} 
-                alt="GrainWise AI Logo - Trusted Indian AgriTech Platform" 
+                alt="Grainwish AI Logo - Trusted Indian AgriTech Platform" 
                 loading="lazy"
                 decoding="async"
                 width="84"
@@ -70,7 +70,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                 className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 object-contain drop-shadow-[0_0_20px_rgba(16,185,129,0.5)] shrink-0"
               />
               <div>
-                <div className="font-display text-2xl sm:text-3xl font-extrabold text-white">GrainWise AI</div>
+                <div className="font-display text-2xl sm:text-3xl font-extrabold text-white">Grainwish AI</div>
                 <div className="text-xs sm:text-sm text-amber-400 font-mono font-medium">{t('footer_smart_farming', 'Smart Farming Intelligence')}</div>
               </div>
             </div>
@@ -169,7 +169,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-300">
           <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
             <span>
-              © {new Date().getFullYear()} GrainWise AI. All rights reserved. Built for farmers with <Heart className="w-3 h-3 text-red-500 inline mx-1" />.
+              © {new Date().getFullYear()} Grainwish AI. All rights reserved. Built for farmers with <Heart className="w-3 h-3 text-red-500 inline mx-1" />.
             </span>
             <MadeInIndiaTag variant="footer" />
           </div>

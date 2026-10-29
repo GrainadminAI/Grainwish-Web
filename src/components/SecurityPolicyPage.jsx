@@ -110,7 +110,7 @@ export default function SecurityPolicyPage({ onBackToHome }) {
             <span>•</span>
             <span>Policy Owner: <strong>Technology &amp; Operations Lead</strong></span>
             <span>•</span>
-            <span>Platform: <strong>GrainWise AI / Grainwish</strong> (www.grainwish.com)</span>
+            <span>Platform: <strong>Grainwish AI</strong> (www.grainwish.com)</span>
           </div>
         </header>
 

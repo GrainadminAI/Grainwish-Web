@@ -13,7 +13,7 @@ const supabase = SUPABASE_ANON_KEY ? createClient(SUPABASE_URL, SUPABASE_ANON_KE
 
 async function testConnection() {
   console.log('🌾 ========================================================');
-  console.log('🌾 GrainWise AI — Supabase Backend Data Audit (Read & Write)');
+  console.log('🌾 Grainwish AI — Supabase Backend Data Audit (Read & Write)');
   console.log(`📧 Support Contact: ${SUPPORT_EMAIL}`);
   console.log(`🔗 Project URL:     ${SUPABASE_URL}`);
   console.log('🌾 ========================================================\n');
@@ -136,7 +136,7 @@ async function testConnection() {
     const testPoolCode = 'AUDIT-' + Date.now();
     const { data: vpWrite, error: vpWriteError } = await supabase.from('virtual_pools').insert([{
       pool_code: testPoolCode,
-      fpo_name: 'GrainWise Audit FPO'
+      fpo_name: 'Grainwish Audit FPO'
     }]).select();
 
     if (vpWriteError) {

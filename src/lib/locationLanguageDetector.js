@@ -1,5 +1,5 @@
 /**
- * Location-to-Language Intelligence for GrainWise AI
+ * Location-to-Language Intelligence for Grainwish AI
  * 
  * Automatically detects the farmer's state/region in India using:
  * 1. Geolocation API (lat/lng) with fast reverse geocoding

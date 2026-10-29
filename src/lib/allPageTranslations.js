@@ -1,5 +1,5 @@
 /**
- * Comprehensive Multi-Lingual Site-Wide Dictionary for GrainWise AI
+ * Comprehensive Multi-Lingual Site-Wide Dictionary for Grainwish AI
  * Ensures 100% of the entire page translates when user switches language.
  */
 
@@ -8,7 +8,7 @@ export const ALL_PAGE_TRANSLATIONS = {
     // Empower Harvest Banner & Features
     empower_harvest_badge: "Comprehensive Agritech Platform",
     empower_harvest_title_1: "Empower your harvest with",
-    empower_harvest_sub: "From seed to market, GrainWise AI eliminates guesswork. Early pathology diagnostics, precision soil dosing, live mandi rates & government schemes — all in one platform.",
+    empower_harvest_sub: "From seed to market, Grainwish AI eliminates guesswork. Early pathology diagnostics, precision soil dosing, live mandi rates & government schemes — all in one platform.",
     empower_harvest_cta: "Tap Download & Take Guesswork Out",
     empower_harvest_trial: "Application Phase Coming Soon · Free 14-day trial pack",
     feat_disease_title: "Crop disease detection",
@@ -96,11 +96,11 @@ export const ALL_PAGE_TRANSLATIONS = {
 
     // Farmer Stories
     stories_main_title: "Farmer Stories & Community Feedback",
-    stories_main_sub: "Farmers across India share their real experiences using GrainWise AI to boost yield, prevent disease, and optimize market prices.",
+    stories_main_sub: "Farmers across India share their real experiences using Grainwish AI to boost yield, prevent disease, and optimize market prices.",
     stories_add_btn: "Add Your Feedback",
     stories_case_study: "Detailed Case Study Analysis",
     stories_detected_issue: "Detected Issue",
-    stories_actions_taken: "Actions Taken with GrainWise AI",
+    stories_actions_taken: "Actions Taken with Grainwish AI",
     stories_field_result: "Field Transformational Result",
 
     // Frequently Asked Questions
@@ -144,7 +144,7 @@ export const ALL_PAGE_TRANSLATIONS = {
     // Empower Harvest Banner & Features
     empower_harvest_badge: "முழுமையான அக்ரிடெக் தளம்",
     empower_harvest_title_1: "விளைச்சலை மேம்படுத்துங்கள் -",
-    empower_harvest_sub: "விதை முதல் சந்தை வரை, GrainWise AI யூகங்களை நீக்குகிறது. ஆரம்பகால நோய் கண்டறிதல், துல்லிய மண் ஊட்டச்சத்து, நேரலை மண்டி விலைகள் மற்றும் அரசு திட்டங்கள் — அனைத்தும் ஒரே தளத்தில்.",
+    empower_harvest_sub: "விதை முதல் சந்தை வரை, Grainwish AI யூகங்களை நீக்குகிறது. ஆரம்பகால நோய் கண்டறிதல், துல்லிய மண் ஊட்டச்சத்து, நேரலை மண்டி விலைகள் மற்றும் அரசு திட்டங்கள் — அனைத்தும் ஒரே தளத்தில்.",
     empower_harvest_cta: "பதிவிறக்கி யூகங்களை நீக்குங்கள்",
     empower_harvest_trial: "செயலி விரைவில் அறிமுகம் · 14 நாட்கள் இலவச சோதனைக் கட்டணம்",
     feat_disease_title: "பயிர் நோய் கண்டறிதல்",
@@ -232,7 +232,7 @@ export const ALL_PAGE_TRANSLATIONS = {
 
     // Farmer Stories
     stories_main_title: "விவசாயிகளின் அனுபவங்கள் & கருத்துக்கள்",
-    stories_main_sub: "GrainWise AI மூலம் விளைச்சலை அதிகரித்து பயிர்களைப் பாதுகாத்த இந்திய விவசாயிகளின் நேரடி கள அனுபவங்கள்.",
+    stories_main_sub: "Grainwish AI மூலம் விளைச்சலை அதிகரித்து பயிர்களைப் பாதுகாத்த இந்திய விவசாயிகளின் நேரடி கள அனுபவங்கள்.",
     stories_add_btn: "உங்கள் கருத்தைப் பகிருங்கள்",
     stories_case_study: "விளக்கமான கள ஆய்வு பகுப்பாய்வு",
     stories_detected_issue: "கண்டறியப்பட்ட பாதிப்பு",
@@ -280,7 +280,7 @@ export const ALL_PAGE_TRANSLATIONS = {
     // Empower Harvest Banner & Features
     empower_harvest_badge: "व्यापक कृषि-तकनीक मंच",
     empower_harvest_title_1: "अपनी फसल को सशक्त बनाएं -",
-    empower_harvest_sub: "बीज से बाजार तक, ग्रेनवाइज़ एआई अनिश्चितता को खत्म करता है। प्रारंभिक फसल रोग निदान, सटीक मिट्टी खुराक, लाइव मंडी भाव और सरकारी योजनाएं — सब एक मंच पर।",
+    empower_harvest_sub: "बीज से बाजार तक, ग्रेनविश एआई अनिश्चितता को खत्म करता है। प्रारंभिक फसल रोग निदान, सटीक मिट्टी खुराक, लाइव मंडी भाव और सरकारी योजनाएं — सब एक मंच पर।",
     empower_harvest_cta: "डाउनलोड करें और अनिश्चितता दूर करें",
     empower_harvest_trial: "ऐप जल्द आ रहा है · 14 दिनों का मुफ्त ट्रायल पैक",
     feat_disease_title: "फसल रोग निदान",
@@ -368,7 +368,7 @@ export const ALL_PAGE_TRANSLATIONS = {
 
     // Farmer Stories
     stories_main_title: "किसान कहानियां और सामुदायिक प्रतिक्रिया",
-    stories_main_sub: "भारत भर के किसान ग्रेनवाइज़ एआई का उपयोग करके पैदावार बढ़ाने और रोग नियंत्रण के अपने वास्तविक अनुभव साझा करते हैं।",
+    stories_main_sub: "भारत भर के किसान ग्रेनविश एआई का उपयोग करके पैदावार बढ़ाने और रोग नियंत्रण के अपने वास्तविक अनुभव साझा करते हैं।",
     stories_add_btn: "अपनी प्रतिक्रिया दें",
     stories_case_study: "विस्तृत केस स्टडी विश्लेषण",
     stories_detected_issue: "पहचानी गई समस्या",
@@ -415,7 +415,7 @@ export const ALL_PAGE_TRANSLATIONS = {
   Telugu: {
     empower_harvest_badge: "సమగ్ర అగ్రిటెక్ ప్లాట్‌ఫామ్",
     empower_harvest_title_1: "మీ పంటను శక్తివంతం చేయండి -",
-    empower_harvest_sub: "విత్తనం నుండి మార్కెట్ వరకు, GrainWise AI సందేహాలను తొలగిస్తుంది. ప్రారంభ వ్యాధి నిర్ధారణ, ఖచ్చితమైన ఎరువుల మోతాదు, ప్రత్యక్ష మార్కెట్ ధరలు మరియు ప్రభుత్వ పథకాలు — అన్నీ ఒకే వేదికపై.",
+    empower_harvest_sub: "విత్తనం నుండి మార్కెట్ వరకు, Grainwish AI సందేహాలను తొలగిస్తుంది. ప్రారంభ వ్యాధి నిర్ధారణ, ఖచ్చితమైన ఎరువుల మోతాదు, ప్రత్యక్ష మార్కెట్ ధరలు మరియు ప్రభుత్వ పథకాలు — అన్నీ ఒకే వేదికపై.",
     empower_harvest_cta: "డౌన్‌లోడ్ చేసి సందేహాలను తొలగించండి",
     empower_harvest_trial: "యాప్ త్వరలో అందుబాటులోకి వస్తుంది · 14 రోజుల ఉచిత ట్రయల్ ప్యాక్",
     feat_disease_title: "పంట వ్యాధి నిర్ధారణ",
@@ -485,7 +485,7 @@ export const ALL_PAGE_TRANSLATIONS = {
   Punjabi: {
     empower_harvest_badge: "ਵਿਆਪਕ ਖੇਤੀਬਾੜੀ ਤਕਨਾਲੋਜੀ ਪਲੇਟਫਾਰਮ",
     empower_harvest_title_1: "ਆਪਣੀ ਫਸਲ ਨੂੰ ਸ਼ਕਤੀਸ਼ਾਲੀ ਬਣਾਓ -",
-    empower_harvest_sub: "ਬੀਜ ਤੋਂ ਮੰਡੀ ਤੱਕ, GrainWise AI ਅੰਦਾਜ਼ਿਆਂ ਨੂੰ ਖਤਮ ਕਰਦਾ ਹੈ। ਸ਼ੁਰੂਆਤੀ ਬਿਮਾਰੀ ਜਾਂਚ, ਸਟੀਕ ਖਾਦ ਖੁਰਾਕ, ਲਾਈਵ ਮੰਡੀ ਭਾਅ ਅਤੇ ਸਰਕਾਰੀ ਸਕੀਮਾਂ — ਸਭ ਇੱਕੋ ਪਲੇਟਫਾਰਮ 'ਤੇ।",
+    empower_harvest_sub: "ਬੀਜ ਤੋਂ ਮੰਡੀ ਤੱਕ, Grainwish AI ਅੰਦਾਜ਼ਿਆਂ ਨੂੰ ਖਤਮ ਕਰਦਾ ਹੈ। ਸ਼ੁਰੂਆਤੀ ਬਿਮਾਰੀ ਜਾਂਚ, ਸਟੀਕ ਖਾਦ ਖੁਰਾਕ, ਲਾਈਵ ਮੰਡੀ ਭਾਅ ਅਤੇ ਸਰਕਾਰੀ ਸਕੀਮਾਂ — ਸਭ ਇੱਕੋ ਪਲੇਟਫਾਰਮ 'ਤੇ।",
     empower_harvest_cta: "ਡਾਊਨਲੋਡ ਕਰੋ ਅਤੇ ਅੰਦਾਜ਼ੇ ਖਤਮ ਕਰੋ",
     empower_harvest_trial: "ਐਪ ਜਲਦ ਆ ਰਿਹਾ ਹੈ · 14 ਦਿਨਾਂ ਦਾ ਮੁਫਤ ਟ੍ਰਾਇਲ",
     feat_disease_title: "ਫਸਲ ਰੋਗ ਜਾਂਚ",
@@ -553,7 +553,7 @@ export const ALL_PAGE_TRANSLATIONS = {
   Bengali: {
     empower_harvest_badge: "ব্যাপক এগ্রিটেক প্ল্যাটফর্ম",
     empower_harvest_title_1: "আপনার ফসলকে সমৃদ্ধ করুন -",
-    empower_harvest_sub: "বীজ থেকে বাজার পর্যন্ত, GrainWise AI সব অনিশ্চয়তা দূর করে। প্রাথমিক রোগ নির্ণয়, সুষম সার প্রয়োগ, লাইভ মান্ডি দর ও সরকারি প্রকল্প — সবই এক জায়গায়।",
+    empower_harvest_sub: "বীজ থেকে বাজার পর্যন্ত, Grainwish AI সব অনিশ্চয়তা দূর করে। প্রাথমিক রোগ নির্ণয়, সুষম সার প্রয়োগ, লাইভ মান্ডি দর ও সরকারি প্রকল্প — সবই এক জায়গায়।",
     empower_harvest_cta: "ডাউনলোড করুন ও ফলন বাড়ান",
     empower_harvest_trial: "অ্যাপ শীঘ্রই আসছে · ১৪ দিনের বিনামূল্যে ট্রায়াল",
     feat_disease_title: "ফসল রোগ নির্ণয়",
@@ -621,7 +621,7 @@ export const ALL_PAGE_TRANSLATIONS = {
   Marathi: {
     empower_harvest_badge: "सर्वसमावेशक कृषी-तंत्रज्ञान प्लॅटफॉर्म",
     empower_harvest_title_1: "आपल्या पिकाला सशक्त बनवा -",
-    empower_harvest_sub: "बियाण्यापासून बाजारापर्यंत, GrainWise AI सर्व शंका दूर करते. प्राथमिक रोग निदान, अचूक खत मात्रा, थेट बाजारभाव आणि सरकारी योजना — सर्व एकाच ठिकाणी.",
+    empower_harvest_sub: "बियाण्यापासून बाजारापर्यंत, Grainwish AI सर्व शंका दूर करते. प्राथमिक रोग निदान, अचूक खत मात्रा, थेट बाजारभाव आणि सरकारी योजना — सर्व एकाच ठिकाणी.",
     empower_harvest_cta: "डाउनलोड करा आणि उत्पन्न वाढवा",
     empower_harvest_trial: "अ‍ॅप लवकरच येत आहे · १४ दिवसांचा मोफत ट्रायल पॅक",
     feat_disease_title: "पीक रोग निदान",
@@ -689,7 +689,7 @@ export const ALL_PAGE_TRANSLATIONS = {
   Gujarati: {
     empower_harvest_badge: "સંપૂર્ણ એગ્રીટેક પ્લેટફોર્મ",
     empower_harvest_title_1: "તમારા પાકને સક્ષમ બનાવો -",
-    empower_harvest_sub: "બીજથી બજાર સુધી, GrainWise AI બધી અનિશ્ચિતતા દૂર કરે છે. રોગનું પ્રારંભિક નિદાન, સચોટ ખાતર, લાઈવ બજાર ભાવ અને સરકારી યોજનાઓ — બધું એક જ પ્લેટફોર્મ પર.",
+    empower_harvest_sub: "બીજથી બજાર સુધી, Grainwish AI બધી અનિશ્ચિતતા દૂર કરે છે. રોગનું પ્રારંભિક નિદાન, સચોટ ખાતર, લાઈવ બજાર ભાવ અને સરકારી યોજનાઓ — બધું એક જ પ્લેટફોર્મ પર.",
     empower_harvest_cta: "ડાઉનલોડ કરો અને અનિશ્ચિતતા દૂર કરો",
     empower_harvest_trial: "એપ ટૂંક સમયમાં આવી રહી છે · ૧૪ દિવસનું ફ્રી ટ્રાયલ પેક",
     feat_disease_title: "પાક રોગ નિદાન",

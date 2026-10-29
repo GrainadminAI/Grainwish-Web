@@ -51,7 +51,7 @@ const INITIAL_STORIES = [
     crop: 'Jute & Cauliflower',
     metric: '₹2,200/bigha Fertilizer Savings',
     metricTag: 'Zero Chemical Over-dosing',
-    quote: '“সবজি চাষে সারের খরচ অনেক বেড়ে যাচ্ছিল। গ্রেনওয়াইজ ক্যালকুলেটর দিয়ে ইউরিয়া কমিয়ে সঠিক পটাশ প্রয়োগ করে আল্ট্রা-গ্রিন ফলন পেয়েছি।” (Fertilizer bills in vegetable farming were excessive. Using GrainWise to reduce urea and optimize potash gave me a lush, healthy harvest with ₹2,200/bigha savings.)',
+    quote: '“সবজি চাষে সারের খরচ অনেক বেড়ে যাচ্ছিল। গ্রেনউইশ ক্যালকুলেটর দিয়ে ইউরিয়া কমিয়ে সঠিক পটাশ প্রয়োগ করে আল্ট্রা-গ্রিন ফলন পেয়েছি।” (Fertilizer bills in vegetable farming were excessive. Using Grainwish to reduce urea and optimize potash gave me a lush, healthy harvest with ₹2,200/bigha savings.)',
     image: '/assets/tablet_wheat_field.jpeg',
     video: '/assets/Sustainable_farm_sunset.mp4',
     detectedIssue: 'Boron deficiency and leaf rot in winter vegetable plots',
@@ -94,7 +94,7 @@ const INITIAL_STORIES = [
     video: '/assets/holographic_leaves.mp4',
     detectedIssue: 'Yellow rust spreading across 2 acres',
     actionsTaken: [
-      'Scanned affected leaves with GrainWise AI camera diagnostics',
+      'Scanned affected leaves with Grainwish AI camera diagnostics',
       'Confirmed yellow rust and received fungicide + variety recommendations',
       'Treated the plot early and isolated infected rows'
     ],
@@ -216,7 +216,7 @@ export default function FarmerStories() {
         video: '/assets/sustainable_farming_village.mp4',
         detectedIssue: 'User Submitted Feedback & Experience',
         actionsTaken: [
-          'Shared real field feedback directly with GrainWise AI team',
+          'Shared real field feedback directly with Grainwish AI team',
           'Rated platform usability and AI diagnostic accuracy',
           'Synced feedback with verified farmer network'
         ],
@@ -279,7 +279,7 @@ export default function FarmerStories() {
         video: '/assets/sustainable_farming_village.mp4',
         detectedIssue: 'User Submitted Feedback & Experience',
         actionsTaken: [
-          'Shared real field feedback directly with GrainWise AI team',
+          'Shared real field feedback directly with Grainwish AI team',
           'Rated platform usability and AI diagnostic accuracy',
           'Synced feedback with verified farmer network'
         ],
@@ -314,7 +314,7 @@ export default function FarmerStories() {
             {t('stories_main_title', 'Farmer Stories & Community Feedback')}
           </h2>
           <p className="text-slate-300 text-xs sm:text-sm max-w-xl mx-auto">
-            {t('stories_main_sub', 'Farmers across India share their experiences using GrainWise AI. Add your own feedback directly below!')}
+            {t('stories_main_sub', 'Farmers across India share their experiences using Grainwish AI. Add your own feedback directly below!')}
           </p>
 
           <div className="pt-0.5 sm:pt-1">
@@ -429,7 +429,7 @@ export default function FarmerStories() {
               <textarea
                 required
                 rows={2}
-                placeholder="Share how GrainWise AI helped your crops or saved fertilizer costs..."
+                placeholder="Share how Grainwish AI helped your crops or saved fertilizer costs..."
                 value={userFeedback}
                 onChange={(e) => setUserFeedback(e.target.value)}
                 className="w-full bg-black/60 border border-emerald-800 rounded-lg p-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
@@ -691,7 +691,7 @@ export default function FarmerStories() {
 
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
               <div className="absolute bottom-2 left-2 bg-black/80 px-2 py-0.5 rounded border border-emerald-500/40 text-[10px] text-amber-300 font-mono">
-                GrainWise AI Verified Field Data
+                Grainwish AI Verified Field Data
               </div>
             </div>
 
@@ -704,7 +704,7 @@ export default function FarmerStories() {
               </div>
 
               <div className="p-2.5 sm:p-3 rounded-xl bg-emerald-950/60 border border-emerald-800/50 text-[11px] sm:text-xs space-y-1">
-                <div className="font-bold text-amber-400 uppercase tracking-wider text-[10px]">Actions Taken with GrainWise AI</div>
+                <div className="font-bold text-amber-400 uppercase tracking-wider text-[10px]">Actions Taken with Grainwish AI</div>
                 <ul className="space-y-1 text-slate-200">
                   {selectedCase.actionsTaken.map((act, i) => (
                     <li key={i} className="flex items-start gap-1.5">

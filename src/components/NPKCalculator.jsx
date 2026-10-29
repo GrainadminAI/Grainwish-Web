@@ -319,7 +319,7 @@ Estimated Fertilizer Savings: ~18%`;
               <div className="text-[10px] sm:text-[10.5px] text-slate-400 leading-relaxed pt-1 flex items-start gap-1.5">
                 <Info className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                 <span>
-                  GrainWise AI suggests splitting Nitrogen doses into 3 equal splits to maximize root uptake efficiency and eliminate groundwater leaching.
+                  Grainwish AI suggests splitting Nitrogen doses into 3 equal splits to maximize root uptake efficiency and eliminate groundwater leaching.
                 </span>
               </div>
 

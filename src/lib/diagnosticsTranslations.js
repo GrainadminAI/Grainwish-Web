@@ -1,5 +1,5 @@
 /**
- * GrainWise AI — 22 Official Indian Languages Diagnostics Translation & Voice Engine
+ * Grainwish AI — 22 Official Indian Languages Diagnostics Translation & Voice Engine
  * 
  * Provides localized crop disease category titles, agronomic advice labels,
  * and spoken audio synthesis templates across all 22 scheduled Indian languages.
@@ -243,7 +243,7 @@ export function generateSpokenDiagnosis({
 
   switch (cleanLang) {
     case 'Hindi':
-      return `नमस्ते! ग्रेनवाइज़ ए.आई. 100% डायग्नोस्टिक्स द्वारा ${crop} में ${disease} की पुष्टि हुई है। श्रेणी: ${category}। तुरंत समाधान के लिए: ${chemicalSpray} का छिड़काव करें। आपके ${acreage} एकड़ खेत के लिए सही मात्रा: ${dosageFormula} है। जैविक उपचार के लिए: ${organicSpray} का उपयोग करें। अपेक्षित सुधार ${recoveryDays} में होगा।`;
+      return `नमस्ते! ग्रेनविश ए.आई. 100% डायग्नोस्टिक्स द्वारा ${crop} में ${disease} की पुष्टि हुई है। श्रेणी: ${category}। तुरंत समाधान के लिए: ${chemicalSpray} का छिड़काव करें। आपके ${acreage} एकड़ खेत के लिए सही मात्रा: ${dosageFormula} है। जैविक उपचार के लिए: ${organicSpray} का उपयोग करें। अपेक्षित सुधार ${recoveryDays} में होगा।`;
 
     case 'Marathi':
       return `नमस्कार! ग्रेनवाईज एआय १००% निदानानुसार ${crop} पिकावर ${disease} रोगाची खात्री झाली आहे. प्रकार: ${category}. त्वरित उपाय: ${chemicalSpray} फवारणी करावी. आपल्या ${acreage} एकरासाठी प्रमाण: ${dosageFormula} आहे. सेंद्रिय पर्यायासाठी: ${organicSpray} वापरावे. सुधारणा ${recoveryDays} दिवसांत होईल.`;
@@ -279,6 +279,6 @@ export function generateSpokenDiagnosis({
       return `نمستے! گرین وائز اے آئی 100% تشخیص کے مطابق ${crop} فصل میں ${disease} کی تصدیق ہوئی ہے۔ زمرہ: ${category}۔ فوری علاج: ${chemicalSpray} کا چھڑکاؤ کریں۔ آپ کے ${acreage} ایکڑ کے لیے مقدار: ${dosageFormula} ہے۔ نامیاتی متبادل کے لیے: ${organicSpray} استعمال کریں۔ بحالی کا وقت ${recoveryDays} ہے۔`;
 
     default:
-      return `Namaste! GrainWise AI Diagnosis confirmed 100 percent match for ${crop}. Detected condition: ${disease}. Category: ${category}. Recommended immediate remedy: Apply ${chemicalSpray}. For your ${acreage} acre land, the calculated mix is ${dosageFormula}. Alternatively, for organic farming, apply ${organicSpray}. Expected recovery in ${recoveryDays}.`;
+      return `Namaste! Grainwish AI Diagnosis confirmed 100 percent match for ${crop}. Detected condition: ${disease}. Category: ${category}. Recommended immediate remedy: Apply ${chemicalSpray}. For your ${acreage} acre land, the calculated mix is ${dosageFormula}. Alternatively, for organic farming, apply ${organicSpray}. Expected recovery in ${recoveryDays}.`;
   }
 }

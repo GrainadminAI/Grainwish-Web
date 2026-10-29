@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "name": "grainwise-ai",
+  "name": "grainwish-ai",
   "builds": [
     {
       "src": "package.json",

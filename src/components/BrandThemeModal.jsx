@@ -40,7 +40,7 @@ export default function BrandThemeModal() {
               </span>
             </div>
             <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight font-display">
-              GrainWise <span className="text-amber-400">AI</span> Logo & Theme Suite
+              Grainwish <span className="text-amber-400">AI</span> Logo & Theme Suite
             </h2>
             <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-2xl leading-relaxed">
               Explore the 3 brand design directions. Select any logo below to update the live website emblem, favicon, and brand identity in real-time.
@@ -169,7 +169,7 @@ export default function BrandThemeModal() {
 
                     <a
                       href={opt.fullSrc || opt.src}
-                      download={`grainwise-logo-${opt.id}.png`}
+                      download={`grainwish-logo-${opt.id}.png`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="p-2 rounded-xl bg-black/40 hover:bg-emerald-950 text-slate-300 hover:text-white border border-emerald-900/60 transition-colors"
@@ -187,7 +187,7 @@ export default function BrandThemeModal() {
           {/* Design System & Motifs Breakdown */}
           <div className="p-5 rounded-2xl bg-gradient-to-br from-[#062115] to-[#03130c] border border-emerald-800/40">
             <h4 className="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2 mb-3">
-              <Layers className="w-4 h-4 text-emerald-400" /> GrainWise AI Core Icon Geometry
+              <Layers className="w-4 h-4 text-emerald-400" /> Grainwish AI Core Icon Geometry
             </h4>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-xs">

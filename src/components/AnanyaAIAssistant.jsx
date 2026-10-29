@@ -285,7 +285,7 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
 
   const shareViaWhatsApp = (title, text) => {
     const shareText = encodeURIComponent(
-      `🌾 *GrainWise AI — Ananya Agronomy Prescription*\n\n*${title || 'Crop Health Advice'}*\n\n${text}\n\n👉 Diagnose your crops 100% free at https://www.grainwish.com`
+      `🌾 *Grainwish AI — Ananya Agronomy Prescription*\n\n*${title || 'Crop Health Advice'}*\n\n${text}\n\n👉 Diagnose your crops 100% free at https://www.grainwish.com`
     );
     const waUrl = `https://wa.me/?text=${shareText}`;
     if (!window.open(waUrl, '_blank')) {

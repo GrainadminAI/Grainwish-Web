@@ -103,7 +103,7 @@ const supabase = SUPABASE_ANON_KEY ? createClient(SUPABASE_URL, SUPABASE_ANON_KE
 app.get('/api/health', (req, res) => {
   res.json({
     status: 'online',
-    app: 'GrainWise AI Backend API',
+    app: 'Grainwish AI Backend API',
     domain: 'Grainwish.com',
     supabaseConnected: Boolean(SUPABASE_URL && SUPABASE_ANON_KEY),
     timestamp: new Date().toISOString()
@@ -364,7 +364,7 @@ app.get('/api/auth/verify', async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🌾 GrainWise AI Backend Server running on http://localhost:${PORT}`);
+  console.log(`🌾 Grainwish AI Backend Server running on http://localhost:${PORT}`);
   console.log(`🔗 Domain: Grainwish.com | Supabase Ref: drhraerbklibrkigbdaw`);
   console.log(`🔐 Google Auth & Backend Verification Endpoint: http://localhost:${PORT}/api/auth/google`);
 });

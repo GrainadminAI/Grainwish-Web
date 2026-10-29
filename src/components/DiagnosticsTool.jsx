@@ -784,7 +784,7 @@ export default function DiagnosticsTool() {
   const handleShareWhatsApp = () => {
     const fix = activeFix;
     const text = encodeURIComponent(
-      `🌾 *GrainWise AI 100% Crop Diagnosis & Prescription*\n` +
+      `🌾 *Grainwish AI 100% Crop Diagnosis & Prescription*\n` +
       `📍 *Location:* ${selectedCrop.location || 'Local Farm Plot'}\n` +
       `🌱 *Crop:* ${selectedCrop.crop}\n` +
       `🦠 *Detected Condition:* ${selectedCrop.disease} (${categoryKey})\n` +
@@ -810,7 +810,7 @@ export default function DiagnosticsTool() {
   // Copy shareable summary to clipboard
   const handleCopySummary = () => {
     const text =
-      `🌾 GrainWise AI 100% Crop Diagnosis Report\n` +
+      `🌾 Grainwish AI 100% Crop Diagnosis Report\n` +
       `Crop: ${selectedCrop.crop} | Diagnosis: ${selectedCrop.disease}\n` +
       `Severity: ${selectedCrop.severity} | Recovery: ${selectedCrop.recoveryDays}\n` +
       `Remedy: ${selectedCrop.treatment}\n` +
@@ -839,7 +839,7 @@ export default function DiagnosticsTool() {
       <!DOCTYPE html>
       <html>
         <head>
-          <title>GrainWise AI — Official 100% Crop Pathology Certificate</title>
+          <title>Grainwish AI — Official 100% Crop Pathology Certificate</title>
           <style>
             body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; padding: 40px; color: #0f172a; background: #fff; line-height: 1.5; }
             .header { border-bottom: 3px solid #059669; padding-bottom: 16px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; }
@@ -858,7 +858,7 @@ export default function DiagnosticsTool() {
         <body>
           <div class="header">
             <div>
-              <div class="logo">🌾 GrainWise AI Pathology Lab</div>
+              <div class="logo">🌾 Grainwish AI Pathology Lab</div>
               <div class="sub">100% Precision Multi-Spectral Crop Disease Diagnostic Certificate · www.grainwish.com</div>
             </div>
             <div class="badge">CONFIDENCE: 100.0% VERIFIED</div>
@@ -899,7 +899,7 @@ export default function DiagnosticsTool() {
           </div>
 
           <div class="footer">
-            Issued on ${new Date().toLocaleDateString('en-IN', { dateStyle: 'full' })} · Verified by GrainWise AI Multi-Spectrum Agronomy Engine · Contact: support@grainwish.com
+            Issued on ${new Date().toLocaleDateString('en-IN', { dateStyle: 'full' })} · Verified by Grainwish AI Multi-Spectrum Agronomy Engine · Contact: support@grainwish.com
           </div>
         </body>
       </html>
@@ -1611,7 +1611,7 @@ export default function DiagnosticsTool() {
                         Real-Time Crop Leaf Detector
                       </h3>
                       <p className="text-xs text-slate-300 mt-1">
-                        GrainWise AI actively validates whether the camera view contains a crop leaf before running pathology diagnostics.
+                        Grainwish AI actively validates whether the camera view contains a crop leaf before running pathology diagnostics.
                       </p>
                     </div>
                   </div>

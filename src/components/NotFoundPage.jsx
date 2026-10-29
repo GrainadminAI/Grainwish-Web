@@ -39,7 +39,7 @@ export default function NotFoundPage({ onNavigateHome, onNavigateSection }) {
             className="w-full py-3.5 px-6 bg-gradient-to-r from-emerald-500 via-emerald-600 to-amber-500 hover:from-emerald-400 hover:to-amber-400 text-black font-extrabold rounded-xl shadow-xl shadow-emerald-500/25 flex items-center justify-center gap-2 transition-transform hover:scale-105 active:scale-95 text-sm"
           >
             <Home className="w-4 h-4 text-black" />
-            Return to GrainWise AI Homepage
+            Return to Grainwish AI Homepage
           </button>
         </div>
 

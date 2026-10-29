@@ -123,7 +123,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
           </h3>
 
           <p className="text-xs text-slate-300 max-w-xs mx-auto leading-relaxed">
-            Welcome to <strong className="text-emerald-400">GrainWise AI</strong>. Sign in using your Google account to access crop diagnostics & Mandi alerts on <strong className="text-amber-300">Grainwish.com</strong>.
+            Welcome to <strong className="text-emerald-400">Grainwish AI</strong>. Sign in using your Google account to access crop diagnostics & Mandi alerts on <strong className="text-amber-300">Grainwish.com</strong>.
           </p>
         </div>
 
@@ -210,7 +210,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
               </div>
 
               <div className="text-[10px] text-slate-400 border-t border-emerald-900/50 pt-1.5">
-                💡 Also update the OAuth Consent Screen App Name from <span className="text-red-300 font-semibold">&quot;Potato App&quot;</span> to <span className="text-emerald-300 font-semibold">&quot;GrainWise AI&quot;</span>.
+                💡 Also update the OAuth Consent Screen App Name from <span className="text-red-300 font-semibold">&quot;Potato App&quot;</span> to <span className="text-emerald-300 font-semibold">&quot;Grainwish AI&quot;</span>.
               </div>
             </div>
           )}

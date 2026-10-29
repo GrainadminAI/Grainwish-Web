@@ -1,5 +1,5 @@
 /**
- * GrainWise AI — Multi-Spectral Crop & Leaf Verification Engine with Real-Time Object Detection
+ * Grainwish AI — Multi-Spectral Crop & Leaf Verification Engine with Real-Time Object Detection
  * 
  * Accurately detects:
  * - RUST DISEASE (Puccinia striiformis / Rust pustules)

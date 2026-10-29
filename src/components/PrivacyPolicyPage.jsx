@@ -57,7 +57,7 @@ export default function PrivacyPolicyPage({ onBackToHome }) {
               Effective Date: October 12, 2026
             </span>
             <span>•</span>
-            <span>Platform: <strong>GrainWise AI</strong> (www.grainwish.com)</span>
+            <span>Platform: <strong>Grainwish AI</strong> (www.grainwish.com)</span>
             <span>•</span>
             <span className="text-emerald-300 font-medium">Version 2.4</span>
           </div>
@@ -97,7 +97,7 @@ export default function PrivacyPolicyPage({ onBackToHome }) {
               <span className="text-amber-400 font-mono">1.</span> Introduction & Scope
             </h2>
             <p>
-              Welcome to GrainWise AI (&quot;GrainWise&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;), operating via the website <a href="https://www.grainwish.com" className="text-emerald-400 underline hover:text-emerald-300">www.grainwish.com</a> and our associated mobile applications. GrainWise AI is dedicated to empowering agricultural producers and farmers across India and globally with artificial intelligence diagnostic tools, fertilizer recommendations, and market price insights.
+              Welcome to Grainwish AI (&quot;Grainwish&quot;, &quot;we&quot;, &quot;us&quot;, or &quot;our&quot;), operating via the website <a href="https://www.grainwish.com" className="text-emerald-400 underline hover:text-emerald-300">www.grainwish.com</a> and our associated mobile applications. Grainwish AI is dedicated to empowering agricultural producers and farmers across India and globally with artificial intelligence diagnostic tools, fertilizer recommendations, and market price insights.
             </p>
             <p>
               This Privacy Policy explains how we collect, process, store, and safeguard your personal information when you interact with our website, software simulators, API services, and mobile applications. By accessing or using our platform, you acknowledge that you have read and understood this policy.
@@ -159,7 +159,7 @@ export default function PrivacyPolicyPage({ onBackToHome }) {
               <span className="text-amber-400 font-mono">4.</span> Camera & Location Permissions
             </h2>
             <p>
-              GrainWise AI requests device camera access only when you actively initiate a leaf scan. We do not access your camera in the background or inspect any media outside the specific files you submit. Geo-location queries are generalized to the district level to fetch relevant APMC market data and are never tracked continuously.
+              Grainwish AI requests device camera access only when you actively initiate a leaf scan. We do not access your camera in the background or inspect any media outside the specific files you submit. Geo-location queries are generalized to the district level to fetch relevant APMC market data and are never tracked continuously.
             </p>
           </section>
 
@@ -214,7 +214,7 @@ export default function PrivacyPolicyPage({ onBackToHome }) {
               If you have any questions, concerns, or grievances regarding this Privacy Policy or our data handling practices, please contact us:
             </p>
             <div className="bg-emerald-950/60 p-4 rounded-xl border border-emerald-800/60 text-xs space-y-1 text-slate-200">
-              <div className="font-bold text-white">GrainWise AI Grievance Redressal Cell</div>
+              <div className="font-bold text-white">Grainwish AI Grievance Redressal Cell</div>
               <div>Email: <a href="mailto:support@grainwish.com" className="text-emerald-400 underline">support@grainwish.com</a> / <a href="mailto:privacy@grainwish.com" className="text-emerald-400 underline">privacy@grainwish.com</a></div>
               <div>Domain: <a href="https://www.grainwish.com" className="text-amber-400 underline">www.grainwish.com</a></div>
               <div>Response Time: All privacy inquiries are responded to within 48 business hours.</div>
@@ -229,11 +229,11 @@ export default function PrivacyPolicyPage({ onBackToHome }) {
             onClick={onBackToHome}
             className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-amber-500 hover:from-emerald-400 hover:to-amber-400 text-black font-extrabold rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95 text-xs flex items-center gap-2"
           >
-            <ArrowLeft className="w-4 h-4" /> Return to GrainWise AI Homepage
+            <ArrowLeft className="w-4 h-4" /> Return to Grainwish AI Homepage
           </button>
 
           <span className="text-[11px] text-slate-400">
-            © {new Date().getFullYear()} GrainWise AI. All rights reserved.
+            © {new Date().getFullYear()} Grainwish AI. All rights reserved.
           </span>
         </div>
 

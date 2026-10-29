@@ -57,7 +57,7 @@ export default function TermsConditionsPage({ onBackToHome }) {
               Effective Date: October 12, 2026
             </span>
             <span>•</span>
-            <span>Platform: <strong>GrainWise AI</strong> (www.grainwish.com)</span>
+            <span>Platform: <strong>Grainwish AI</strong> (www.grainwish.com)</span>
             <span>•</span>
             <span className="text-emerald-300 font-medium">Version 2.4</span>
           </div>
@@ -69,7 +69,7 @@ export default function TermsConditionsPage({ onBackToHome }) {
             <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" /> Important Agricultural Advisory Disclaimer
           </h2>
           <p className="text-xs text-slate-200 leading-relaxed">
-            GrainWise AI provides diagnostic evaluations, NPK nutrient estimates, and treatment alternatives for informational and agronomic support purposes. Real-world crop outcomes vary based on micro-climates, soil test variations, irrigation quality, and weather events. Farmers are encouraged to cross-reference recommendations with certified local agricultural extension officers (KVKs) and follow all statutory pesticide manufacturer labels.
+            Grainwish AI provides diagnostic evaluations, NPK nutrient estimates, and treatment alternatives for informational and agronomic support purposes. Real-world crop outcomes vary based on micro-climates, soil test variations, irrigation quality, and weather events. Farmers are encouraged to cross-reference recommendations with certified local agricultural extension officers (KVKs) and follow all statutory pesticide manufacturer labels.
           </p>
         </div>
 
@@ -82,7 +82,7 @@ export default function TermsConditionsPage({ onBackToHome }) {
               <span className="text-amber-400 font-mono">1.</span> Acceptance of Terms
             </h2>
             <p>
-              By accessing, browsing, or utilizing the GrainWise AI website (<a href="https://www.grainwish.com" className="text-emerald-400 underline">www.grainwish.com</a>), software applications, AI simulators, or associated mobile packages, you agree to be legally bound by these Terms &amp; Conditions. If you do not agree with any part of these terms, you must refrain from using the platform.
+              By accessing, browsing, or utilizing the Grainwish AI website (<a href="https://www.grainwish.com" className="text-emerald-400 underline">www.grainwish.com</a>), software applications, AI simulators, or associated mobile packages, you agree to be legally bound by these Terms &amp; Conditions. If you do not agree with any part of these terms, you must refrain from using the platform.
             </p>
           </section>
 
@@ -92,7 +92,7 @@ export default function TermsConditionsPage({ onBackToHome }) {
               <span className="text-amber-400 font-mono">2.</span> Description of Services
             </h2>
             <p>
-              GrainWise AI provides software-driven agricultural intelligence services, including but not limited to:
+              Grainwish AI provides software-driven agricultural intelligence services, including but not limited to:
             </p>
             <ul className="list-disc list-inside space-y-1 text-slate-300 pl-2">
               <li>Computer-vision leaf pathology diagnostics for commercial Indian and global crops.</li>
@@ -109,7 +109,7 @@ export default function TermsConditionsPage({ onBackToHome }) {
               <span className="text-amber-400 font-mono">3.</span> User Conduct & Permitted Use
             </h2>
             <p>
-              You agree to use GrainWise AI exclusively for lawful agricultural, educational, or commercial farming management purposes. You agree not to:
+              You agree to use Grainwish AI exclusively for lawful agricultural, educational, or commercial farming management purposes. You agree not to:
             </p>
             <ul className="list-disc list-inside space-y-1 text-slate-300 pl-2">
               <li>Upload malicious code, automated scraping bots, or reverse-engineer the proprietary neural model weights.</li>
@@ -134,7 +134,7 @@ export default function TermsConditionsPage({ onBackToHome }) {
               <span className="text-amber-400 font-mono">5.</span> Intellectual Property Rights
             </h2>
             <p>
-              All trademarks, software designs, UI components, computer vision algorithms, and logos associated with &quot;GrainWise AI&quot; and &quot;Grainwish&quot; are the exclusive intellectual property of GrainWise AI. You may not copy, reproduce, distribute, or create derivative works without prior written permission.
+              All trademarks, software designs, UI components, computer vision algorithms, and logos associated with &quot;Grainwish AI&quot; and &quot;Grainwish&quot; are the exclusive intellectual property of Grainwish AI. You may not copy, reproduce, distribute, or create derivative works without prior written permission.
             </p>
           </section>
 
@@ -144,7 +144,7 @@ export default function TermsConditionsPage({ onBackToHome }) {
               <span className="text-amber-400 font-mono">6.</span> Limitation of Liability
             </h2>
             <p>
-              To the fullest extent permitted by applicable law, GrainWise AI and its directors, employees, and affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of crop yield, revenue, or business interruption arising from reliance on platform data or unforeseen severe climate disasters.
+              To the fullest extent permitted by applicable law, Grainwish AI and its directors, employees, and affiliates shall not be liable for any indirect, incidental, special, consequential, or punitive damages, including loss of crop yield, revenue, or business interruption arising from reliance on platform data or unforeseen severe climate disasters.
             </p>
           </section>
 
@@ -167,7 +167,7 @@ export default function TermsConditionsPage({ onBackToHome }) {
               For any questions regarding these Terms or to report potential violations, please reach out to:
             </p>
             <div className="bg-emerald-950/60 p-4 rounded-xl border border-emerald-800/60 text-xs space-y-1 text-slate-200">
-              <div className="font-bold text-white">GrainWise AI Legal Affairs Department</div>
+              <div className="font-bold text-white">Grainwish AI Legal Affairs Department</div>
               <div>Email: <a href="mailto:legal@grainwish.com" className="text-emerald-400 underline">legal@grainwish.com</a> / <a href="mailto:support@grainwish.com" className="text-emerald-400 underline">support@grainwish.com</a></div>
               <div>Official URL: <a href="https://www.grainwish.com" className="text-amber-400 underline">www.grainwish.com</a></div>
             </div>
@@ -181,11 +181,11 @@ export default function TermsConditionsPage({ onBackToHome }) {
             onClick={onBackToHome}
             className="px-6 py-3 bg-gradient-to-r from-emerald-500 to-amber-500 hover:from-emerald-400 hover:to-amber-400 text-black font-extrabold rounded-xl shadow-lg transition-transform hover:scale-105 active:scale-95 text-xs flex items-center gap-2"
           >
-            <ArrowLeft className="w-4 h-4" /> Return to GrainWise AI Homepage
+            <ArrowLeft className="w-4 h-4" /> Return to Grainwish AI Homepage
           </button>
 
           <span className="text-[11px] text-slate-400">
-            © {new Date().getFullYear()} GrainWise AI. All rights reserved.
+            © {new Date().getFullYear()} Grainwish AI. All rights reserved.
           </span>
         </div>
 

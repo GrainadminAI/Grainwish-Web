@@ -60,7 +60,7 @@ export default function DownloadModal({ isOpen, onClose }) {
       action: 'click_download',
       metadata: { platform }
     });
-    alert(`Thank you for installing GrainWise AI for ${platform}! Starting app package download...`);
+    alert(`Thank you for installing Grainwish AI for ${platform}! Starting app package download...`);
   };
 
   const handleAndroidPreRegister = async (e) => {
@@ -241,7 +241,7 @@ export default function DownloadModal({ isOpen, onClose }) {
               <div className="w-24 h-24 bg-white p-1.5 rounded-xl shrink-0 flex items-center justify-center shadow-md relative overflow-hidden">
                 <img
                   src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https%3A%2F%2Fgrainwish.com&color=031d10&bgcolor=ffffff"
-                  alt="GrainWise AI QR Code"
+                  alt="Grainwish AI QR Code"
                   className="w-full h-full object-contain blur-md select-none pointer-events-none"
                   onError={(e) => {
                     e.target.style.display = 'none';
@@ -299,7 +299,7 @@ export default function DownloadModal({ isOpen, onClose }) {
                   <QrCode className="w-4 h-4 text-amber-400" /> Scan Ultra-HD QR Code
                 </div>
                 <div className="text-slate-300 text-[11px]">
-                  Point your phone camera to instantly open GrainWise AI.
+                  Point your phone camera to instantly open Grainwish AI.
                 </div>
               </div>
             </div>
@@ -490,7 +490,7 @@ export default function DownloadModal({ isOpen, onClose }) {
               <textarea
                 required
                 rows={3}
-                placeholder="Share your experience using GrainWise AI directly from your phone..."
+                placeholder="Share your experience using Grainwish AI directly from your phone..."
                 value={comments}
                 onChange={(e) => setComments(e.target.value)}
                 className="w-full bg-black/60 border border-emerald-800 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-emerald-500"

@@ -1,5 +1,5 @@
 -- ==========================================================
--- GrainWise AI (grainwish.com) - Supabase Database Schema
+-- Grainwish AI (grainwish.com) - Supabase Database Schema
 -- Run this script in your Supabase SQL Editor
 -- Official Support & Inquiries: support@grainwish.com
 -- ==========================================================

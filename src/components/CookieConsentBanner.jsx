@@ -77,7 +77,7 @@ export default function CookieConsentBanner({ onOpenPrivacyPolicy }) {
                 </span>
               </div>
               <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
-                GrainWise AI uses cookies and privacy-conscious analytics to remember your preferred language, provide localized Mandi updates, and improve AI crop diagnostic accuracy. You have complete control over your preferences. Read our{' '}
+                Grainwish AI uses cookies and privacy-conscious analytics to remember your preferred language, provide localized Mandi updates, and improve AI crop diagnostic accuracy. You have complete control over your preferences. Read our{' '}
                 <button
                   type="button"
                   onClick={onOpenPrivacyPolicy}
