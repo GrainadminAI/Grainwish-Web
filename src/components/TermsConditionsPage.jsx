@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, Scale, AlertTriangle, CheckCircle2, FileText, Printer, Calendar, ShieldCheck } from 'lucide-react';
+import { ArrowLeft, Scale, AlertTriangle, CheckCircle2, FileText, Printer, Calendar, ShieldCheck, MapPin, Compass } from 'lucide-react';
 
 export default function TermsConditionsPage({ onBackToHome }) {
   const handlePrint = () => {
@@ -98,8 +98,45 @@ export default function TermsConditionsPage({ onBackToHome }) {
               <li>Computer-vision leaf pathology diagnostics for commercial Indian and global crops.</li>
               <li>Precision NPK and micronutrient dosage calculators calibrated to regional soil classifications.</li>
               <li>Live APMC Mandi commodity price indices, MSP benchmarks, and localized weather alerts.</li>
+              <li>GPS and network-assisted APMC market proximity calculation and nearest-center sorting.</li>
               <li>Multilingual agricultural AI conversation through Ananya AI in 22 native Indian languages.</li>
               <li>Crop seasonal calendars and government subsidy tracking.</li>
+            </ul>
+          </section>
+
+          {/* Section 2.1: Location & GPS Services Terms */}
+          <section className="pt-6 space-y-3">
+            <h2 className="font-display text-lg font-bold text-white flex items-center gap-2">
+              <span className="text-amber-400 font-mono">2.1</span> Location &amp; GPS Telemetry Services (Terms of Use &amp; Disclaimers)
+            </h2>
+
+            <div className="bg-emerald-950/70 border border-emerald-600/50 rounded-2xl p-4 sm:p-5 space-y-2">
+              <div className="flex items-center gap-2 text-amber-300 font-bold text-xs sm:text-sm">
+                <Compass className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>Voluntary Location Opt-In &amp; Geodesic Proximity Notice</span>
+              </div>
+              <p className="text-xs text-slate-200 leading-relaxed">
+                Use of GPS features is strictly voluntary and user-initiated. Users can explore all 28 states and Union Territories across India by selecting states manually without granting device GPS permissions.
+              </p>
+            </div>
+
+            <p>
+              When you opt to activate GPS location services on Grainwish AI, you acknowledge and agree to the following operational parameters:
+            </p>
+
+            <ul className="list-disc list-inside space-y-2 text-slate-300 pl-2">
+              <li>
+                <strong>Informational Decision Support Only:</strong> Calculated distances to wholesale APMC mandis are computed using mathematical geodesic algorithms (Haversine formula). They are intended as agronomic planning aids and do not constitute real-time turn-by-turn road navigation or a guarantee of current road traffic conditions, toll rates, or fuel economics.
+              </li>
+              <li>
+                <strong>Signal &amp; Hardware Variations:</strong> Geolocation accuracy depends directly on your device’s hardware GPS receiver, cellular network tower triangulation, satellite visibility, and ISP routing. Grainwish AI does not warrant continuous, uninterrupted GPS reception, particularly in remote agrarian topographies.
+              </li>
+              <li>
+                <strong>No Mandi Commercial Contract:</strong> Proximity rankings do not guarantee produce acceptance, price realization, or queue lengths at individual APMC market yards. Farmers are advised to confirm mandi operational hours and statutory cess with respective local market secretaries.
+              </li>
+              <li>
+                <strong>Privacy &amp; Revocation:</strong> Location processing adheres to India’s DPDP Act 2023 and the GDPR. You may disable GPS permissions at any time through your web browser without forfeiting access to any core features.
+              </li>
             </ul>
           </section>
 

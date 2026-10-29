@@ -191,6 +191,13 @@ Source: Grainwise AI / Agmarknet`;
         setIsLocating(false);
         setLocationStatus('GPS active: Mandis sorted by nearest distance');
         setSortBy('distance');
+        try {
+          localStorage.setItem('grainwise_detected_location', JSON.stringify({
+            coords: { latitude: pos.coords.latitude, longitude: pos.coords.longitude },
+            source: 'gps',
+            region: 'Live GPS'
+          }));
+        } catch {}
       },
       () => {
         setIsLocating(false);
@@ -199,6 +206,20 @@ Source: Grainwise AI / Agmarknet`;
       { timeout: 8000 }
     );
   };
+
+  // Read any pre-cached location on initial load
+  useEffect(() => {
+    try {
+      const raw = localStorage.getItem('grainwise_detected_location');
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed.coords && parsed.coords.latitude && parsed.coords.longitude) {
+          setUserLocation({ lat: parsed.coords.latitude, lon: parsed.coords.longitude });
+          setLocationStatus(`GPS active: ${parsed.region || 'Nearest Mandis'} (${parsed.coords.latitude.toFixed(2)}°, ${parsed.coords.longitude.toFixed(2)}°)`);
+        }
+      }
+    } catch {}
+  }, []);
 
   // Record Mandi search & filter analytics
   useEffect(() => {
@@ -364,8 +385,17 @@ Source: Grainwise AI / Agmarknet`;
             </button>
 
             {locationStatus && (
-              <span className="text-[10.5px] font-mono text-amber-300 bg-amber-950/40 px-2 py-0.5 rounded-lg border border-amber-800/50">
-                {locationStatus}
+              <span className="text-[10.5px] font-mono text-amber-300 bg-amber-950/40 px-2 py-0.5 rounded-lg border border-amber-800/50 flex items-center gap-1">
+                <Compass className="w-3 h-3 text-amber-400 shrink-0" />
+                <span>{locationStatus}</span>
+              </span>
+            )}
+
+            {userLocation && (
+              <span className="inline-flex items-center gap-1 text-[10px] font-mono text-emerald-300 bg-emerald-950/80 px-2 py-0.5 rounded-lg border border-emerald-700/60" title="Geodesic distance calculation happens on your local device. DPDP & GDPR compliant.">
+                <MapPin className="w-2.5 h-2.5 text-amber-400" />
+                <span>{userLocation.lat.toFixed(2)}°N, {userLocation.lon.toFixed(2)}°E</span>
+                <span className="text-[9px] text-slate-400 border-l border-emerald-800 pl-1">DPDP &amp; GDPR On-Device</span>
               </span>
             )}
           </div>
@@ -531,11 +561,17 @@ Source: Grainwise AI / Agmarknet`;
               <button
                 onClick={handleDetectLocation}
                 disabled={isLocating}
-                className="px-2.5 py-1.5 sm:py-2 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-700/60 text-emerald-300 text-xs font-bold transition-all shrink-0 flex items-center gap-1 active:scale-95"
-                title="Sort mandis closest to your live location"
+                className={`px-2.5 py-1.5 sm:py-2 rounded-lg border text-xs font-bold transition-all shrink-0 flex items-center gap-1 active:scale-95 ${
+                  userLocation
+                    ? 'bg-emerald-900/90 border-emerald-400 text-emerald-200 shadow-sm'
+                    : 'bg-emerald-950 hover:bg-emerald-900 border-emerald-700/60 text-emerald-300'
+                }`}
+                title="Sort mandis closest to your live location (DPDP & GDPR privacy compliant)"
               >
                 <Compass className={`w-3.5 h-3.5 text-amber-400 ${isLocating ? 'animate-spin' : ''}`} />
-                <span className="hidden lg:inline">{isLocating ? 'Locating...' : 'GPS'}</span>
+                <span className="hidden sm:inline">
+                  {isLocating ? 'Locating...' : userLocation ? 'GPS Radar Active' : 'GPS Radar'}
+                </span>
               </button>
             </div>
 

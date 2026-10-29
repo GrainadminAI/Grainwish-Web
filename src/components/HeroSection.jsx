@@ -1,11 +1,11 @@
 import React from 'react';
-import { Sparkles, Camera, Smartphone, CheckCircle2, Play, Globe, ShieldCheck, TrendingUp, Leaf } from 'lucide-react';
+import { Sparkles, Camera, Smartphone, CheckCircle2, Play, Globe, ShieldCheck, TrendingUp, Leaf, Compass, MapPin } from 'lucide-react';
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
 import HolographicIndiaMap from './HolographicIndiaMap';
 
 export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
-  const { t } = useLanguage();
+  const { t, detectLocationAndSetLanguage, isDetectingLocation, detectedLocationInfo } = useLanguage();
 
   return (
     <section className="relative min-h-[auto] lg:min-h-screen pt-14 pb-6 sm:pt-16 sm:pb-10 lg:pt-20 lg:pb-12 flex items-center overflow-x-hidden">
@@ -16,7 +16,7 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
           {/* Left Column: Copy, Badges, CTAs, Metrics (Auto-adjusted for mobile 4.5" to 7.5" and desktop) */}
           <div className="lg:col-span-7 space-y-2.5 sm:space-y-4 text-center lg:text-left">
             
-            {/* Top Pill Badges: Live Status + Made in India */}
+            {/* Top Pill Badges: Live Status + Made in India + Farm GPS */}
             <div className="flex flex-wrap items-center justify-center lg:justify-start gap-1.5 sm:gap-2">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1 sm:px-3.5 sm:py-1 rounded-full bg-emerald-950/90 border border-emerald-500/50 backdrop-blur-md shadow-lg shadow-emerald-950/60">
                 <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
@@ -25,6 +25,25 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
                 </span>
               </div>
               <MadeInIndiaTag variant="pill" />
+              <button
+                type="button"
+                onClick={() => detectLocationAndSetLanguage(true)}
+                disabled={isDetectingLocation}
+                className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-950/90 hover:bg-emerald-900 border border-amber-400/50 hover:border-amber-400 text-[10px] sm:text-xs font-bold text-amber-300 transition-all shadow-md active:scale-95 disabled:opacity-50"
+                title="Tap to acquire live Farm GPS location (DPDP & GDPR privacy compliant)"
+              >
+                <Compass className={`w-3 h-3 text-amber-400 shrink-0 ${isDetectingLocation ? 'animate-spin' : ''}`} />
+                <span>
+                  {isDetectingLocation
+                    ? 'Acquiring GPS...'
+                    : detectedLocationInfo?.region
+                      ? `📍 ${detectedLocationInfo.region} (GPS Active)`
+                      : '📍 Live Farm GPS'}
+                </span>
+                {detectedLocationInfo?.coords && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                )}
+              </button>
             </div>
 
             {/* Main Headline - Responsive Fluid Typography (Fits perfectly on 320px - 480px mobile screens) */}

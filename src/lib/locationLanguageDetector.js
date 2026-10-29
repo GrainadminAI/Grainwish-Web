@@ -309,14 +309,39 @@ export async function detectLocationViaGPS() {
                 source: 'gps'
               });
             }
+            if (region || country) {
+              return resolve({
+                language: country === 'India' ? 'Hindi' : 'English',
+                region: region || country,
+                country: country,
+                coords: { latitude, longitude },
+                source: 'gps'
+              });
+            }
           }
+          return resolve({
+            language: 'English',
+            region: `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`,
+            country: 'India',
+            coords: { latitude, longitude },
+            source: 'gps'
+          });
         } catch {
-          // Geocode failed
+          const { latitude, longitude } = position.coords || {};
+          if (latitude && longitude) {
+            return resolve({
+              language: 'English',
+              region: `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`,
+              country: 'India',
+              coords: { latitude, longitude },
+              source: 'gps'
+            });
+          }
         }
         resolve(null);
       },
       () => resolve(null),
-      { timeout: 5000, maximumAge: 300000, enableHighAccuracy: false }
+      { timeout: 7000, maximumAge: 300000, enableHighAccuracy: true }
     );
   });
 }

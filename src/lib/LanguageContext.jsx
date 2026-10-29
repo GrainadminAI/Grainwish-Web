@@ -1061,7 +1061,15 @@ export function LanguageProvider({ children }) {
   });
 
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
-  const [detectedLocationInfo, setDetectedLocationInfo] = useState(null);
+  const [detectedLocationInfo, setDetectedLocationInfo] = useState(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const raw = localStorage.getItem('grainwise_detected_location');
+      return raw ? JSON.parse(raw) : null;
+    } catch {
+      return null;
+    }
+  });
   const [locationToast, setLocationToast] = useState(null);
 
   const changeLanguage = (newLang, isManualUserChoice = true) => {
@@ -1089,13 +1097,18 @@ export function LanguageProvider({ children }) {
       const result = await detectUserRegionalLanguage(requestGPS);
       if (result && result.language) {
         setDetectedLocationInfo(result);
+        try {
+          localStorage.setItem('grainwise_detected_location', JSON.stringify(result));
+        } catch {}
+
         changeLanguage(result.language, true);
 
         const regionLabel = result.region ? `${result.region}` : 'your region';
-        const carrierLabel = result.carrier ? `${result.carrier} · ` : '';
-        const icon = result.isMobile ? '📱' : '🌐';
-        const networkTitle = result.networkType || (result.isMobile ? 'Mobile Network' : 'Internet Connection');
-        const toastMsg = `${icon} Detected via ${carrierLabel}${networkTitle} (${regionLabel}) — Switched to ${result.language} & translated page!`;
+        const isGps = result.source === 'gps';
+        const coordsStr = result.coords ? ` [${result.coords.latitude.toFixed(2)}°N, ${result.coords.longitude.toFixed(2)}°E]` : '';
+        const icon = isGps ? '📍' : (result.isMobile ? '📱' : '🌐');
+        const networkTitle = isGps ? 'Live Farm GPS' : (result.networkType || (result.isMobile ? 'Mobile Network' : 'Internet Connection'));
+        const toastMsg = `${icon} ${networkTitle}${coordsStr} (${regionLabel}) — Switched to ${result.language} & calibrated for your farm!`;
         setLocationToast(toastMsg);
         setTimeout(() => setLocationToast(null), 5000);
         return result;

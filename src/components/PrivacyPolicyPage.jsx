@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowLeft, ShieldCheck, Lock, Eye, FileText, Printer, CheckCircle2, Mail, ExternalLink, Calendar } from 'lucide-react';
+import { ArrowLeft, ShieldCheck, Lock, Eye, FileText, Printer, CheckCircle2, Mail, ExternalLink, Calendar, MapPin, Compass } from 'lucide-react';
 
 export default function PrivacyPolicyPage({ onBackToHome }) {
   const handlePrint = () => {
@@ -156,11 +156,44 @@ export default function PrivacyPolicyPage({ onBackToHome }) {
           {/* Section 4 */}
           <section className="pt-6 space-y-3">
             <h2 className="font-display text-lg font-bold text-white flex items-center gap-2">
-              <span className="text-amber-400 font-mono">4.</span> Camera & Location Permissions
+              <span className="text-amber-400 font-mono">4.</span> Location, GPS &amp; Camera Telemetry Processing (DPDP &amp; GDPR Notice)
             </h2>
+
+            {/* Location Notice Callout */}
+            <div className="bg-emerald-950/70 border border-emerald-500/50 rounded-2xl p-4 sm:p-5 space-y-2">
+              <div className="flex items-center gap-2 text-amber-300 font-bold text-xs sm:text-sm">
+                <MapPin className="w-4 h-4 text-amber-400 shrink-0" />
+                <span>Statutory Location Processing Note · DPDP Act 2023 &amp; GDPR Compliant</span>
+              </div>
+              <p className="text-xs text-slate-200 leading-relaxed">
+                GrainWish AI processes device GPS and network geolocation strictly for legitimate agronomic utility: calculating geodesic distances to the nearest APMC Mandis, generating localized IMD agro-meteorological advisories, tailoring soil NPK fertilizer ratios, and suggesting regional language interfaces across 22 scheduled Indian languages. <strong>We never track your movements in the background, never sell GPS coordinates, and never share location records with commercial data brokers.</strong>
+              </p>
+            </div>
+
             <p>
-              Grainwish AI requests device camera access only when you actively initiate a leaf scan. We do not access your camera in the background or inspect any media outside the specific files you submit. Geo-location queries are generalized to the district level to fetch relevant APMC market data and are never tracked continuously.
+              In full accordance with Section 6 of India’s Digital Personal Data Protection Act, 2023 (DPDP) and Articles 6(1)(a) &amp; 9 of the EU General Data Protection Regulation (GDPR), location telemetry is handled under strict safeguards:
             </p>
+
+            <ul className="list-disc list-inside space-y-2 text-slate-300 pl-2">
+              <li>
+                <strong>Affirmative User Consent:</strong> GPS access via the browser <code className="text-amber-300 bg-emerald-950 px-1 py-0.5 rounded">navigator.geolocation</code> API is triggered only upon your affirmative, voluntary request (such as tapping &quot;GPS Location&quot;, &quot;Auto-Detect by Location&quot;, or Mandi sorting by distance).
+              </li>
+              <li>
+                <strong>Client-Side Ephemeral Computation:</strong> GPS coordinates are processed transiently in browser memory or via encrypted reverse-geocoding endpoints. No historical GPS breadcrumb traces are persistently linked to your Google user identity.
+              </li>
+              <li>
+                <strong>Data Generalization &amp; Anonymization:</strong> For persistent agronomy scan logs, coordinates are generalized to district or state centroids (e.g., &quot;Karnal, Haryana&quot; or &quot;Nashik, Maharashtra&quot;) to safeguard precise homestead privacy.
+              </li>
+              <li>
+                <strong>On-Demand Camera Access:</strong> Device camera access is requested exclusively when you actively take or upload a crop photo for diagnostic analysis. The camera stream is never activated in the background.
+              </li>
+              <li>
+                <strong>Zero Commercial Monetization:</strong> Geolocation coordinates are never rented, sold, monetized, or syndicated to advertising networks or third-party telematics firms.
+              </li>
+              <li>
+                <strong>Right to Revoke &amp; Clear:</strong> You maintain the unconditional right to revoke location permissions at any time via your browser settings or via our on-site Cookie &amp; Location Preferences drawer.
+              </li>
+            </ul>
           </section>
 
           {/* Section 5 */}

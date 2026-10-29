@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut, Mic, MapPin } from 'lucide-react';
+import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut, Mic, MapPin, Compass } from 'lucide-react';
 import { supabase, signOutUser, getLoggedInUser, recordFeatureUsageToDB } from '../lib/supabase';
 import AuthModal from './AuthModal';
 
@@ -16,7 +16,7 @@ import { useLanguage } from '../lib/LanguageContext';
 import { useBrandTheme } from '../lib/BrandThemeContext';
 
 export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedLang }) {
-  const { t, detectLocationAndSetLanguage, isDetectingLocation } = useLanguage();
+  const { t, detectLocationAndSetLanguage, isDetectingLocation, detectedLocationInfo } = useLanguage();
   const { currentOption } = useBrandTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -158,6 +158,29 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                 <span>Sign In</span>
               </button>
             )}
+
+            {/* GPS Location Quick Action Pill */}
+            <button
+              type="button"
+              onClick={async () => {
+                await detectLocationAndSetLanguage(true);
+              }}
+              disabled={isDetectingLocation}
+              className="hidden md:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-600/50 hover:border-amber-400 rounded-lg text-xs font-semibold text-amber-300 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+              title="Pinpoint live farm GPS coordinates (DPDP Act 2023 & GDPR compliant)"
+            >
+              <Compass className={`w-3.5 h-3.5 text-amber-400 shrink-0 ${isDetectingLocation ? 'animate-spin' : ''}`} />
+              <span className="truncate max-w-[120px]">
+                {isDetectingLocation
+                  ? 'Locating...'
+                  : detectedLocationInfo?.region
+                    ? `📍 ${detectedLocationInfo.region}`
+                    : '📍 Farm GPS'}
+              </span>
+              {detectedLocationInfo?.coords && (
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+              )}
+            </button>
 
             {/* Language Picker */}
             <div className="relative">
@@ -349,10 +372,16 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                   }}
                   disabled={isDetectingLocation}
                   className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-gradient-to-r from-amber-400 to-amber-500 hover:from-amber-300 hover:to-amber-400 text-black text-[11px] font-black active:scale-95 transition-all shadow-sm disabled:opacity-50"
-                  title="Auto-detect language from your current GPS/location"
+                  title="Auto-detect language and mandi distance from your current GPS location"
                 >
-                  <MapPin className={`w-3 h-3 text-black ${isDetectingLocation ? 'animate-bounce' : ''}`} />
-                  <span>{isDetectingLocation ? 'Detecting...' : 'Auto-Detect'}</span>
+                  <Compass className={`w-3.5 h-3.5 text-black ${isDetectingLocation ? 'animate-spin' : ''}`} />
+                  <span>
+                    {isDetectingLocation
+                      ? 'Locating...'
+                      : detectedLocationInfo?.region
+                        ? `📍 ${detectedLocationInfo.region}`
+                        : 'GPS Locate'}
+                  </span>
                 </button>
               </div>
               <select

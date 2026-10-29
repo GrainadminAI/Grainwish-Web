@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Cookie, ShieldCheck, Check, X, Sliders, ChevronDown, ChevronUp } from 'lucide-react';
+import { Cookie, ShieldCheck, Check, X, Sliders, ChevronDown, ChevronUp, MapPin, Compass } from 'lucide-react';
 import { getConsentPreference, saveConsentPreference } from '../lib/analytics';
 
 export default function CookieConsentBanner({ onOpenPrivacyPolicy }) {
@@ -7,10 +7,15 @@ export default function CookieConsentBanner({ onOpenPrivacyPolicy }) {
   const [showPreferences, setShowPreferences] = useState(false);
   const [allowAnalytics, setAllowAnalytics] = useState(true);
   const [allowPreferences, setAllowPreferences] = useState(true);
+  const [allowLocation, setAllowLocation] = useState(true);
 
   useEffect(() => {
     const existing = getConsentPreference();
-    if (!existing) {
+    if (existing) {
+      if (typeof existing.analytics === 'boolean') setAllowAnalytics(existing.analytics);
+      if (typeof existing.preferences === 'boolean') setAllowPreferences(existing.preferences);
+      if (typeof existing.location === 'boolean') setAllowLocation(existing.location);
+    } else {
       // Small delay before showing so page loads smoothly
       const timer = setTimeout(() => setVisible(true), 1200);
       return () => clearTimeout(timer);
@@ -31,7 +36,8 @@ export default function CookieConsentBanner({ onOpenPrivacyPolicy }) {
     saveConsentPreference({
       essential: true,
       analytics: true,
-      preferences: true
+      preferences: true,
+      location: true
     });
     setVisible(false);
   };
@@ -40,8 +46,12 @@ export default function CookieConsentBanner({ onOpenPrivacyPolicy }) {
     saveConsentPreference({
       essential: true,
       analytics: false,
-      preferences: false
+      preferences: false,
+      location: false
     });
+    try {
+      localStorage.removeItem('grainwise_detected_location');
+    } catch {}
     setVisible(false);
   };
 
@@ -49,8 +59,14 @@ export default function CookieConsentBanner({ onOpenPrivacyPolicy }) {
     saveConsentPreference({
       essential: true,
       analytics: allowAnalytics,
-      preferences: allowPreferences
+      preferences: allowPreferences,
+      location: allowLocation
     });
+    if (!allowLocation) {
+      try {
+        localStorage.removeItem('grainwise_detected_location');
+      } catch {}
+    }
     setVisible(false);
   };
 
@@ -77,7 +93,7 @@ export default function CookieConsentBanner({ onOpenPrivacyPolicy }) {
                 </span>
               </div>
               <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
-                Grainwish AI uses cookies and privacy-conscious analytics to remember your preferred language, provide localized Mandi updates, and improve AI crop diagnostic accuracy. You have complete control over your preferences. Read our{' '}
+                GrainWish AI uses strictly necessary cookies, privacy-conscious performance metrics, and optional GPS telemetry to pinpoint closest APMC Mandi markets, provide localized IMD weather warnings, and match your regional language. Under India's Digital Personal Data Protection (DPDP) Act 2023 and EU GDPR, coordinates remain ephemeral in client memory and are never shared or sold. You have complete control over your preferences. Read our{' '}
                 <button
                   type="button"
                   onClick={onOpenPrivacyPolicy}
@@ -104,7 +120,7 @@ export default function CookieConsentBanner({ onOpenPrivacyPolicy }) {
           <div className="pt-3 border-t border-emerald-900/60 space-y-3 animate-fade-in text-xs">
             <div className="font-bold text-amber-300 text-xs">Customize Your Preferences:</div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
               {/* Category 1: Essential */}
               <div className="p-3 rounded-xl bg-emerald-950/70 border border-emerald-800/60 space-y-1">
                 <div className="flex items-center justify-between">
@@ -147,6 +163,36 @@ export default function CookieConsentBanner({ onOpenPrivacyPolicy }) {
                   Remembers your selected crop and closest APMC Mandi market distance.
                 </p>
               </div>
+
+              {/* Category 4: Location & GPS Telemetry */}
+              <div className="p-3 rounded-xl bg-emerald-950/70 border border-emerald-800/60 space-y-2">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-1.5">
+                    <Compass className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                    <span className="font-bold text-white">Location &amp; GPS</span>
+                  </div>
+                  <input
+                    type="checkbox"
+                    checked={allowLocation}
+                    onChange={(e) => setAllowLocation(e.target.checked)}
+                    className="w-4 h-4 accent-amber-400 rounded cursor-pointer"
+                  />
+                </div>
+                <p className="text-[11px] text-slate-400">
+                  Enables browser Geolocation API queries to calculate nearest APMC Mandi distance and local soil calibration.
+                </p>
+              </div>
+            </div>
+
+            {/* Location Note (DPDP Act 2023 & GDPR Statutory Notice) */}
+            <div className="p-3 rounded-xl bg-emerald-950/90 border border-amber-400/40 space-y-1.5 text-slate-300">
+              <div className="flex items-center gap-2 text-amber-300 font-bold text-xs">
+                <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span>Location &amp; GPS Privacy Note (DPDP Act 2023 &amp; EU GDPR Art. 6/9):</span>
+              </div>
+              <p className="text-[11px] leading-relaxed text-slate-300">
+                GrainWish AI processes GPS coordinates exclusively inside your client browser to compute geodesic Haversine distances to 2,500+ APMC mandis and serve hyper-local IMD tarpaulin alerts. Coordinates remain ephemeral in client-side memory, are never used for continuous background surveillance, and are never shared or monetized with advertising networks. You retain the absolute right to revoke location permissions at any time through your browser settings or by unchecking the Location toggle above.
+              </p>
             </div>
 
             <div className="flex justify-end pt-1">

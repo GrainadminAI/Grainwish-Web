@@ -369,6 +369,10 @@ export default function SecurityPolicyPage({ onBackToHome }) {
               </li>
               <li className="flex items-start gap-2.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 shrink-0" />
+                <span><strong>Location &amp; GPS Telemetry Security:</strong> GPS coordinates received from browser Geolocation APIs are classified as restricted telemetry. Location data is processed ephemerally on-device or via encrypted reverse-geocoding tunnels strictly to compute geodesic APMC distances and local IMD alerts. Continuous background tracking, historical GPS trace persistence, and sharing with third-party location brokers are strictly prohibited under platform architecture rules.</span>
+              </li>
+              <li className="flex items-start gap-2.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 mt-2 shrink-0" />
                 <span><strong>AI &amp; Third-Party Processor Review:</strong> All external model APIs and processors must undergo formal privacy review prior to processing platform data.</span>
               </li>
             </ul>

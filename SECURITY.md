@@ -64,6 +64,7 @@ These policies apply to:
 - Personal and commercially sensitive information must be accessible only to authorized personnel.
 - Data must be encrypted in transit and protected at rest using appropriate controls.
 - Production data must not be copied into development or testing environments without authorization and suitable safeguards.
+- Location and GPS telemetry must be collected only upon affirmative user opt-in, processed ephemerally on-device or via encrypted reverse-geocoding, never continuously tracked in the background, and never sold to third-party data brokers, adhering strictly to the DPDP Act 2023 and GDPR.
 - Data retention and deletion must follow documented business, contractual, and applicable legal requirements.
 - Customer information must not be disclosed to unauthorized parties.
 - AI services and third-party processors must be reviewed before confidential information is shared with them.
