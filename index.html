@@ -88,51 +88,39 @@
 
     <!-- Schema.org Structured Data (JSON-LD) -->
     <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@graph": [
-          {
-            "@type": "Organization",
-            "@id": "https://www.grainwish.com/#organization",
-            "name": "GrainWish AI",
-            "url": "https://www.grainwish.com",
-            "logo": "https://www.grainwish.com/assets/grainwise_icon_transparent.png",
-            "email": "support@grainwish.com",
-            "contactPoint": {
-              "@type": "ContactPoint",
-              "email": "support@grainwish.com",
-              "contactType": "customer support",
-              "availableLanguage": ["English", "Hindi"]
-            },
-            "sameAs": [
-              "https://twitter.com/GrainWishAI",
-              "https://www.grainwish.com"
-            ],
-            "description": "Smart Agriculture Intelligence Platform providing instant AI crop diagnostics, precision NPK calculations, live Mandi rates, and 24/7 Ananya AI in 22 native Indian languages."
-          },
-          {
-            "@type": "WebApplication",
-            "@id": "https://www.grainwish.com/#webapp",
-            "name": "GrainWish AI Web Platform",
-            "url": "https://www.grainwish.com",
-            "applicationCategory": "AgricultureApplication",
-            "operatingSystem": "All modern browsers, Android, iOS",
-            "browserRequirements": "Requires JavaScript. Requires HTML5.",
-            "offers": {
-              "@type": "Offer",
-              "price": "0",
-              "priceCurrency": "INR"
-            },
-            "featureList": [
-              "Camera-based AI Crop Disease Diagnostics",
-              "Precision Soil NPK Calculator",
-              "Live APMC Mandi Prices & MSP Locator",
-              "Ananya AI Assistant in 22 Native Languages",
-              "Interactive Farming Calendar & Government Schemes Tracker"
-            ]
-          }
-        ]
-      }
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "GrainWish AI",
+      "url": "https://www.grainwish.com/",
+      "description": "AI-powered crop disease detection, fertilizer advice and mandi prices for Indian farmers."
+    }
+    </script>
+
+    <!-- WebApplication Schema (JSON-LD) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "@id": "https://www.grainwish.com/#webapp",
+      "name": "GrainWish AI Web Platform",
+      "url": "https://www.grainwish.com",
+      "applicationCategory": "AgricultureApplication",
+      "operatingSystem": "All modern browsers, Android, iOS",
+      "browserRequirements": "Requires JavaScript. Requires HTML5.",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      },
+      "featureList": [
+        "Camera-based AI Crop Disease Diagnostics",
+        "Precision Soil NPK Calculator",
+        "Live APMC Mandi Prices & MSP Locator",
+        "Ananya AI Assistant in 22 Native Languages",
+        "Interactive Farming Calendar & Government Schemes Tracker"
+      ]
+    }
     </script>
 
     <!-- Google Translate Styles -->

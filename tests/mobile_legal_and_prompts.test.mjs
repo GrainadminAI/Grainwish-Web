@@ -99,4 +99,14 @@ test('Mobile App & Agritech Legal Compliance (DPDP Act 2023 & GDPR)', async (t) 
     assert.match(schemaCode, /CREATE TABLE IF NOT EXISTS public\.consent_audit_logs/, 'supabase/schema.sql must define consent_audit_logs table');
     assert.match(schemaCode, /consented_items TEXT\[\]/, 'schema must include consented_items array');
   });
+
+  // 5. JSON-LD Structured Data Schema
+  await t.test('Component 5: Schema.org Organization structured data in index.html', () => {
+    const indexPath = path.resolve(__dirname, '../index.html');
+    const indexHtml = fs.readFileSync(indexPath, 'utf8');
+    assert.match(indexHtml, /<script type="application\/ld\+json">/, 'Must contain JSON-LD script tag');
+    assert.match(indexHtml, /"name":\s*"GrainWish AI"/, 'Must contain Organization name');
+    assert.match(indexHtml, /"url":\s*"https:\/\/www\.grainwish\.com\/"/, 'Must contain Organization URL');
+    assert.match(indexHtml, /"description":\s*"AI-powered crop disease detection, fertilizer advice and mandi prices for Indian farmers\."/, 'Must contain exact requested description');
+  });
 });
