@@ -76,7 +76,8 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
   }, []);
 
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+    <>
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled ? 'bg-[#021109]/95 backdrop-blur-md border-b border-emerald-900/40 py-1 sm:py-1.5 shadow-xl' : 'bg-[#021109]/80 backdrop-blur-sm border-b border-emerald-900/20 py-1.5 sm:py-2'
     }`}>
       <div className="max-w-7xl mx-auto px-3 sm:px-5 lg:px-6">
@@ -436,12 +437,14 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
           </div>
         </>
       )}
-      {/* Supabase Auth Modal */}
+      </header>
+
+      {/* Supabase Auth Modal - Portaled outside header for 100% viewport center positioning */}
       <AuthModal
         isOpen={authModalOpen}
         onClose={() => setAuthModalOpen(false)}
         onAuthSuccess={(user) => setCurrentUser(user)}
       />
-    </header>
+    </>
   );
 }
