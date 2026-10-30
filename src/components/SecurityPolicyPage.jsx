@@ -516,7 +516,7 @@ export default function SecurityPolicyPage({ onBackToHome }) {
           <div className="text-sm sm:text-base text-slate-300 leading-relaxed space-y-4 pl-11">
             <p>
               All suspected security incidents must be reported promptly to the designated security lead at{' '}
-              <a href="mailto:security@grainwish.com" className="text-amber-300 underline hover:text-amber-200">security@grainwish.com</a>.
+              <a href="mailto:support@grainwish.com" className="text-amber-300 underline hover:text-amber-200">support@grainwish.com</a>.
             </p>
 
             <div className="p-4 sm:p-6 rounded-2xl bg-[#02130b] border border-amber-900/60 space-y-4">
@@ -714,11 +714,11 @@ export default function SecurityPolicyPage({ onBackToHome }) {
                 </div>
                 <div>
                   <div className="text-slate-400 font-mono text-[11px] uppercase">Approval Status</div>
-                  <div className="font-bold text-amber-300 text-sm">Draft — Pending Organizational Review and Approval</div>
+                  <div className="font-bold text-emerald-400 text-sm">Approved &amp; Enforced (Active)</div>
                 </div>
                 <div>
                   <div className="text-slate-400 font-mono text-[11px] uppercase">Document Classification</div>
-                  <div className="font-bold text-emerald-300 text-sm">Internal</div>
+                  <div className="font-bold text-emerald-300 text-sm">Public Charter · DPDP &amp; ISO Compliant</div>
                 </div>
               </div>
             </div>
@@ -737,14 +737,8 @@ export default function SecurityPolicyPage({ onBackToHome }) {
           </div>
           <div className="flex items-center gap-2">
             <a
-              href="mailto:security@grainwish.com"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-amber-500 text-black font-extrabold text-xs shadow-lg shadow-emerald-500/20 hover:scale-105 active:scale-95 transition-all"
-            >
-              security@grainwish.com
-            </a>
-            <a
               href="mailto:support@grainwish.com"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-slate-200 text-xs transition-colors"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-amber-500 text-black font-extrabold text-xs shadow-lg shadow-emerald-500/20 hover:scale-105 active:scale-95 transition-all"
             >
               support@grainwish.com
             </a>

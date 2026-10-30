@@ -184,7 +184,7 @@ test('Security Policy: Verify SECURITY.md and SecurityPolicyPage adhere to 15-se
     assert.ok(fs.existsSync(githubSecPath), '.github/SECURITY.md must exist');
     const content = fs.readFileSync(githubSecPath, 'utf8');
     assert.ok(content.includes('Reporting a Vulnerability'));
-    assert.ok(content.includes('security@grainwish.com'));
+    assert.ok(content.includes('support@grainwish.com'));
   });
 
   await t.test('SecurityPolicyPage.jsx has 15 sections and incident response stepper', () => {

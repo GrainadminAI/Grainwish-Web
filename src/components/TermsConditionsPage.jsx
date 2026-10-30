@@ -205,7 +205,7 @@ export default function TermsConditionsPage({ onBackToHome }) {
             </p>
             <div className="bg-emerald-950/60 p-4 rounded-xl border border-emerald-800/60 text-xs space-y-1 text-slate-200">
               <div className="font-bold text-white">Grainwish AI Legal Affairs Department</div>
-              <div>Email: <a href="mailto:legal@grainwish.com" className="text-emerald-400 underline">legal@grainwish.com</a> / <a href="mailto:support@grainwish.com" className="text-emerald-400 underline">support@grainwish.com</a></div>
+              <div>Email: <a href="mailto:support@grainwish.com" className="text-emerald-400 underline">support@grainwish.com</a></div>
               <div>Official URL: <a href="https://www.grainwish.com" className="text-amber-400 underline">www.grainwish.com</a></div>
             </div>
           </section>

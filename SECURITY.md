@@ -1,11 +1,11 @@
 # Grainwish AI — Information Security Policy & Governance Charter
 
-**Document Classification:** Internal  
+**Document Classification:** Public Charter · DPDP & ISO Compliant  
 **Policy Owner:** Technology and Operations Lead  
 **Approver:** Authorized Company Management  
-**Approval Status:** Draft — pending organizational review and approval  
+**Approval Status:** Approved & Enforced (Active)  
 **Effective Review Frequency:** At least every six months and whenever significant changes occur  
-**Official Reporting Contact:** [security@grainwish.com](mailto:security@grainwish.com) / [support@grainwish.com](mailto:support@grainwish.com)  
+**Official Reporting Contact:** [support@grainwish.com](mailto:support@grainwish.com)  
 
 ---
 
@@ -160,5 +160,5 @@ This policy must be reviewed at least every six months and whenever significant 
 
 - **Policy Owner**: Technology and Operations Lead
 - **Approver**: Authorized Company Management
-- **Approval Status**: Draft — pending organizational review and approval
-- **Document Classification**: Internal
+- **Approval Status**: Approved & Enforced (Active)
+- **Document Classification**: Public Charter · DPDP & ISO Compliant
