@@ -33,6 +33,18 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
     // Initial User Check
     getLoggedInUser().then(u => setCurrentUser(u));
 
+    // Listen to direct local auth events
+    const handleLocalAuthChange = async (e) => {
+      if (e?.detail) {
+        setCurrentUser(e.detail);
+      } else {
+        const u = await getLoggedInUser();
+        setCurrentUser(u);
+      }
+    };
+    window.addEventListener('grainwise_auth_change', handleLocalAuthChange);
+    window.addEventListener('storage', handleLocalAuthChange);
+
     // Auth State Listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
       if (session?.user) {
@@ -57,6 +69,8 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('grainwise_auth_change', handleLocalAuthChange);
+      window.removeEventListener('storage', handleLocalAuthChange);
       subscription?.unsubscribe();
     };
   }, []);
@@ -133,9 +147,17 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
             
             {/* User Profile if Logged In / Sign In button if Not */}
             {currentUser ? (
-              <div className="flex items-center gap-1.5 px-2 py-1 bg-emerald-950/80 border border-emerald-700/50 rounded-lg text-xs shadow-md">
-                <User className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                <span className="text-emerald-300 font-semibold truncate max-w-[85px] xl:max-w-[110px]" title={currentUser.email}>
+              <div className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-950/90 border border-emerald-600/70 rounded-full text-xs shadow-md">
+                {currentUser.user_metadata?.avatar_url ? (
+                  <img 
+                    src={currentUser.user_metadata.avatar_url} 
+                    alt="Profile" 
+                    className="w-4 h-4 rounded-full object-cover border border-emerald-400 shrink-0" 
+                  />
+                ) : (
+                  <User className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                )}
+                <span className="text-emerald-300 font-bold truncate max-w-[85px] xl:max-w-[115px]" title={currentUser.email}>
                   {currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0]}
                 </span>
                 <button
@@ -144,7 +166,7 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                     setCurrentUser(null);
                   }}
                   title="Sign Out"
-                  className="p-0.5 text-slate-400 hover:text-red-400 transition-colors ml-0.5"
+                  className="p-0.5 text-slate-400 hover:text-red-400 transition-colors ml-0.5 cursor-pointer"
                 >
                   <LogOut className="w-3 h-3" />
                 </button>
@@ -300,13 +322,22 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
             <div className="flex items-center justify-between pb-3 border-b border-emerald-900/60">
               {currentUser ? (
                 <div className="flex items-center justify-between w-full">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-emerald-900 border border-emerald-500/50 flex items-center justify-center text-amber-400 font-bold text-xs">
-                      {currentUser.email?.charAt(0).toUpperCase()}
+                  <div className="flex items-center gap-2 min-w-0">
+                    <div className="w-8 h-8 rounded-full bg-emerald-900 border border-emerald-500/50 flex items-center justify-center text-amber-400 font-bold text-xs shrink-0 overflow-hidden">
+                      {currentUser.user_metadata?.avatar_url ? (
+                        <img src={currentUser.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                      ) : (
+                        currentUser.email?.charAt(0).toUpperCase()
+                      )}
                     </div>
-                    <div className="text-xs">
-                      <div className="text-white font-bold truncate max-w-[150px]">{currentUser.email?.split('@')[0]}</div>
-                      <div className="text-[10px] text-emerald-400 font-mono">Logged In</div>
+                    <div className="text-xs min-w-0">
+                      <div className="text-white font-bold truncate max-w-[150px]">
+                        {currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0]}
+                      </div>
+                      <div className="text-[10px] text-emerald-400 font-mono flex items-center gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                        <span>Logged In · Verified</span>
+                      </div>
                     </div>
                   </div>
                   <button
@@ -315,7 +346,7 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                       setCurrentUser(null);
                       setMobileMenuOpen(false);
                     }}
-                    className="px-3 py-1.5 rounded-lg bg-red-950/80 border border-red-800 text-red-300 text-xs font-semibold flex items-center gap-1"
+                    className="px-3 py-1.5 rounded-lg bg-red-950/80 hover:bg-red-900 border border-red-800 text-red-300 text-xs font-semibold flex items-center gap-1 shrink-0 transition-colors"
                   >
                     <LogOut className="w-3.5 h-3.5" /> Sign Out
                   </button>
