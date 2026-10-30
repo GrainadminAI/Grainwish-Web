@@ -92,4 +92,52 @@ describe('Brand Theme & Logo Suite Verification', () => {
     assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/grainwish_farm_flow.mp4')), 'grainwish_farm_flow.mp4 must exist in public/assets');
     assert.ok(fs.existsSync(path.join(rootDir, 'public/assets/grainwish_farm_flow_poster.jpg')), 'grainwish_farm_flow_poster.jpg must exist in public/assets');
   });
+
+  test('Holographic India Map auto-centers and highlights based on detected location & GPS coords', async () => {
+    const { findHubByLocation, AGRI_HUBS } = await import('../src/lib/agriHubsData.js');
+
+    // 1. Text district & state match
+    const wbHub = findHubByLocation('Hooghly, West Bengal');
+    assert.ok(wbHub && wbHub.id === 'wb', 'Hooghly, West Bengal must resolve to West Bengal & Bihar hub');
+
+    const mhHub = findHubByLocation('Nashik, Maharashtra');
+    assert.ok(mhHub && mhHub.id === 'maharashtra', 'Nashik, Maharashtra must resolve to Maharashtra hub');
+
+    const apHub = findHubByLocation('Guntur, Andhra Pradesh');
+    assert.ok(apHub && apHub.id === 'ap', 'Guntur, Andhra Pradesh must resolve to Andhra & Telangana hub');
+
+    const pbHub = findHubByLocation('Ludhiana, Punjab');
+    assert.ok(pbHub && pbHub.id === 'punjab', 'Ludhiana, Punjab must resolve to Punjab hub');
+
+    // 2. Coordinate string match (Hooghly coords 22.83, 88.35 from user screenshot)
+    const coordHub = findHubByLocation('22.83°, 88.35°');
+    assert.ok(coordHub && coordHub.id === 'wb', 'Coords 22.83°, 88.35° must resolve to West Bengal hub');
+
+    const mhCoordHub = findHubByLocation('19.99, 73.78');
+    assert.ok(mhCoordHub && mhCoordHub.id === 'maharashtra', 'Coords 19.99, 73.78 must resolve to Maharashtra hub');
+
+    // 3. Object coordinates format
+    const objHub = findHubByLocation({ coords: { latitude: 22.83, longitude: 88.35 } });
+    assert.ok(objHub && objHub.id === 'wb', 'Object coords must resolve to West Bengal hub');
+
+    // 4. Neighbouring state mapping (Bihar -> wb, Telangana -> ap, Kerala -> tamilnadu)
+    assert.strictEqual(findHubByLocation('Patna, Bihar')?.id, 'wb');
+    assert.strictEqual(findHubByLocation('Hyderabad, Telangana')?.id, 'ap');
+    assert.strictEqual(findHubByLocation('Kochi, Kerala')?.id, 'tamilnadu');
+
+    // 5. Verify all hubs have stateIds and nameKey
+    for (const hub of AGRI_HUBS) {
+      assert.ok(Array.isArray(hub.stateIds) && hub.stateIds.length > 0, `Hub ${hub.id} must define stateIds`);
+      assert.ok(typeof hub.nameKey === 'string' && hub.nameKey.startsWith('hub_'), `Hub ${hub.id} must define nameKey`);
+    }
+
+    // 6. Verify HolographicIndiaMap.jsx uses localization and location keys
+    const mapFile = path.join(rootDir, 'src/components/HolographicIndiaMap.jsx');
+    const content = fs.readFileSync(mapFile, 'utf8');
+    assert.ok(content.includes('map_your_region'), 'Map must include map_your_region badge');
+    assert.ok(content.includes('map_my_region_btn'), 'Map must include map_my_region_btn button');
+    assert.ok(content.includes('map_crops_produced'), 'Map must include map_crops_produced');
+    assert.ok(content.includes('map_mandi_rate'), 'Map must include map_mandi_rate');
+    assert.ok(content.includes('map_national_index'), 'Map must include map_national_index');
+  });
 });

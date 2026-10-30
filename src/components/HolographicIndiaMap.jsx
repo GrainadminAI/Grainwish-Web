@@ -1,324 +1,83 @@
-import React, { useState } from 'react';
-import { Sparkles, Activity, ShieldCheck, MapPin, Radio, TrendingUp, Flame, ArrowUpRight, Filter, Info } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Sparkles, Activity, ShieldCheck, MapPin, Radio, TrendingUp, Flame, ArrowUpRight, Filter, Info, Navigation } from 'lucide-react';
 import { INDIA_MAP_LOCATIONS, INDIA_MAP_VIEWBOX, INDIA_BORDER_PATH } from '../lib/indiaMapData';
 import { useLanguage } from '../lib/LanguageContext';
+import { AGRI_HUBS, TELEMETRY_LINKS, findHubByLocation } from '../lib/agriHubsData';
 
-// Re-export INDIA_BORDER_PATH for testing suites and external consumers
-export { INDIA_BORDER_PATH };
-
-// 12+ Key Indian Agricultural Hubs with real crop products and pan-India demand telemetry
-// Positions precisely calibrated to the official Survey of India equirectangular coordinates
-export const AGRI_HUBS = [
-  {
-    id: 'punjab',
-    stateId: 'pb',
-    name: 'Punjab',
-    sub: 'Wheat & Basmati Bowl of India',
-    crop: 'Wheat (PBW-725) & Basmati Rice',
-    cropShort: 'Wheat · Basmati',
-    cropIcon: '🌾',
-    category: 'grain',
-    demand: 'Surge Demand',
-    demandGrowth: '+34% YoY',
-    demandScore: 96,
-    demandReason: 'Central Pool Procurement & Global Basmati Export Demand',
-    mandi: 'Khanna APMC',
-    status: 'High Procurement',
-    rate: '₹2,425/q',
-    msp: '₹2,275/q',
-    x: 151.0,
-    y: 152.0,
-    color: '#fbbf24',
-    demandColor: '#ef4444'
-  },
-  {
-    id: 'haryana',
-    stateId: 'hr',
-    name: 'Haryana',
-    sub: 'Mustard & Pearl Millet Belt',
-    crop: 'Mustard (Giriraj) & Bajra',
-    cropShort: 'Mustard · Bajra',
-    cropIcon: '🌱',
-    category: 'oilseed',
-    demand: 'High Demand',
-    demandGrowth: '+22% YoY',
-    demandScore: 88,
-    demandReason: 'Domestic Edible Oil Crushing Surge & Livestock Feed',
-    mandi: 'Karnal APMC',
-    status: 'Oil Mills Active',
-    rate: '₹5,650/q',
-    msp: '₹5,650/q',
-    x: 168.0,
-    y: 195.0,
-    color: '#10b981',
-    demandColor: '#f59e0b'
-  },
-  {
-    id: 'up',
-    stateId: 'up',
-    name: 'Uttar Pradesh',
-    sub: 'Gangetic Sugarcane & Wheat Belt',
-    crop: 'Sugarcane (Co-0238) & Wheat',
-    cropShort: 'Sugarcane · Wheat',
-    cropIcon: '🎋',
-    category: 'cash',
-    demand: 'Very High Demand',
-    demandGrowth: '+28% YoY',
-    demandScore: 92,
-    demandReason: '20% National Ethanol Blending Mandate & Sugar Mills',
-    mandi: 'Lakhimpur APMC',
-    status: 'Ethanol Offtake',
-    rate: '₹3,150/q',
-    msp: '₹3,050/q',
-    x: 258.0,
-    y: 248.0,
-    color: '#34d399',
-    demandColor: '#f97316'
-  },
-  {
-    id: 'rajasthan',
-    stateId: 'rj',
-    name: 'Rajasthan',
-    sub: 'Mustard & Guar Gum Hub',
-    crop: 'Mustard, Guar Gum & Bajra',
-    cropShort: 'Mustard · Guar',
-    cropIcon: '🌿',
-    category: 'oilseed',
-    demand: 'Peak Demand',
-    demandGrowth: '+38% YoY',
-    demandScore: 95,
-    demandReason: 'Industrial Guar Extraction & Heavy Oilseed Spot Bidding',
-    mandi: 'Kota Mandi',
-    status: 'Trader Inflow High',
-    rate: '₹5,820/q',
-    msp: '₹5,650/q',
-    x: 130.0,
-    y: 260.0,
-    color: '#f59e0b',
-    demandColor: '#ef4444'
-  },
-  {
-    id: 'gujarat',
-    stateId: 'gj',
-    name: 'Gujarat',
-    sub: 'Groundnut & Cotton Giant',
-    crop: 'Groundnut (G-20) & Cotton (Shankar-6)',
-    cropShort: 'Groundnut · Cotton',
-    cropIcon: '🥜',
-    category: 'cash',
-    demand: 'Surge Demand',
-    demandGrowth: '+26% YoY',
-    demandScore: 91,
-    demandReason: 'Saurashtra Crushing Expansion & Mill Offtake',
-    mandi: 'Rajkot APMC',
-    status: 'Heavy Volume',
-    rate: '₹6,450/q',
-    msp: '₹6,377/q',
-    x: 75.0,
-    y: 350.0,
-    color: '#34d399',
-    demandColor: '#ef4444'
-  },
-  {
-    id: 'mp',
-    stateId: 'mp',
-    name: 'Madhya Pradesh',
-    sub: 'Soybean & Chana Capital',
-    crop: 'Soybean (JS-2034) & Desi Chana',
-    cropShort: 'Soybean · Chana',
-    cropIcon: '🟡',
-    category: 'grain',
-    demand: 'Surge Demand',
-    demandGrowth: '+42% YoY',
-    demandScore: 98,
-    demandReason: 'Soymeal Export Parity & Record Pulses Buffer Procurement',
-    mandi: 'Indore Mandi',
-    status: 'Active Buying',
-    rate: '₹4,890/q',
-    msp: '₹4,600/q',
-    x: 214.0,
-    y: 320.0,
-    color: '#f59e0b',
-    demandColor: '#ef4444'
-  },
-  {
-    id: 'maharashtra',
-    stateId: 'mh',
-    name: 'Maharashtra',
-    sub: 'Cotton, Onion & Pulses Hub',
-    crop: 'Cotton, Lasalgaon Onion & Tur',
-    cropShort: 'Cotton · Onion',
-    cropIcon: '🧅',
-    category: 'cash',
-    demand: 'Heavy Demand',
-    demandGrowth: '+35% YoY',
-    demandScore: 94,
-    demandReason: 'Export Lifting & Domestic Festival Kitchen Demand',
-    mandi: 'Lasalgaon Mandi',
-    status: 'High Movement',
-    rate: '₹2,680/q',
-    msp: '₹2,100/q',
-    x: 175.0,
-    y: 430.0,
-    color: '#f43f5e',
-    demandColor: '#ef4444'
-  },
-  {
-    id: 'ap',
-    stateId: 'ap',
-    name: 'Andhra & Telangana',
-    sub: 'Chilli & Fine Cotton Capital',
-    crop: 'Guntur Teja Red Chilli & Cotton',
-    cropShort: 'Red Chilli · Cotton',
-    cropIcon: '🌶️',
-    category: 'cash',
-    demand: 'Historic Demand',
-    demandGrowth: '+48% YoY',
-    demandScore: 99,
-    demandReason: 'Asian Spice Export Shipments & Guntur Spot Premium',
-    mandi: 'Guntur Yard',
-    status: 'Bullish Momentum',
-    rate: '₹19,800/q',
-    msp: 'Trade Driven',
-    x: 248.0,
-    y: 495.0,
-    color: '#f43f5e',
-    demandColor: '#ef4444'
-  },
-  {
-    id: 'karnataka',
-    stateId: 'ka',
-    name: 'Karnataka',
-    sub: 'Ragi & Maize Plateau',
-    crop: 'Finger Millet (Ragi) & Hybrid Maize',
-    cropShort: 'Ragi · Maize',
-    cropIcon: '🌽',
-    category: 'grain',
-    demand: 'Consistent Demand',
-    demandGrowth: '+27% YoY',
-    demandScore: 89,
-    demandReason: 'Shree Anna Millet Mission Offtake & Poultry Feed',
-    mandi: 'Davangere APMC',
-    status: 'Stable Flow',
-    rate: '₹2,340/q',
-    msp: '₹2,090/q',
-    x: 172.0,
-    y: 520.0,
-    color: '#10b981',
-    demandColor: '#f59e0b'
-  },
-  {
-    id: 'wb',
-    stateId: 'wb',
-    name: 'West Bengal & Bihar',
-    sub: 'Golden Fiber & Paddy Delta',
-    crop: 'Aman Paddy & Raw Jute (TD-5)',
-    cropShort: 'Paddy · Jute',
-    cropIcon: '🌾',
-    category: 'grain',
-    demand: 'High Procurement',
-    demandGrowth: '+19% YoY',
-    demandScore: 87,
-    demandReason: 'Compulsory Jute Packaging Act & Public Distribution Procurement',
-    mandi: 'Burdwan Mandi',
-    status: 'Govt Lifting',
-    rate: '₹5,200/q',
-    msp: '₹5,050/q',
-    x: 375.0,
-    y: 325.0,
-    color: '#fbbf24',
-    demandColor: '#10b981'
-  },
-  {
-    id: 'assam',
-    stateId: 'as',
-    name: 'Assam & NE',
-    sub: 'Brahmaputra Tea & Specialty Rice',
-    crop: 'CTC Orthodox Tea & Black Rice',
-    cropShort: 'Tea · Black Rice',
-    cropIcon: '🍃',
-    category: 'cash',
-    demand: 'Global Demand',
-    demandGrowth: '+25% YoY',
-    demandScore: 90,
-    demandReason: 'Guwahati Tea Auction Global Bidding & Organic Superfood Demand',
-    mandi: 'Guwahati Auction',
-    status: 'Export Premium',
-    rate: '₹265/kg',
-    msp: 'Auction Driven',
-    x: 512.0,
-    y: 270.0,
-    color: '#10b981',
-    demandColor: '#10b981'
-  },
-  {
-    id: 'tamilnadu',
-    stateId: 'tn',
-    name: 'Tamil Nadu & Kerala',
-    sub: 'Cauvery Delta & Spice Coast',
-    crop: 'Kuruvai Paddy & Black Pepper',
-    cropShort: 'Paddy · Spices',
-    cropIcon: '🍚',
-    category: 'grain',
-    demand: 'Steady Demand',
-    demandGrowth: '+21% YoY',
-    demandScore: 86,
-    demandReason: 'Southern Culinary Staples & Rice Bran Oil Processing',
-    mandi: 'Thanjavur APMC',
-    status: 'Fast Clearance',
-    rate: '₹2,450/q',
-    msp: '₹2,183/q',
-    x: 211.0,
-    y: 605.0,
-    color: '#34d399',
-    demandColor: '#10b981'
-  },
-  {
-    id: 'jk',
-    stateId: 'jk',
-    name: 'J&K & Ladakh',
-    sub: 'Kashmir Valley Horticulture',
-    crop: 'Kashmiri GI Saffron & Apple',
-    cropShort: 'Saffron · Apple',
-    cropIcon: '🌸',
-    category: 'cash',
-    demand: 'Peak Luxury Demand',
-    demandGrowth: '+31% YoY',
-    demandScore: 93,
-    demandReason: 'Protected GI Purity Authentication & Domestic Fruit Storage',
-    mandi: 'Srinagar Fruit Yard',
-    status: 'Protected GI',
-    rate: '₹220/g',
-    msp: 'GI Protected',
-    x: 175.0,
-    y: 65.0,
-    color: '#fbbf24',
-    demandColor: '#ef4444'
-  }
-];
-
-// Laser telemetry connection links across India
-export const TELEMETRY_LINKS = [
-  { from: 'punjab', to: 'up' },
-  { from: 'punjab', to: 'rajasthan' },
-  { from: 'rajasthan', to: 'gujarat' },
-  { from: 'up', to: 'mp' },
-  { from: 'mp', to: 'maharashtra' },
-  { from: 'up', to: 'wb' },
-  { from: 'wb', to: 'assam' },
-  { from: 'maharashtra', to: 'ap' },
-  { from: 'ap', to: 'karnataka' },
-  { from: 'karnataka', to: 'tamilnadu' },
-  { from: 'punjab', to: 'jk' }
-];
+// Re-export INDIA_BORDER_PATH, AGRI_HUBS, TELEMETRY_LINKS, and findHubByLocation for consumers & testing suites
+// Includes key agricultural state hubs across India: Punjab, Maharashtra, Haryana, Rajasthan, Gujarat, Madhya Pradesh, Andhra & Telangana, Karnataka, West Bengal & Bihar, Assam & NE, Tamil Nadu & Kerala, J&K & Ladakh
+export { INDIA_BORDER_PATH, AGRI_HUBS, TELEMETRY_LINKS, findHubByLocation };
 
 export default function HolographicIndiaMap({ className = "" }) {
-  const { t } = useLanguage();
-  const [activeHub, setActiveHub] = useState(AGRI_HUBS[0]);
+  const { t, detectedLocationInfo } = useLanguage();
+
+  // Helper to find detected hub from storage or context
+  const getDetectedHubFromStorage = () => {
+    if (detectedLocationInfo?.region) {
+      const match = findHubByLocation(detectedLocationInfo);
+      if (match) return match;
+    }
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = localStorage.getItem('grainwise_detected_location');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          const match = findHubByLocation(parsed);
+          if (match) return match;
+        }
+      } catch {}
+      try {
+        const rawLoc = localStorage.getItem('grainwise_farm_location');
+        if (rawLoc) {
+          const match = findHubByLocation(rawLoc);
+          if (match) return match;
+        }
+      } catch {}
+    }
+    return null;
+  };
+
+  const initialDetected = getDetectedHubFromStorage();
+  const [userDetectedHub, setUserDetectedHub] = useState(initialDetected);
+  const [activeHub, setActiveHub] = useState(initialDetected || AGRI_HUBS[0]);
   const [hoveredHub, setHoveredHub] = useState(null);
   const [categoryFilter, setCategoryFilter] = useState('all');
 
+  // Reactively track detectedLocationInfo updates
+  useEffect(() => {
+    if (detectedLocationInfo) {
+      const matched = findHubByLocation(detectedLocationInfo);
+      if (matched) {
+        setUserDetectedHub(matched);
+        setActiveHub((prev) => {
+          if (!prev || prev.id === 'punjab' || !userDetectedHub) {
+            return matched;
+          }
+          return prev;
+        });
+      }
+    }
+  }, [detectedLocationInfo]);
+
+  // Check on mount or storage events (e.g. if GPS finished detecting in another component)
+  useEffect(() => {
+    const checkStorage = () => {
+      const detected = getDetectedHubFromStorage();
+      if (detected) {
+        setUserDetectedHub(detected);
+        setActiveHub((prev) => (!prev || prev.id === 'punjab' ? detected : prev));
+      }
+    };
+    checkStorage();
+
+    if (typeof window !== 'undefined') {
+      window.addEventListener('storage', checkStorage);
+      return () => window.removeEventListener('storage', checkStorage);
+    }
+  }, []);
+
   const displayHub = hoveredHub || activeHub;
+  const isDisplayHubUserHome = userDetectedHub && displayHub.id === userDetectedHub.id;
 
   // Filter hubs according to selected demand category
   const filteredHubs = AGRI_HUBS.filter(hub => {
@@ -471,8 +230,10 @@ export default function HolographicIndiaMap({ className = "" }) {
           {/* Actual Geographic Indian States & Union Territories */}
           <g id="actual-indian-states" className="transition-all duration-300">
             {INDIA_MAP_LOCATIONS.map((loc) => {
-              const isSelected = activeHub?.stateId === loc.id;
-              const isHovered = hoveredHub?.stateId === loc.id;
+              const isSelected = activeHub?.stateIds ? activeHub.stateIds.includes(loc.id) : activeHub?.stateId === loc.id;
+              const isHovered = hoveredHub?.stateIds ? hoveredHub.stateIds.includes(loc.id) : hoveredHub?.stateId === loc.id;
+              const isUserHome = userDetectedHub?.stateIds ? userDetectedHub.stateIds.includes(loc.id) : userDetectedHub?.stateId === loc.id;
+
               return (
                 <path
                   key={loc.id}
@@ -483,6 +244,8 @@ export default function HolographicIndiaMap({ className = "" }) {
                       ? 'rgba(245, 158, 11, 0.45)'
                       : isHovered
                       ? 'rgba(52, 211, 153, 0.4)'
+                      : isUserHome
+                      ? 'rgba(16, 185, 129, 0.35)'
                       : 'url(#india-fill)'
                   }
                   stroke={
@@ -490,22 +253,24 @@ export default function HolographicIndiaMap({ className = "" }) {
                       ? '#fbbf24'
                       : isHovered
                       ? '#34d399'
+                      : isUserHome
+                      ? '#10b981'
                       : 'rgba(52, 211, 153, 0.35)'
                   }
-                  strokeWidth={isSelected ? '1.8' : '0.8'}
+                  strokeWidth={isSelected ? '1.8' : (isUserHome ? '1.4' : '0.8')}
                   strokeLinejoin="round"
                   className="transition-colors duration-300 cursor-pointer"
                   onClick={() => {
-                    const hub = AGRI_HUBS.find(h => h.stateId === loc.id);
+                    const hub = AGRI_HUBS.find(h => h.stateIds ? h.stateIds.includes(loc.id) : h.stateId === loc.id);
                     if (hub) setActiveHub(hub);
                   }}
                   onMouseEnter={() => {
-                    const hub = AGRI_HUBS.find(h => h.stateId === loc.id);
+                    const hub = AGRI_HUBS.find(h => h.stateIds ? h.stateIds.includes(loc.id) : h.stateId === loc.id);
                     if (hub) setHoveredHub(hub);
                   }}
                   onMouseLeave={() => setHoveredHub(null)}
                 >
-                  <title>{loc.name}</title>
+                  <title>{loc.name}{isUserHome ? ' (Your Region)' : ''}</title>
                 </path>
               );
             })}
@@ -558,6 +323,7 @@ export default function HolographicIndiaMap({ className = "" }) {
           {filteredHubs.map((hub) => {
             const isSelected = displayHub.id === hub.id;
             const isHighDemand = hub.demandScore >= 92;
+            const isUserHome = userDetectedHub?.id === hub.id;
 
             return (
               <g
@@ -568,8 +334,20 @@ export default function HolographicIndiaMap({ className = "" }) {
                 onMouseLeave={() => setHoveredHub(null)}
                 className="cursor-pointer group/node"
               >
+                {/* GPS Radar Beacon Wave for User's Detected Location Hub */}
+                {isUserHome && (
+                  <circle
+                    r={isSelected ? "18" : "13"}
+                    fill="none"
+                    stroke="#10b981"
+                    strokeWidth="2"
+                    className="animate-ping"
+                    style={{ animationDuration: '1.8s' }}
+                  />
+                )}
+
                 {/* Ping Radiation Wave for Selected / High-Demand Hubs */}
-                {isSelected && (
+                {isSelected && !isUserHome && (
                   <circle
                     r="15"
                     fill="none"
@@ -580,7 +358,7 @@ export default function HolographicIndiaMap({ className = "" }) {
                   />
                 )}
 
-                {isHighDemand && !isSelected && (
+                {isHighDemand && !isSelected && !isUserHome && (
                   <circle
                     r="11"
                     fill="none"
@@ -593,16 +371,16 @@ export default function HolographicIndiaMap({ className = "" }) {
 
                 {/* Outer Glow Halo */}
                 <circle
-                  r={isSelected ? "9" : "6"}
-                  fill={isHighDemand ? hub.demandColor : hub.color}
-                  opacity={isSelected ? "0.5" : "0.25"}
+                  r={isSelected ? "9" : (isUserHome ? "8" : "6")}
+                  fill={isUserHome ? "#10b981" : (isHighDemand ? hub.demandColor : hub.color)}
+                  opacity={isSelected || isUserHome ? "0.55" : "0.25"}
                   filter="url(#glow-node)"
                 />
 
                 {/* Inner Solid Hub Core */}
                 <circle
-                  r={isSelected ? "5.5" : "3.8"}
-                  fill={isSelected ? "#ffffff" : (isHighDemand ? hub.demandColor : hub.color)}
+                  r={isSelected ? "5.5" : (isUserHome ? "4.8" : "3.8")}
+                  fill={isSelected ? "#ffffff" : (isUserHome ? "#10b981" : (isHighDemand ? hub.demandColor : hub.color))}
                   stroke="#021109"
                   strokeWidth="1.5"
                   className="transition-all duration-300"
@@ -614,32 +392,32 @@ export default function HolographicIndiaMap({ className = "" }) {
                   <rect
                     x="8"
                     y="-8"
-                    width={isSelected ? "78" : "64"}
-                    height={isSelected ? "18" : "15"}
+                    width={isSelected ? "86" : (isUserHome ? "82" : "66")}
+                    height={isSelected ? "19" : "15"}
                     rx="4"
-                    fill="rgba(2, 17, 9, 0.85)"
-                    stroke={isSelected ? '#f43f5e' : 'rgba(16, 185, 129, 0.4)'}
-                    strokeWidth={isSelected ? '1' : '0.6'}
+                    fill="rgba(2, 17, 9, 0.88)"
+                    stroke={isSelected ? '#fbbf24' : (isUserHome ? '#10b981' : 'rgba(16, 185, 129, 0.4)')}
+                    strokeWidth={isSelected || isUserHome ? '1.2' : '0.6'}
                   />
 
                   {/* State Name */}
                   <text
                     x="12"
                     y="0"
-                    fill={isSelected ? "#ffffff" : "#e2e8f0"}
+                    fill={isSelected ? "#ffffff" : (isUserHome ? "#6ee7b7" : "#e2e8f0")}
                     fontSize={isSelected ? "9" : "8"}
-                    fontWeight={isSelected ? "bold" : "600"}
+                    fontWeight={isSelected || isUserHome ? "bold" : "600"}
                     fontFamily="sans-serif"
                     className="drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)]"
                   >
-                    {hub.name}
+                    {isUserHome ? `📍 ${t(hub.nameKey, hub.name)}` : t(hub.nameKey, hub.name)}
                   </text>
 
                   {/* Crop Product & Demand Growth Micro Tag */}
                   <text
                     x="12"
                     y="7"
-                    fill={isHighDemand ? "#fca5a5" : "#fbbf24"}
+                    fill={isUserHome ? "#34d399" : (isHighDemand ? "#fca5a5" : "#fbbf24")}
                     fontSize="6.5"
                     fontFamily="monospace"
                     fontWeight="bold"
@@ -664,7 +442,7 @@ export default function HolographicIndiaMap({ className = "" }) {
       {/* Real-Time Hub Telemetry Card: Positioned Cleanly Beneath the Map (Compact, High-Density HUD) */}
       <div className="w-full max-w-[360px] sm:max-w-[380px] mt-1.5 sm:mt-2 bg-gradient-to-r from-[#031d10]/98 via-[#06291a]/98 to-[#031d10]/98 backdrop-blur-xl border border-emerald-500/50 rounded-xl p-2 sm:p-2.5 shadow-2xl shadow-black/90 text-xs animate-slide-up">
         
-        {/* Top Line: State + Demand Status in India */}
+        {/* Top Line: State + Demand Status in India + User Location Badge */}
         <div className="flex items-center justify-between gap-1.5 mb-1 pb-1 border-b border-emerald-800/40">
           <div className="flex items-center gap-1.5 min-w-0">
             <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-md bg-emerald-950/90 border border-emerald-400/50 flex items-center justify-center shrink-0 shadow-sm text-xs">
@@ -673,11 +451,26 @@ export default function HolographicIndiaMap({ className = "" }) {
             <div className="min-w-0">
               <div className="flex items-center gap-1 flex-wrap">
                 <span className="font-extrabold text-white text-xs sm:text-[13px] truncate">
-                  {displayHub.name}
+                  {t(displayHub.nameKey, displayHub.name)}
                 </span>
                 <span className="text-[8px] sm:text-[8.5px] px-1 py-0.2 rounded font-semibold bg-emerald-900/60 text-emerald-300 border border-emerald-600/30 truncate max-w-[150px] sm:max-w-none">
                   {displayHub.sub}
                 </span>
+                {isDisplayHubUserHome ? (
+                  <span className="text-[8px] sm:text-[8.5px] px-1.5 py-0.2 rounded font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/60 flex items-center gap-0.5 animate-pulse">
+                    <MapPin className="w-2.5 h-2.5 text-amber-400" />
+                    {t('map_your_region', 'Your Location')}
+                  </span>
+                ) : userDetectedHub ? (
+                  <button
+                    onClick={() => setActiveHub(userDetectedHub)}
+                    className="text-[8px] sm:text-[8.5px] px-1.5 py-0.2 rounded font-bold bg-emerald-950/80 hover:bg-emerald-800 text-amber-300 border border-amber-400/40 flex items-center gap-0.5 transition-colors cursor-pointer"
+                    title="Return to your auto-detected home region"
+                  >
+                    <MapPin className="w-2.5 h-2.5 text-amber-400" />
+                    {t('map_my_region_btn', 'My Region')}
+                  </button>
+                ) : null}
               </div>
             </div>
           </div>
@@ -701,7 +494,7 @@ export default function HolographicIndiaMap({ className = "" }) {
           {/* Crops Produced */}
           <div className="col-span-8 min-w-0">
             <div className="text-[8px] text-slate-400 uppercase font-semibold tracking-wider">
-              Crops Produced
+              {t('map_crops_produced', 'Crops Produced')}
             </div>
             <div className="text-[11px] sm:text-xs font-bold text-amber-300 truncate">
               {displayHub.crop}
@@ -715,7 +508,7 @@ export default function HolographicIndiaMap({ className = "" }) {
           {/* Mandi Rate vs MSP */}
           <div className="col-span-4 text-right shrink-0">
             <div className="text-[8px] text-slate-400 uppercase font-semibold tracking-wider">
-              Mandi Rate
+              {t('map_mandi_rate', 'Mandi Rate')}
             </div>
             <div className="text-xs sm:text-[13px] font-extrabold text-emerald-300 font-mono">
               {displayHub.rate}
@@ -729,7 +522,7 @@ export default function HolographicIndiaMap({ className = "" }) {
         {/* Bottom Demand Intensity Progress Bar */}
         <div className="mt-1 pt-1 border-t border-emerald-900/40 flex items-center justify-between gap-2 text-[8.5px] text-slate-400 font-mono">
           <span className="flex items-center gap-1 text-slate-300">
-            <span>National Demand Index:</span>
+            <span>{t('map_national_index', 'National Demand Index:')}</span>
             <strong className="text-amber-400 font-mono">{displayHub.demandScore}/100</strong>
           </span>
           <div className="w-20 sm:w-28 h-1 bg-emerald-950 rounded-full overflow-hidden border border-emerald-800/40">
@@ -749,12 +542,12 @@ export default function HolographicIndiaMap({ className = "" }) {
       {/* Bottom Coordinates & Accuracy HUD - Compact Single-Line */}
       <div className="relative z-10 mt-1 flex flex-wrap items-center justify-center gap-1.5 text-[8px] sm:text-[8.5px] text-slate-300 font-mono px-1 text-center">
         <span className="flex items-center gap-0.5 text-emerald-300">
-          <ShieldCheck className="w-2.5 h-2.5 text-emerald-400 shrink-0" /> Official Survey of India Map
+          <ShieldCheck className="w-2.5 h-2.5 text-emerald-400 shrink-0" /> {t('map_survey_official', 'Official Survey of India Map')}
         </span>
         <span className="text-slate-600 hidden xs:inline">•</span>
         <span className="text-slate-400 hidden md:inline">LAT 8.4°N – 37.6°N · LON 68.7°E – 97.4°E</span>
         <span className="text-slate-600 hidden md:inline">•</span>
-        <span className="text-amber-400">Mainland India · 28 States &amp; UTs</span>
+        <span className="text-amber-400">{t('map_mainland_28_states', 'Mainland India · 28 States & UTs')}</span>
       </div>
 
     </div>
