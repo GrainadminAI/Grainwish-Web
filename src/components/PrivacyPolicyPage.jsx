@@ -234,7 +234,7 @@ export default function PrivacyPolicyPage({ onBackToHome }) {
               <li>Withdraw previously granted consent at any time without penalty.</li>
             </ul>
             <p>
-              To exercise any of these rights, contact our Data Protection Officer at <a href="mailto:privacy@grainwish.com" className="text-emerald-400 hover:underline">privacy@grainwish.com</a>.
+              To exercise any of these rights, contact our Data Protection Officer at <a href="mailto:support@grainwish.com" className="text-emerald-400 hover:underline">support@grainwish.com</a>.
             </p>
           </section>
 
@@ -248,7 +248,7 @@ export default function PrivacyPolicyPage({ onBackToHome }) {
             </p>
             <div className="bg-emerald-950/60 p-4 rounded-xl border border-emerald-800/60 text-xs space-y-1 text-slate-200">
               <div className="font-bold text-white">Grainwish AI Grievance Redressal Cell</div>
-              <div>Email: <a href="mailto:support@grainwish.com" className="text-emerald-400 underline">support@grainwish.com</a> / <a href="mailto:privacy@grainwish.com" className="text-emerald-400 underline">privacy@grainwish.com</a></div>
+              <div>Email: <a href="mailto:support@grainwish.com" className="text-emerald-400 underline">support@grainwish.com</a></div>
               <div>Domain: <a href="https://www.grainwish.com" className="text-amber-400 underline">www.grainwish.com</a></div>
               <div>Response Time: All privacy inquiries are responded to within 48 business hours.</div>
             </div>
