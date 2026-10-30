@@ -43,7 +43,7 @@ export default function NPKCalculator() {
   const mopKg = Math.round(selectedCrop.npkBase[2] * selectedSoil.KAdj * acres * 0.75);
 
   const handleCopyPrescription = () => {
-    const text = `🌾 Grainwise AI Precision NPK Prescription
+    const text = `🌾 GrainWish AI Precision NPK Prescription
 Crop: ${t('npk_crop_' + selectedCrop.id, selectedCrop.name)} · ${acres} Acres
 Soil: ${t('npk_soil_' + selectedSoil.id, selectedSoil.name)}
 Stage: ${stage}

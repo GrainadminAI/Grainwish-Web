@@ -237,4 +237,34 @@ test('Network & Cellular Telemetry: Internet Connection & Mobile Network Carrier
   });
 });
 
+import { ALL_PAGE_TRANSLATIONS } from '../src/lib/allPageTranslations.js';
+
+test('Multi-Lingual Site-Wide Translation & Regional Consistency', async (t) => {
+  await t.test('Bengali translations exist for Diagnostics, Mandi, Calendar, and FAQ', () => {
+    assert.ok(ALL_PAGE_TRANSLATIONS.Bengali.diag_verified_match.includes('যাচাইকৃত'));
+    assert.ok(ALL_PAGE_TRANSLATIONS.Bengali.calendar_main_sub.includes('খরিফ'));
+    assert.ok(ALL_PAGE_TRANSLATIONS.Bengali.mandi_cat_all_crops.includes('সকল ফসল'));
+    assert.ok(ALL_PAGE_TRANSLATIONS.Bengali.faq_1_q.includes('এআই'));
+    assert.ok(ALL_PAGE_TRANSLATIONS.Bengali.subsidies_visit_portal.includes('পোর্টাল'));
+  });
+
+  await t.test('Marathi translations exist for Diagnostics, Mandi, Calendar, and FAQ', () => {
+    assert.ok(ALL_PAGE_TRANSLATIONS.Marathi.diag_verified_match.includes('पडताळलेली'));
+    assert.ok(ALL_PAGE_TRANSLATIONS.Marathi.calendar_main_sub.includes('खरीप'));
+    assert.ok(ALL_PAGE_TRANSLATIONS.Marathi.mandi_cat_all_crops.includes('सर्व पिके'));
+    assert.ok(ALL_PAGE_TRANSLATIONS.Marathi.faq_1_q.includes('एআই') || ALL_PAGE_TRANSLATIONS.Marathi.faq_1_q.includes('एआय'));
+  });
+
+  await t.test('Bengali keys never contain Hindi text for calendar and subsidies', () => {
+    const calendarSub = ALL_PAGE_TRANSLATIONS.Bengali.calendar_main_sub;
+    assert.ok(calendarSub.includes('খরিফ'));
+    assert.equal(calendarSub.includes('खरीफ'), false);
+
+    const copyBtn = ALL_PAGE_TRANSLATIONS.Bengali.calendar_copy_btn;
+    assert.equal(copyBtn, 'ক্যালেন্ডার কপি করুন');
+    assert.notEqual(copyBtn, 'कैलेंडर कॉपी करें');
+  });
+});
+
+
 

@@ -1036,13 +1036,6 @@ export function getTranslation(lang, key, fallback) {
   if (ALL_PAGE_TRANSLATIONS[cleanLang]?.[key]) {
     return ALL_PAGE_TRANSLATIONS[cleanLang][key];
   }
-  // 3. Regional fallback to Hindi if non-English
-  if (cleanLang !== 'English' && ALL_PAGE_TRANSLATIONS.Hindi?.[key]) {
-    return ALL_PAGE_TRANSLATIONS.Hindi[key];
-  }
-  if (cleanLang !== 'English' && TRANSLATIONS.Hindi?.[key]) {
-    return TRANSLATIONS.Hindi[key];
-  }
   if (fallback) return fallback;
   return ALL_PAGE_TRANSLATIONS.English?.[key] || TRANSLATIONS.English?.[key] || key;
 }

@@ -322,10 +322,22 @@ export default function DiagnosticsTool() {
     setIsLocatingFarm(true);
     setFarmLocationStatus('Auto-detecting Area...');
     try {
+      if (detectLocationAndSetLanguage) {
+        const langRes = await detectLocationAndSetLanguage(true);
+        if (langRes && langRes.region && !isCoordinateString(langRes.region)) {
+          setFarmLocation(langRes.region);
+          setFarmLocationStatus(`✓ ${langRes.region}`);
+          setTimeout(() => setFarmLocationStatus(''), 4500);
+          return;
+        }
+      }
       const gpsResult = await detectLocationViaGPS();
       if (gpsResult && gpsResult.region && !isCoordinateString(gpsResult.region)) {
         setFarmLocation(gpsResult.region);
         setFarmLocationStatus(`✓ ${gpsResult.region}`);
+        if (gpsResult.language && setSelectedLang) {
+          setSelectedLang(gpsResult.language, false);
+        }
         try {
           localStorage.setItem('grainwise_detected_location', JSON.stringify(gpsResult));
         } catch {}
@@ -335,6 +347,9 @@ export default function DiagnosticsTool() {
         if (netResult && netResult.region && !isCoordinateString(netResult.region)) {
           setFarmLocation(netResult.region);
           setFarmLocationStatus(`✓ ${netResult.region}`);
+          if (netResult.language && setSelectedLang) {
+            setSelectedLang(netResult.language, false);
+          }
           setTimeout(() => setFarmLocationStatus(''), 3000);
         } else {
           setFarmLocationStatus('Location unavailable');
@@ -921,7 +936,7 @@ export default function DiagnosticsTool() {
     const fix = activeFix;
     const locationForShare = effectiveLocation;
     const text = encodeURIComponent(
-      `🌾 *Grainwish AI 100% Crop Diagnosis & Prescription*\n` +
+      `🌾 *GrainWish AI 100% Crop Diagnosis & Prescription*\n` +
       `📍 *Location:* ${locationForShare}\n` +
       `🌱 *Crop:* ${selectedCrop.crop}\n` +
       `🦠 *Detected Condition:* ${selectedCrop.disease} (${categoryKey})\n` +
@@ -947,7 +962,7 @@ export default function DiagnosticsTool() {
   // Copy shareable summary to clipboard
   const handleCopySummary = () => {
     const text =
-      `🌾 Grainwish AI 100% Crop Diagnosis Report\n` +
+      `🌾 GrainWish AI 100% Crop Diagnosis Report\n` +
       `Location: ${effectiveLocation}\n` +
       `Crop: ${selectedCrop.crop} | Diagnosis: ${selectedCrop.disease}\n` +
       `Severity: ${selectedCrop.severity} | Recovery: ${selectedCrop.recoveryDays}\n` +
@@ -1274,13 +1289,13 @@ export default function DiagnosticsTool() {
                   }`} />
                   <span className="font-bold text-emerald-200 tracking-tight text-[11px] sm:text-xs truncate">
                     {isScanning
-                      ? '100% Neural Scanning...'
+                      ? (t('diag_analyzing', '100% Neural Scanning...'))
                       : inputMode === 'webcam'
                         ? (liveIntelligence.isPlant
                             ? `🌿 Crop Leaf In Focus (${liveIntelligence.confidence}% Match)`
                             : `⚠️ ${liveIntelligence.label} · Align Leaf`)
                         : (cropVerification.isCropLeaf
-                            ? '100% Sensor Active · Verified Foliage'
+                            ? t('diag_sensor_active', '100% Sensor Active · Verified Foliage')
                             : `⚠️ Non-Crop Detected · ${cropVerification.subjectLabel || 'Rejected'}`)
                     }
                   </span>
@@ -1296,7 +1311,7 @@ export default function DiagnosticsTool() {
                       <Flashlight className="w-3 h-3" /> {torchActive ? 'Torch On' : 'Torch Off'}
                     </button>
                   )}
-                  <span className="text-[10px] text-amber-400 font-mono font-semibold">Grainwise AI</span>
+                  <span className="text-[10px] text-amber-400 font-mono font-semibold">GrainWish AI</span>
                 </div>
               </div>
 
@@ -1643,12 +1658,12 @@ export default function DiagnosticsTool() {
                     className="px-3 sm:px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold shadow-lg flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-50 border border-emerald-400/40 min-h-[38px] touch-manipulation"
                   >
                     <RefreshCw className={`w-3.5 h-3.5 shrink-0 ${isScanning ? 'animate-spin' : ''}`} />
-                    <span className="sm:hidden">{isScanning ? 'Analyzing...' : 'Re-Scan 100%'}</span>
-                    <span className="hidden sm:inline">{isScanning ? '100% Analyzing...' : 'Re-Scan Leaf 100%'}</span>
+                    <span className="sm:hidden">{isScanning ? t('diag_analyzing_short', 'Analyzing...') : t('diag_rescan_short', 'Re-Scan 100%')}</span>
+                    <span className="hidden sm:inline">{isScanning ? t('diag_analyzing', '100% Analyzing...') : t('diag_rescan_leaf', 'Re-Scan Leaf 100%')}</span>
                   </button>
 
                   <span className="text-[10px] text-amber-300 bg-black/85 px-2.5 sm:px-3 py-1.5 rounded-xl border border-amber-500/40 backdrop-blur font-mono font-semibold shrink-0">
-                    <span className="hidden sm:inline">Spectrum: </span>{viewMode.toUpperCase()}
+                    <span className="hidden sm:inline">{t('diag_spectrum', 'Spectrum')}: </span>{viewMode.toUpperCase()}
                   </span>
                 </div>
 
@@ -1662,7 +1677,7 @@ export default function DiagnosticsTool() {
                       ? 'Live Viewfinder Optical Spectrum:'
                       : !cropVerification.isCropLeaf
                         ? 'Non-Botanical Optical Profile:'
-                        : 'Chlorophyll vs Lesion:'
+                        : t('diag_chlorophyll_lesion', 'Chlorophyll vs Lesion:')
                     }
                   </span>
                   <span className="text-emerald-300 font-mono font-bold">
@@ -1670,7 +1685,7 @@ export default function DiagnosticsTool() {
                       ? (liveIntelligence.isPlant ? `Active Foliage (${liveIntelligence.confidence}% Match)` : `Non-Crop (${liveIntelligence.label})`)
                       : !cropVerification.isCropLeaf
                         ? '0.0% Chlorophyll | Non-Plant'
-                        : `Green ${selectedCrop.greenChlorophyll} | Lesion ${selectedCrop.lesionCoverage}`
+                        : `${t('diag_green', 'Green')} ${selectedCrop.greenChlorophyll} | ${t('diag_lesion', 'Lesion')} ${selectedCrop.lesionCoverage}`
                     }
                   </span>
                 </div>
@@ -2074,15 +2089,15 @@ export default function DiagnosticsTool() {
                       <div className="min-w-0">
                         <div className="text-[10px] font-mono font-extrabold uppercase text-amber-400 tracking-wider flex items-center gap-1">
                           <Sparkles className="w-3 h-3 text-amber-400 shrink-0" />
-                          <span>100.0% VERIFIED PATHOLOGY MATCH</span>
+                          <span>{t('diag_verified_match', '100.0% VERIFIED PATHOLOGY MATCH')}</span>
                         </div>
                         <h3 className="text-base sm:text-xl font-black text-white mt-0.5 leading-snug break-words">
                           {selectedCrop.disease}
                         </h3>
                         <div className="text-[11px] text-slate-300 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
-                          <span>Crop: <strong className="text-emerald-300">{selectedCrop.crop}</strong></span>
+                          <span>{t('diag_crop_label', 'Crop:')} <strong className="text-emerald-300">{selectedCrop.crop}</strong></span>
                           <span>·</span>
-                          <span>Pathogen: <strong className="text-slate-200">{selectedCrop.pathogenType || 'Fungal Spore'}</strong></span>
+                          <span>{t('diag_pathogen_label', 'Pathogen:')} <strong className="text-slate-200">{selectedCrop.pathogenType || 'Fungal Spore'}</strong></span>
                         </div>
                       </div>
                     </div>
@@ -2091,24 +2106,24 @@ export default function DiagnosticsTool() {
                       <span className="inline-block px-2 sm:px-2.5 py-0.5 bg-emerald-500/20 text-emerald-300 font-mono text-xs sm:text-sm font-extrabold rounded-lg border border-emerald-400/50 shadow">
                         {selectedCrop.confidence}
                       </span>
-                      <div className="text-[9px] text-emerald-400 font-semibold">100% Calibrated</div>
+                      <div className="text-[9px] text-emerald-400 font-semibold">{t('diag_calibrated', '100% Calibrated')}</div>
                     </div>
                   </div>
 
                   {/* 3 Metric Chips */}
                   <div className="grid grid-cols-3 gap-1.5 text-xs pt-2 border-t border-emerald-800/60">
                     <div className="bg-emerald-950/60 p-1.5 sm:p-2 rounded-lg border border-emerald-900/80">
-                      <div className="text-[8.5px] sm:text-[9.5px] text-slate-400 uppercase font-semibold">Severity</div>
+                      <div className="text-[8.5px] sm:text-[9.5px] text-slate-400 uppercase font-semibold">{t('diag_severity_label', 'Severity')}</div>
                       <div className="text-amber-300 font-bold text-[10px] sm:text-[11px] truncate mt-0.5">{selectedCrop.severity}</div>
                     </div>
 
                     <div className="bg-emerald-950/60 p-1.5 sm:p-2 rounded-lg border border-emerald-900/80">
-                      <div className="text-[8.5px] sm:text-[9.5px] text-slate-400 uppercase font-semibold">Yield Protected</div>
+                      <div className="text-[8.5px] sm:text-[9.5px] text-slate-400 uppercase font-semibold">{t('diag_yield_protected', 'Yield Protected')}</div>
                       <div className="text-emerald-300 font-bold text-[10px] sm:text-[11px] truncate mt-0.5">{selectedCrop.yieldProtected}</div>
                     </div>
 
                     <div className="bg-emerald-950/60 p-1.5 sm:p-2 rounded-lg border border-emerald-900/80">
-                      <div className="text-[8.5px] sm:text-[9.5px] text-slate-400 uppercase font-semibold">Recovery Time</div>
+                      <div className="text-[8.5px] sm:text-[9.5px] text-slate-400 uppercase font-semibold">{t('diag_recovery_time', 'Recovery Time')}</div>
                       <div className="text-cyan-300 font-bold text-[10px] sm:text-[11px] truncate mt-0.5">{selectedCrop.recoveryDays}</div>
                     </div>
                   </div>
@@ -2117,7 +2132,7 @@ export default function DiagnosticsTool() {
                   <div className="p-2 sm:p-2.5 rounded-xl bg-[#02180d] border border-emerald-700/60 flex flex-col xs:flex-row items-stretch xs:items-center justify-between gap-2 pt-2 border-t border-emerald-900/50">
                     <div className="flex items-center gap-1.5 min-w-0">
                       <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                      <span className="text-[10px] sm:text-[11px] text-slate-300 font-semibold shrink-0">Farm Location:</span>
+                      <span className="text-[10px] sm:text-[11px] text-slate-300 font-semibold shrink-0">{t('diag_farm_location', 'Farm Location:')}</span>
                       {isEditingLocation ? (
                         <input
                           type="text"
@@ -2150,7 +2165,7 @@ export default function DiagnosticsTool() {
                         title="Pinpoint live farm GPS coordinates (DPDP Act 2023 & GDPR compliant)"
                       >
                         <Compass className={`w-3 h-3 text-amber-400 ${isLocatingFarm ? 'animate-spin' : ''}`} />
-                        <span>{isLocatingFarm ? 'Locating...' : 'GPS Pinpoint'}</span>
+                        <span>{isLocatingFarm ? t('diag_locating', 'Locating...') : t('diag_gps_pinpoint', 'GPS Pinpoint')}</span>
                       </button>
                       <button
                         type="button"
@@ -2170,7 +2185,7 @@ export default function DiagnosticsTool() {
                       className="w-full px-2 py-1.5 bg-emerald-700 hover:bg-emerald-600 text-white rounded-lg text-[10px] sm:text-[11px] font-bold border border-emerald-500/50 shadow flex items-center justify-center gap-1 transition-colors min-h-[34px] touch-manipulation"
                     >
                       <MessageSquare className="w-3.5 h-3.5 text-emerald-200 shrink-0" />
-                      <span className="truncate">WhatsApp Share</span>
+                      <span className="truncate">{t('diag_whatsapp_share', 'WhatsApp Share')}</span>
                     </button>
 
                     <button
@@ -2178,7 +2193,7 @@ export default function DiagnosticsTool() {
                       className="w-full px-2 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-[10px] sm:text-[11px] font-bold border border-emerald-400/40 shadow flex items-center justify-center gap-1 transition-colors min-h-[34px] touch-manipulation"
                     >
                       <Printer className="w-3.5 h-3.5 shrink-0" />
-                      <span className="truncate">PDF Report</span>
+                      <span className="truncate">{t('diag_pdf_report', 'PDF Report')}</span>
                     </button>
                   </div>
 
@@ -2188,17 +2203,17 @@ export default function DiagnosticsTool() {
                 <div className="p-2.5 sm:p-3 rounded-xl bg-[#042416] border border-emerald-800/60 space-y-1.5 shadow-md">
                   <h4 className="text-[10px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
                     <AlertTriangle className="w-3 h-3 text-amber-400 shrink-0" />
-                    <span>Symptoms &amp; Environmental Trigger</span>
+                    <span>{t('diag_symptoms_trigger', 'Symptoms & Environmental Trigger')}</span>
                   </h4>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] leading-snug">
                     <div className="bg-emerald-950/50 p-2 sm:p-2.5 rounded-lg border border-emerald-900/60">
-                      <strong className="text-amber-300 block mb-0.5 text-[10px] uppercase font-mono">Observed Symptoms:</strong>
+                      <strong className="text-amber-300 block mb-0.5 text-[10px] uppercase font-mono">{t('diag_observed_symptoms', 'Observed Symptoms:')}</strong>
                       <span className="text-slate-200">{selectedCrop.symptoms}</span>
                     </div>
 
                     <div className="bg-emerald-950/50 p-2 sm:p-2.5 rounded-lg border border-emerald-900/60">
-                      <strong className="text-emerald-400 block mb-0.5 text-[10px] uppercase font-mono">Root Trigger:</strong>
+                      <strong className="text-emerald-400 block mb-0.5 text-[10px] uppercase font-mono">{t('diag_root_trigger', 'Root Trigger:')}</strong>
                       <span className="text-slate-300">{selectedCrop.causes}</span>
                     </div>
                   </div>
@@ -2214,17 +2229,17 @@ export default function DiagnosticsTool() {
                       </div>
                       <div>
                         <h4 className="text-xs sm:text-sm font-black text-white uppercase tracking-wider flex items-center gap-1">
-                          <span>The Right Way to Fix the Problem</span>
+                          <span>{t('diag_fix_problem_title', 'The Right Way to Fix the Problem')}</span>
                         </h4>
                         <p className="text-[10px] text-emerald-300 font-medium">
-                          Calibrated for <strong className="text-white">{categoryKey}</strong>
+                          {t('diag_calibrated_for', 'Calibrated for')} <strong className="text-white">{categoryKey}</strong>
                         </p>
                       </div>
                     </div>
                     
                     {/* Land Acreage Stepper */}
                     <div className="flex items-center gap-1.5 bg-black/70 px-2.5 py-1 rounded-lg border border-emerald-700 shadow-inner">
-                      <span className="text-[10px] text-slate-300 font-medium">Land:</span>
+                      <span className="text-[10px] text-slate-300 font-medium">{t('diag_land_label', 'Land:')}</span>
                       <input
                         type="number"
                         min="0.5"
@@ -2234,7 +2249,7 @@ export default function DiagnosticsTool() {
                         onChange={(e) => setAcreage(Math.max(0.5, parseFloat(e.target.value) || 1))}
                         className="w-12 bg-emerald-950 border border-emerald-600 text-amber-300 text-xs font-mono font-bold rounded px-1.5 py-0.5 text-center focus:outline-none focus:border-amber-400 touch-manipulation"
                       />
-                      <span className="text-[10px] text-emerald-300 font-bold">Acre(s)</span>
+                      <span className="text-[10px] text-emerald-300 font-bold">{t('diag_acre_unit', 'Acre(s)')}</span>
                     </div>
                   </div>
 
@@ -2246,10 +2261,10 @@ export default function DiagnosticsTool() {
                         <div className="flex items-center justify-between gap-1 mb-1">
                           <span className="text-[10px] font-extrabold uppercase text-emerald-400 flex items-center gap-1 truncate">
                             <Zap className="w-3 h-3 text-amber-400 shrink-0" />
-                            <span>{activeFix.chemicalFix.headline}</span>
+                            <span>{activeFix.chemicalFix.headline ? t('diag_rec_chemical', activeFix.chemicalFix.headline) : t('diag_rec_chemical', 'RECOMMENDED CHEMICAL SPRAY')}</span>
                           </span>
                           <span className="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.2 rounded font-mono font-bold shrink-0">
-                            {acreage} Ac Mix
+                            {acreage} {t('diag_ac_mix', 'Ac Mix')}
                           </span>
                         </div>
                         
@@ -2258,7 +2273,7 @@ export default function DiagnosticsTool() {
                         </div>
 
                         <div className="p-1.5 bg-black/60 rounded-lg border border-emerald-800/80 font-mono text-[10px] text-amber-300 mt-1">
-                          <strong>Dosage:</strong> {activeFix.chemicalFix.dosageFormula(acreage)}
+                          <strong>{t('diag_dosage_label', 'Dosage:')}</strong> {activeFix.chemicalFix.dosageFormula(acreage)}
                           <div className="text-slate-400 font-sans text-[9px] mt-0.5">
                             {activeFix.chemicalFix.dosagePerLiter}
                           </div>
@@ -2266,7 +2281,7 @@ export default function DiagnosticsTool() {
                       </div>
 
                       <div className="text-[10px] text-slate-300 leading-tight italic pt-1 border-t border-emerald-800/40">
-                        💡 <strong>Tip:</strong> {activeFix.chemicalFix.applicationTip}
+                        💡 <strong>{t('diag_tip_label', 'Tip:')}</strong> {activeFix.chemicalFix.applicationTip}
                       </div>
                     </div>
 
@@ -2276,10 +2291,10 @@ export default function DiagnosticsTool() {
                         <div className="flex items-center justify-between gap-1 mb-1">
                           <span className="text-[10px] font-extrabold uppercase text-amber-400 flex items-center gap-1 truncate">
                             <Leaf className="w-3 h-3 text-emerald-400 shrink-0" />
-                            <span>{activeFix.organicFix.headline}</span>
+                            <span>{activeFix.organicFix.headline ? t('diag_rec_organic', activeFix.organicFix.headline) : t('diag_rec_organic', 'ORGANIC / BIO ALTERNATIVE')}</span>
                           </span>
                           <span className="text-[9px] bg-amber-500/20 text-amber-300 px-1.5 py-0.2 rounded font-mono font-bold shrink-0">
-                            Zero Residue
+                            {t('diag_zero_residue', 'Zero Residue')}
                           </span>
                         </div>
 
@@ -2288,7 +2303,7 @@ export default function DiagnosticsTool() {
                         </div>
 
                         <div className="p-1.5 bg-black/60 rounded-lg border border-amber-900/80 font-mono text-[10px] text-emerald-300 mt-1">
-                          <strong>Bio-Mix:</strong> {activeFix.organicFix.dosageFormula(acreage)}
+                          <strong>{t('diag_biomix_label', 'Bio-Mix:')}</strong> {activeFix.organicFix.dosageFormula(acreage)}
                           <div className="text-slate-400 font-sans text-[9px] mt-0.5">
                             {activeFix.organicFix.dosagePerLiter}
                           </div>
@@ -2296,7 +2311,7 @@ export default function DiagnosticsTool() {
                       </div>
 
                       <div className="text-[10px] text-slate-300 leading-tight italic pt-1 border-t border-amber-800/40">
-                        🌱 <strong>Bio-Action:</strong> {activeFix.organicFix.applicationTip}
+                        🌱 <strong>{t('diag_bioaction_label', 'Bio-Action:')}</strong> {activeFix.organicFix.applicationTip}
                       </div>
                     </div>
                   </div>
@@ -2306,7 +2321,7 @@ export default function DiagnosticsTool() {
                     <div className="p-2 sm:p-2.5 bg-black/45 rounded-xl border border-emerald-900/60 space-y-1 text-xs">
                       <div className="text-[10px] font-bold text-emerald-300 uppercase tracking-wider flex items-center gap-1">
                         <ShieldCheck className="w-3 h-3 text-emerald-400 shrink-0" />
-                        <span>Cultural &amp; Field Prevention Steps:</span>
+                        <span>{t('diag_cultural_steps', 'Cultural & Field Prevention Steps:')}</span>
                       </div>
                       <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-2 gap-y-0.5 text-[10px] text-slate-300 list-disc list-inside">
                         {activeFix.culturalFix.map((step, idx) => (
@@ -2320,19 +2335,19 @@ export default function DiagnosticsTool() {
                   <div className="space-y-1">
                     <div className="text-[10px] font-bold text-slate-300 uppercase tracking-wider flex items-center gap-1">
                       <Calendar className="w-3 h-3 text-cyan-400" />
-                      <span>Phased Recovery Milestones:</span>
+                      <span>{t('diag_recovery_milestones', 'Phased Recovery Milestones:')}</span>
                     </div>
                     <div className="grid grid-cols-3 gap-1.5 text-xs">
                       <div className="bg-emerald-950/80 p-1.5 sm:p-2 rounded-lg border border-emerald-900 text-left">
-                        <span className="text-amber-400 font-extrabold block text-[10px]">Day 1: Quarantine</span>
+                        <span className="text-amber-400 font-extrabold block text-[10px]">{t('diag_day1_title', 'Day 1: Quarantine')}</span>
                         <span className="text-slate-300 text-[9px] leading-tight mt-0.5 block truncate">{activeFix.recoveryTimeline?.day1 || 'Initial curative spray.'}</span>
                       </div>
                       <div className="bg-emerald-950/80 p-1.5 sm:p-2 rounded-lg border border-emerald-900 text-left">
-                        <span className="text-amber-400 font-extrabold block text-[10px]">Day 7: Symptom Arrest</span>
+                        <span className="text-amber-400 font-extrabold block text-[10px]">{t('diag_day7_title', 'Day 7: Symptom Arrest')}</span>
                         <span className="text-slate-300 text-[9px] leading-tight mt-0.5 block truncate">{activeFix.recoveryTimeline?.day7 || 'Inspect new foliage.'}</span>
                       </div>
                       <div className="bg-emerald-950/80 p-1.5 sm:p-2 rounded-lg border border-emerald-900 text-left">
-                        <span className="text-emerald-400 font-extrabold block text-[10px]">Day 14: Canopy Nutrition</span>
+                        <span className="text-emerald-400 font-extrabold block text-[10px]">{t('diag_day14_title', 'Day 14: Canopy Nutrition')}</span>
                         <span className="text-slate-300 text-[9px] leading-tight mt-0.5 block truncate">{activeFix.recoveryTimeline?.day14 || 'Foliar nutrition.'}</span>
                       </div>
                     </div>

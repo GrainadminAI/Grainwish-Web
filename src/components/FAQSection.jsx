@@ -255,10 +255,10 @@ export default function FAQSection() {
                       <div className="space-y-0.5 min-w-0">
                         <div className="flex items-center gap-1.5 flex-wrap">
                           <span className="text-[9px] font-bold uppercase tracking-wider px-1.5 py-0.2 rounded bg-emerald-950 text-emerald-300 border border-emerald-800/60">
-                            {faq.tag}
+                            {t(`faq_${faq.id}_tag`, faq.tag)}
                           </span>
                         </div>
-                        <span className="block leading-snug">{faq.q}</span>
+                        <span className="block leading-snug">{t(`faq_${faq.id}_q`, faq.q)}</span>
                       </div>
                     </div>
 
@@ -272,7 +272,7 @@ export default function FAQSection() {
                   {/* Accordion Answer & Featurable Action Link */}
                   {isOpen && (
                     <div className="px-3 sm:px-3.5 pb-3 sm:pb-3.5 pt-1 text-[11px] sm:text-xs text-slate-300 leading-relaxed border-t border-emerald-900/40 space-y-2">
-                      <p>{faq.a}</p>
+                      <p>{t(`faq_${faq.id}_a`, faq.a)}</p>
 
                       <div className="pt-1.5 flex items-center justify-between border-t border-emerald-900/30">
                         <button
@@ -280,12 +280,12 @@ export default function FAQSection() {
                           className="inline-flex items-center gap-1 text-[10.5px] sm:text-[11px] font-bold text-amber-400 hover:text-amber-300 transition-colors"
                         >
                           <ActionIcon className="w-3 h-3 shrink-0" />
-                          <span>{faq.actionText}</span>
+                          <span>{t(`faq_${faq.id}_action`, faq.actionText)}</span>
                           <ArrowRight className="w-3 h-3" />
                         </button>
 
                         <span className="text-[9px] text-slate-500 font-mono hidden sm:inline-block">
-                          Verified Agronomic Guide
+                          {t('faq_guide_badge', 'Verified Agronomic Guide')}
                         </span>
                       </div>
                     </div>

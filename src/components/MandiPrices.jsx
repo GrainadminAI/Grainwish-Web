@@ -83,7 +83,7 @@ export default function MandiPrices() {
 💰 Modal Price: ₹${item.modalPrice}/qtl
 🏛️ Govt MSP: ₹${item.msp}/qtl (Spread: ${item.modalPrice >= item.msp ? '+' : ''}₹${item.modalPrice - item.msp})
 📈 24h Trend: ${item.isUp ? '+' : ''}${item.dailyChangePct}%
-Source: Grainwise AI / Agmarknet`;
+Source: GrainWish AI / Agmarknet`;
 
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(text);
@@ -508,7 +508,7 @@ Source: Grainwise AI / Agmarknet`;
                   className="text-[11px] font-semibold text-amber-400 hover:text-amber-300 underline decoration-dotted flex items-center gap-1 transition-colors"
                   title={`Filter Mandi table to ${activeWeather.state}`}
                 >
-                  <span>Filter Mandis for {activeWeather.state}</span>
+                  <span>{t('mandi_filter_for', 'Filter Mandis for')} {activeWeather.state}</span>
                   <ChevronRight className="w-3 h-3" />
                 </button>
               )}
@@ -545,7 +545,7 @@ Source: Grainwise AI / Agmarknet`;
               >
                 {INDIAN_STATES_AND_UTS.map((st) => (
                   <option key={st} value={st} className="bg-[#042013] text-white">
-                    {st}
+                    {st === 'All States & UTs' ? t('mandi_all_states', 'All States & UTs') : st}
                   </option>
                 ))}
               </select>
@@ -558,10 +558,10 @@ Source: Grainwise AI / Agmarknet`;
                 onChange={(e) => setSortBy(e.target.value)}
                 className="w-full bg-emerald-950/90 border border-emerald-700/60 rounded-lg px-2.5 py-1.5 sm:py-2 text-xs text-amber-300 font-semibold focus:outline-none focus:border-amber-400 transition-colors"
               >
-                <option value="highest_price" className="bg-[#042013] text-white">Highest Rate</option>
-                <option value="gain_over_msp" className="bg-[#042013] text-white">Gain Above MSP</option>
-                <option value="distance" className="bg-[#042013] text-white">Nearest Center</option>
-                <option value="daily_change" className="bg-[#042013] text-white">Daily % Trend</option>
+                <option value="highest_price" className="bg-[#042013] text-white">{t('mandi_sort_highest', 'Highest Rate')}</option>
+                <option value="gain_over_msp" className="bg-[#042013] text-white">{t('mandi_sort_msp_gain', 'Gain Above MSP')}</option>
+                <option value="distance" className="bg-[#042013] text-white">{t('mandi_sort_nearest', 'Nearest Center')}</option>
+                <option value="daily_change" className="bg-[#042013] text-white">{t('mandi_sort_trend', 'Daily % Trend')}</option>
               </select>
 
               <button
@@ -576,7 +576,7 @@ Source: Grainwise AI / Agmarknet`;
               >
                 <Compass className={`w-3.5 h-3.5 text-amber-400 ${isLocating ? 'animate-spin' : ''}`} />
                 <span className="hidden sm:inline">
-                  {isLocating ? 'Locating...' : userLocation ? 'GPS Radar Active' : 'GPS Radar'}
+                  {isLocating ? t('mandi_locating', 'Locating...') : userLocation ? t('mandi_gps_active', 'GPS Radar Active') : t('mandi_gps_radar', 'GPS Radar')}
                 </span>
               </button>
             </div>
@@ -586,7 +586,7 @@ Source: Grainwise AI / Agmarknet`;
           {/* Quick State Filter Chips Row */}
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none pt-0.5 border-t border-emerald-900/40">
             <span className="text-[10px] text-amber-400 font-bold uppercase tracking-wider shrink-0 flex items-center gap-1">
-              <Filter className="w-3 h-3" /> Quick:
+              <Filter className="w-3 h-3" /> {t('mandi_quick_filter', 'Quick:')}
             </span>
             <div className="flex items-center gap-1 shrink-0">
               {POPULAR_AGRI_STATES.map((st) => (
@@ -600,7 +600,7 @@ Source: Grainwise AI / Agmarknet`;
                       : 'bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800 text-slate-300 hover:text-white'
                   }`}
                 >
-                  {st === 'All States & UTs' ? 'All India' : st}
+                  {st === 'All States & UTs' ? t('mandi_all_india', 'All India') : st}
                 </button>
               ))}
             </div>
@@ -613,7 +613,7 @@ Source: Grainwise AI / Agmarknet`;
                 title="Reset all search filters"
               >
                 <X className="w-3 h-3" />
-                <span>Reset Filters</span>
+                <span>{t('mandi_reset_filters', 'Reset Filters')}</span>
               </button>
             )}
           </div>
@@ -623,28 +623,31 @@ Source: Grainwise AI / Agmarknet`;
             
             {/* Category Pills */}
             <div className="flex flex-wrap items-center gap-1">
-              {CROP_CATEGORIES.map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setSelectedCategory(cat)}
-                  className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all active:scale-95 ${
-                    selectedCategory === cat
-                      ? 'bg-emerald-500 text-black shadow-sm font-bold'
-                      : 'bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-800 text-slate-300'
-                  }`}
-                >
-                  {cat}
-                </button>
-              ))}
+              {CROP_CATEGORIES.map((cat) => {
+                const catKey = `mandi_cat_${cat.toLowerCase().replace(/[^a-z0-9]/g, '_')}`;
+                return (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-2.5 py-1 rounded-md text-[11px] font-semibold transition-all active:scale-95 ${
+                      selectedCategory === cat
+                        ? 'bg-emerald-500 text-black shadow-sm font-bold'
+                        : 'bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-800 text-slate-300'
+                    }`}
+                  >
+                    {t(catKey, cat)}
+                  </button>
+                );
+              })}
             </div>
 
             {/* Profitability Filter */}
             <div className="flex items-center gap-1 text-[11px]">
-              <span className="text-slate-400 font-medium hidden sm:inline">MSP Spread:</span>
+              <span className="text-slate-400 font-medium hidden sm:inline">{t('mandi_msp_spread_label', 'MSP Spread:')}</span>
               {[
-                { id: 'all', label: 'All Margins' },
-                { id: 'above_msp', label: 'Above MSP' },
-                { id: 'high_margin', label: '> 20% Spread' }
+                { id: 'all', label: 'All Margins', key: 'mandi_spread_all' },
+                { id: 'above_msp', label: 'Above MSP', key: 'mandi_spread_above_msp' },
+                { id: 'high_margin', label: '> 20% Spread', key: 'mandi_spread_gt20' }
               ].map((p) => (
                 <button
                   key={p.id}
@@ -655,7 +658,7 @@ Source: Grainwise AI / Agmarknet`;
                       : 'bg-emerald-950/60 hover:bg-emerald-900 border border-emerald-800 text-slate-300'
                   }`}
                 >
-                  {p.label}
+                  {t(p.key, p.label)}
                 </button>
               ))}
             </div>
