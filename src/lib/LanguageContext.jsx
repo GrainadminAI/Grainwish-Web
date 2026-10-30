@@ -1133,17 +1133,45 @@ export function LanguageProvider({ children }) {
       const cleanLangName = savedLang.split(' ')[0];
       const langCode = LANGUAGE_CODES[cleanLangName] || 'en';
       applyFullPageTranslation(langCode);
+
+      // Silently acquire location telemetry if not yet cached
+      if (!localStorage.getItem('grainwise_detected_location')) {
+        detectUserRegionalLanguage(false).then((result) => {
+          if (result && result.region) {
+            setDetectedLocationInfo(result);
+            try {
+              localStorage.setItem('grainwise_detected_location', JSON.stringify(result));
+            } catch {}
+          }
+        }).catch(() => {});
+      }
     } else if (!userExplicitlyChose) {
       // First visit: Auto-detect language by mobile network / internet connection
       detectUserRegionalLanguage(false).then((result) => {
-        if (result && result.language && result.language !== 'English') {
+        if (result && result.region) {
           setDetectedLocationInfo(result);
-          changeLanguage(result.language, false);
-          const regionLabel = result.region ? `${result.region}` : 'your location';
-          const carrierLabel = result.carrier ? `${result.carrier} · ` : '';
-          const icon = result.isMobile ? '📱' : '🌐';
-          setLocationToast(`${icon} Detected via ${carrierLabel}${regionLabel}: Selected ${result.language}`);
-          setTimeout(() => setLocationToast(null), 4500);
+          try {
+            localStorage.setItem('grainwise_detected_location', JSON.stringify(result));
+          } catch {}
+
+          if (result.language && result.language !== 'English') {
+            changeLanguage(result.language, false);
+            const regionLabel = result.region ? `${result.region}` : 'your location';
+            const carrierLabel = result.carrier ? `${result.carrier} · ` : '';
+            const icon = result.isMobile ? '📱' : '🌐';
+            setLocationToast(`${icon} Detected via ${carrierLabel}${regionLabel}: Selected ${result.language}`);
+            setTimeout(() => setLocationToast(null), 4500);
+          }
+        }
+      }).catch(() => {});
+    } else if (!localStorage.getItem('grainwise_detected_location')) {
+      // User has explicitly chosen language before, but location is not yet populated
+      detectUserRegionalLanguage(false).then((result) => {
+        if (result && result.region) {
+          setDetectedLocationInfo(result);
+          try {
+            localStorage.setItem('grainwise_detected_location', JSON.stringify(result));
+          } catch {}
         }
       }).catch(() => {});
     }

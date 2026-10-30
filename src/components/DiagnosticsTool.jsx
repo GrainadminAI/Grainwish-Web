@@ -5,10 +5,12 @@ import {
   Eye, Flame, Layers, Scan, Download, FileText, Zap, Crosshair,
   Sliders, Video, VideoOff, RotateCcw, Check, Info, ShieldCheck, Activity,
   Printer, Share2, Sparkle, Maximize2, Cpu, CheckSquare, Flashlight,
-  Sun, MessageSquare, Copy, CheckCircle, Leaf, XCircle, Globe
+  Sun, MessageSquare, Copy, CheckCircle, Leaf, XCircle, Globe,
+  MapPin, Compass, Edit3
 } from 'lucide-react';
 import { saveDiagnosticScanToDB, recordFeatureUsageToDB, isSupabaseConfigured } from '../lib/supabase';
 import { useLanguage, SUPPORTED_LANGUAGES } from '../lib/LanguageContext';
+import { detectLocationViaGPS, detectLocationViaNetwork } from '../lib/locationLanguageDetector';
 import {
   analyzeImageBuffer,
   sampleLiveVideoFrame,
@@ -209,7 +211,7 @@ const CROP_SAMPLES = [
 ];
 
 export default function DiagnosticsTool() {
-  const { selectedLang, setSelectedLang, t } = useLanguage();
+  const { selectedLang, setSelectedLang, t, detectedLocationInfo, detectLocationAndSetLanguage } = useLanguage();
   const [selectedCrop, setSelectedCrop] = useState(CROP_SAMPLES[0]);
   const [inputMode, setInputMode] = useState('sample'); // 'sample' | 'webcam' | 'upload'
   const [viewMode, setViewMode] = useState('visual'); // 'visual' | 'thermal' | 'cellular' | 'matrix'
@@ -220,6 +222,76 @@ export default function DiagnosticsTool() {
   const [uploadedImage, setUploadedImage] = useState(null);
   const [acreage, setAcreage] = useState(1);
   const [isSpeaking, setIsSpeaking] = useState(false);
+
+  // Farm Plot Location State (Customized or GPS auto-detected)
+  const [farmLocation, setFarmLocation] = useState(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const raw = localStorage.getItem('grainwise_detected_location');
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed.region) return parsed.region;
+        }
+      } catch {}
+    }
+    return '';
+  });
+  const [isLocatingFarm, setIsLocatingFarm] = useState(false);
+  const [isEditingLocation, setIsEditingLocation] = useState(false);
+  const [farmLocationStatus, setFarmLocationStatus] = useState('');
+
+  // Sync farm location with detectedLocationInfo from LanguageContext
+  useEffect(() => {
+    if (detectedLocationInfo?.region && !farmLocation) {
+      setFarmLocation(detectedLocationInfo.region);
+    }
+  }, [detectedLocationInfo]);
+
+  // If no farm location yet on mount, auto-detect non-intrusively via network
+  useEffect(() => {
+    if (!farmLocation) {
+      detectLocationViaNetwork().then((res) => {
+        if (res && res.region) {
+          setFarmLocation(res.region);
+          try {
+            localStorage.setItem('grainwise_detected_location', JSON.stringify(res));
+          } catch {}
+        }
+      }).catch(() => {});
+    }
+  }, []);
+
+  const handleDetectFarmLocation = async () => {
+    setIsLocatingFarm(true);
+    setFarmLocationStatus('Pinpointing GPS...');
+    try {
+      const gpsResult = await detectLocationViaGPS();
+      if (gpsResult && gpsResult.region) {
+        setFarmLocation(gpsResult.region);
+        const coordLabel = gpsResult.coords ? ` (${gpsResult.coords.latitude.toFixed(2)}°, ${gpsResult.coords.longitude.toFixed(2)}°)` : '';
+        setFarmLocationStatus(`✓ GPS Locked${coordLabel}`);
+        try {
+          localStorage.setItem('grainwise_detected_location', JSON.stringify(gpsResult));
+        } catch {}
+        setTimeout(() => setFarmLocationStatus(''), 4500);
+      } else {
+        const netResult = await detectLocationViaNetwork();
+        if (netResult && netResult.region) {
+          setFarmLocation(netResult.region);
+          setFarmLocationStatus('✓ Network Location');
+          setTimeout(() => setFarmLocationStatus(''), 3000);
+        } else {
+          setFarmLocationStatus('Location unavailable');
+          setTimeout(() => setFarmLocationStatus(''), 3000);
+        }
+      }
+    } catch {
+      setFarmLocationStatus('Location error');
+      setTimeout(() => setFarmLocationStatus(''), 3000);
+    } finally {
+      setIsLocatingFarm(false);
+    }
+  };
   
   // Live Webcam state & refs
   const videoRef = useRef(null);
@@ -621,7 +693,7 @@ export default function DiagnosticsTool() {
           crop: result.detectedCrop,
           disease: result.detectedDisease,
           pathogenType: result.pathogenType,
-          location: 'Your Local Geolocation Farm Plot',
+          location: farmLocation || detectedLocationInfo?.region || 'Your Local Farm Plot',
           confidence: result.confidence,
           visualAccuracy: '100.0%',
           spectralAccuracy: '100.0%',
@@ -780,12 +852,15 @@ export default function DiagnosticsTool() {
     setIsSpeaking(false);
   };
 
+  const effectiveLocation = farmLocation || detectedLocationInfo?.region || selectedCrop.location || 'Local Farm Plot';
+
   // Share Diagnostic Report via WhatsApp to Krishi Vigyan Kendra (KVK) / FPO
   const handleShareWhatsApp = () => {
     const fix = activeFix;
+    const locationForShare = effectiveLocation;
     const text = encodeURIComponent(
       `🌾 *Grainwish AI 100% Crop Diagnosis & Prescription*\n` +
-      `📍 *Location:* ${selectedCrop.location || 'Local Farm Plot'}\n` +
+      `📍 *Location:* ${locationForShare}\n` +
       `🌱 *Crop:* ${selectedCrop.crop}\n` +
       `🦠 *Detected Condition:* ${selectedCrop.disease} (${categoryKey})\n` +
       `📊 *AI Accuracy:* ${selectedCrop.confidence} Verified\n` +
@@ -811,6 +886,7 @@ export default function DiagnosticsTool() {
   const handleCopySummary = () => {
     const text =
       `🌾 Grainwish AI 100% Crop Diagnosis Report\n` +
+      `Location: ${effectiveLocation}\n` +
       `Crop: ${selectedCrop.crop} | Diagnosis: ${selectedCrop.disease}\n` +
       `Severity: ${selectedCrop.severity} | Recovery: ${selectedCrop.recoveryDays}\n` +
       `Remedy: ${selectedCrop.treatment}\n` +
@@ -868,7 +944,7 @@ export default function DiagnosticsTool() {
             <div class="card">
               <h3>Target Crop & Region</h3>
               <div class="val">${selectedCrop.crop}</div>
-              <div style="font-size: 13px; color: #475569; margin-top: 4px;">📍 ${selectedCrop.location}</div>
+              <div style="font-size: 13px; color: #475569; margin-top: 4px;">📍 ${effectiveLocation}</div>
             </div>
             <div class="card">
               <h3>Confirmed Pathology Diagnosis</h3>
@@ -1972,6 +2048,56 @@ export default function DiagnosticsTool() {
                     <div className="bg-emerald-950/60 p-1.5 sm:p-2 rounded-lg border border-emerald-900/80">
                       <div className="text-[8.5px] sm:text-[9.5px] text-slate-400 uppercase font-semibold">Recovery Time</div>
                       <div className="text-cyan-300 font-bold text-[10px] sm:text-[11px] truncate mt-0.5">{selectedCrop.recoveryDays}</div>
+                    </div>
+                  </div>
+
+                  {/* Farm Plot Location Tag with Live GPS Auto-Detect */}
+                  <div className="p-2 sm:p-2.5 rounded-xl bg-[#02180d] border border-emerald-700/60 flex flex-col xs:flex-row items-stretch xs:items-center justify-between gap-2 pt-2 border-t border-emerald-900/50">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <MapPin className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span className="text-[10px] sm:text-[11px] text-slate-300 font-semibold shrink-0">Farm Location:</span>
+                      {isEditingLocation ? (
+                        <input
+                          type="text"
+                          value={farmLocation}
+                          onChange={(e) => setFarmLocation(e.target.value)}
+                          onBlur={() => setIsEditingLocation(false)}
+                          onKeyDown={(e) => e.key === 'Enter' && setIsEditingLocation(false)}
+                          autoFocus
+                          placeholder="e.g. Nashik, Maharashtra"
+                          className="bg-black/90 border border-emerald-500 rounded px-1.5 py-0.5 text-[11px] text-amber-300 font-bold focus:outline-none focus:border-amber-400 w-full"
+                        />
+                      ) : (
+                        <span className="text-[11px] sm:text-xs text-amber-300 font-bold truncate">
+                          {effectiveLocation}
+                        </span>
+                      )}
+                      {farmLocationStatus && (
+                        <span className="text-[9.5px] font-mono text-emerald-400 font-bold shrink-0">
+                          {farmLocationStatus}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="flex items-center gap-1 shrink-0 self-end xs:self-auto">
+                      <button
+                        type="button"
+                        onClick={handleDetectFarmLocation}
+                        disabled={isLocatingFarm}
+                        className="px-2 py-1 rounded-lg bg-emerald-900/90 hover:bg-emerald-800 border border-emerald-600/70 text-[10px] text-amber-300 font-bold flex items-center gap-1 transition-all shadow-sm active:scale-95 disabled:opacity-50"
+                        title="Pinpoint live farm GPS coordinates (DPDP Act 2023 & GDPR compliant)"
+                      >
+                        <Compass className={`w-3 h-3 text-amber-400 ${isLocatingFarm ? 'animate-spin' : ''}`} />
+                        <span>{isLocatingFarm ? 'Locating...' : 'GPS Pinpoint'}</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setIsEditingLocation(!isEditingLocation)}
+                        className="p-1 rounded-lg bg-emerald-950 hover:bg-emerald-900 border border-emerald-800 text-slate-300 hover:text-white transition-colors"
+                        title={isEditingLocation ? 'Done editing' : 'Edit farm location'}
+                      >
+                        <Edit3 className="w-3 h-3" />
+                      </button>
                     </div>
                   </div>
 

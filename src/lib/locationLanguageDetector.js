@@ -186,18 +186,24 @@ export async function detectLocationViaNetwork() {
     if (res.ok) {
       const data = await res.json();
       if (data && data.success !== false) {
-        const region = data.region || data.city || '';
+        const city = data.city || '';
+        const state = data.region || '';
+        const region = city && state && !city.toLowerCase().includes(state.toLowerCase())
+          ? `${city}, ${state}`
+          : (state || city || '');
         const country = data.country || '';
         const rawCarrier = data.connection?.isp || data.connection?.org || '';
         const carrier = formatNetworkCarrier(rawCarrier);
         const isMobile = connectionInfo.isMobile || /jio|airtel|cellular|mobile|vodafone|vi|idea|bsnl mobile|telecom/i.test(rawCarrier);
         const networkType = isMobile ? 'Mobile Network' : 'Internet Connection';
-        const lang = matchStateToLanguage(region);
+        const lang = matchStateToLanguage(state || region);
 
         if (lang) {
           return {
             language: lang,
             region,
+            city,
+            state,
             country,
             carrier,
             isMobile,
@@ -209,6 +215,8 @@ export async function detectLocationViaNetwork() {
           return {
             language: 'Hindi',
             region: region || 'India',
+            city,
+            state,
             country: 'India',
             carrier,
             isMobile,
@@ -234,18 +242,24 @@ export async function detectLocationViaNetwork() {
 
     if (res.ok) {
       const data = await res.json();
-      const region = data.region || data.region_name || data.city || '';
+      const city = data.city || '';
+      const state = data.region || data.region_name || '';
+      const region = city && state && !city.toLowerCase().includes(state.toLowerCase())
+        ? `${city}, ${state}`
+        : (state || city || '');
       const country = data.country_name || data.country_code || '';
       const rawCarrier = data.org || data.asn || '';
       const carrier = formatNetworkCarrier(rawCarrier);
       const isMobile = connectionInfo.isMobile || /jio|airtel|cellular|mobile|vodafone|vi|idea|bsnl mobile|telecom/i.test(rawCarrier);
       const networkType = isMobile ? 'Mobile Network' : 'Internet Connection';
-      const lang = matchStateToLanguage(region);
+      const lang = matchStateToLanguage(state || region);
 
       if (lang) {
         return {
           language: lang,
           region,
+          city,
+          state,
           country,
           carrier,
           isMobile,
@@ -257,6 +271,8 @@ export async function detectLocationViaNetwork() {
         return {
           language: 'Hindi',
           region: region || 'India',
+          city,
+          state,
           country: 'India',
           carrier,
           isMobile,
@@ -297,13 +313,19 @@ export async function detectLocationViaGPS() {
           );
           if (res.ok) {
             const data = await res.json();
-            const region = data.principalSubdivision || data.locality || '';
+            const city = data.locality || data.city || '';
+            const state = data.principalSubdivision || '';
+            const region = city && state && !city.toLowerCase().includes(state.toLowerCase())
+              ? `${city}, ${state}`
+              : (state || city || '');
             const country = data.countryName || '';
-            const matched = matchStateToLanguage(region);
+            const matched = matchStateToLanguage(state || region);
             if (matched) {
               return resolve({
                 language: matched,
                 region: region,
+                city,
+                state,
                 country: country,
                 coords: { latitude, longitude },
                 source: 'gps'
@@ -313,6 +335,8 @@ export async function detectLocationViaGPS() {
               return resolve({
                 language: country === 'India' ? 'Hindi' : 'English',
                 region: region || country,
+                city,
+                state,
                 country: country,
                 coords: { latitude, longitude },
                 source: 'gps'
