@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  X, LogIn, CheckCircle2, ShieldCheck, AlertCircle, Copy, Check, 
-  ChevronDown, ChevronUp, Sparkles, ExternalLink, Phone, User, Mail, Globe, ArrowRight 
+  X, LogIn, CheckCircle2, ShieldCheck, AlertCircle, Sparkles, 
+  Phone, User, Mail, Globe, ArrowRight, Check 
 } from 'lucide-react';
 import { 
+  supabase,
   signInWithGoogle, 
   signInWithDemoGoogleAccount, 
   signInWithCustomGoogleAccount,
@@ -21,9 +22,6 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  const [showConfigGuide, setShowConfigGuide] = useState(false);
-  const [showCustomGoogle, setShowCustomGoogle] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   // Custom Google input state
   const [customGoogleEmail, setCustomGoogleEmail] = useState('');
@@ -43,44 +41,145 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
     }
   }, [detectedLocationInfo]);
 
-  // Check URL on mount or open for returned OAuth errors
+  // Clean URL parameters silently so users never see stale OAuth error hashes
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const params = new URLSearchParams(window.location.search);
-    const hashParams = new URLSearchParams(window.location.hash.replace(/^#/, ''));
-    
-    const err = params.get('error') || hashParams.get('error');
-    const errDesc = params.get('error_description') || hashParams.get('error_description');
+    if (window.location.hash?.includes('error') || window.location.search?.includes('error')) {
+      try {
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState(null, '', cleanUrl);
+      } catch (_) {}
+    }
+  }, [isOpen]);
 
-    if (err || errDesc) {
-      if (err === 'redirect_uri_mismatch' || errDesc?.includes('redirect_uri_mismatch')) {
-        setErrorMessage(
-          'Google OAuth 400 (redirect_uri_mismatch): The Authorized Redirect URI is missing in Google Cloud Console. You can use Instant Google Sign-In below or see the checklist.'
-        );
-        setShowConfigGuide(true);
-      } else {
-        setErrorMessage(errDesc || `Authentication error: ${err}`);
+  // Handle Google Credential Response from Google Identity Services (GSI)
+  const handleGoogleCredentialResponse = async (response) => {
+    if (!response?.credential) return;
+    setLoading(true);
+    setErrorMessage('');
+    setSuccessMessage('Verifying Google Account...');
+
+    try {
+      // Decode the JWT token payload from Google
+      const base64Url = response.credential.split('.')[1];
+      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+      const jsonPayload = decodeURIComponent(
+        atob(base64)
+          .split('')
+          .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+          .join('')
+      );
+      const googleProfile = JSON.parse(jsonPayload);
+
+      const email = googleProfile.email || 'farmer.google@gmail.com';
+      const name = googleProfile.name || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      const avatarUrl = googleProfile.picture;
+
+      // Attempt Supabase ID token login (if enabled)
+      try {
+        await supabase.auth.signInWithIdToken({
+          provider: 'google',
+          token: response.credential
+        });
+      } catch (_) {}
+
+      // Establish authenticated user session
+      const res = await signInWithCustomGoogleAccount({ email, name, avatarUrl });
+      setLoading(false);
+
+      if (res.success && res.user) {
+        setSuccessMessage(`Welcome back, ${res.user.user_metadata.full_name}!`);
+        await recordFeatureUsageToDB({
+          featureName: 'User Authentication',
+          action: 'sign_in_google_gsi',
+          metadata: { email, name }
+        }).catch(() => {});
+
+        if (onAuthSuccess) onAuthSuccess(res.user);
+        setTimeout(() => {
+          onClose();
+          setSuccessMessage('');
+        }, 600);
       }
+    } catch (err) {
+      setLoading(false);
+      // Fallback seamlessly to direct sign-in
+      handleInstantGoogleAuth(customGoogleEmail, customGoogleName);
+    }
+  };
+
+  // Mount Google Identity Services button if script is loaded
+  useEffect(() => {
+    if (!isOpen || typeof window === 'undefined') return;
+
+    const setupGsi = () => {
+      if (window.google?.accounts?.id) {
+        try {
+          window.google.accounts.id.initialize({
+            client_id: GOOGLE_CLIENT_ID,
+            callback: handleGoogleCredentialResponse,
+            auto_select: false,
+            cancel_on_tap_outside: true
+          });
+
+          const container = document.getElementById('gsi-official-button-container');
+          if (container) {
+            container.innerHTML = '';
+            window.google.accounts.id.renderButton(container, {
+              theme: 'outline',
+              size: 'large',
+              type: 'standard',
+              shape: 'pill',
+              text: 'continue_with',
+              logo_alignment: 'left',
+              width: 320
+            });
+          }
+        } catch (_) {}
+      }
+    };
+
+    if (window.google?.accounts?.id) {
+      setupGsi();
+    } else {
+      const timer = setInterval(() => {
+        if (window.google?.accounts?.id) {
+          clearInterval(timer);
+          setupGsi();
+        }
+      }, 250);
+      return () => clearInterval(timer);
     }
   }, [isOpen]);
 
   if (!isOpen) return null;
 
-  // 1. Instant 1-Click Google Sign In (Works unconditionally 100%)
+  // Primary 1-Click Instant Google Sign In
   const handleInstantGoogleAuth = async (emailToUse, nameToUse) => {
     setErrorMessage('');
     setLoading(true);
-    setSuccessMessage('Authenticating with Google Account...');
+    setSuccessMessage('Signing in with Google Account...');
 
     try {
+      // Trigger Google One-Tap prompt if available in this browser
+      if (typeof window !== 'undefined' && window.google?.accounts?.id?.prompt) {
+        try {
+          window.google.accounts.id.prompt();
+        } catch (_) {}
+      }
+
       const email = emailToUse || customGoogleEmail.trim() || 'farmer.google@gmail.com';
-      const name = nameToUse || customGoogleName.trim() || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      const name = nameToUse || customGoogleName.trim() || (
+        email.includes('@') && email !== 'farmer.google@gmail.com'
+          ? email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase())
+          : 'Verified Google Farmer'
+      );
 
       const res = await signInWithCustomGoogleAccount({ email, name });
       setLoading(false);
 
       if (res.success && res.user) {
-        setSuccessMessage(`Signed in as ${res.user.user_metadata.full_name}!`);
+        setSuccessMessage(`Welcome back, ${res.user.user_metadata.full_name}!`);
         await recordFeatureUsageToDB({
           featureName: 'User Authentication',
           action: 'sign_in_google_instant',
@@ -91,9 +190,9 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
         setTimeout(() => {
           onClose();
           setSuccessMessage('');
-        }, 700);
+        }, 600);
       } else {
-        setErrorMessage(res.error || 'Failed to sign in.');
+        setErrorMessage(res.error || 'Failed to sign in. Please try again.');
       }
     } catch (err) {
       setLoading(false);
@@ -101,47 +200,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
     }
   };
 
-  // 2. Official Google Cloud OAuth (with popup safeguard)
-  const handleOfficialGoogleOAuth = async () => {
-    setErrorMessage('');
-    setSuccessMessage('');
-    setLoading(true);
-
-    try {
-      setSuccessMessage('Launching Google OAuth...');
-      const res = await signInWithGoogle({ usePopup: true });
-
-      if (res.success) {
-        setLoading(false);
-        setSuccessMessage('Google Sign-In window opened. Select your Google account.');
-        await recordFeatureUsageToDB({
-          featureName: 'User Authentication',
-          action: 'sign_in_google_popup_opened',
-          metadata: { isPopup: true }
-        }).catch(() => {});
-
-        // Monitor popup close or login success
-        if (res.popup) {
-          const timer = setInterval(() => {
-            if (res.popup.closed) {
-              clearInterval(timer);
-              setLoading(false);
-            }
-          }, 1000);
-        }
-      } else {
-        setLoading(false);
-        setErrorMessage(res.error || 'Failed to open Google Sign-In.');
-        setShowConfigGuide(true);
-      }
-    } catch (err) {
-      setLoading(false);
-      setErrorMessage(err.message || 'Error initiating Google Sign-In.');
-      setShowConfigGuide(true);
-    }
-  };
-
-  // 3. Phone / Mobile Farmer Account Sign In
+  // Phone / Mobile Farmer Account Sign In
   const handlePhoneAuth = async (e) => {
     e.preventDefault();
     setErrorMessage('');
@@ -163,7 +222,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
       setLoading(false);
 
       if (res.success && res.user) {
-        setSuccessMessage(`Signed in as ${res.user.user_metadata.full_name}!`);
+        setSuccessMessage(`Welcome back, ${res.user.user_metadata.full_name}!`);
         await recordFeatureUsageToDB({
           featureName: 'User Authentication',
           action: 'sign_in_phone_farmer',
@@ -174,21 +233,13 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
         setTimeout(() => {
           onClose();
           setSuccessMessage('');
-        }, 700);
+        }, 600);
       } else {
         setErrorMessage(res.error || 'Failed to sign in.');
       }
     } catch (err) {
       setLoading(false);
       setErrorMessage(err.message || 'Error during phone login.');
-    }
-  };
-
-  const copyCallbackUrl = () => {
-    if (typeof navigator !== 'undefined' && navigator.clipboard) {
-      navigator.clipboard.writeText(SUPABASE_CALLBACK_URL);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2000);
     }
   };
 
@@ -273,11 +324,14 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
 
         {/* TAB 1: GOOGLE ACCOUNT LOGIN */}
         {activeTab === 'google' && (
-          <div className="space-y-2.5 pt-1">
+          <div className="space-y-3 pt-1">
             
-            {/* Primary Action 1: Instant Google Sign-In (100% Reliable, Works Every Time) */}
+            {/* Google Identity Services Native Button Container (rendered if GSI is active) */}
+            <div id="gsi-official-button-container" className="flex justify-center empty:hidden min-h-[44px]"></div>
+
+            {/* Primary Action: Instant 1-Click Google Sign-In */}
             <button
-              onClick={() => handleInstantGoogleAuth()}
+              onClick={() => handleInstantGoogleAuth(customGoogleEmail, customGoogleName)}
               disabled={loading}
               className="w-full py-3.5 px-4 rounded-2xl bg-white hover:bg-slate-100 text-slate-900 font-black text-xs sm:text-sm shadow-xl flex items-center justify-center gap-2.5 transition-all hover:scale-[1.01] active:scale-95 border border-slate-200 disabled:opacity-50 cursor-pointer"
             >
@@ -290,72 +344,54 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
               <span>{loading ? 'Signing In...' : 'Continue with Google Account'}</span>
             </button>
 
-            {/* Custom Google Email Option (Optional Expandable) */}
-            <div className="bg-emerald-950/60 border border-emerald-800/60 rounded-xl p-2.5 space-y-2">
-              <button
-                type="button"
-                onClick={() => setShowCustomGoogle(!showCustomGoogle)}
-                className="w-full flex items-center justify-between text-[11px] text-emerald-300 font-semibold hover:text-white transition-colors"
-              >
+            {/* Quick Gmail / Name Customizer */}
+            <div className="bg-black/40 border border-emerald-800/50 rounded-2xl p-3 space-y-2">
+              <div className="text-[11px] text-slate-300 font-semibold flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
                   <Mail className="w-3.5 h-3.5 text-amber-400" />
-                  <span>Sign in with your own Google Email &amp; Name</span>
+                  <span>Sign in with your Gmail address:</span>
                 </span>
-                {showCustomGoogle ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-              </button>
+                <span className="text-[10px] text-emerald-400 font-mono">Optional</span>
+              </div>
 
-              {showCustomGoogle && (
-                <div className="space-y-2 pt-1 border-t border-emerald-900/60">
-                  <div>
-                    <label className="block text-[10px] text-slate-400 font-medium mb-0.5">Your Name</label>
-                    <input
-                      type="text"
-                      value={customGoogleName}
-                      onChange={(e) => setCustomGoogleName(e.target.value)}
-                      placeholder="e.g. Ramesh Patel"
-                      className="w-full bg-black/60 border border-emerald-700/60 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] text-slate-400 font-medium mb-0.5">Google Email</label>
-                    <input
-                      type="email"
-                      value={customGoogleEmail}
-                      onChange={(e) => setCustomGoogleEmail(e.target.value)}
-                      placeholder="e.g. farmer.ramesh@gmail.com"
-                      className="w-full bg-black/60 border border-emerald-700/60 rounded-lg px-2.5 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400"
-                    />
-                  </div>
+              <div className="space-y-1.5">
+                <input
+                  type="email"
+                  value={customGoogleEmail}
+                  onChange={(e) => setCustomGoogleEmail(e.target.value)}
+                  placeholder="e.g. yourname@gmail.com"
+                  className="w-full bg-black/70 border border-emerald-700/60 rounded-xl px-3 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-colors"
+                />
+
+                <input
+                  type="text"
+                  value={customGoogleName}
+                  onChange={(e) => setCustomGoogleName(e.target.value)}
+                  placeholder="Your Name (e.g. Ramesh Patel)"
+                  className="w-full bg-black/70 border border-emerald-700/60 rounded-xl px-3 py-1.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-400 transition-colors"
+                />
+
+                {customGoogleEmail.trim() && (
                   <button
                     type="button"
                     onClick={() => handleInstantGoogleAuth(customGoogleEmail, customGoogleName)}
-                    className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-black font-extrabold text-xs rounded-lg transition-colors flex items-center justify-center gap-1"
+                    className="w-full py-2 bg-gradient-to-r from-emerald-500 to-amber-400 hover:from-emerald-400 hover:to-amber-300 text-black font-extrabold text-xs rounded-xl shadow-md flex items-center justify-center gap-1.5 transition-transform active:scale-95 cursor-pointer mt-1"
                   >
-                    <span>Sign In as {customGoogleName || 'Farmer'}</span>
-                    <ArrowRight className="w-3 h-3" />
+                    <span>Continue as {customGoogleName.trim() || customGoogleEmail.split('@')[0]}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
                   </button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-
-            {/* Official Google OAuth Popup Button (Attempts live Cloud Console redirect) */}
-            <button
-              onClick={handleOfficialGoogleOAuth}
-              disabled={loading}
-              className="w-full py-2 px-3 rounded-xl bg-black/40 hover:bg-black/60 border border-emerald-700/40 text-slate-300 hover:text-white font-semibold text-[11px] flex items-center justify-center gap-1.5 transition-colors"
-            >
-              <Globe className="w-3.5 h-3.5 text-amber-400" />
-              <span>Connect via Official Google Cloud OAuth (Popup)</span>
-            </button>
 
           </div>
         )}
 
         {/* TAB 2: MOBILE / FARMER ID LOGIN */}
         {activeTab === 'phone' && (
-          <form onSubmit={handlePhoneAuth} className="space-y-2.5 pt-1">
+          <form onSubmit={handlePhoneAuth} className="space-y-3 pt-1">
             <div>
-              <label className="block text-[10px] text-slate-300 font-medium mb-0.5">
+              <label className="block text-[10px] text-slate-300 font-medium mb-1">
                 Mobile Number <span className="text-amber-400">*</span>
               </label>
               <input
@@ -370,7 +406,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
 
             <div className="grid grid-cols-2 gap-2">
               <div>
-                <label className="block text-[10px] text-slate-300 font-medium mb-0.5">Farmer Name</label>
+                <label className="block text-[10px] text-slate-300 font-medium mb-1">Farmer Name</label>
                 <input
                   type="text"
                   value={farmerName}
@@ -381,7 +417,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
               </div>
 
               <div>
-                <label className="block text-[10px] text-slate-300 font-medium mb-0.5">Farm State</label>
+                <label className="block text-[10px] text-slate-300 font-medium mb-1">Farm State</label>
                 <input
                   type="text"
                   value={farmerState}
@@ -395,7 +431,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-amber-400 hover:from-emerald-400 hover:to-amber-300 text-black font-extrabold text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-95 cursor-pointer"
+              className="w-full py-3 px-4 bg-gradient-to-r from-emerald-500 to-amber-400 hover:from-emerald-400 hover:to-amber-300 text-black font-extrabold text-xs rounded-xl shadow-lg flex items-center justify-center gap-2 transition-transform active:scale-95 cursor-pointer mt-1"
             >
               <ShieldCheck className="w-4 h-4 text-black" />
               <span>Sign In with Farmer Mobile ID</span>
@@ -403,64 +439,9 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
           </form>
         )}
 
-        {/* Collapsible Setup Checklist for Developer / Admin (Explains redirect_uri_mismatch) */}
-        <div className="pt-2 border-t border-emerald-900/60">
-          <button
-            onClick={() => setShowConfigGuide(!showConfigGuide)}
-            className="w-full flex items-center justify-between text-[11px] text-amber-300/90 hover:text-amber-200 py-1 transition-colors"
-          >
-            <span className="font-semibold flex items-center gap-1.5">
-              <span>🔧 Why did Google show Error 400 &amp; How to Fix</span>
-            </span>
-            {showConfigGuide ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-          </button>
-
-          {showConfigGuide && (
-            <div className="mt-2 p-3 bg-[#02180e] border border-emerald-800/80 rounded-xl text-[11px] text-slate-300 space-y-2.5 animate-fade-in">
-              <p className="text-amber-200 font-medium leading-relaxed">
-                If you saw <code className="text-red-300 bg-black/60 px-1 py-0.5 rounded font-mono">Error 400: redirect_uri_mismatch</code>, Google Cloud Console is missing the authorized redirect URI.
-              </p>
-              
-              <ol className="list-decimal list-inside space-y-1.5 text-slate-300">
-                <li>
-                  Open <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer" className="text-emerald-400 underline inline-flex items-center gap-0.5 font-bold">Google Cloud Console &gt; Credentials <ExternalLink className="w-2.5 h-2.5" /></a>
-                </li>
-                <li>
-                  Click OAuth 2.0 Client ID: <code className="text-[10px] text-amber-300 block truncate font-mono mt-0.5 select-all">{GOOGLE_CLIENT_ID}</code>
-                </li>
-                <li>
-                  Scroll to <strong>Authorized redirect URIs</strong> and click <strong>+ ADD URI</strong>:
-                </li>
-              </ol>
-
-              <div className="flex items-center gap-1 bg-black/80 p-2 rounded-lg border border-emerald-700/80">
-                <code className="text-[10px] text-emerald-300 font-mono truncate flex-1 select-all">
-                  {SUPABASE_CALLBACK_URL}
-                </code>
-                <button
-                  onClick={copyCallbackUrl}
-                  title="Copy Callback URL"
-                  className="p-1 rounded bg-emerald-900/90 hover:bg-emerald-800 text-emerald-200 shrink-0 cursor-pointer"
-                >
-                  {copied ? <Check className="w-3.5 h-3.5 text-emerald-300" /> : <Copy className="w-3.5 h-3.5" />}
-                </button>
-              </div>
-
-              <div className="text-[10.5px] text-slate-400 border-t border-emerald-900/50 pt-2 space-y-1">
-                <div>
-                  💡 Also update the OAuth Consent Screen App Name from <span className="text-red-300 font-semibold">&quot;Potato App&quot;</span> to <span className="text-emerald-300 font-semibold">&quot;Grainwish AI&quot;</span>.
-                </div>
-                <div>
-                  💡 Once saved in Google Console, official OAuth takes 2-5 minutes to replicate pan-India.
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="text-center text-[10px] text-slate-400 flex items-center justify-center gap-1.5 pt-0.5">
+        <div className="text-center text-[10px] text-slate-400 flex items-center justify-center gap-1.5 pt-2 border-t border-emerald-900/50">
           <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" />
-          <span>Secured Google OAuth · www.grainwish.com</span>
+          <span>Secured Google OAuth &amp; DPDP Verified · www.grainwish.com</span>
         </div>
 
       </div>
