@@ -66,10 +66,10 @@ export default function TermsConditionsPage({ onBackToHome }) {
         {/* Agricultural Advisory Notice Callout */}
         <div className="bg-amber-950/40 border border-amber-500/50 rounded-2xl p-5 space-y-2">
           <h2 className="text-sm font-bold text-amber-300 flex items-center gap-2">
-            <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" /> Important Agricultural Advisory Disclaimer
+            <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" /> Important Agronomic Advisory Disclaimer
           </h2>
           <p className="text-xs text-slate-200 leading-relaxed">
-            Grainwish AI provides diagnostic evaluations, NPK nutrient estimates, and treatment alternatives for informational and agronomic support purposes. Real-world crop outcomes vary based on micro-climates, soil test variations, irrigation quality, and weather events. Farmers are encouraged to cross-reference recommendations with certified local agricultural extension officers (KVKs) and follow all statutory pesticide manufacturer labels.
+            <strong>Agronomic Advisory Disclaimer:</strong> AI crop diagnostic suggestions and NPK soil calculations provided by Grainwish AI are predictive recommendations, not guaranteed yield insurance. Real-world crop outcomes vary based on micro-climates, soil test variations, irrigation quality, pest surges, and unforeseen severe weather events. Farmers are encouraged to cross-reference recommendations with certified local agricultural extension officers (KVKs) and follow all statutory pesticide manufacturer labels.
           </p>
         </div>
 

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Smartphone, QrCode, Download, Check, ShieldCheck, Sparkles, Copy, MessageSquare, Star, Send, Clock, Edit3, CheckCircle2 } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { recordAppDownloadToDB, recordFeatureUsageToDB, saveFeedbackToDB, getSavedUserFeedback } from '../lib/supabase';
+import { recordAppDownloadToDB, recordFeatureUsageToDB, saveFeedbackToDB, getSavedUserFeedback, recordConsentAuditLog } from '../lib/supabase';
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
 
@@ -114,6 +114,14 @@ export default function DownloadModal({ isOpen, onClose }) {
       action: 'subscribe_android_launch',
       metadata: { contact: input }
     });
+
+    // Record non-editable DPDP Act 2023 consent audit trail
+    await recordConsentAuditLog({
+      userId: input,
+      userType: 'FARMER',
+      consentedItems: ['PROFILE', 'TERMS', 'PRIVACY'],
+      policyVersion: 'v1.0_2026'
+    }).catch(() => {});
 
     setAndroidNotified(true);
     confetti({ particleCount: 80, spread: 60 });
@@ -369,6 +377,8 @@ export default function DownloadModal({ isOpen, onClose }) {
                   <label className="flex items-start gap-2 cursor-pointer group select-none">
                     <input 
                       type="checkbox"
+                      id="consent_tos_dl"
+                      required
                       checked={androidAgreedToTerms}
                       onChange={(e) => {
                         setAndroidAgreedToTerms(e.target.checked);
@@ -377,18 +387,18 @@ export default function DownloadModal({ isOpen, onClose }) {
                       className="mt-0.5 w-4 h-4 rounded border-emerald-600 bg-black/70 text-emerald-500 focus:ring-emerald-400 cursor-pointer shrink-0 accent-emerald-500"
                     />
                     <span className="text-[11px] text-slate-300 leading-snug">
-                      By proceeding, you agree to our{' '}
+                      I agree to the{' '}
                       <a 
-                        href="/terms" 
+                        href="/terms-and-conditions" 
                         target="_blank" 
                         rel="noopener noreferrer" 
                         className="text-emerald-400 hover:text-emerald-300 underline font-semibold cursor-pointer"
                       >
                         Terms of Service
                       </a>{' '}
-                      and consent to our{' '}
+                      and authorize the processing of my profile and crop data under the{' '}
                       <a 
-                        href="/privacy" 
+                        href="/privacy-policy" 
                         target="_blank" 
                         rel="noopener noreferrer" 
                         className="text-emerald-400 hover:text-emerald-300 underline font-semibold cursor-pointer"

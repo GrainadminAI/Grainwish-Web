@@ -8,54 +8,95 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const rootDir = path.resolve(__dirname, '..');
 
-test('Mobile App Legal Compliance & Contextual Prompts', async (t) => {
+test('Mobile App & Agritech Legal Compliance (DPDP Act 2023 & GDPR)', async (t) => {
   const authModalPath = path.join(rootDir, 'src', 'components', 'AuthModal.jsx');
   const downloadModalPath = path.join(rootDir, 'src', 'components', 'DownloadModal.jsx');
   const navbarPath = path.join(rootDir, 'src', 'components', 'Navbar.jsx');
+  const footerPath = path.join(rootDir, 'src', 'components', 'FooterSection.jsx');
   const diagnosticsPath = path.join(rootDir, 'src', 'components', 'DiagnosticsTool.jsx');
   const npkPath = path.join(rootDir, 'src', 'components', 'NPKCalculator.jsx');
+  const privacyPath = path.join(rootDir, 'src', 'components', 'PrivacyPolicyPage.jsx');
+  const termsPath = path.join(rootDir, 'src', 'components', 'TermsConditionsPage.jsx');
+  const certTermsPath = path.join(rootDir, 'src', 'components', 'CertificateTermsPage.jsx');
+  const grievancePath = path.join(rootDir, 'src', 'components', 'GrievanceRedressalPage.jsx');
+  const serverPath = path.join(rootDir, 'server', 'index.js');
+  const supabaseLibPath = path.join(rootDir, 'src', 'lib', 'supabase.js');
+  const schemaPath = path.join(rootDir, 'supabase', 'schema.sql');
 
   const authCode = fs.readFileSync(authModalPath, 'utf8');
   const downloadCode = fs.readFileSync(downloadModalPath, 'utf8');
   const navbarCode = fs.readFileSync(navbarPath, 'utf8');
+  const footerCode = fs.readFileSync(footerPath, 'utf8');
   const diagnosticsCode = fs.readFileSync(diagnosticsPath, 'utf8');
   const npkCode = fs.readFileSync(npkPath, 'utf8');
+  const privacyCode = fs.readFileSync(privacyPath, 'utf8');
+  const termsCode = fs.readFileSync(termsPath, 'utf8');
+  const certTermsCode = fs.readFileSync(certTermsPath, 'utf8');
+  const grievanceCode = fs.readFileSync(grievancePath, 'utf8');
+  const serverCode = fs.readFileSync(serverPath, 'utf8');
+  const supabaseLibCode = fs.readFileSync(supabaseLibPath, 'utf8');
+  const schemaCode = fs.readFileSync(schemaPath, 'utf8');
 
-  await t.test('Registration & Sign-Up Screen: Un-ticked checkbox and explicit consent in AuthModal', () => {
-    assert.match(authCode, /agreedToTerms.*false/, 'Consent state must be un-ticked by default');
-    assert.match(authCode, /By proceeding, you agree to our.*Terms of Service.*and consent to our.*Privacy Policy/s, 'Must contain exact consent statement');
-    assert.match(authCode, /if \(!agreedToTerms\)/, 'Must enforce validation requiring active consent');
+  // 1. Mandatory Public Pages & Footer Architecture
+  await t.test('Component 1: /privacy-policy maps data points and lists Grievance Officer and Indian address', () => {
+    assert.match(privacyCode, /Information We Collect/, 'Must categorize collected information');
+    assert.match(privacyCode, /R\. Narayanan/, 'Must list Grievance Redressal Officer name');
+    assert.match(privacyCode, /support@grainwish\.com/, 'Must list Grievance Officer email');
+    assert.match(privacyCode, /Noida, Uttar Pradesh 201309, India/, 'Must list Indian registered address');
   });
 
-  await t.test('Pre-Registration / OTP Screen: Un-ticked checkbox and explicit consent in DownloadModal', () => {
-    assert.match(downloadCode, /androidAgreedToTerms.*false/, 'Pre-reg consent state must be un-ticked by default');
-    assert.match(downloadCode, /By proceeding, you agree to our.*Terms of Service.*and consent to our.*Privacy Policy/s, 'Must contain exact consent statement in pre-reg');
-    assert.match(downloadCode, /if \(!androidAgreedToTerms\)/, 'Must enforce validation requiring active consent');
+  await t.test('Component 1: /terms-and-conditions houses Agronomic Advisory Disclaimer', () => {
+    assert.match(termsCode, /Agronomic Advisory Disclaimer/, 'Must house Agronomic Advisory Disclaimer');
+    assert.match(termsCode, /predictive recommendations, not guaranteed yield insurance/, 'Must stipulate predictive recommendations disclaimer');
   });
 
-  await t.test('App Settings / About Menu: Permanent tap-to-read links (Profile > Settings > Legal & Privacy)', () => {
-    assert.match(navbarCode, /Profile &gt; Settings &gt; Legal &amp; Privacy/i, 'Navbar must feature Profile > Settings > Legal & Privacy');
-    assert.match(navbarCode, /onOpenPrivacyPolicy/, 'Must have tap-to-read Privacy Policy action');
-    assert.match(navbarCode, /onOpenTerms/, 'Must have tap-to-read Terms of Service action');
-    assert.match(navbarCode, /onOpenSecurityPolicy/, 'Must have tap-to-read Security Charter action');
-    assert.match(downloadCode, /Profile &gt; Settings &gt; Legal &amp; Privacy/i, 'App modal must feature Profile > Settings > Legal & Privacy');
+  await t.test('Component 1: /certificate-terms details criteria, self-declaration & non-tamper warranties', () => {
+    assert.ok(fs.existsSync(certTermsPath), 'CertificateTermsPage.jsx must exist');
+    assert.match(certTermsCode, /Certificate Issuance Criteria/, 'Must detail certificate criteria');
+    assert.match(certTermsCode, /Self-Declaration/, 'Must include self-declaration clauses');
+    assert.match(certTermsCode, /Non-Tamper Warranty/, 'Must warrant cryptographic non-tampering');
   });
 
-  await t.test('Contextual Prompt - Camera: Exact disclosure before triggering permission', () => {
-    assert.match(diagnosticsCode, /Camera access is required only to scan and diagnose crop diseases/, 'Must display exact required camera disclosure string');
-    assert.match(diagnosticsCode, /showCameraPermissionModal/, 'Must have in-app permission dialog state');
-    assert.match(diagnosticsCode, /requestCameraWithConsent/, 'Camera trigger must route through consent handler');
+  await t.test('Component 1: Global Footer provides persistent links across all public views', () => {
+    assert.match(footerCode, /href="\/privacy-policy"/, 'Footer must link to /privacy-policy');
+    assert.match(footerCode, /href="\/terms-and-conditions"/, 'Footer must link to /terms-and-conditions');
+    assert.match(footerCode, /href="\/certificate-terms"/, 'Footer must link to /certificate-terms');
+    assert.match(footerCode, /href="\/grievance"/, 'Footer must link to /grievance');
   });
 
-  await t.test('Contextual Prompt - GPS Location: Clear agronomic advisories notice for NPK', () => {
-    assert.match(npkCode, /farm-level agronomic advisories/i, 'Must clearly note usage for farm-level agronomic advisories');
-    assert.match(npkCode, /showGPSPromptModal/, 'Must feature in-app GPS modal');
-    assert.match(npkCode, /handleConfirmGPSLocation/, 'GPS trigger must calibrate localized NPK');
+  // 2. Website Form Integration (Explicit Checkboxes)
+  await t.test('Component 2: Farmer / Trader / FPO Onboarding Form affirmative un-checked consent', () => {
+    assert.match(authCode, /id="consent_tos"/, 'Must use id="consent_tos"');
+    assert.match(authCode, /agreedToTerms.*false/, 'Checkbox must not be pre-ticked');
+    assert.match(authCode, /I agree to the.*Terms of Service.*and authorize the processing of my profile and crop data under the.*Privacy Policy/s, 'Must contain exact consent statement');
+    assert.match(authCode, /userType/, 'Must support user type selection');
   });
 
-  await t.test('Land Details / Khasra Data: Explicit declaration before submission', () => {
-    assert.match(npkCode, /I confirm that I am the owner or authorized custodian of this land parcel/, 'Must contain exact land custodian declaration');
-    assert.match(npkCode, /isLandCustodianDeclared.*false/, 'Declaration checkbox must not be pre-ticked');
-    assert.match(npkCode, /if \(!isLandCustodianDeclared\)/, 'Must enforce declaration before submission');
+  await t.test('Component 2: Farmer Land Details (Survey/Khasra Screen) affirmative consent', () => {
+    assert.match(npkCode, /id="consent_land"/, 'Must use id="consent_land"');
+    assert.match(npkCode, /isLandCustodianDeclared.*false/, 'Land declaration must not be pre-ticked');
+    assert.match(npkCode, /I declare that I am the legal titleholder or authorized representative for these survey parcel details/, 'Must contain exact land parcel declaration');
+  });
+
+  // 3. Browser Hardware Permissions
+  await t.test('Component 3: Live Camera Access uses rear camera default and provides crop-scanner-feed', () => {
+    assert.match(diagnosticsCode, /id="crop-scanner-feed"/, 'Video element must have id="crop-scanner-feed"');
+    assert.match(diagnosticsCode, /facingMode.*ideal.*environment/i, 'Must default to rear environment camera');
+    assert.match(diagnosticsCode, /startCropDiagnosticCamera/, 'Must define startCropDiagnosticCamera');
+    assert.match(diagnosticsCode, /nativeCameraInputRef/, 'Must have fallback to native camera/upload');
+  });
+
+  await t.test('Component 3: GPS Geolocation captureFieldCoordinates with enableHighAccuracy', () => {
+    assert.match(npkCode, /captureFieldCoordinates/, 'Must implement captureFieldCoordinates');
+    assert.match(npkCode, /enableHighAccuracy:\s*true/, 'Must enable high accuracy geolocation');
+    assert.match(npkCode, /Location access required for regional NPK recommendations/, 'Must handle location required error');
+  });
+
+  // 4. Backend Consent Audit Log
+  await t.test('Component 4: Backend Consent Audit Log endpoint and Supabase table schema', () => {
+    assert.match(serverCode, /\/api\/consent\/log/, 'Server must define /api/consent/log route');
+    assert.match(supabaseLibCode, /export async function recordConsentAuditLog/, 'src/lib/supabase.js must export recordConsentAuditLog');
+    assert.match(schemaCode, /CREATE TABLE IF NOT EXISTS public\.consent_audit_logs/, 'supabase/schema.sql must define consent_audit_logs table');
+    assert.match(schemaCode, /consented_items TEXT\[\]/, 'schema must include consented_items array');
   });
 });

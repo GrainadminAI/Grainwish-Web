@@ -9,7 +9,8 @@ import {
   signInWithGoogle, 
   signInWithDemoGoogleAccount, 
   signInWithCustomGoogleAccount,
-  recordFeatureUsageToDB 
+  recordFeatureUsageToDB,
+  recordConsentAuditLog
 } from '../lib/supabase';
 import { useLanguage } from '../lib/LanguageContext';
 import { useBrandTheme } from '../lib/BrandThemeContext';
@@ -25,6 +26,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
   const [successMessage, setSuccessMessage] = useState('');
   const [showCustomEmail, setShowCustomEmail] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+  const [userType, setUserType] = useState('FARMER'); // 'FARMER', 'MILLER', 'TRADER', 'FPO'
 
   // Custom Google input state
   const [customGoogleEmail, setCustomGoogleEmail] = useState('');
@@ -319,10 +321,18 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
       localStorage.setItem('grainwise_guest_user', JSON.stringify(verifiedUser));
       window.dispatchEvent(new CustomEvent('grainwise_auth_change', { detail: verifiedUser }));
 
+      // Record non-editable DPDP Act 2023 consent audit trail entry
+      await recordConsentAuditLog({
+        userId: verifiedUser.id,
+        userType: userType || 'FARMER',
+        consentedItems: ['PROFILE', 'TERMS', 'PRIVACY'],
+        policyVersion: 'v1.0_2026'
+      }).catch(() => {});
+
       await recordFeatureUsageToDB({
         featureName: 'User Authentication',
         action: 'google_email_verified',
-        metadata: { email, name: rawName }
+        metadata: { email, name: rawName, userType }
       }).catch(() => {});
 
       setLoading(false);
@@ -401,11 +411,41 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
         {/* GOOGLE SIGN-IN SECTION */}
         <div className="space-y-3 pt-1">
           
+          {/* User Type Selector for Commercial Agritech Onboarding */}
+          <div className="space-y-1">
+            <label className="block text-[10px] text-slate-400 font-bold uppercase tracking-wider text-left">
+              Select Your Role / Category:
+            </label>
+            <div className="grid grid-cols-4 gap-1">
+              {[
+                { id: 'FARMER', label: 'Farmer' },
+                { id: 'MILLER', label: 'Miller' },
+                { id: 'TRADER', label: 'Trader' },
+                { id: 'FPO', label: 'FPO' }
+              ].map(role => (
+                <button
+                  key={role.id}
+                  type="button"
+                  onClick={() => setUserType(role.id)}
+                  className={`py-1 px-1.5 rounded-lg text-xs font-bold transition-all border ${
+                    userType === role.id
+                      ? 'bg-emerald-600 border-emerald-400 text-white shadow-sm'
+                      : 'bg-emerald-950/60 border-emerald-900/60 text-slate-300 hover:border-emerald-700'
+                  }`}
+                >
+                  {role.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           {/* Explicit Consent Checkbox (Active Consent Required, un-ticked by default) */}
           <div className="bg-black/50 border border-emerald-900/70 rounded-xl p-3 text-left">
             <label className="flex items-start gap-2.5 cursor-pointer group select-none">
               <input 
                 type="checkbox"
+                id="consent_tos"
+                required
                 checked={agreedToTerms}
                 onChange={(e) => {
                   setAgreedToTerms(e.target.checked);
@@ -414,22 +454,26 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
                 className="mt-0.5 w-4 h-4 rounded border-emerald-600 bg-black/70 text-emerald-500 focus:ring-emerald-400 focus:ring-offset-0 cursor-pointer shrink-0 accent-emerald-500"
               />
               <span className="text-[11px] text-slate-300 leading-snug">
-                By proceeding, you agree to our{' '}
-                <button 
-                  type="button" 
-                  onClick={(e) => { e.stopPropagation(); navigateToPolicy('terms'); }}
+                I agree to the{' '}
+                <a 
+                  href="/terms-and-conditions" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  onClick={(e) => { e.stopPropagation(); }}
                   className="text-emerald-400 hover:text-emerald-300 underline font-semibold cursor-pointer"
                 >
                   Terms of Service
-                </button>{' '}
-                and consent to our{' '}
-                <button 
-                  type="button" 
-                  onClick={(e) => { e.stopPropagation(); navigateToPolicy('privacy'); }}
+                </a>{' '}
+                and authorize the processing of my profile and crop data under the{' '}
+                <a 
+                  href="/privacy-policy" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  onClick={(e) => { e.stopPropagation(); }}
                   className="text-emerald-400 hover:text-emerald-300 underline font-semibold cursor-pointer"
                 >
                   Privacy Policy
-                </button>.
+                </a>.
               </span>
             </label>
           </div>

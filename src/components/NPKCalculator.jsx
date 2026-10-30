@@ -5,7 +5,7 @@ import {
   MapPin, ShieldCheck, AlertCircle, FileCheck, CheckSquare, Square,
   Landmark, ChevronDown, ChevronUp
 } from 'lucide-react';
-import { saveNPKToDB, recordFeatureUsageToDB } from '../lib/supabase';
+import { saveNPKToDB, recordFeatureUsageToDB, recordConsentAuditLog } from '../lib/supabase';
 import { useLanguage } from '../lib/LanguageContext';
 import {
   detectLocationViaGPS,
@@ -77,39 +77,64 @@ export default function NPKCalculator() {
   const dapKg = Math.round(selectedCrop.npkBase[1] * selectedSoil.PAdj * acres * 0.8);
   const mopKg = Math.round(selectedCrop.npkBase[2] * selectedSoil.KAdj * acres * 0.75);
 
-  const handleConfirmGPSLocation = async () => {
-    setShowGPSPromptModal(false);
-    setIsDetectingGPS(true);
-    try {
-      const loc = await detectLocationViaGPS();
-      if (loc?.coords) {
-        const geocoded = await reverseGeocodeCoords(loc.coords.latitude, loc.coords.longitude);
-        const regionName = geocoded?.area || getNearestAreaFromCoords(loc.coords.latitude, loc.coords.longitude) || 'Active Farm Zone';
-        setCalibratedLocation(regionName);
-
-        // Auto-calibrate soil profile based on detected agro-climatic region
-        const lowerRegion = regionName.toLowerCase();
-        if (lowerRegion.includes('punjab') || lowerRegion.includes('haryana') || lowerRegion.includes('uttar pradesh') || lowerRegion.includes('bihar') || lowerRegion.includes('bengal')) {
-          setSelectedSoil(SOIL_TYPES.find(s => s.id === 'alluvial') || SOIL_TYPES[0]);
-        } else if (lowerRegion.includes('maharashtra') || lowerRegion.includes('gujarat') || lowerRegion.includes('madhya pradesh') || lowerRegion.includes('telangana')) {
-          setSelectedSoil(SOIL_TYPES.find(s => s.id === 'black') || SOIL_TYPES[1]);
-        } else if (lowerRegion.includes('tamil') || lowerRegion.includes('kerala') || lowerRegion.includes('karnataka') || lowerRegion.includes('andhra')) {
-          setSelectedSoil(SOIL_TYPES.find(s => s.id === 'red') || SOIL_TYPES[2]);
-        }
-      }
-    } catch (e) {
-      console.warn('GPS detection failed:', e);
-    } finally {
-      setIsDetectingGPS(false);
+  // Browser Hardware Permission: GPS Geolocation for Precision NPK & Localized Weather
+  // Triggered strictly on explicit user action (e.g. clicking "Calibrate Soil for My Field")
+  const captureFieldCoordinates = (onSuccess, onError) => {
+    if (typeof navigator !== 'undefined' && "geolocation" in navigator) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          onSuccess({ latitude, longitude });
+        },
+        (error) => {
+          onError("Location access required for regional NPK recommendations.");
+        },
+        { enableHighAccuracy: true, timeout: 10000 }
+      );
+    } else {
+      onError("Geolocation is not supported by your browser environment.");
     }
   };
 
-  const handleLandDetailsSubmit = (e) => {
+  const handleConfirmGPSLocation = () => {
+    setShowGPSPromptModal(false);
+    setIsDetectingGPS(true);
+
+    captureFieldCoordinates(
+      async ({ latitude, longitude }) => {
+        try {
+          const geocoded = await reverseGeocodeCoords(latitude, longitude);
+          const regionName = geocoded?.area || getNearestAreaFromCoords(latitude, longitude) || 'Active Farm Zone';
+          setCalibratedLocation(regionName);
+
+          // Auto-calibrate soil profile based on detected agro-climatic region
+          const lowerRegion = regionName.toLowerCase();
+          if (lowerRegion.includes('punjab') || lowerRegion.includes('haryana') || lowerRegion.includes('uttar pradesh') || lowerRegion.includes('bihar') || lowerRegion.includes('bengal')) {
+            setSelectedSoil(SOIL_TYPES.find(s => s.id === 'alluvial') || SOIL_TYPES[0]);
+          } else if (lowerRegion.includes('maharashtra') || lowerRegion.includes('gujarat') || lowerRegion.includes('madhya pradesh') || lowerRegion.includes('telangana')) {
+            setSelectedSoil(SOIL_TYPES.find(s => s.id === 'black') || SOIL_TYPES[1]);
+          } else if (lowerRegion.includes('tamil') || lowerRegion.includes('kerala') || lowerRegion.includes('karnataka') || lowerRegion.includes('andhra')) {
+            setSelectedSoil(SOIL_TYPES.find(s => s.id === 'red') || SOIL_TYPES[2]);
+          }
+        } catch (e) {
+          console.warn('Geocoding notice:', e);
+        } finally {
+          setIsDetectingGPS(false);
+        }
+      },
+      (errMsg) => {
+        console.warn('GPS Notice:', errMsg);
+        setIsDetectingGPS(false);
+      }
+    );
+  };
+
+  const handleLandDetailsSubmit = async (e) => {
     e.preventDefault();
     setLandError('');
 
     if (!isLandCustodianDeclared) {
-      setLandError('Please check the declaration confirming you are the owner or authorized custodian of this land parcel.');
+      setLandError('Please check the declaration confirming legal titleholder or authorized custody.');
       return;
     }
 
@@ -119,6 +144,15 @@ export default function NPKCalculator() {
     }
 
     setLandDeclaredSuccess(true);
+
+    // Record non-editable DPDP Act 2023 consent audit trail entry
+    await recordConsentAuditLog({
+      userId: khasraNumber.trim(),
+      userType: 'FARMER',
+      consentedItems: ['LAND_RECORDS', 'NPK_ADVISORY'],
+      policyVersion: 'v1.0_2026'
+    }).catch(() => {});
+
     recordFeatureUsageToDB({
       featureName: 'NPK Calculator Land Custody',
       action: 'declare_land_khasra',
@@ -377,6 +411,8 @@ Estimated Fertilizer Savings: ~18%`;
                 <label className="flex items-start gap-2 cursor-pointer group select-none">
                   <input
                     type="checkbox"
+                    id="consent_land"
+                    required
                     checked={isLandCustodianDeclared}
                     onChange={(e) => {
                       setIsLandCustodianDeclared(e.target.checked);
@@ -385,7 +421,7 @@ Estimated Fertilizer Savings: ~18%`;
                     className="mt-0.5 w-4 h-4 rounded border-emerald-600 bg-black/70 text-emerald-500 focus:ring-emerald-400 cursor-pointer shrink-0 accent-emerald-500"
                   />
                   <span className="text-[11px] text-amber-200/90 leading-snug font-medium">
-                    &ldquo;I confirm that I am the owner or authorized custodian of this land parcel.&rdquo;
+                    I declare that I am the legal titleholder or authorized representative for these survey parcel details.
                   </span>
                 </label>
               </div>

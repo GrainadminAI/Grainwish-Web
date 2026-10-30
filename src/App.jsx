@@ -17,12 +17,14 @@ import FloatingMobileBar from './components/FloatingMobileBar';
 import PrivacyPolicyPage from './components/PrivacyPolicyPage';
 import TermsConditionsPage from './components/TermsConditionsPage';
 import SecurityPolicyPage from './components/SecurityPolicyPage';
+import CertificateTermsPage from './components/CertificateTermsPage';
+import GrievanceRedressalPage from './components/GrievanceRedressalPage';
 import NotFoundPage from './components/NotFoundPage';
 import { recordUserVisitToDB } from './lib/supabase';
 import { LanguageProvider, useLanguage } from './lib/LanguageContext';
 import { BrandThemeProvider } from './lib/BrandThemeContext';
 
-function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy }) {
+function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy, onOpenCertificateTerms, onOpenGrievance }) {
   const { selectedLang, setSelectedLang } = useLanguage();
 
   const handleScanClick = () => {
@@ -70,6 +72,8 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
           onOpenPrivacyPolicy={onOpenPrivacyPolicy}
           onOpenTerms={onOpenTerms}
           onOpenSecurityPolicy={onOpenSecurityPolicy}
+          onOpenCertificateTerms={onOpenCertificateTerms}
+          onOpenGrievance={onOpenGrievance}
         />
 
       {/* Hero Section with 3D Canvas */}
@@ -114,6 +118,8 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
         onOpenPrivacyPolicy={onOpenPrivacyPolicy}
         onOpenTerms={onOpenTerms}
         onOpenSecurityPolicy={onOpenSecurityPolicy}
+        onOpenCertificateTerms={onOpenCertificateTerms}
+        onOpenGrievance={onOpenGrievance}
       />
 
       {/* Mobile Sticky Quick-Action Bar */}
@@ -133,9 +139,11 @@ function RootApp() {
     if (typeof window === 'undefined') return 'home';
     const path = window.location.pathname.toLowerCase();
     const hash = window.location.hash.toLowerCase();
-    if (path === '/privacy' || hash === '#privacy') return 'privacy';
-    if (path === '/terms' || hash === '#terms') return 'terms';
+    if (path === '/privacy' || path === '/privacy-policy' || hash === '#privacy' || hash === '#privacy-policy') return 'privacy';
+    if (path === '/terms' || path === '/terms-and-conditions' || hash === '#terms' || hash === '#terms-and-conditions') return 'terms';
     if (path === '/security' || hash === '#security') return 'security';
+    if (path === '/certificate-terms' || hash === '#certificate-terms') return 'certificate-terms';
+    if (path === '/grievance' || hash === '#grievance') return 'grievance';
     if (path === '/' || path === '' || path === '/index.html') return 'home';
     return '404';
   });
@@ -182,14 +190,20 @@ function RootApp() {
     const handleLocationChange = () => {
       const path = window.location.pathname.toLowerCase();
       const hash = window.location.hash.toLowerCase();
-      if (path === '/privacy' || hash === '#privacy') {
+      if (path === '/privacy' || path === '/privacy-policy' || hash === '#privacy' || hash === '#privacy-policy') {
         setCurrentRoute('privacy');
         window.scrollTo({ top: 0, behavior: 'smooth' });
-      } else if (path === '/terms' || hash === '#terms') {
+      } else if (path === '/terms' || path === '/terms-and-conditions' || hash === '#terms' || hash === '#terms-and-conditions') {
         setCurrentRoute('terms');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (path === '/security' || hash === '#security') {
         setCurrentRoute('security');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (path === '/certificate-terms' || hash === '#certificate-terms') {
+        setCurrentRoute('certificate-terms');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (path === '/grievance' || hash === '#grievance') {
+        setCurrentRoute('grievance');
         window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (path === '/' || path === '' || path === '/index.html' || hash.startsWith('#')) {
         setCurrentRoute('home');
@@ -215,9 +229,11 @@ function RootApp() {
   const navigateTo = (route, hash = '') => {
     setCurrentRoute(route);
     let newPath = '/';
-    if (route === 'privacy') newPath = '/privacy';
-    else if (route === 'terms') newPath = '/terms';
+    if (route === 'privacy') newPath = '/privacy-policy';
+    else if (route === 'terms') newPath = '/terms-and-conditions';
     else if (route === 'security') newPath = '/security';
+    else if (route === 'certificate-terms') newPath = '/certificate-terms';
+    else if (route === 'grievance') newPath = '/grievance';
     else if (route === '404') newPath = '/404';
 
     if (hash) newPath += hash;
@@ -249,6 +265,14 @@ function RootApp() {
         <SecurityPolicyPage onBackToHome={() => navigateTo('home')} />
       )}
 
+      {currentRoute === 'certificate-terms' && (
+        <CertificateTermsPage onBackToHome={() => navigateTo('home')} />
+      )}
+
+      {currentRoute === 'grievance' && (
+        <GrievanceRedressalPage onBackToHome={() => navigateTo('home')} />
+      )}
+
       {currentRoute === '404' && (
         <NotFoundPage
           onNavigateHome={() => navigateTo('home')}
@@ -262,6 +286,8 @@ function RootApp() {
           onOpenPrivacyPolicy={() => navigateTo('privacy')}
           onOpenTerms={() => navigateTo('terms')}
           onOpenSecurityPolicy={() => navigateTo('security')}
+          onOpenCertificateTerms={() => navigateTo('certificate-terms')}
+          onOpenGrievance={() => navigateTo('grievance')}
         />
       )}
 

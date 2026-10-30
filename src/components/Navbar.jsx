@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut, Mic, MapPin, Compass, Settings, Lock, FileText, Cookie } from 'lucide-react';
+import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut, Mic, MapPin, Compass, Settings, Lock, FileText, Cookie, Award } from 'lucide-react';
 import { supabase, signOutUser, getLoggedInUser, recordFeatureUsageToDB } from '../lib/supabase';
 import AuthModal from './AuthModal';
 
@@ -15,7 +15,7 @@ import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
 import { useBrandTheme } from '../lib/BrandThemeContext';
 
-export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedLang, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy }) {
+export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedLang, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy, onOpenCertificateTerms, onOpenGrievance }) {
   const { t, detectLocationAndSetLanguage, isDetectingLocation, detectedLocationInfo } = useLanguage();
   const { currentOption } = useBrandTheme();
   const [isScrolled, setIsScrolled] = useState(false);
@@ -300,7 +300,7 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                       className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs text-slate-200 hover:bg-emerald-900/60 hover:text-emerald-300 flex items-center gap-2 transition-colors cursor-pointer"
                     >
                       <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                      <span>Privacy Policy (DPDP &amp; GDPR)</span>
+                      <span>Privacy Notice (DPDP &amp; GDPR)</span>
                     </button>
                     <button
                       type="button"
@@ -311,7 +311,29 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                       className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs text-slate-200 hover:bg-emerald-900/60 hover:text-emerald-300 flex items-center gap-2 transition-colors cursor-pointer"
                     >
                       <FileText className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                      <span>Terms of Service</span>
+                      <span>Terms &amp; Agronomic Advisory</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSettingsDropdownOpen(false);
+                        onOpenCertificateTerms?.();
+                      }}
+                      className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs text-slate-200 hover:bg-emerald-900/60 hover:text-emerald-300 flex items-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <Award className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>Certificate Terms &amp; Warranties</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSettingsDropdownOpen(false);
+                        onOpenGrievance?.();
+                      }}
+                      className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs text-slate-200 hover:bg-emerald-900/60 hover:text-emerald-300 flex items-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>Grievance Redressal</span>
                     </button>
                     <button
                       type="button"
@@ -321,7 +343,7 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                       }}
                       className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs text-slate-200 hover:bg-emerald-900/60 hover:text-emerald-300 flex items-center gap-2 transition-colors cursor-pointer"
                     >
-                      <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                       <span>Security Policy &amp; Charter</span>
                     </button>
                     <button
@@ -537,7 +559,7 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                   className="p-2.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800/70 text-slate-200 hover:text-emerald-300 text-xs font-semibold flex items-center gap-1.5 text-left transition-colors"
                 >
                   <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span className="truncate">Privacy Policy</span>
+                  <span className="truncate">Privacy Notice</span>
                 </button>
                 <button
                   type="button"
@@ -554,11 +576,33 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                   type="button"
                   onClick={() => {
                     setMobileMenuOpen(false);
-                    onOpenSecurityPolicy?.();
+                    onOpenCertificateTerms?.();
+                  }}
+                  className="p-2.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800/70 text-slate-200 hover:text-emerald-300 text-xs font-semibold flex items-center gap-1.5 text-left transition-colors"
+                >
+                  <Award className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span className="truncate">Certificate Terms</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenGrievance?.();
                   }}
                   className="p-2.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800/70 text-slate-200 hover:text-emerald-300 text-xs font-semibold flex items-center gap-1.5 text-left transition-colors"
                 >
                   <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span className="truncate">Grievance Redressal</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenSecurityPolicy?.();
+                  }}
+                  className="p-2.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800/70 text-slate-200 hover:text-emerald-300 text-xs font-semibold flex items-center gap-1.5 text-left transition-colors"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   <span className="truncate">Security Charter</span>
                 </button>
                 <button

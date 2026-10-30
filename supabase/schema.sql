@@ -307,16 +307,33 @@ CREATE TABLE IF NOT EXISTS public.settlements (
   settled_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+-- ==========================================================
+-- 14. Create Consent Audit Logs Table (DPDP Act 2023 Compliant)
+-- ==========================================================
+CREATE TABLE IF NOT EXISTS public.consent_audit_logs (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id VARCHAR(100) NOT NULL,
+  user_type VARCHAR(50) NOT NULL DEFAULT 'FARMER', -- 'FARMER', 'MILLER', 'TRADER', 'FPO'
+  policy_version VARCHAR(50) NOT NULL DEFAULT 'v1.0_2026',
+  consented_items TEXT[] NOT NULL DEFAULT ARRAY['PROFILE', 'TERMS', 'PRIVACY'],
+  ip_address VARCHAR(100),
+  user_agent TEXT,
+  granted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
 -- Enable RLS for new tables
 ALTER TABLE public.virtual_pools ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.buyer_procurement_specs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.consignments ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.nabl_escalations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.settlements ENABLE ROW LEVEL SECURITY;
+ALTER TABLE public.consent_audit_logs ENABLE ROW LEVEL SECURITY;
 
 CREATE POLICY "Allow Public Access Pools" ON public.virtual_pools FOR ALL USING (true);
 CREATE POLICY "Allow Public Access Specs" ON public.buyer_procurement_specs FOR ALL USING (true);
 CREATE POLICY "Allow Public Access Consignments" ON public.consignments FOR ALL USING (true);
 CREATE POLICY "Allow Public Access NABL" ON public.nabl_escalations FOR ALL USING (true);
 CREATE POLICY "Allow Public Access Settlements" ON public.settlements FOR ALL USING (true);
+CREATE POLICY "Allow Insert Consent Audit Logs" ON public.consent_audit_logs FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow Read Consent Audit Logs" ON public.consent_audit_logs FOR SELECT USING (true);
 

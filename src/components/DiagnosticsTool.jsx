@@ -598,7 +598,12 @@ export default function DiagnosticsTool() {
     startWebcam();
   };
 
-  // Start Live Phone / Webcam Stream
+  // Start Live Phone / Webcam Stream (Crop Diagnostic Camera)
+  // Triggered strictly on user action (e.g., clicking "Scan Leaf" button)
+  const startCropDiagnosticCamera = async () => {
+    return startWebcam();
+  };
+
   const startWebcam = async () => {
     setInputMode('webcam');
     setWebcamState('live');
@@ -630,7 +635,7 @@ export default function DiagnosticsTool() {
       }
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
-          facingMode: { ideal: cameraFacing },
+          facingMode: { ideal: cameraFacing || "environment" }, // Defaults to rear camera on mobile browsers
           width: { ideal: 1920, min: 640 },
           height: { ideal: 1080, min: 480 }
         },
@@ -1355,7 +1360,7 @@ export default function DiagnosticsTool() {
                       <>
                         <video
                           ref={videoRef}
-                          id="webcam"
+                          id="crop-scanner-feed"
                           autoPlay
                           playsInline
                           muted

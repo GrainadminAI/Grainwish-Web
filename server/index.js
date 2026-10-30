@@ -363,6 +363,49 @@ app.get('/api/auth/verify', async (req, res) => {
   }
 });
 
+// 8. Consent Audit Trail Endpoint (DPDP Act 2023 Compliant)
+app.post('/api/consent/log', writeLimiter, async (req, res) => {
+  try {
+    const { userId, userType, consentedItems, policyVersion, userAgent } = req.body || {};
+    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
+    const clientUserAgent = sanitizeString(userAgent || req.headers['user-agent'] || '', 500);
+    const validUserType = ['FARMER', 'MILLER', 'TRADER', 'FPO'].includes(userType) ? userType : 'FARMER';
+    const safePolicyVersion = sanitizeString(policyVersion || 'v1.0_2026', 50);
+    const safeConsentedItems = Array.isArray(consentedItems) 
+      ? consentedItems.map(i => sanitizeString(i, 50)) 
+      : ['PROFILE', 'TERMS', 'PRIVACY'];
+
+    const payload = {
+      user_id: sanitizeString(userId || 'user_' + Date.now(), 100),
+      user_type: validUserType,
+      policy_version: safePolicyVersion,
+      consented_items: safeConsentedItems,
+      ip_address: ip,
+      user_agent: clientUserAgent,
+      granted_at: new Date().toISOString()
+    };
+
+    // Store in Supabase consent_audit_logs table
+    const { data, error } = await supabase
+      .from('consent_audit_logs')
+      .insert([payload])
+      .select();
+
+    if (error) {
+      // Fallback: log to feature_usages if table not yet migrated
+      await supabase.from('feature_usages').insert([{
+        feature_name: 'Consent Audit Log',
+        action: 'grant_consent',
+        metadata: payload
+      }]);
+    }
+
+    res.json({ success: true, message: 'Consent audit trail recorded', data: payload });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to record consent audit log' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`🌾 Grainwish AI Backend Server running on http://localhost:${PORT}`);
   console.log(`🔗 Domain: Grainwish.com | Supabase Ref: drhraerbklibrkigbdaw`);

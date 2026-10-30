@@ -1,10 +1,10 @@
 import React from 'react';
-import { Smartphone, ShieldCheck, Heart, ArrowUp, Lock, FileText, Cookie, Mail } from 'lucide-react';
+import { Smartphone, ShieldCheck, Heart, ArrowUp, Lock, FileText, Cookie, Mail, Award, HelpCircle } from 'lucide-react';
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
 import { useBrandTheme } from '../lib/BrandThemeContext';
 
-export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy }) {
+export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy, onOpenCertificateTerms, onOpenGrievance }) {
   const { t } = useLanguage();
   const { currentOption } = useBrandTheme();
   const scrollToTop = () => {
@@ -112,24 +112,44 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
             <div className="font-bold text-white uppercase tracking-wider text-xs">{t('footer_legal_trust', 'Legal & Trust')}</div>
             <ul className="space-y-2 text-slate-300">
               <li>
-                <button
-                  type="button"
-                  onClick={onOpenPrivacyPolicy}
+                <a
+                  href="/privacy-policy"
+                  onClick={(e) => { e.preventDefault(); onOpenPrivacyPolicy?.(); }}
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left"
                 >
                   <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span>{t('footer_privacy_policy', 'Privacy Policy (DPDP & GDPR)')}</span>
-                </button>
+                  <span>Privacy Notice (DPDP &amp; GDPR)</span>
+                </a>
               </li>
               <li>
-                <button
-                  type="button"
-                  onClick={onOpenTerms}
+                <a
+                  href="/terms-and-conditions"
+                  onClick={(e) => { e.preventDefault(); onOpenTerms?.(); }}
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left"
                 >
                   <FileText className="w-3.5 h-3.5 text-amber-400 shrink-0" />
-                  <span>{t('footer_terms_conditions', 'Terms & Conditions')}</span>
-                </button>
+                  <span>Terms &amp; Agronomic Advisory</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/certificate-terms"
+                  onClick={(e) => { e.preventDefault(); onOpenCertificateTerms?.(); }}
+                  className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left text-slate-300"
+                >
+                  <Award className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>Certificate Terms &amp; Warranties</span>
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/grievance"
+                  onClick={(e) => { e.preventDefault(); onOpenGrievance?.(); }}
+                  className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left text-slate-300"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>Grievance Redressal</span>
+                </a>
               </li>
               <li>
                 <button
@@ -137,7 +157,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                   onClick={onOpenSecurityPolicy}
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left text-slate-300"
                 >
-                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                   <span>{t('footer_security_charter', 'Security Policy & Charter')}</span>
                 </button>
               </li>
@@ -165,8 +185,43 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
 
         </div>
 
+        {/* Global Footer Layout: Mandatory Persistent Links Across All Public Views */}
+        <div className="pt-6 pb-2 text-center text-xs text-slate-300 flex items-center justify-center gap-3 sm:gap-4 flex-wrap border-b border-emerald-900/40">
+          <a
+            href="/privacy-policy"
+            onClick={(e) => { e.preventDefault(); onOpenPrivacyPolicy?.(); }}
+            className="hover:text-emerald-300 transition-colors underline font-medium"
+          >
+            Privacy Notice
+          </a>
+          <span className="text-emerald-800">|</span>
+          <a
+            href="/terms-and-conditions"
+            onClick={(e) => { e.preventDefault(); onOpenTerms?.(); }}
+            className="hover:text-emerald-300 transition-colors underline font-medium"
+          >
+            Terms &amp; Agronomic Advisory
+          </a>
+          <span className="text-emerald-800">|</span>
+          <a
+            href="/certificate-terms"
+            onClick={(e) => { e.preventDefault(); onOpenCertificateTerms?.(); }}
+            className="hover:text-emerald-300 transition-colors underline font-medium"
+          >
+            Certificate Terms
+          </a>
+          <span className="text-emerald-800">|</span>
+          <a
+            href="/grievance"
+            onClick={(e) => { e.preventDefault(); onOpenGrievance?.(); }}
+            className="hover:text-emerald-300 transition-colors underline font-medium"
+          >
+            Grievance Redressal
+          </a>
+        </div>
+
         {/* Bottom copyright */}
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-300">
+        <div className="pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-300">
           <div className="flex items-center gap-3 flex-wrap justify-center sm:justify-start">
             <span>
               © {new Date().getFullYear()} GrainWish AI. All rights reserved. Built for farmers with <Heart className="w-3 h-3 text-red-500 inline mx-1" />.

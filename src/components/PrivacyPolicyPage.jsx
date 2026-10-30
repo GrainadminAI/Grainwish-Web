@@ -241,16 +241,20 @@ export default function PrivacyPolicyPage({ onBackToHome }) {
           {/* Section 8 */}
           <section className="pt-6 space-y-3">
             <h2 className="font-display text-lg font-bold text-white flex items-center gap-2">
-              <span className="text-amber-400 font-mono">8.</span> Contact & Grievance Redressal
+              <span className="text-amber-400 font-mono">8.</span> Contact &amp; Grievance Redressal Officer
             </h2>
             <p>
-              If you have any questions, concerns, or grievances regarding this Privacy Policy or our data handling practices, please contact us:
+              In accordance with the Digital Personal Data Protection Act, 2023 (DPDP) and IT Rules, if you have any questions, concerns, or grievances regarding this Privacy Policy or our data handling practices, please contact our designated Grievance Officer:
             </p>
-            <div className="bg-emerald-950/60 p-4 rounded-xl border border-emerald-800/60 text-xs space-y-1 text-slate-200">
-              <div className="font-bold text-white">Grainwish AI Grievance Redressal Cell</div>
-              <div>Email: <a href="mailto:support@grainwish.com" className="text-emerald-400 underline">support@grainwish.com</a></div>
-              <div>Domain: <a href="https://www.grainwish.com" className="text-amber-400 underline">www.grainwish.com</a></div>
-              <div>Response Time: All privacy inquiries are responded to within 48 business hours.</div>
+            <div className="bg-emerald-950/60 p-5 rounded-2xl border border-emerald-800/60 text-xs space-y-2 text-slate-200">
+              <div className="font-bold text-white text-sm">R. Narayanan</div>
+              <div className="text-emerald-300 font-medium">Designated Data Protection &amp; Grievance Redressal Officer</div>
+              <div>Official Email: <a href="mailto:support@grainwish.com" className="text-amber-400 underline font-mono font-bold">support@grainwish.com</a></div>
+              <div>
+                Indian Registered Address: <span className="text-slate-300">Grainwish AgriTech India Pvt. Ltd., Tech Hub, Sector 62, Noida, Uttar Pradesh 201309, India</span>
+              </div>
+              <div>Domain: <a href="https://www.grainwish.com" className="text-emerald-400 underline">www.grainwish.com</a></div>
+              <div>Response Time: All privacy inquiries are acknowledged within 48 business hours, with full resolution within 30 days.</div>
             </div>
           </section>
 

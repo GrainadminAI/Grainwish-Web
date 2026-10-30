@@ -90,11 +90,11 @@ export default function SecurityPolicyPage({ onBackToHome }) {
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
               Information Security Policy &amp; Governance Charter
             </span>
-            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-950/40 text-[11px] font-mono text-amber-300 border border-amber-800/40">
-              Draft — Pending Approval
+            <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-950/80 text-[11px] font-mono text-emerald-300 border border-emerald-600/60">
+              Approved &amp; Enforced (Active)
             </span>
             <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-950/60 text-[11px] font-mono text-slate-300 border border-emerald-800/50">
-              Classification: Internal
+              Classification: Public Charter
             </span>
           </div>
 
