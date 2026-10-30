@@ -1,1 +1,7 @@
-/*    /index.html   200
+# 301 Permanent Canonical Domain Redirects
+http://grainwish.com/*     https://www.grainwish.com/:splat   301!
+https://grainwish.com/*    https://www.grainwish.com/:splat   301!
+http://www.grainwish.com/* https://www.grainwish.com/:splat   301!
+
+# SPA Fallback
+/*                         /index.html                        200

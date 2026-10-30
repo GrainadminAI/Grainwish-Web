@@ -153,7 +153,7 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                 {currentUser.user_metadata?.avatar_url ? (
                   <img 
                     src={currentUser.user_metadata.avatar_url} 
-                    alt="Profile" 
+                    alt={`${currentUser.user_metadata?.full_name || 'User'} Profile Avatar`} 
                     className="w-4 h-4 rounded-full object-cover border border-emerald-400 shrink-0" 
                   />
                 ) : (
@@ -431,7 +431,11 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                   <div className="flex items-center gap-2 min-w-0">
                     <div className="w-8 h-8 rounded-full bg-emerald-900 border border-emerald-500/50 flex items-center justify-center text-amber-400 font-bold text-xs shrink-0 overflow-hidden">
                       {currentUser.user_metadata?.avatar_url ? (
-                        <img src={currentUser.user_metadata.avatar_url} alt="Profile" className="w-full h-full object-cover" />
+                        <img 
+                          src={currentUser.user_metadata.avatar_url} 
+                          alt={`${currentUser.user_metadata?.full_name || 'User'} Profile Avatar`} 
+                          className="w-full h-full object-cover" 
+                        />
                       ) : (
                         currentUser.email?.charAt(0).toUpperCase()
                       )}

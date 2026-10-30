@@ -15,6 +15,12 @@ app.disable('x-powered-by');
 
 // Security: HTTP Response Headers
 app.use((req, res, next) => {
+  // Canonical Host & 301 Permanent Redirect (grainwish.com -> www.grainwish.com)
+  const host = (req.headers.host || '').split(':')[0].toLowerCase();
+  if (host === 'grainwish.com') {
+    return res.redirect(301, `https://www.grainwish.com${req.originalUrl}`);
+  }
+
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');

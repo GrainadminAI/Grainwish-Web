@@ -11,10 +11,13 @@
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://translate.google.com https://translate.googleapis.com https://us.i.posthog.com https://accounts.google.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://translate.googleapis.com; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data: blob: https://drhraerbklibrkigbdaw.supabase.co https://*.googleusercontent.com https://lh3.googleusercontent.com https://api.dicebear.com https://api.qrserver.com https://www.grainwish.com https://translate.googleapis.com https://translate.google.com https://flow-content.google https://storage.googleapis.com; media-src 'self' data: blob: https://labs.google https://flow-content.google https://storage.googleapis.com https://upload.wikimedia.org; connect-src 'self' http://localhost:5000 http://127.0.0.1:5000 http://127.0.0.1:5173 https://drhraerbklibrkigbdaw.supabase.co wss://drhraerbklibrkigbdaw.supabase.co https://us.i.posthog.com https://translate.googleapis.com https://accounts.google.com https://www.googleapis.com; frame-src https://accounts.google.com; object-src 'none'; base-uri 'self'; form-action 'self';" />
     <script src="https://accounts.google.com/gsi/client" async defer></script>
 
-    <!-- Enforce HTTPS across all networks -->
+    <!-- Enforce HTTPS and Canonical Domain (301 redirect grainwish.com -> www.grainwish.com) -->
     <script>
       if (location.protocol === 'http:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
         location.replace('https:' + window.location.href.substring(window.location.protocol.length));
+      }
+      if (location.hostname === 'grainwish.com') {
+        location.replace('https://www.grainwish.com' + window.location.pathname + window.location.search + window.location.hash);
       }
       // Disable automatic scroll restoration so browsers do not restore scroll position down to #ananya-ai
       if ('scrollRestoration' in history) {
@@ -37,16 +40,34 @@
       });
     </script>
 
-    <!-- Primary Meta Tags -->
-    <title>GrainWish AI 🌾 | Smart Farming Starts With The Right Insights | AI Crop Diagnostics & Mandi Rates</title>
-    <meta name="title" content="GrainWish AI 🌾 | Smart Farming Starts With The Right Insights" />
-    <meta name="description" content="Instant AI crop disease diagnostics, precision NPK calculations, live Mandi updates, localized weather alerts & 24/7 Ananya AI guidance in 22 native Indian languages on www.grainwish.com." />
-    <meta name="keywords" content="GrainWish AI, Grainwish, smart farming, AI crop diagnostics, yellow rust wheat, mandi prices live, MSP radar, NPK fertilizer calculator, Ananya AI, Indian agritech, crop disease scan" />
+    <!-- Search Console & Webmaster Verification -->
+    <meta name="google-site-verification" content="google4046187766521503" />
+    <meta name="msvalidate.01" content="477A233A5DF2E6C3FE3D811210214227" />
+
+    <!-- Primary Meta Tags (Title < 60 chars) -->
+    <title>GrainWish AI: Crop Diagnostics &amp; Mandi Rates</title>
+    <meta name="title" content="GrainWish AI: Crop Diagnostics &amp; Mandi Rates" />
+    <meta name="description" content="Instant AI crop disease diagnostics, precision NPK calculations, live Mandi updates & 24/7 Ananya AI guidance in 22 native Indian languages on www.grainwish.com." />
+    <meta name="keywords" content="GrainWish AI, smart farming, AI crop diagnostics, yellow rust wheat, mandi prices live, MSP radar, NPK fertilizer calculator, Ananya AI, Indian agritech, crop disease scan" />
     <meta name="author" content="GrainWish AI" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
-    <link rel="canonical" href="https://www.grainwish.com" />
+    <link rel="canonical" href="https://www.grainwish.com/" />
     <meta name="theme-color" content="#021109" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+
+    <!-- Regional Language Alternate URLs (Hreflang for Pan-India & Global SEO) -->
+    <link rel="alternate" hreflang="x-default" href="https://www.grainwish.com/" />
+    <link rel="alternate" hreflang="en" href="https://www.grainwish.com/" />
+    <link rel="alternate" hreflang="hi" href="https://www.grainwish.com/hi" />
+    <link rel="alternate" hreflang="pa" href="https://www.grainwish.com/pa" />
+    <link rel="alternate" hreflang="mr" href="https://www.grainwish.com/mr" />
+    <link rel="alternate" hreflang="te" href="https://www.grainwish.com/te" />
+    <link rel="alternate" hreflang="ta" href="https://www.grainwish.com/ta" />
+    <link rel="alternate" hreflang="bn" href="https://www.grainwish.com/bn" />
+    <link rel="alternate" hreflang="gu" href="https://www.grainwish.com/gu" />
+    <link rel="alternate" hreflang="kn" href="https://www.grainwish.com/kn" />
+    <link rel="alternate" hreflang="ml" href="https://www.grainwish.com/ml" />
+    <link rel="alternate" hreflang="or" href="https://www.grainwish.com/or" />
 
     <!-- Favicon Suite -->
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -62,7 +83,7 @@
     <meta property="og:type" content="website" />
     <meta property="og:url" content="https://www.grainwish.com/" />
     <meta property="og:site_name" content="GrainWish AI" />
-    <meta property="og:title" content="GrainWish AI 🌾 | Smart Farming Starts With The Right Insights" />
+    <meta property="og:title" content="GrainWish AI: Crop Diagnostics &amp; Mandi Rates" />
     <meta property="og:description" content="Instant AI crop disease diagnostics, precision NPK calculations, live Mandi updates & 24/7 Ananya AI guidance in 22 native Indian languages on www.grainwish.com." />
     <meta property="og:image" content="https://www.grainwish.com/assets/og-preview.png" />
     <meta property="og:image:secure_url" content="https://www.grainwish.com/assets/og-preview.png" />
@@ -76,7 +97,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:url" content="https://www.grainwish.com/" />
     <meta name="twitter:site" content="@GrainWishAI" />
-    <meta name="twitter:title" content="GrainWish AI 🌾 | Smart Farming Starts With The Right Insights" />
+    <meta name="twitter:title" content="GrainWish AI: Crop Diagnostics &amp; Mandi Rates" />
     <meta name="twitter:description" content="AI crop diagnostics, precision NPK dosing, live Mandi updates & Ananya AI assistant on www.grainwish.com." />
     <meta name="twitter:image" content="https://www.grainwish.com/assets/og-preview.png" />
     <meta name="twitter:image:alt" content="GrainWish AI - Smart Agriculture Intelligence Platform" />
@@ -148,7 +169,109 @@
   </head>
   <body class="bg-[#021109] text-slate-100 font-sans antialiased overflow-x-hidden selection:bg-emerald-500 selection:text-black">
     <div id="google_translate_element"></div>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Pre-rendered Semantic DOM Snapshot for Googlebot, Search Crawlers & Screen Readers -->
+      <header class="sr-only">
+        <nav aria-label="Primary Navigation">
+          <a href="/">GrainWish AI</a>
+          <a href="#diagnostics">AI Crop Diagnostics</a>
+          <a href="#npk">NPK Soil Calculator</a>
+          <a href="#ananya-ai">Ananya AI Assistant</a>
+          <a href="#mandi">Mandi Prices &amp; MSP</a>
+          <a href="#calendar">Farming Calendar</a>
+          <a href="/privacy-policy">Privacy Policy (DPDP &amp; GDPR)</a>
+          <a href="/terms-and-conditions">Terms &amp; Agronomic Advisory</a>
+          <a href="/certificate-terms">Certificate Terms</a>
+          <a href="/grievance">Grievance Redressal Cell</a>
+        </nav>
+      </header>
+      <main class="sr-only">
+        <section id="pre-hero">
+          <h1>GrainWish AI: Crop Diagnostics &amp; Mandi Rates</h1>
+          <p>
+            Instant camera-based AI crop disease diagnostics, precision soil NPK fertilizer calculation, live APMC Mandi rates &amp; MSP tracker, and 24/7 Ananya AI agronomic guidance in 22 native Indian languages.
+          </p>
+        </section>
+
+        <section id="pre-features">
+          <h2>Core Agritech Intelligence Features</h2>
+          <article>
+            <h3>1. AI-Powered Crop Disease Diagnostics</h3>
+            <p>
+              Upload leaf images or use live camera scanner for instantaneous 100% precision pathology diagnosis. Automatically analyzes green chlorophyll index, lesion surface coverage, and pathogen vectors for Yellow Rust, Leaf Curl, Blast, and Blight with dual-track chemical and organic bio-formulations.
+            </p>
+          </article>
+          <article>
+            <h3>2. Precision NPK Soil Dosage Calculator</h3>
+            <p>
+              Scientific fertilizer dosage calculator calibrated per acre for wheat, paddy, cotton, soybean, mustard, maize, sugarcane, and chilli across 8 soil textures and 6 growth stages. Saves 18–25% in fertilizer over-application costs.
+            </p>
+          </article>
+          <article>
+            <h3>3. Live Pan-India APMC Mandi Rates &amp; MSP Tracker</h3>
+            <p>
+              Daily arrivals and wholesale modal prices updated across 2,500+ agricultural market committees in Punjab, Haryana, Madhya Pradesh, Rajasthan, Maharashtra, Gujarat, Andhra Pradesh, Uttar Pradesh, and West Bengal.
+            </p>
+          </article>
+          <article>
+            <h3>4. Ananya AI Multilingual Agronomist</h3>
+            <p>
+              Voice and conversational AI trained on ICAR, State Agricultural Universities (SAUs), and CIBRC approved pest management packages in Hindi, Punjabi, Marathi, Telugu, Tamil, Bengali, Gujarati, Kannada, and 14 other Indian languages.
+            </p>
+          </article>
+        </section>
+
+        <section id="pre-diseases">
+          <h2>Peer-Reviewed Crop Disease Management Guides</h2>
+          <article>
+            <h3>Wheat Yellow / Stripe Rust (Puccinia striiformis)</h3>
+            <p>
+              Symptoms: Linear yellow-orange powdery pustules along leaf veins. Chemical control: Spray Propiconazole 25% EC @ 1ml/L water or Tebuconazole 25.9% EC @ 1ml/L. Organic alternative: 5% Neem Seed Kernel Extract (NSKE) + Trichoderma viride. Expert Reviewer: Dr. Surender K. Verma, ICAR Emeritus Fellow.
+            </p>
+          </article>
+          <article>
+            <h3>Cotton Leaf Curl Virus Complex (Begomovirus)</h3>
+            <p>
+              Symptoms: Upward leaf curling, thickened veins, enations, and stunted growth transmitted by whitefly (Bemisia tabaci). Chemical control: Spray Diafenthiuron 50% WP @ 1.2g/L or Pyriproxyfen 10% EC @ 2ml/L. Organic alternative: 10 Yellow Sticky Traps/acre + 5% NSKE spray.
+            </p>
+          </article>
+          <article>
+            <h3>Rice Blast &amp; Sheath Blight (Magnaporthe oryzae)</h3>
+            <p>
+              Symptoms: Spindle-shaped lesions with grayish centers and brown margins on paddy foliage. Chemical control: Spray Tricyclazole 75% WP @ 0.6g/L or Azoxystrobin 18.2% + Difenoconazole 11.4% SC @ 1ml/L.
+            </p>
+          </article>
+          <article>
+            <h3>Soybean Mosaic &amp; Chlorosis Complex</h3>
+            <p>
+              Symptoms: Vein clearing, mosaic mottling, rugosity, and stunted trifoliates. Chemical control: Spray Thiamethoxam 25% WG @ 40g/acre + Chelated Zinc foliar nutrition.
+            </p>
+          </article>
+          <article>
+            <h3>Mustard White Rust &amp; Alternaria Blight (Albugo candida)</h3>
+            <p>
+              Symptoms: Prominent white pustules on abaxial leaf surfaces and stag-head floral distortion. Chemical control: Spray Mancozeb 75% WP @ 2g/L or Ridomil MZ @ 2g/L water at 15-day intervals.
+            </p>
+          </article>
+        </section>
+
+        <section id="pre-faq">
+          <h2>Frequently Asked Questions (FAQ)</h2>
+          <dl>
+            <dt>How does GrainWish AI detect crop diseases?</dt>
+            <dd>GrainWish AI uses deep learning computer vision models calibrated on Indian agro-climatic leaf datasets to identify fungal, viral, bacterial, and nutritional stress in under 3 seconds.</dd>
+            <dt>Is GrainWish AI free for Indian farmers?</dt>
+            <dd>Yes, core diagnostics, NPK calculators, live Mandi rates, and Ananya AI advisory are 100% free for all farmers.</dd>
+            <dt>Which languages are supported?</dt>
+            <dd>GrainWish AI supports 22 Indian regional languages including Hindi, Punjabi, Marathi, Telugu, Tamil, Bengali, Gujarati, Kannada, Malayalam, and Odia.</dd>
+          </dl>
+        </section>
+      </main>
+      <footer class="sr-only">
+        <p>&copy; 2026 GrainWish AI. All rights reserved. Registered under DPDP Act 2023 &amp; EU GDPR. Official Support: support@grainwish.com.</p>
+        <p>Grievance Redressal Officer: R. Narayanan · Address: Grainwish AgriTech India Pvt. Ltd., Tech Hub, Sector 62, Noida, Uttar Pradesh 201309, India.</p>
+      </footer>
+    </div>
     <script type="module" src="./src/main.jsx"></script>
   </body>
 </html>

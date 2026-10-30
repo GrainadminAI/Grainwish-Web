@@ -19,10 +19,25 @@ import TermsConditionsPage from './components/TermsConditionsPage';
 import SecurityPolicyPage from './components/SecurityPolicyPage';
 import CertificateTermsPage from './components/CertificateTermsPage';
 import GrievanceRedressalPage from './components/GrievanceRedressalPage';
+import CropDiseasePage, { CROP_DISEASES_DATA } from './components/CropDiseasePages';
+import MandiStatePage, { MANDI_STATE_DATA } from './components/MandiStatePages';
 import NotFoundPage from './components/NotFoundPage';
 import { recordUserVisitToDB } from './lib/supabase';
 import { LanguageProvider, useLanguage } from './lib/LanguageContext';
 import { BrandThemeProvider } from './lib/BrandThemeContext';
+
+const LANG_PATH_MAP = {
+  '/hi': 'Hindi',
+  '/pa': 'Punjabi',
+  '/mr': 'Marathi',
+  '/te': 'Telugu',
+  '/ta': 'Tamil',
+  '/bn': 'Bengali',
+  '/gu': 'Gujarati',
+  '/kn': 'Kannada',
+  '/ml': 'Malayalam',
+  '/or': 'Odia'
+};
 
 function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy, onOpenCertificateTerms, onOpenGrievance }) {
   const { selectedLang, setSelectedLang } = useLanguage();
@@ -134,7 +149,10 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
 }
 
 function RootApp() {
+  const { setSelectedLang } = useLanguage();
   const [downloadModalOpen, setDownloadModalOpen] = useState(false);
+  const [diseaseSlug, setDiseaseSlug] = useState('wheat-yellow-rust');
+  const [mandiSlug, setMandiSlug] = useState('punjab-wheat');
   const [currentRoute, setCurrentRoute] = useState(() => {
     if (typeof window === 'undefined') return 'home';
     const path = window.location.pathname.toLowerCase();
@@ -144,6 +162,9 @@ function RootApp() {
     if (path === '/security' || hash === '#security') return 'security';
     if (path === '/certificate-terms' || hash === '#certificate-terms') return 'certificate-terms';
     if (path === '/grievance' || hash === '#grievance') return 'grievance';
+    if (path.startsWith('/diseases/')) return 'disease';
+    if (path.startsWith('/mandi-prices/')) return 'mandi-state';
+    if (LANG_PATH_MAP[path]) return 'home';
     if (path === '/' || path === '' || path === '/index.html') return 'home';
     return '404';
   });
@@ -152,6 +173,18 @@ function RootApp() {
     let timer50, timer200;
 
     if (typeof window !== 'undefined') {
+      const initPath = window.location.pathname.toLowerCase();
+      if (LANG_PATH_MAP[initPath]) {
+        setSelectedLang(LANG_PATH_MAP[initPath]);
+        document.documentElement.lang = initPath.replace('/', '');
+      } else if (initPath.startsWith('/diseases/')) {
+        const slug = initPath.replace('/diseases/', '').replace(/\/$/, '');
+        if (CROP_DISEASES_DATA[slug]) setDiseaseSlug(slug);
+      } else if (initPath.startsWith('/mandi-prices/')) {
+        const slug = initPath.replace('/mandi-prices/', '').replace(/\/$/, '');
+        if (MANDI_STATE_DATA[slug]) setMandiSlug(slug);
+      }
+
       // Silence and cancel any speech synthesis per user request ("remove the website audio")
       if ('speechSynthesis' in window) {
         try {
@@ -205,6 +238,29 @@ function RootApp() {
       } else if (path === '/grievance' || hash === '#grievance') {
         setCurrentRoute('grievance');
         window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (path.startsWith('/diseases/')) {
+        const slug = path.replace('/diseases/', '').replace(/\/$/, '');
+        if (CROP_DISEASES_DATA[slug]) {
+          setDiseaseSlug(slug);
+          setCurrentRoute('disease');
+        } else {
+          setCurrentRoute('404');
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (path.startsWith('/mandi-prices/')) {
+        const slug = path.replace('/mandi-prices/', '').replace(/\/$/, '');
+        if (MANDI_STATE_DATA[slug]) {
+          setMandiSlug(slug);
+          setCurrentRoute('mandi-state');
+        } else {
+          setCurrentRoute('404');
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (LANG_PATH_MAP[path]) {
+        setSelectedLang(LANG_PATH_MAP[path]);
+        document.documentElement.lang = path.replace('/', '');
+        setCurrentRoute('home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (path === '/' || path === '' || path === '/index.html' || hash.startsWith('#')) {
         setCurrentRoute('home');
       } else {
@@ -234,6 +290,8 @@ function RootApp() {
     else if (route === 'security') newPath = '/security';
     else if (route === 'certificate-terms') newPath = '/certificate-terms';
     else if (route === 'grievance') newPath = '/grievance';
+    else if (route === 'disease') newPath = `/diseases/${diseaseSlug}`;
+    else if (route === 'mandi-state') newPath = `/mandi-prices/${mandiSlug}`;
     else if (route === '404') newPath = '/404';
 
     if (hash) newPath += hash;
@@ -271,6 +329,22 @@ function RootApp() {
 
       {currentRoute === 'grievance' && (
         <GrievanceRedressalPage onBackToHome={() => navigateTo('home')} />
+      )}
+
+      {currentRoute === 'disease' && (
+        <CropDiseasePage
+          diseaseSlug={diseaseSlug}
+          onBackToHome={() => navigateTo('home')}
+          onOpenDiagnostics={() => navigateTo('home', '#diagnostics')}
+        />
+      )}
+
+      {currentRoute === 'mandi-state' && (
+        <MandiStatePage
+          mandiSlug={mandiSlug}
+          onBackToHome={() => navigateTo('home')}
+          onOpenMandiFull={() => navigateTo('home', '#mandi')}
+        />
       )}
 
       {currentRoute === '404' && (
