@@ -142,7 +142,10 @@ import {
   INDIAN_STATE_TO_LANGUAGE,
   BROWSER_LOCALE_TO_LANGUAGE,
   matchStateToLanguage,
-  detectLanguageFromBrowser
+  detectLanguageFromBrowser,
+  getNearestAreaFromCoords,
+  isCoordinateString,
+  reverseGeocodeCoords
 } from '../src/lib/locationLanguageDetector.js';
 
 test('Location & Locale Detection: Indian States to Regional Languages', async (t) => {
@@ -183,6 +186,23 @@ test('Location & Locale Detection: Indian States to Regional Languages', async (
   await t.test('Browser fallback detector returns supported language string', () => {
     const lang = detectLanguageFromBrowser();
     assert.ok(typeof lang === 'string' && lang.length > 0);
+  });
+
+  await t.test('GPS coordinates auto-detect as area name and never raw coordinate numbers', async () => {
+    // 22.83, 88.35 (User location in Hooghly / West Bengal)
+    assert.equal(getNearestAreaFromCoords(22.83, 88.35), 'Hooghly, West Bengal');
+    assert.equal(getNearestAreaFromCoords(20.0, 73.78), 'Nashik, Maharashtra');
+    assert.equal(getNearestAreaFromCoords(30.2, 74.95), 'Bathinda, Punjab');
+    assert.equal(getNearestAreaFromCoords(29.68, 76.99), 'Karnal, Haryana');
+
+    assert.equal(isCoordinateString('22.83°, 88.35°'), true);
+    assert.equal(isCoordinateString('22.83, 88.35'), true);
+    assert.equal(isCoordinateString('Hooghly, West Bengal'), false);
+    assert.equal(isCoordinateString('Nashik, Maharashtra'), false);
+
+    const resolved = await reverseGeocodeCoords(22.83, 88.35);
+    assert.ok(resolved && resolved.area && !isCoordinateString(resolved.area));
+    assert.ok(resolved.area.includes('West Bengal') || resolved.area.includes('Hooghly') || resolved.area.includes('Singur'));
   });
 });
 

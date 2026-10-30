@@ -10,7 +10,13 @@ import {
 } from 'lucide-react';
 import { saveDiagnosticScanToDB, recordFeatureUsageToDB, isSupabaseConfigured } from '../lib/supabase';
 import { useLanguage, SUPPORTED_LANGUAGES } from '../lib/LanguageContext';
-import { detectLocationViaGPS, detectLocationViaNetwork } from '../lib/locationLanguageDetector';
+import {
+  detectLocationViaGPS,
+  detectLocationViaNetwork,
+  getNearestAreaFromCoords,
+  reverseGeocodeCoords,
+  isCoordinateString
+} from '../lib/locationLanguageDetector';
 import {
   analyzeImageBuffer,
   sampleLiveVideoFrame,
@@ -223,14 +229,20 @@ export default function DiagnosticsTool() {
   const [acreage, setAcreage] = useState(1);
   const [isSpeaking, setIsSpeaking] = useState(false);
 
-  // Farm Plot Location State (Customized or GPS auto-detected)
+  // Farm Plot Location State (Customized or GPS auto-detected as Area Name)
   const [farmLocation, setFarmLocation] = useState(() => {
     if (typeof window !== 'undefined') {
       try {
         const raw = localStorage.getItem('grainwise_detected_location');
         if (raw) {
           const parsed = JSON.parse(raw);
-          if (parsed.region) return parsed.region;
+          if (parsed.region && !isCoordinateString(parsed.region)) {
+            return parsed.region;
+          }
+          if (parsed.coords && parsed.coords.latitude && parsed.coords.longitude) {
+            const nearest = getNearestAreaFromCoords(parsed.coords.latitude, parsed.coords.longitude);
+            if (nearest) return nearest;
+          }
         }
       } catch {}
     }
@@ -242,43 +254,87 @@ export default function DiagnosticsTool() {
 
   // Sync farm location with detectedLocationInfo from LanguageContext
   useEffect(() => {
-    if (detectedLocationInfo?.region && !farmLocation) {
+    if (detectedLocationInfo?.region && !farmLocation && !isCoordinateString(detectedLocationInfo.region)) {
       setFarmLocation(detectedLocationInfo.region);
     }
   }, [detectedLocationInfo]);
 
-  // If no farm location yet on mount, auto-detect non-intrusively via network
+  // Automatically detect and resolve GPS or network area name on mount
   useEffect(() => {
-    if (!farmLocation) {
-      detectLocationViaNetwork().then((res) => {
-        if (res && res.region) {
-          setFarmLocation(res.region);
-          try {
-            localStorage.setItem('grainwise_detected_location', JSON.stringify(res));
-          } catch {}
-        }
-      }).catch(() => {});
+    const isRawCoord = farmLocation && isCoordinateString(farmLocation);
+    
+    if (!farmLocation || isRawCoord) {
+      if (detectedLocationInfo?.coords) {
+        reverseGeocodeCoords(detectedLocationInfo.coords.latitude, detectedLocationInfo.coords.longitude).then((geo) => {
+          const area = geo?.area || getNearestAreaFromCoords(detectedLocationInfo.coords.latitude, detectedLocationInfo.coords.longitude);
+          if (area) {
+            setFarmLocation(area);
+            try {
+              localStorage.setItem('grainwise_detected_location', JSON.stringify({
+                ...detectedLocationInfo,
+                region: area
+              }));
+            } catch {}
+          }
+        });
+      } else if (typeof navigator !== 'undefined' && navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          async (pos) => {
+            const geocoded = await reverseGeocodeCoords(pos.coords.latitude, pos.coords.longitude);
+            const area = geocoded?.area || getNearestAreaFromCoords(pos.coords.latitude, pos.coords.longitude);
+            if (area) {
+              setFarmLocation(area);
+              try {
+                localStorage.setItem('grainwise_detected_location', JSON.stringify({
+                  coords: { latitude: pos.coords.latitude, longitude: pos.coords.longitude },
+                  region: area,
+                  source: 'gps'
+                }));
+              } catch {}
+            }
+          },
+          () => {
+            detectLocationViaNetwork().then((res) => {
+              if (res && res.region && !isCoordinateString(res.region)) {
+                setFarmLocation(res.region);
+                try {
+                  localStorage.setItem('grainwise_detected_location', JSON.stringify(res));
+                } catch {}
+              }
+            }).catch(() => {});
+          },
+          { timeout: 5000, maximumAge: 300000, enableHighAccuracy: false }
+        );
+      } else {
+        detectLocationViaNetwork().then((res) => {
+          if (res && res.region && !isCoordinateString(res.region)) {
+            setFarmLocation(res.region);
+            try {
+              localStorage.setItem('grainwise_detected_location', JSON.stringify(res));
+            } catch {}
+          }
+        }).catch(() => {});
+      }
     }
   }, []);
 
   const handleDetectFarmLocation = async () => {
     setIsLocatingFarm(true);
-    setFarmLocationStatus('Pinpointing GPS...');
+    setFarmLocationStatus('Auto-detecting Area...');
     try {
       const gpsResult = await detectLocationViaGPS();
-      if (gpsResult && gpsResult.region) {
+      if (gpsResult && gpsResult.region && !isCoordinateString(gpsResult.region)) {
         setFarmLocation(gpsResult.region);
-        const coordLabel = gpsResult.coords ? ` (${gpsResult.coords.latitude.toFixed(2)}°, ${gpsResult.coords.longitude.toFixed(2)}°)` : '';
-        setFarmLocationStatus(`✓ GPS Locked${coordLabel}`);
+        setFarmLocationStatus(`✓ ${gpsResult.region}`);
         try {
           localStorage.setItem('grainwise_detected_location', JSON.stringify(gpsResult));
         } catch {}
         setTimeout(() => setFarmLocationStatus(''), 4500);
       } else {
         const netResult = await detectLocationViaNetwork();
-        if (netResult && netResult.region) {
+        if (netResult && netResult.region && !isCoordinateString(netResult.region)) {
           setFarmLocation(netResult.region);
-          setFarmLocationStatus('✓ Network Location');
+          setFarmLocationStatus(`✓ ${netResult.region}`);
           setTimeout(() => setFarmLocationStatus(''), 3000);
         } else {
           setFarmLocationStatus('Location unavailable');
@@ -852,7 +908,13 @@ export default function DiagnosticsTool() {
     setIsSpeaking(false);
   };
 
-  const effectiveLocation = farmLocation || detectedLocationInfo?.region || selectedCrop.location || 'Local Farm Plot';
+  const effectiveLocation = (farmLocation && !isCoordinateString(farmLocation))
+    ? farmLocation
+    : (detectedLocationInfo?.region && !isCoordinateString(detectedLocationInfo.region))
+      ? detectedLocationInfo.region
+      : (detectedLocationInfo?.coords ? getNearestAreaFromCoords(detectedLocationInfo.coords.latitude, detectedLocationInfo.coords.longitude) : null)
+      || selectedCrop.location
+      || 'Local Farm Plot';
 
   // Share Diagnostic Report via WhatsApp to Krishi Vigyan Kendra (KVK) / FPO
   const handleShareWhatsApp = () => {

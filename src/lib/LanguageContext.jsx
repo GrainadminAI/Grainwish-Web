@@ -1105,10 +1105,9 @@ export function LanguageProvider({ children }) {
 
         const regionLabel = result.region ? `${result.region}` : 'your region';
         const isGps = result.source === 'gps';
-        const coordsStr = result.coords ? ` [${result.coords.latitude.toFixed(2)}°N, ${result.coords.longitude.toFixed(2)}°E]` : '';
         const icon = isGps ? '📍' : (result.isMobile ? '📱' : '🌐');
         const networkTitle = isGps ? 'Live Farm GPS' : (result.networkType || (result.isMobile ? 'Mobile Network' : 'Internet Connection'));
-        const toastMsg = `${icon} ${networkTitle}${coordsStr} (${regionLabel}) — Switched to ${result.language} & calibrated for your farm!`;
+        const toastMsg = `${icon} ${networkTitle}: ${regionLabel} — Switched to ${result.language} & calibrated for your farm!`;
         setLocationToast(toastMsg);
         setTimeout(() => setLocationToast(null), 5000);
         return result;

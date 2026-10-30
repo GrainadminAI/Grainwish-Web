@@ -18,6 +18,7 @@ import {
 } from '../lib/allStatesMandiData';
 import { fetchMandiPricesFromDB, recordFeatureUsageToDB } from '../lib/supabase';
 import { useLanguage } from '../lib/LanguageContext';
+import { reverseGeocodeCoords, getNearestAreaFromCoords, isCoordinateString } from '../lib/locationLanguageDetector';
 
 const POPULAR_AGRI_STATES = [
   'All States & UTs',
@@ -185,17 +186,19 @@ Source: Grainwise AI / Agmarknet`;
     setLocationStatus('Pinpointing your GPS coordinates...');
 
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
+      async (pos) => {
         const coords = { lat: pos.coords.latitude, lon: pos.coords.longitude };
         setUserLocation(coords);
         setIsLocating(false);
-        setLocationStatus('GPS active: Mandis sorted by nearest distance');
         setSortBy('distance');
+        const geocoded = await reverseGeocodeCoords(pos.coords.latitude, pos.coords.longitude);
+        const areaName = geocoded?.area || getNearestAreaFromCoords(pos.coords.latitude, pos.coords.longitude) || 'Nearest Mandis';
+        setLocationStatus(`GPS active: ${areaName}`);
         try {
           localStorage.setItem('grainwise_detected_location', JSON.stringify({
             coords: { latitude: pos.coords.latitude, longitude: pos.coords.longitude },
             source: 'gps',
-            region: 'Live GPS'
+            region: areaName
           }));
         } catch {}
       },
@@ -215,7 +218,10 @@ Source: Grainwise AI / Agmarknet`;
         const parsed = JSON.parse(raw);
         if (parsed.coords && parsed.coords.latitude && parsed.coords.longitude) {
           setUserLocation({ lat: parsed.coords.latitude, lon: parsed.coords.longitude });
-          setLocationStatus(`GPS active: ${parsed.region || 'Nearest Mandis'} (${parsed.coords.latitude.toFixed(2)}°, ${parsed.coords.longitude.toFixed(2)}°)`);
+          const areaName = (parsed.region && !isCoordinateString(parsed.region))
+            ? parsed.region
+            : getNearestAreaFromCoords(parsed.coords.latitude, parsed.coords.longitude) || 'Nearest Mandis';
+          setLocationStatus(`GPS active: ${areaName}`);
         }
       }
     } catch {}

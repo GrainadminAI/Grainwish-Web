@@ -1,3 +1,5 @@
+import { COMPREHENSIVE_MANDI_RECORDS, calculateHaversineDistance } from './allStatesMandiData.js';
+
 /**
  * Location-to-Language Intelligence for Grainwish AI
  * 
@@ -296,7 +298,126 @@ export async function detectLocationViaIP() {
 }
 
 /**
- * High-accuracy GPS reverse geocoding
+ * Offline fallback: matches coordinates to the nearest Indian district & state
+ * based on our comprehensive 28-state APMC Mandi database.
+ */
+export function getNearestAreaFromCoords(latitude, longitude) {
+  if (typeof latitude !== 'number' || typeof longitude !== 'number' || isNaN(latitude) || isNaN(longitude)) {
+    return null;
+  }
+  let nearest = null;
+  let minDist = Infinity;
+  for (const r of COMPREHENSIVE_MANDI_RECORDS) {
+    if (r.lat && r.lon) {
+      const d = calculateHaversineDistance(latitude, longitude, r.lat, r.lon);
+      if (d < minDist) {
+        minDist = d;
+        nearest = r;
+      }
+    }
+  }
+  if (nearest) {
+    const district = nearest.district ? nearest.district.split(',')[0].trim() : '';
+    const state = nearest.state || '';
+    if (district && state && !district.toLowerCase().includes(state.toLowerCase())) {
+      return `${district}, ${state}`;
+    }
+    return district || state || 'India';
+  }
+  return null;
+}
+
+/**
+ * Checks if a string looks like raw coordinates e.g. "22.83°, 88.35°"
+ */
+export function isCoordinateString(str) {
+  if (!str || typeof str !== 'string') return false;
+  return /^\s*-?\d+(\.\d+)?\s*°?[NSEW]?\s*,\s*-?\d+(\.\d+)?\s*°?[NSEW]?\s*$/i.test(str.trim());
+}
+
+/**
+ * Resolves latitude and longitude coordinates to a human-readable Area Name (City, District, State)
+ * Multi-tier fallback: BigDataCloud -> OpenStreetMap Nominatim -> Offline 28-State Mandi Database
+ */
+export async function reverseGeocodeCoords(latitude, longitude) {
+  if (typeof latitude !== 'number' || typeof longitude !== 'number' || isNaN(latitude) || isNaN(longitude)) {
+    return null;
+  }
+
+  // Tier 1: BigDataCloud (fast locality & principal subdivision)
+  try {
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeout = controller ? setTimeout(() => controller.abort(), 2500) : null;
+    const res = await fetch(
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`,
+      { signal: controller?.signal }
+    );
+    if (timeout) clearTimeout(timeout);
+    if (res.ok) {
+      const data = await res.json();
+      const city = data.locality || data.city || '';
+      const state = data.principalSubdivision || '';
+      if (city && state) {
+        const area = !city.toLowerCase().includes(state.toLowerCase()) ? `${city}, ${state}` : state;
+        return { area, city, state, country: data.countryName || 'India' };
+      }
+      if (state || city) {
+        return { area: state || city, city, state, country: data.countryName || 'India' };
+      }
+    }
+  } catch {}
+
+  // Tier 2: OpenStreetMap Nominatim
+  try {
+    const controller = typeof AbortController !== 'undefined' ? new AbortController() : null;
+    const timeout = controller ? setTimeout(() => controller.abort(), 2500) : null;
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`,
+      { signal: controller?.signal, headers: { 'Accept': 'application/json' } }
+    );
+    if (timeout) clearTimeout(timeout);
+    if (res.ok) {
+      const data = await res.json();
+      const addr = data.address || {};
+      const locality = addr.suburb || addr.town || addr.village || addr.county || addr.city || '';
+      const district = addr.state_district || addr.district || '';
+      const state = addr.state || '';
+      const chosenCity = locality || district;
+      if (chosenCity && state) {
+        const area = !chosenCity.toLowerCase().includes(state.toLowerCase()) ? `${chosenCity}, ${state}` : state;
+        return { area, city: chosenCity, state, country: addr.country || 'India' };
+      }
+      if (district && state) {
+        return { area: `${district}, ${state}`, city: district, state, country: addr.country || 'India' };
+      }
+      if (state) {
+        return { area: state, city: '', state, country: addr.country || 'India' };
+      }
+    }
+  } catch {}
+
+  // Tier 3: Offline 28-State Mandi Database (Zero latency, 100% reliability, no network needed)
+  const offlineArea = getNearestAreaFromCoords(latitude, longitude);
+  if (offlineArea) {
+    const parts = offlineArea.split(',').map(s => s.trim());
+    return {
+      area: offlineArea,
+      city: parts[0] || '',
+      state: parts[1] || parts[0] || '',
+      country: 'India'
+    };
+  }
+
+  return {
+    area: 'Local Farm Plot',
+    city: '',
+    state: '',
+    country: 'India'
+  };
+}
+
+/**
+ * High-accuracy GPS reverse geocoding to human-readable Area Name
  */
 export async function detectLocationViaGPS() {
   if (typeof window === 'undefined' || !navigator.geolocation) {
@@ -308,54 +429,28 @@ export async function detectLocationViaGPS() {
       async (position) => {
         try {
           const { latitude, longitude } = position.coords;
-          const res = await fetch(
-            `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${latitude}&longitude=${longitude}&localityLanguage=en`
-          );
-          if (res.ok) {
-            const data = await res.json();
-            const city = data.locality || data.city || '';
-            const state = data.principalSubdivision || '';
-            const region = city && state && !city.toLowerCase().includes(state.toLowerCase())
-              ? `${city}, ${state}`
-              : (state || city || '');
-            const country = data.countryName || '';
-            const matched = matchStateToLanguage(state || region);
-            if (matched) {
-              return resolve({
-                language: matched,
-                region: region,
-                city,
-                state,
-                country: country,
-                coords: { latitude, longitude },
-                source: 'gps'
-              });
-            }
-            if (region || country) {
-              return resolve({
-                language: country === 'India' ? 'Hindi' : 'English',
-                region: region || country,
-                city,
-                state,
-                country: country,
-                coords: { latitude, longitude },
-                source: 'gps'
-              });
-            }
-          }
+          const geocoded = await reverseGeocodeCoords(latitude, longitude);
+          const area = geocoded?.area || getNearestAreaFromCoords(latitude, longitude) || 'Local Farm Plot';
+          const state = geocoded?.state || area;
+          const matched = matchStateToLanguage(state || area);
+
           return resolve({
-            language: 'English',
-            region: `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`,
-            country: 'India',
+            language: matched || 'English',
+            region: area,
+            city: geocoded?.city || '',
+            state: geocoded?.state || '',
+            country: geocoded?.country || 'India',
             coords: { latitude, longitude },
             source: 'gps'
           });
         } catch {
           const { latitude, longitude } = position.coords || {};
           if (latitude && longitude) {
+            const offlineArea = getNearestAreaFromCoords(latitude, longitude) || 'Local Farm Plot';
+            const matched = matchStateToLanguage(offlineArea);
             return resolve({
-              language: 'English',
-              region: `${latitude.toFixed(2)}°, ${longitude.toFixed(2)}°`,
+              language: matched || 'English',
+              region: offlineArea,
               country: 'India',
               coords: { latitude, longitude },
               source: 'gps'
