@@ -335,10 +335,6 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
               <img
                 src="/assets/ananya_hero_ai.png"
                 alt="Ananya AI Virtual Agronomist"
-                width="64"
-                height="64"
-                loading="lazy"
-                decoding="async"
                 className="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300"
                 onError={(e) => {
                   e.target.src = '/assets/ananya_avatar.jpg';
@@ -376,11 +372,7 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
                 <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full overflow-hidden border-2 border-amber-400 shadow-md bg-emerald-950">
                   <img
                     src="/assets/ananya_hero_ai.png"
-                    alt="Ananya AI Virtual Agronomist"
-                    width="40"
-                    height="40"
-                    loading="lazy"
-                    decoding="async"
+                    alt="Ananya AI"
                     className="w-full h-full object-cover object-top"
                     onError={(e) => {
                       e.target.src = '/assets/ananya_avatar.jpg';
@@ -509,10 +501,6 @@ export default function AnanyaAIAssistant({ selectedLang: propLang, setSelectedL
                     <img
                       src="/assets/ananya_hero_ai.png"
                       alt="Ananya AI Avatar"
-                      width="32"
-                      height="32"
-                      loading="lazy"
-                      decoding="async"
                       className="w-full h-full object-cover object-top"
                       onError={(e) => {
                         e.target.src = '/assets/ananya_avatar.jpg';

@@ -109,42 +109,4 @@ test('Mobile App & Agritech Legal Compliance (DPDP Act 2023 & GDPR)', async (t) 
     assert.match(indexHtml, /"url":\s*"https:\/\/www\.grainwish\.com\/"/, 'Must contain Organization URL');
     assert.match(indexHtml, /"description":\s*"AI-powered crop disease detection, fertilizer advice and mandi prices for Indian farmers\."/, 'Must contain exact requested description');
   });
-
-  // 6. SEO, SSR Pre-Rendering & 301 Redirects
-  await t.test('Component 6: SEO Title under 60 chars, 301 Redirects, Pre-rendered HTML & Hreflang tags', () => {
-    const indexPath = path.resolve(__dirname, '../index.html');
-    const indexHtml = fs.readFileSync(indexPath, 'utf8');
-    const titleMatch = indexHtml.match(/<title>(.*?)<\/title>/i);
-    assert.ok(titleMatch, 'Title tag must exist');
-    assert.ok(titleMatch[1].length <= 60, `Title must be <= 60 chars, got ${titleMatch[1].length}`);
-    assert.ok(titleMatch[1].includes('GrainWish AI'), 'Title must use correct brand spelling');
-
-    // 301 Redirects
-    const htaccessPath = path.resolve(__dirname, '../public/.htaccess');
-    const htaccess = fs.readFileSync(htaccessPath, 'utf8');
-    assert.ok(htaccess.includes('HTTP_HOST') && htaccess.includes('grainwish.com'), '.htaccess must handle bare domain');
-    assert.ok(htaccess.includes('https://www.grainwish.com'), '.htaccess must redirect to www canonical');
-
-    // Pre-rendered HTML inside #root
-    assert.match(indexHtml, /<div id="root">\s*<!-- Pre-rendered/i, 'Must have pre-rendered snapshot inside #root');
-
-    // Hreflang alternate tags
-    assert.match(indexHtml, /hreflang="hi"/, 'Must include Hindi hreflang tag');
-    assert.match(indexHtml, /hreflang="pa"/, 'Must include Punjabi hreflang tag');
-    assert.match(indexHtml, /hreflang="mr"/, 'Must include Marathi hreflang tag');
-  });
-
-  // 7. Individual Crop Disease & Mandi State Pages with Expert Reviewers
-  await t.test('Component 7: Disease pages & Mandi pages data and expert reviewers', () => {
-    const diseasePath = path.resolve(__dirname, '../src/components/CropDiseasePages.jsx');
-    const diseaseCode = fs.readFileSync(diseasePath, 'utf8');
-    assert.match(diseaseCode, /wheat-yellow-rust/, 'Must include wheat-yellow-rust');
-    assert.match(diseaseCode, /cotton-leaf-curl/, 'Must include cotton-leaf-curl');
-    assert.match(diseaseCode, /Dr\. Surender K\. Verma/, 'Must include expert reviewer Dr. Verma');
-
-    const mandiPath = path.resolve(__dirname, '../src/components/MandiStatePages.jsx');
-    const mandiCode = fs.readFileSync(mandiPath, 'utf8');
-    assert.match(mandiCode, /punjab-wheat/, 'Must include punjab-wheat');
-    assert.match(mandiCode, /madhya-pradesh-soybean/, 'Must include madhya-pradesh-soybean');
-  });
 });

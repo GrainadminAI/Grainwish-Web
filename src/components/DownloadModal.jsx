@@ -255,7 +255,7 @@ export default function DownloadModal({ isOpen, onClose }) {
               <div className="w-24 h-24 bg-white p-1.5 rounded-xl shrink-0 flex items-center justify-center shadow-md relative overflow-hidden">
                 <img
                   src="https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=https%3A%2F%2Fgrainwish.com&color=031d10&bgcolor=ffffff"
-                  alt="GrainWish AI Mobile App Download QR Code"
+                  alt="Grainwish AI QR Code"
                   className="w-full h-full object-contain blur-md select-none pointer-events-none"
                   onError={(e) => {
                     e.target.style.display = 'none';

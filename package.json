@@ -9,8 +9,7 @@
     "start": "node server/host.js",
     "build": "vite build",
     "preview": "vite preview",
-    "test": "node --test tests/*.test.mjs",
-    "audit": "node scripts/seo-audit.mjs"
+    "test": "node --test tests/*.test.mjs"
   },
   "dependencies": {
     "@opentelemetry/api": "^1.9.1",

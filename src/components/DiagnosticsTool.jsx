@@ -1907,17 +1907,6 @@ export default function DiagnosticsTool() {
                     {activeFix?.tip || activeFix?.safetyAdvice || 'apply in early morning or late afternoon. maintain 14 days waiting period before harvest.'}
                   </div>
 
-                  {/* Expert Agronomist Review & Scientific Citations */}
-                  <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200 text-[11px] text-slate-700 space-y-1 text-left">
-                    <div className="flex items-center justify-between font-bold text-emerald-800 text-xs">
-                      <span>Agronomic Reviewer: Dr. Surender K. Verma, Ph.D.</span>
-                      <span className="text-[10px] font-mono text-amber-700 font-bold">ICAR Plant Pathologist</span>
-                    </div>
-                    <div className="text-[10px] text-slate-500">
-                      Doses verified under ICAR &amp; Central Insecticides Board (CIBRC) field protection guidelines.
-                    </div>
-                  </div>
-
                   {/* Acreage Dosage Stepper */}
                   <div className="flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-xs">
                     <span className="font-semibold text-slate-700">Calculate for My Field:</span>

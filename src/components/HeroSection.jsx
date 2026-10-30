@@ -122,10 +122,6 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
                     <img
                       src="/assets/soybean_leaf_mosaic.jpg"
                       alt="Soybean leaf scan thumbnail"
-                      width="32"
-                      height="32"
-                      loading="lazy"
-                      decoding="async"
                       className="w-full h-full object-cover"
                     />
                     <div className="absolute inset-0 bg-emerald-400/20 animate-pulse" />
