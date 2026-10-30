@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut, Mic, MapPin, Compass } from 'lucide-react';
+import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut, Mic, MapPin, Compass, Settings, Lock, FileText, Cookie } from 'lucide-react';
 import { supabase, signOutUser, getLoggedInUser, recordFeatureUsageToDB } from '../lib/supabase';
 import AuthModal from './AuthModal';
 
@@ -15,12 +15,13 @@ import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
 import { useBrandTheme } from '../lib/BrandThemeContext';
 
-export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedLang }) {
+export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedLang, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy }) {
   const { t, detectLocationAndSetLanguage, isDetectingLocation, detectedLocationInfo } = useLanguage();
   const { currentOption } = useBrandTheme();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [langDropdownOpen, setLangDropdownOpen] = useState(false);
+  const [settingsDropdownOpen, setSettingsDropdownOpen] = useState(false);
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
@@ -266,6 +267,88 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
               )}
             </div>
 
+            {/* App Settings / Legal & Privacy Dropdown (Profile > Settings > Legal & Privacy) */}
+            <div className="relative">
+              <button
+                type="button"
+                onClick={() => setSettingsDropdownOpen(!settingsDropdownOpen)}
+                className="flex items-center gap-1 px-2 py-1 bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-700/40 rounded-lg text-xs font-medium text-emerald-200 transition-colors whitespace-nowrap"
+                title="Profile > Settings > Legal & Privacy"
+              >
+                <Settings className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                <span className="hidden xl:inline">Settings</span>
+                <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${settingsDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {settingsDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-64 bg-[#042013] border border-emerald-600/40 rounded-xl shadow-2xl z-50 p-2 divide-y divide-emerald-900/40 animate-fade-in">
+                  <div className="pb-2">
+                    <div className="text-[10px] font-bold text-amber-400 uppercase tracking-wider">
+                      Profile &gt; Settings &gt; Legal &amp; Privacy
+                    </div>
+                    <div className="text-[10px] text-slate-400">
+                      Permanent In-App Legal &amp; Policy Hub
+                    </div>
+                  </div>
+                  <div className="py-1.5 space-y-1">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSettingsDropdownOpen(false);
+                        onOpenPrivacyPolicy?.();
+                      }}
+                      className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs text-slate-200 hover:bg-emerald-900/60 hover:text-emerald-300 flex items-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>Privacy Policy (DPDP &amp; GDPR)</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSettingsDropdownOpen(false);
+                        onOpenTerms?.();
+                      }}
+                      className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs text-slate-200 hover:bg-emerald-900/60 hover:text-emerald-300 flex items-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <FileText className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>Terms of Service</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSettingsDropdownOpen(false);
+                        onOpenSecurityPolicy?.();
+                      }}
+                      className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs text-slate-200 hover:bg-emerald-900/60 hover:text-emerald-300 flex items-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>Security Policy &amp; Charter</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSettingsDropdownOpen(false);
+                        window.dispatchEvent(new CustomEvent('open_cookie_preferences'));
+                      }}
+                      className="w-full text-left px-2.5 py-1.5 rounded-lg text-xs text-slate-200 hover:bg-emerald-900/60 hover:text-emerald-300 flex items-center gap-2 transition-colors cursor-pointer"
+                    >
+                      <Cookie className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                      <span>Cookie Preferences</span>
+                    </button>
+                  </div>
+                  <div className="pt-2 px-1">
+                    <div className="text-[10px] text-slate-400">Official Grievance Support:</div>
+                    <a
+                      href="mailto:support@grainwish.com"
+                      className="text-xs text-emerald-400 hover:underline font-mono block truncate"
+                    >
+                      support@grainwish.com
+                    </a>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Download CTA */}
             <button
               onClick={onOpenDownloadModal}
@@ -433,6 +516,69 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                   <option key={lang} value={lang.split(' ')[0]}>{lang}</option>
                 ))}
               </select>
+            </div>
+
+            {/* Permanent App Settings / Legal & Privacy Section (Profile > Settings > Legal & Privacy) */}
+            <div className="pt-3 border-t border-emerald-900/60 space-y-2">
+              <div className="flex items-center justify-between text-[11px] font-bold text-amber-400 uppercase tracking-wider">
+                <span className="flex items-center gap-1.5">
+                  <Settings className="w-3.5 h-3.5 text-amber-400" />
+                  <span>Profile &gt; Settings &gt; Legal &amp; Privacy</span>
+                </span>
+                <span className="text-[10px] text-emerald-400 font-mono">DPDP &amp; GDPR</span>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenPrivacyPolicy?.();
+                  }}
+                  className="p-2.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800/70 text-slate-200 hover:text-emerald-300 text-xs font-semibold flex items-center gap-1.5 text-left transition-colors"
+                >
+                  <Lock className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span className="truncate">Privacy Policy</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenTerms?.();
+                  }}
+                  className="p-2.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800/70 text-slate-200 hover:text-emerald-300 text-xs font-semibold flex items-center gap-1.5 text-left transition-colors"
+                >
+                  <FileText className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span className="truncate">Terms of Service</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    onOpenSecurityPolicy?.();
+                  }}
+                  className="p-2.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800/70 text-slate-200 hover:text-emerald-300 text-xs font-semibold flex items-center gap-1.5 text-left transition-colors"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span className="truncate">Security Charter</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMobileMenuOpen(false);
+                    window.dispatchEvent(new CustomEvent('open_cookie_preferences'));
+                  }}
+                  className="p-2.5 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-800/70 text-slate-200 hover:text-emerald-300 text-xs font-semibold flex items-center gap-1.5 text-left transition-colors"
+                >
+                  <Cookie className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span className="truncate">Cookie Preferences</span>
+                </button>
+              </div>
+              <div className="p-2.5 rounded-xl bg-black/40 border border-emerald-900/60 flex items-center justify-between text-[11px] text-slate-300">
+                <span className="text-slate-400">Official Grievance Support:</span>
+                <a href="mailto:support@grainwish.com" className="text-emerald-400 hover:underline font-mono font-medium">
+                  support@grainwish.com
+                </a>
+              </div>
             </div>
           </div>
         </>

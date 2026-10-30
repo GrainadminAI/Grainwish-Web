@@ -12,6 +12,7 @@ export default function DownloadModal({ isOpen, onClose }) {
   const [androidEmailPhone, setAndroidEmailPhone] = useState('');
   const [androidNotified, setAndroidNotified] = useState(false);
   const [androidFormError, setAndroidFormError] = useState('');
+  const [androidAgreedToTerms, setAndroidAgreedToTerms] = useState(false);
 
   // Spam Protection & Honeypot
   const [honeypot, setHoneypot] = useState('');
@@ -66,6 +67,11 @@ export default function DownloadModal({ isOpen, onClose }) {
   const handleAndroidPreRegister = async (e) => {
     e.preventDefault();
     setAndroidFormError('');
+
+    if (!androidAgreedToTerms) {
+      setAndroidFormError('Please agree to our Terms of Service and Privacy Policy to proceed.');
+      return;
+    }
 
     // Spam Protection 1: Honeypot trap check
     if (honeypot) {
@@ -358,6 +364,41 @@ export default function DownloadModal({ isOpen, onClose }) {
                   </div>
                 )}
 
+                {/* Explicit Consent Checkbox (Active Consent Required, un-ticked by default) */}
+                <div className="bg-black/50 border border-emerald-900/70 rounded-xl p-2.5 text-left">
+                  <label className="flex items-start gap-2 cursor-pointer group select-none">
+                    <input 
+                      type="checkbox"
+                      checked={androidAgreedToTerms}
+                      onChange={(e) => {
+                        setAndroidAgreedToTerms(e.target.checked);
+                        if (e.target.checked && androidFormError.includes('Terms')) setAndroidFormError('');
+                      }}
+                      className="mt-0.5 w-4 h-4 rounded border-emerald-600 bg-black/70 text-emerald-500 focus:ring-emerald-400 cursor-pointer shrink-0 accent-emerald-500"
+                    />
+                    <span className="text-[11px] text-slate-300 leading-snug">
+                      By proceeding, you agree to our{' '}
+                      <a 
+                        href="/terms" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-emerald-400 hover:text-emerald-300 underline font-semibold cursor-pointer"
+                      >
+                        Terms of Service
+                      </a>{' '}
+                      and consent to our{' '}
+                      <a 
+                        href="/privacy" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="text-emerald-400 hover:text-emerald-300 underline font-semibold cursor-pointer"
+                      >
+                        Privacy Policy
+                      </a>.
+                    </span>
+                  </label>
+                </div>
+
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -517,10 +558,27 @@ export default function DownloadModal({ isOpen, onClose }) {
           </form>
         )}
 
-        {/* Footer info */}
-        <div className="text-center text-[10px] text-slate-400 pt-2 border-t border-emerald-900/40 space-y-1">
-          <div>22 Languages Supported · Low Bandwidth 2G/3G Optimized · 100% Free for Farmers</div>
-          <div>Need assistance? Email <a href="mailto:support@grainwish.com" className="text-emerald-400 hover:underline">support@grainwish.com</a></div>
+        {/* In-App Permanent Legal & Privacy Links (Profile > Settings > Legal & Privacy) */}
+        <div className="pt-2.5 border-t border-emerald-900/60 text-center space-y-1.5">
+          <div className="text-[10px] text-amber-400 font-bold uppercase tracking-wider">
+            Profile &gt; Settings &gt; Legal &amp; Privacy
+          </div>
+          <div className="flex items-center justify-center gap-3 text-[11px] text-slate-300 flex-wrap">
+            <a href="/privacy" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-300 underline">
+              Privacy Policy (DPDP &amp; GDPR)
+            </a>
+            <span>•</span>
+            <a href="/terms" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-300 underline">
+              Terms of Service
+            </a>
+            <span>•</span>
+            <a href="/security" target="_blank" rel="noopener noreferrer" className="hover:text-emerald-300 underline">
+              Security Charter
+            </a>
+          </div>
+          <div className="text-[10px] text-slate-400">
+            22 Languages Supported · 100% Free for Farmers · Grievance: <a href="mailto:support@grainwish.com" className="text-emerald-400 hover:underline">support@grainwish.com</a>
+          </div>
         </div>
 
       </div>

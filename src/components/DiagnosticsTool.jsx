@@ -248,6 +248,10 @@ export default function DiagnosticsTool() {
     }
     return '';
   });
+
+  // Camera In-App Contextual Consent State (Mandatory for DPDP & Android Contextual Prompts)
+  const [showCameraPermissionModal, setShowCameraPermissionModal] = useState(false);
+  const [cameraConsentGranted, setCameraConsentGranted] = useState(false);
   const [isLocatingFarm, setIsLocatingFarm] = useState(false);
   const [isEditingLocation, setIsEditingLocation] = useState(false);
   const [farmLocationStatus, setFarmLocationStatus] = useState('');
@@ -577,6 +581,21 @@ export default function DiagnosticsTool() {
       const ctx = overlayCanvasRef.current.getContext('2d');
       if (ctx) ctx.clearRect(0, 0, overlayCanvasRef.current.width, overlayCanvasRef.current.height);
     }
+  };
+
+  // In-App Contextual Permission Handler: Show in-app explanation before triggering Android/browser permission
+  const requestCameraWithConsent = () => {
+    if (cameraConsentGranted) {
+      startWebcam();
+    } else {
+      setShowCameraPermissionModal(true);
+    }
+  };
+
+  const handleConfirmCameraConsent = () => {
+    setCameraConsentGranted(true);
+    setShowCameraPermissionModal(false);
+    startWebcam();
   };
 
   // Start Live Phone / Webcam Stream
@@ -1143,7 +1162,7 @@ export default function DiagnosticsTool() {
           
           {/* Live Camera Button */}
           <button
-            onClick={startWebcam}
+            onClick={requestCameraWithConsent}
             className={`px-2.5 sm:px-3 py-1 rounded-lg text-[10.5px] sm:text-xs font-bold transition-all flex items-center justify-center gap-1.5 touch-manipulation border whitespace-nowrap ${
               inputMode === 'webcam'
                 ? 'bg-gradient-to-r from-emerald-600 to-emerald-500 text-white border-emerald-400 shadow-md shadow-emerald-600/30'
@@ -1590,7 +1609,7 @@ export default function DiagnosticsTool() {
                     </div>
                     <div className="flex gap-2">
                       <button
-                        onClick={startWebcam}
+                        onClick={requestCameraWithConsent}
                         className="px-3 py-1.5 bg-emerald-600 hover:bg-emerald-500 text-white rounded-lg text-xs font-bold shadow"
                       >
                         Open Live Camera
@@ -2055,7 +2074,7 @@ export default function DiagnosticsTool() {
                 {/* Quick Reset Actions */}
                 <div className="grid grid-cols-2 gap-2 pt-1">
                   <button
-                    onClick={startWebcam}
+                    onClick={requestCameraWithConsent}
                     className="px-3 py-2.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-500 text-white flex items-center justify-center gap-1.5 shadow transition-colors touch-manipulation"
                   >
                     <Camera className="w-3.5 h-3.5" />
@@ -2362,6 +2381,59 @@ export default function DiagnosticsTool() {
         </div>
 
       </div>
+
+      {/* Feature-Specific Contextual Prompt: Camera Access Required Modal */}
+      {showCameraPermissionModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-md bg-gradient-to-b from-[#06331f] via-[#042114] to-[#02140c] border-2 border-emerald-500/60 rounded-3xl p-6 sm:p-7 shadow-2xl text-center space-y-4">
+            
+            <div className="w-16 h-16 rounded-2xl bg-amber-400 text-black mx-auto flex items-center justify-center shadow-lg shadow-amber-400/20">
+              <Camera className="w-9 h-9" />
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950 border border-emerald-500/40 text-[10px] font-bold text-emerald-300 uppercase tracking-wider">
+                <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                <span>Feature-Specific Contextual Prompt</span>
+              </div>
+              <h3 className="text-xl font-display font-extrabold text-white">
+                Camera Access Required
+              </h3>
+            </div>
+
+            {/* Mandatory Contextual Statement (DPDP & GDPR Compliant) */}
+            <div className="p-3.5 rounded-2xl bg-black/70 border border-amber-500/40 text-amber-200 text-xs sm:text-sm font-semibold leading-relaxed">
+              &ldquo;Camera access is required only to scan and diagnose crop diseases.&rdquo;
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed text-left">
+              GrainWish AI uses live visual frames to isolate leaf lesions, brown spots, yellow rust pustules, and calculate chlorophyll greenness in real time. Visual frames remain on your device and are never shared or recorded.
+            </p>
+
+            <div className="flex gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowCameraPermissionModal(false)}
+                className="flex-1 py-2.5 px-4 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/60 text-slate-300 text-xs font-bold transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmCameraConsent}
+                className="flex-[1.5] py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-amber-400 hover:from-emerald-400 hover:to-amber-300 text-black text-xs font-black shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Camera className="w-4 h-4 text-black" />
+                <span>Allow Camera</span>
+              </button>
+            </div>
+
+            <div className="text-[10px] text-slate-400 font-mono">
+              DPDP Act 2023 &amp; GDPR Compliant · Revocable at any time
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

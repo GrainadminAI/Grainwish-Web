@@ -177,6 +177,23 @@ Source: GrainWish AI / Agmarknet`;
   }, [loadData]);
 
   // Geolocation Handler
+  const [showGPSPromptModal, setShowGPSPromptModal] = useState(false);
+  const [gpsConsentGranted, setGpsConsentGranted] = useState(false);
+
+  const triggerDetectLocation = () => {
+    if (gpsConsentGranted || userLocation) {
+      handleDetectLocation();
+    } else {
+      setShowGPSPromptModal(true);
+    }
+  };
+
+  const handleConfirmLocationConsent = () => {
+    setGpsConsentGranted(true);
+    setShowGPSPromptModal(false);
+    handleDetectLocation();
+  };
+
   const handleDetectLocation = () => {
     if (!navigator.geolocation) {
       setLocationStatus('Geolocation is not supported by your browser');
@@ -565,7 +582,7 @@ Source: GrainWish AI / Agmarknet`;
               </select>
 
               <button
-                onClick={handleDetectLocation}
+                onClick={triggerDetectLocation}
                 disabled={isLocating}
                 className={`px-2.5 py-1.5 sm:py-2 rounded-lg border text-xs font-bold transition-all shrink-0 flex items-center gap-1 active:scale-95 ${
                   userLocation
@@ -964,6 +981,59 @@ Source: GrainWish AI / Agmarknet`;
         </div>
 
       </div>
+
+      {/* Feature-Specific Contextual Prompt: Mandi & Weather GPS Location Modal */}
+      {showGPSPromptModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
+          <div className="relative w-full max-w-md bg-gradient-to-b from-[#06331f] via-[#042114] to-[#02140c] border-2 border-emerald-500/60 rounded-3xl p-6 sm:p-7 shadow-2xl text-center space-y-4">
+            
+            <div className="w-16 h-16 rounded-2xl bg-amber-400 text-black mx-auto flex items-center justify-center shadow-lg shadow-amber-400/20">
+              <Compass className="w-9 h-9" />
+            </div>
+
+            <div className="space-y-1.5">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-950 border border-emerald-500/40 text-[10px] font-bold text-emerald-300 uppercase tracking-wider">
+                <ShieldCheck className="w-3.5 h-3.5 text-amber-400" />
+                <span>Feature-Specific Contextual Prompt</span>
+              </div>
+              <h3 className="text-xl font-display font-extrabold text-white">
+                Mandi &amp; Weather GPS Access
+              </h3>
+            </div>
+
+            {/* Mandatory Contextual Statement (Agronomic Advisories) */}
+            <div className="p-3.5 rounded-2xl bg-black/70 border border-amber-500/40 text-amber-200 text-xs sm:text-sm font-semibold leading-relaxed">
+              &ldquo;Location access is required to calculate localized Mandi distances, regional prices, and weather alerts for farm-level agronomic advisories.&rdquo;
+            </div>
+
+            <p className="text-xs text-slate-300 leading-relaxed text-left">
+              GrainWish AI sorts 28-state APMC Mandi rates by proximity to your fields and displays localized IMD squall/tarpaulin alerts. Coordinates are processed client-side and never sold.
+            </p>
+
+            <div className="flex gap-2.5 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowGPSPromptModal(false)}
+                className="flex-1 py-2.5 px-4 rounded-xl bg-emerald-950/80 hover:bg-emerald-900 border border-emerald-700/60 text-slate-300 text-xs font-bold transition-colors cursor-pointer"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleConfirmLocationConsent}
+                className="flex-[1.5] py-2.5 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-amber-400 hover:from-emerald-400 hover:to-amber-300 text-black text-xs font-black shadow-lg transition-transform active:scale-95 flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <Compass className="w-4 h-4 text-black" />
+                <span>Allow GPS Access</span>
+              </button>
+            </div>
+
+            <div className="text-[10px] text-slate-400 font-mono">
+              DPDP Act 2023 &amp; GDPR Compliant · Agronomic advisories only
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

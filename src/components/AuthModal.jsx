@@ -24,6 +24,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [showCustomEmail, setShowCustomEmail] = useState(false);
+  const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   // Custom Google input state
   const [customGoogleEmail, setCustomGoogleEmail] = useState('');
@@ -244,6 +245,12 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
   // Primary Action: Continue with Google (Executes Real Google Verification)
   const handleGoogleSignInClick = () => {
     setErrorMessage('');
+
+    if (!agreedToTerms) {
+      setErrorMessage('Please accept the Terms of Service and Privacy Policy to proceed.');
+      return;
+    }
+
     setLoading(true);
     setSuccessMessage('Opening Google verification popup...');
 
@@ -277,6 +284,11 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
   const handleCustomEmailVerify = async (e) => {
     e.preventDefault();
     setErrorMessage('');
+
+    if (!agreedToTerms) {
+      setErrorMessage('Please accept the Terms of Service and Privacy Policy to proceed.');
+      return;
+    }
 
     const email = customGoogleEmail.trim().toLowerCase();
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
@@ -387,8 +399,41 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
         )}
 
         {/* GOOGLE SIGN-IN SECTION */}
-        <div className="space-y-4 pt-1">
+        <div className="space-y-3 pt-1">
           
+          {/* Explicit Consent Checkbox (Active Consent Required, un-ticked by default) */}
+          <div className="bg-black/50 border border-emerald-900/70 rounded-xl p-3 text-left">
+            <label className="flex items-start gap-2.5 cursor-pointer group select-none">
+              <input 
+                type="checkbox"
+                checked={agreedToTerms}
+                onChange={(e) => {
+                  setAgreedToTerms(e.target.checked);
+                  if (e.target.checked) setErrorMessage('');
+                }}
+                className="mt-0.5 w-4 h-4 rounded border-emerald-600 bg-black/70 text-emerald-500 focus:ring-emerald-400 focus:ring-offset-0 cursor-pointer shrink-0 accent-emerald-500"
+              />
+              <span className="text-[11px] text-slate-300 leading-snug">
+                By proceeding, you agree to our{' '}
+                <button 
+                  type="button" 
+                  onClick={(e) => { e.stopPropagation(); navigateToPolicy('terms'); }}
+                  className="text-emerald-400 hover:text-emerald-300 underline font-semibold cursor-pointer"
+                >
+                  Terms of Service
+                </button>{' '}
+                and consent to our{' '}
+                <button 
+                  type="button" 
+                  onClick={(e) => { e.stopPropagation(); navigateToPolicy('privacy'); }}
+                  className="text-emerald-400 hover:text-emerald-300 underline font-semibold cursor-pointer"
+                >
+                  Privacy Policy
+                </button>.
+              </span>
+            </label>
+          </div>
+
           {/* Prominent Google OAuth Verification Button */}
           <button
             onClick={handleGoogleSignInClick}

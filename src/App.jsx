@@ -67,6 +67,9 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
           onOpenDownloadModal={onOpenDownloadModal}
           selectedLang={selectedLang}
           setSelectedLang={setSelectedLang}
+          onOpenPrivacyPolicy={onOpenPrivacyPolicy}
+          onOpenTerms={onOpenTerms}
+          onOpenSecurityPolicy={onOpenSecurityPolicy}
         />
 
       {/* Hero Section with 3D Canvas */}
