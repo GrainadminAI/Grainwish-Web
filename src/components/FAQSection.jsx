@@ -19,32 +19,32 @@ import { useLanguage } from '../lib/LanguageContext';
 const FAQS_DATA = [
   {
     id: 1,
+    category: 'platform',
+    categoryName: 'Platform Overview',
+    q: 'What is GrainWish AI?',
+    a: 'GrainWish AI is an agritech intelligence platform providing Indian farmers with instant crop disease diagnostics, live Mandi prices, and precision NPK calculations across 22 native Indian languages.',
+    actionText: 'Explore Features',
+    actionTarget: '#empower-harvest',
+    actionIcon: Sparkles,
+    tag: 'Platform Overview'
+  },
+  {
+    id: 2,
     category: 'diagnostics',
     categoryName: 'AI Diagnostics',
-    q: 'How does the AI crop disease diagnosis work?',
-    a: 'Simply open the Grainwish AI app, select camera diagnostics, and point your phone at the affected leaf, stem, or grain head. Our deep computer vision neural network analyzes leaf coloration, spots, pustules, and vein patterns in under 3 seconds to identify over 300+ crop pathogens and generate a step-by-step treatment plan.',
+    q: 'How does the AI crop disease diagnostics work?',
+    a: 'Farmers take or upload a photograph of an affected crop leaf. The computer vision model analyzes visual symptoms in seconds to identify pests or pathogens and supplies verified organic and chemical treatment advice.',
     actionText: 'Try Diagnostics Simulator',
     actionTarget: '#diagnostics',
     actionIcon: Camera,
     tag: '300+ Pathogens'
   },
   {
-    id: 2,
-    category: 'diagnostics',
-    categoryName: 'AI Diagnostics',
-    q: 'Which crops are supported by the diagnostics tool?',
-    a: 'Grainwish AI supports all major commercial Indian crops including Wheat, Paddy / Rice, Cotton, Turmeric, Sugarcane, Maize, Mustard, Soybean, Pulses (Gram, Arhar), Onion, Tomato, Chilli, and Citrus fruits with multi-spectral validation.',
-    actionText: 'View Diagnostic Crops',
-    actionTarget: '#diagnostics',
-    actionIcon: Leaf,
-    tag: '14+ Major Crops'
-  },
-  {
     id: 3,
     category: 'mandi',
     categoryName: 'Mandi & MSP',
-    q: 'What are real-time Mandi updates?',
-    a: 'Real-time Mandi updates connect directly to APMC markets and government procurement portals across India. You get live daily trading rates, historical price trend graphs, MSP (Minimum Support Price) comparisons, and distance to your nearest procurement center.',
+    q: 'How are Mandi and MSP rates updated?',
+    a: 'Mandi rates and Minimum Support Prices (MSP) are synchronized continuously from official agricultural market feeds, categorized by state, district, and commodity for transparent price discovery.',
     actionText: 'Explore Mandi Radar',
     actionTarget: '#mandi',
     actionIcon: TrendingUp,
@@ -52,14 +52,14 @@ const FAQS_DATA = [
   },
   {
     id: 4,
-    category: 'mandi',
-    categoryName: 'Mandi & MSP',
-    q: 'How accurate are the Mandi price updates?',
-    a: 'Mandi price data is updated multiple times daily directly from verified APMC market feeds, state portals, and local market reporters with 99.5% price accuracy and live volume arrivals tracking.',
-    actionText: 'Check Verified Rates',
-    actionTarget: '#mandi',
-    actionIcon: CheckCircle2,
-    tag: '99.5% Accuracy'
+    category: 'npk',
+    categoryName: 'NPK Calculator',
+    q: 'What is the Precision NPK Calculator?',
+    a: 'The NPK Calculator calculates the exact nitrogen, phosphorus, and potassium dosage required per acre based on crop variety, soil test results, and regional agricultural guidelines to eliminate fertilizer wastage.',
+    actionText: 'Calculate Fertilizer',
+    actionTarget: '#npk',
+    actionIcon: Leaf,
+    tag: 'Soil Nutrition'
   },
   {
     id: 5,
@@ -272,7 +272,7 @@ export default function FAQSection() {
                   {/* Accordion Answer & Featurable Action Link */}
                   {isOpen && (
                     <div className="px-3 sm:px-3.5 pb-3 sm:pb-3.5 pt-1 text-[11px] sm:text-xs text-slate-300 leading-relaxed border-t border-emerald-900/40 space-y-2">
-                      <p>{t(`faq_${faq.id}_a`, faq.a)}</p>
+                      <p className="faq-answer">{t(`faq_${faq.id}_a`, faq.a)}</p>
 
                       <div className="pt-1.5 flex items-center justify-between border-t border-emerald-900/30">
                         <button

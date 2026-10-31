@@ -47,7 +47,7 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
             </div>
 
             {/* Main Headline - Responsive Fluid Typography (Fits perfectly on 320px - 480px mobile screens) */}
-            <h1 className="font-display text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight sm:leading-[1.12]">
+            <h1 className="hero-headline font-display text-2xl xs:text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-white leading-tight sm:leading-[1.12]">
               {t('hero_welcome')} <br />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 via-amber-300 to-amber-400">
                 {t('hero_brand')}
@@ -55,7 +55,7 @@ export default function HeroSection({ onOpenDownloadModal, onScanClick }) {
             </h1>
 
             {/* Subtitle / Paragraph */}
-            <p className="text-xs sm:text-sm lg:text-base text-slate-200/95 max-w-xl mx-auto lg:mx-0 leading-normal sm:leading-relaxed">
+            <p className="hero-description text-xs sm:text-sm lg:text-base text-slate-200/95 max-w-xl mx-auto lg:mx-0 leading-normal sm:leading-relaxed">
               {t('hero_subtitle')}
             </p>
 
