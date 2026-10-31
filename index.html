@@ -86,39 +86,125 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
 
-    <!-- Schema.org Structured Data (JSON-LD) -->
+    <!-- Consolidated Schema.org Structured Data (JSON-LD @graph Architecture) -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Organization",
-      "name": "GrainWish AI",
-      "url": "https://www.grainwish.com/",
-      "description": "AI-powered crop disease detection, fertilizer advice and mandi prices for Indian farmers."
-    }
-    </script>
-
-    <!-- WebApplication Schema (JSON-LD) -->
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "WebApplication",
-      "@id": "https://www.grainwish.com/#webapp",
-      "name": "GrainWish AI Web Platform",
-      "url": "https://www.grainwish.com",
-      "applicationCategory": "AgricultureApplication",
-      "operatingSystem": "All modern browsers, Android, iOS",
-      "browserRequirements": "Requires JavaScript. Requires HTML5.",
-      "offers": {
-        "@type": "Offer",
-        "price": "0",
-        "priceCurrency": "INR"
-      },
-      "featureList": [
-        "Camera-based AI Crop Disease Diagnostics",
-        "Precision Soil NPK Calculator",
-        "Live APMC Mandi Prices & MSP Locator",
-        "Ananya AI Assistant in 22 Native Languages",
-        "Interactive Farming Calendar & Government Schemes Tracker"
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://www.grainwish.com/#organization",
+          "name": "GrainWish AI",
+          "url": "https://www.grainwish.com",
+          "logo": {
+            "@type": "ImageObject",
+            "@id": "https://www.grainwish.com/#logo",
+            "url": "https://www.grainwish.com/logo.webp",
+            "caption": "GrainWish AI Logo"
+          },
+          "description": "AI-powered agritech platform offering crop disease diagnostics, real-time mandi prices, and precision farming advisory across India.",
+          "sameAs": [
+            "https://www.linkedin.com/company/grainwish",
+            "https://twitter.com/grainwish",
+            "https://github.com/grainwish"
+          ],
+          "contactPoint": [
+            {
+              "@type": "ContactPoint",
+              "contactType": "customer support",
+              "url": "https://www.grainwish.com/contact",
+              "availableLanguage": ["en", "hi", "bn"]
+            }
+          ]
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://www.grainwish.com/#webapp",
+          "name": "GrainWish AI Agritech Platform",
+          "url": "https://www.grainwish.com",
+          "applicationCategory": "AgricultureApplication",
+          "operatingSystem": "All modern web browsers, Android, iOS",
+          "browserRequirements": "Requires JavaScript. Requires HTML5.",
+          "publisher": {
+            "@id": "https://www.grainwish.com/#organization"
+          },
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "INR"
+          },
+          "featureList": [
+            "AI Crop Disease Diagnostics via Leaf Photo Scan",
+            "Real-Time Mandi Rates and MSP Updates",
+            "Precision NPK Fertilizer Dosage Calculator",
+            "Localized Weather Forecasts & Advisory",
+            "24/7 Ananya AI Multilingual Assistant"
+          ]
+        },
+        {
+          "@type": "WebPage",
+          "@id": "https://www.grainwish.com/#webpage",
+          "url": "https://www.grainwish.com",
+          "name": "GrainWish AI 🌾 | Smart Crop Diagnostics & Mandi Rates",
+          "isPartOf": {
+            "@id": "https://www.grainwish.com/#organization"
+          },
+          "about": {
+            "@id": "https://www.grainwish.com/#webapp"
+          },
+          "inLanguage": "en-IN",
+          "datePublished": "2026-03-01T00:00:00+05:30",
+          "dateModified": "2026-10-31T00:00:00+05:30",
+          "speakable": {
+            "@type": "SpeakableSpecification",
+            "cssSelector": [
+              ".hero-headline",
+              ".hero-description",
+              ".faq-answer"
+            ]
+          }
+        },
+        {
+          "@type": "FAQPage",
+          "@id": "https://www.grainwish.com/#faq",
+          "isPartOf": {
+            "@id": "https://www.grainwish.com/#webpage"
+          },
+          "mainEntity": [
+            {
+              "@type": "Question",
+              "name": "What is GrainWish AI?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "GrainWish AI is an agritech intelligence platform providing Indian farmers with instant crop disease diagnostics, live Mandi prices, and precision NPK calculations across 22 native Indian languages."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How does the AI crop disease diagnostics work?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Farmers take or upload a photograph of an affected crop leaf. The computer vision model analyzes visual symptoms in seconds to identify pests or pathogens and supplies verified organic and chemical treatment advice."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "How are Mandi and MSP rates updated?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "Mandi rates and Minimum Support Prices (MSP) are synchronized continuously from official agricultural market feeds, categorized by state, district, and commodity for transparent price discovery."
+              }
+            },
+            {
+              "@type": "Question",
+              "name": "What is the Precision NPK Calculator?",
+              "acceptedAnswer": {
+                "@type": "Answer",
+                "text": "The NPK Calculator calculates the exact nitrogen, phosphorus, and potassium dosage required per acre based on crop variety, soil test results, and regional agricultural guidelines to eliminate fertilizer wastage."
+              }
+            }
+          ]
+        }
       ]
     }
     </script>
