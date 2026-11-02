@@ -15,6 +15,39 @@ const supabaseAnonKey = (typeof import.meta !== 'undefined' && import.meta?.env?
 
 export const isSupabaseConfigured = Boolean(rawUrl && supabaseAnonKey);
 
+/**
+ * Get active session Authorization Bearer token (JWT or demo token)
+ */
+export async function getAuthToken() {
+  try {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.access_token) return session.access_token;
+    if (typeof window !== 'undefined') {
+      const guest = localStorage.getItem('grainwise_guest_user');
+      if (guest) {
+        try {
+          const parsed = JSON.parse(guest);
+          return parsed.token || `demo-bearer-token-${parsed.id || 'farmer'}`;
+        } catch (_) {}
+      }
+    }
+    return null;
+  } catch (_) {
+    return null;
+  }
+}
+
+/**
+ * Triggers UI Authentication modal for unauthenticated user actions
+ */
+export function promptUserLogin(message = 'Please log in to continue.') {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('grainwise_open_auth_modal', {
+      detail: { message }
+    }));
+  }
+}
+
 export const supabase = createClient(supabaseUrl, supabaseAnonKey || 'placeholder-key', {
   auth: {
     persistSession: true,
@@ -43,14 +76,40 @@ export async function fetchMandiPricesFromDB() {
 }
 
 /**
- * Save Crop Diagnostic Scan to Supabase
+ * Save Crop Diagnostic Scan to Supabase (Requires Authenticated Session)
  */
 export async function saveDiagnosticScanToDB(scan) {
-  if (!isSupabaseConfigured) return { success: false, reason: 'unconfigured' };
+  const user = await getLoggedInUser();
+  if (!user) {
+    promptUserLogin('Please log in or register to analyze and save crop diagnostics.');
+    return { success: false, requireLogin: true, error: 'Authentication required. Please log in.' };
+  }
+
+  const token = await getAuthToken();
+
+  if (!isSupabaseConfigured) {
+    try {
+      if (typeof fetch !== 'undefined') {
+        const res = await fetch('/api/diagnostics/scan', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify(scan)
+        });
+        const data = await res.json();
+        return data;
+      }
+    } catch (_) {}
+    return { success: false, reason: 'unconfigured' };
+  }
+
   try {
     const { data, error } = await supabase
       .from('diagnostics_scans')
       .insert([{
+        user_id: user?.id || null,
         crop: sanitizeText(scan.crop, 100),
         disease: sanitizeText(scan.disease, 100),
         location: sanitizeText(scan.location, 100),
@@ -73,11 +132,31 @@ export async function saveDiagnosticScanToDB(scan) {
  * Save Ananya AI Chat to Supabase
  */
 export async function saveAnanyaChatToDB(chat) {
-  if (!isSupabaseConfigured) return { success: false, reason: 'unconfigured' };
+  const user = await getLoggedInUser();
+  const token = await getAuthToken();
+
+  if (!isSupabaseConfigured) {
+    try {
+      if (typeof fetch !== 'undefined') {
+        const res = await fetch('/api/ananya/chat', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify(chat)
+        });
+        return await res.json();
+      }
+    } catch (_) {}
+    return { success: false, reason: 'unconfigured' };
+  }
+
   try {
     const { data, error } = await supabase
       .from('ananya_chats')
       .insert([{
+        user_id: user?.id || null,
         user_text: sanitizeText(chat.userText, 1000),
         ananya_response: sanitizeText(chat.ananyaResponse, 2000),
         language: sanitizeText(chat.language, 50)
@@ -91,14 +170,38 @@ export async function saveAnanyaChatToDB(chat) {
 }
 
 /**
- * Save NPK Calculation to Supabase
+ * Save NPK Calculation to Supabase (Requires Authenticated Session)
  */
 export async function saveNPKToDB(calc) {
-  if (!isSupabaseConfigured) return { success: false, reason: 'unconfigured' };
+  const user = await getLoggedInUser();
+  if (!user) {
+    return { success: false, requireLogin: true, error: 'Authentication required. Please log in.' };
+  }
+
+  const token = await getAuthToken();
+
+  if (!isSupabaseConfigured) {
+    try {
+      if (typeof fetch !== 'undefined') {
+        const res = await fetch('/api/npk/calculate', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+          },
+          body: JSON.stringify(calc)
+        });
+        return await res.json();
+      }
+    } catch (_) {}
+    return { success: false, reason: 'unconfigured' };
+  }
+
   try {
     const { data, error } = await supabase
       .from('npk_calculations')
       .insert([{
+        user_id: user?.id || null,
         crop: sanitizeText(calc.crop, 100),
         soil_type: sanitizeText(calc.soilType, 100),
         acres: sanitizeNumeric(calc.acres, 0.1, 1000, 1),
@@ -139,6 +242,11 @@ export async function recordAppDownloadToDB(platform) {
 export async function saveFeedbackToDB(feedback) {
   try {
     const user = await getLoggedInUser();
+    if (!user) {
+      promptUserLogin('Please log in or register before submitting verified feedback.');
+      return { success: false, requireLogin: true, error: 'Authentication required. Please log in.' };
+    }
+
     const payload = {
       user_id: user?.id || null,
       phone: sanitizePhone(feedback.phone),
@@ -156,6 +264,19 @@ export async function saveFeedbackToDB(feedback) {
     }));
 
     if (!isSupabaseConfigured) {
+      try {
+        const token = await getAuthToken();
+        if (typeof fetch !== 'undefined') {
+          await fetch('/api/feedback', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+            },
+            body: JSON.stringify(payload)
+          });
+        }
+      } catch (_) {}
       return { success: true, isLocalOnly: true, data: payload };
     }
 
@@ -596,10 +717,15 @@ export async function recordConsentAuditLog({
 
   // 2. Post to backend server API
   try {
-    fetch('/api/consent/log', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
+    getAuthToken().then(token => {
+      fetch('/api/consent/log', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(payload)
+      }).catch(() => {});
     }).catch(() => {});
   } catch (_) {}
 

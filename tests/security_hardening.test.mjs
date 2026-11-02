@@ -130,4 +130,68 @@ test('Comprehensive Security Hardening Suite (18 Critical Checks)', async (t) =>
     assert.strictEqual(pkg.dependencies['framer-motion'], undefined, 'framer-motion must be removed');
     assert.strictEqual(pkg.dependencies['typescript'], undefined, 'typescript must not be in production dependencies');
   });
+
+  // 6. Zero Hardcoded Credentials & Frontend Environment Strictness
+  await t.test('Security 16: AuthModal.jsx has zero hardcoded Google Client IDs or credentials', () => {
+    const authModalCode = fs.readFileSync(path.join(rootDir, 'src', 'components', 'AuthModal.jsx'), 'utf8');
+    assert.doesNotMatch(authModalCode, /667150516323-ic01cfnmep6esqv7uj3g9qqe6tref0n6/, 'Must not contain hardcoded Google Client ID');
+    assert.match(authModalCode, /import\.meta\?\.env\?\.VITE_GOOGLE_CLIENT_ID/, 'Must strictly read from import.meta.env');
+  });
+
+  // 7. Backend Authentication & Protected Endpoints
+  await t.test('Security 17: server/index.js defines userAuthMiddleware rejecting unauthenticated requests', () => {
+    const serverCode = fs.readFileSync(path.join(rootDir, 'server', 'index.js'), 'utf8');
+    assert.match(serverCode, /async function userAuthMiddleware\(req, res, next\)/, 'Must define userAuthMiddleware');
+    assert.match(serverCode, /code:\s*['"]UNAUTHORIZED['"]/, 'Must send UNAUTHORIZED code');
+    assert.match(serverCode, /Bearer/, 'Must validate Bearer tokens');
+  });
+
+  await t.test('Security 18: server/index.js protects diagnostics, npk, chat, and feedback routes with userAuthMiddleware', () => {
+    const serverCode = fs.readFileSync(path.join(rootDir, 'server', 'index.js'), 'utf8');
+    assert.match(serverCode, /app\.post\(['"]\/api\/diagnostics\/scan['"],\s*diagnosticsLimiter,\s*userAuthMiddleware/, 'Diagnostics must require auth');
+    assert.match(serverCode, /app\.post\(['"]\/api\/npk\/calculate['"],\s*npkLimiter,\s*userAuthMiddleware/, 'NPK must require auth');
+    assert.match(serverCode, /app\.post\(['"]\/api\/ananya\/chat['"],\s*chatLimiter,\s*userAuthMiddleware/, 'Chat must require auth');
+    assert.match(serverCode, /app\.post\(['"]\/api\/feedback['"],\s*feedbackLimiter,\s*userAuthMiddleware/, 'Feedback must require auth');
+  });
+
+  // 8. Tiered Rate Limiting & RFC Headers
+  await t.test('Security 19: server/index.js defines tiered rate limiters and sets RFC RateLimit headers', () => {
+    const serverCode = fs.readFileSync(path.join(rootDir, 'server', 'index.js'), 'utf8');
+    assert.match(serverCode, /createRateLimiter/, 'Must define reusable createRateLimiter');
+    assert.match(serverCode, /RateLimit-Limit/, 'Must emit RateLimit-Limit header');
+    assert.match(serverCode, /RateLimit-Remaining/, 'Must emit RateLimit-Remaining header');
+    assert.match(serverCode, /RateLimit-Reset/, 'Must emit RateLimit-Reset header');
+    assert.match(serverCode, /Retry-After/, 'Must emit Retry-After header on 429');
+    assert.match(serverCode, /authLimiter/, 'Must define dedicated authLimiter');
+    assert.match(serverCode, /diagnosticsLimiter/, 'Must define dedicated diagnosticsLimiter');
+    assert.match(serverCode, /npkLimiter/, 'Must define dedicated npkLimiter');
+    assert.match(serverCode, /chatLimiter/, 'Must define dedicated chatLimiter');
+    assert.match(serverCode, /mandiLimiter/, 'Must define dedicated mandiLimiter');
+  });
+
+  // 9. Host Server Alignment
+  await t.test('Security 20: server/host.js enforces matching userAuthMiddleware and rate limiters', () => {
+    const hostCode = fs.readFileSync(path.join(rootDir, 'server', 'host.js'), 'utf8');
+    assert.match(hostCode, /userAuthMiddleware/, 'host.js must define userAuthMiddleware');
+    assert.match(hostCode, /adminAuthMiddleware/, 'host.js must define adminAuthMiddleware');
+    assert.match(hostCode, /diagnosticsLimiter/, 'host.js must define diagnosticsLimiter');
+    assert.match(hostCode, /npkLimiter/, 'host.js must define npkLimiter');
+    assert.match(hostCode, /chatLimiter/, 'host.js must define chatLimiter');
+  });
+
+  // 10. Frontend Authentication Gatekeeping
+  await t.test('Security 21: src/lib/supabase.js exports getAuthToken and promptUserLogin', () => {
+    const supabaseCode = fs.readFileSync(path.join(rootDir, 'src', 'lib', 'supabase.js'), 'utf8');
+    assert.match(supabaseCode, /export async function getAuthToken\(\)/, 'Must export getAuthToken');
+    assert.match(supabaseCode, /export function promptUserLogin\(/, 'Must export promptUserLogin');
+    assert.match(supabaseCode, /promptUserLogin\(/, 'Must trigger promptUserLogin when unauthenticated');
+  });
+
+  // 11. Admin Route Portal & RBAC
+  await t.test('Security 22: AdminPortalPage.jsx enforces authentication and admin role checks', () => {
+    const adminCode = fs.readFileSync(path.join(rootDir, 'src', 'components', 'AdminPortalPage.jsx'), 'utf8');
+    assert.match(adminCode, /checkUserAdminAccess/, 'Must use checkUserAdminAccess');
+    assert.match(adminCode, /\/api\/admin\/health/, 'Must query /api/admin/health');
+    assert.match(adminCode, /\/api\/admin\/audit-logs/, 'Must query /api/admin/audit-logs');
+  });
 });

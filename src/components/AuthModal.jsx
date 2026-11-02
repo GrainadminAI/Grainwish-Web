@@ -16,8 +16,10 @@ import { useLanguage } from '../lib/LanguageContext';
 import { useBrandTheme } from '../lib/BrandThemeContext';
 import { sanitizeText, sanitizeEmail } from '../lib/securityUtils';
 
-export const SUPABASE_CALLBACK_URL = 'https://drhraerbklibrkigbdaw.supabase.co/auth/v1/callback';
-export const GOOGLE_CLIENT_ID = (typeof import.meta !== 'undefined' && import.meta?.env?.VITE_GOOGLE_CLIENT_ID) || '667150516323-ic01cfnmep6esqv7uj3g9qqe6tref0n6.apps.googleusercontent.com';
+export const SUPABASE_CALLBACK_URL = (typeof import.meta !== 'undefined' && import.meta?.env?.VITE_SUPABASE_URL 
+  ? `${import.meta.env.VITE_SUPABASE_URL}/auth/v1/callback` 
+  : (typeof window !== 'undefined' ? `${window.location.origin}/auth/v1/callback` : ''));
+export const GOOGLE_CLIENT_ID = (typeof import.meta !== 'undefined' && import.meta?.env?.VITE_GOOGLE_CLIENT_ID) || '';
 
 export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
   const { t } = useLanguage();

@@ -43,7 +43,11 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
         setCurrentUser(u);
       }
     };
+    const handleOpenAuthModal = () => {
+      setAuthModalOpen(true);
+    };
     window.addEventListener('grainwise_auth_change', handleLocalAuthChange);
+    window.addEventListener('grainwise_open_auth_modal', handleOpenAuthModal);
     window.addEventListener('storage', handleLocalAuthChange);
 
     // Auth State Listener
@@ -71,6 +75,7 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('grainwise_auth_change', handleLocalAuthChange);
+      window.removeEventListener('grainwise_open_auth_modal', handleOpenAuthModal);
       window.removeEventListener('storage', handleLocalAuthChange);
       subscription?.unsubscribe();
     };

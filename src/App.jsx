@@ -19,6 +19,7 @@ import TermsConditionsPage from './components/TermsConditionsPage';
 import SecurityPolicyPage from './components/SecurityPolicyPage';
 import CertificateTermsPage from './components/CertificateTermsPage';
 import GrievanceRedressalPage from './components/GrievanceRedressalPage';
+import AdminPortalPage from './components/AdminPortalPage';
 import NotFoundPage from './components/NotFoundPage';
 import { recordUserVisitToDB } from './lib/supabase';
 import { LanguageProvider, useLanguage } from './lib/LanguageContext';
@@ -144,6 +145,7 @@ function RootApp() {
     if (path === '/security' || hash === '#security') return 'security';
     if (path === '/certificate-terms' || hash === '#certificate-terms') return 'certificate-terms';
     if (path === '/grievance' || hash === '#grievance') return 'grievance';
+    if (path === '/admin' || hash === '#admin') return 'admin';
     if (path === '/' || path === '' || path === '/index.html') return 'home';
     return '404';
   });
@@ -205,6 +207,9 @@ function RootApp() {
       } else if (path === '/grievance' || hash === '#grievance') {
         setCurrentRoute('grievance');
         window.scrollTo({ top: 0, behavior: 'smooth' });
+      } else if (path === '/admin' || hash === '#admin') {
+        setCurrentRoute('admin');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       } else if (path === '/' || path === '' || path === '/index.html' || hash.startsWith('#')) {
         setCurrentRoute('home');
       } else {
@@ -234,6 +239,7 @@ function RootApp() {
     else if (route === 'security') newPath = '/security';
     else if (route === 'certificate-terms') newPath = '/certificate-terms';
     else if (route === 'grievance') newPath = '/grievance';
+    else if (route === 'admin') newPath = '/admin';
     else if (route === '404') newPath = '/404';
 
     if (hash) newPath += hash;
@@ -271,6 +277,17 @@ function RootApp() {
 
       {currentRoute === 'grievance' && (
         <GrievanceRedressalPage onBackToHome={() => navigateTo('home')} />
+      )}
+
+      {currentRoute === 'admin' && (
+        <AdminPortalPage
+          onBackToHome={() => navigateTo('home')}
+          onOpenAuthModal={() => {
+            if (typeof window !== 'undefined') {
+              window.dispatchEvent(new CustomEvent('grainwise_open_auth_modal'));
+            }
+          }}
+        />
       )}
 
       {currentRoute === '404' && (
