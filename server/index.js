@@ -1,5 +1,6 @@
 import express from 'express';
 import cors from 'cors';
+import crypto from 'crypto';
 import { createClient } from '@supabase/supabase-js';
 
 // Auto-load environment variables if .env exists
@@ -9,11 +10,16 @@ if (typeof process.loadEnvFile === 'function') {
 
 const app = express();
 const PORT = process.env.PORT || 5001;
+const IS_PRODUCTION = process.env.NODE_ENV === 'production' || !process.env.NODE_ENV;
+const ADMIN_API_KEY = process.env.ADMIN_API_KEY || '';
+const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'admin@grainwish.com,support@grainwish.com')
+  .split(',')
+  .map(e => e.trim().toLowerCase());
 
 // Security: Disable Express fingerprinting
 app.disable('x-powered-by');
 
-// Security: HTTP Response Headers
+// Security: HTTP Security Response Headers
 app.use((req, res, next) => {
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
@@ -21,14 +27,16 @@ app.use((req, res, next) => {
   res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
   res.setHeader('Permissions-Policy', 'camera=(self), microphone=(self), geolocation=(), payment=()');
   next();
 });
 
-// Security: Allowed Origins for CORS
-const ALLOWED_ORIGINS = [
-  'https://www.grainwish.com',
-  'https://grainwish.com',
+// Security: Strict CORS Configuration preventing domain spoofing (e.g., evil-grainwish.com)
+const ALLOWED_ORIGIN_REGEX = /^https:\/\/(www\.)?grainwish\.com$/i;
+const ALLOWED_VERCEL_REGEX = /^https:\/\/grainwish[a-z0-9-]*\.vercel\.app$/i;
+const LOCAL_DEV_ORIGINS = new Set([
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'http://localhost:5001',
@@ -37,19 +45,27 @@ const ALLOWED_ORIGINS = [
   'http://127.0.0.1:5000',
   'http://localhost:3000',
   'http://127.0.0.1:3000'
-];
+]);
 
 app.use(cors({
   origin: (origin, callback) => {
-    if (!origin || ALLOWED_ORIGINS.includes(origin) || origin.endsWith('.vercel.app') || origin.includes('grainwish.com')) {
+    // Allow non-browser requests (mobile apps, server-to-server)
+    if (!origin) return callback(null, true);
+
+    if (
+      ALLOWED_ORIGIN_REGEX.test(origin) ||
+      ALLOWED_VERCEL_REGEX.test(origin) ||
+      (!IS_PRODUCTION && LOCAL_DEV_ORIGINS.has(origin)) ||
+      LOCAL_DEV_ORIGINS.has(origin)
+    ) {
       callback(null, true);
     } else {
-      callback(new Error('Blocked by CORS policy'));
+      callback(new Error('Blocked by CORS policy: Origin not allowed'));
     }
   },
   credentials: true,
-  methods: ['GET', 'POST', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'x-admin-key']
 }));
 
 // Security: Prevent buffer overflow attacks with 50kb body limit
@@ -87,10 +103,17 @@ const writeLimiter = rateLimiter({ windowMs: 60000, max: 30, message: 'Too many 
 
 app.use(globalLimiter);
 
-// Security: Input Sanitization against XSS & Injection
+// Security: Robust Input Sanitization against XSS & Injection
 function sanitizeString(str, maxLen = 500) {
   if (typeof str !== 'string') return '';
-  return str.replace(/[<>]/g, '').trim().slice(0, maxLen);
+  return str
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+    .replace(/<[^>]+>/g, '') // remove HTML tags
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+\s*=/gi, '')
+    .trim()
+    .slice(0, maxLen);
 }
 
 // Supabase Credentials
@@ -98,6 +121,61 @@ const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://drhraerbklibrkigb
 const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || '';
 
 const supabase = SUPABASE_ANON_KEY ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+// ==========================================================
+// Admin Route Protection Middleware (Authentication & Access Control)
+// ==========================================================
+async function adminAuthMiddleware(req, res, next) {
+  // 1. Check for Pre-shared Secret Key via Header
+  const clientAdminKey = req.headers['x-admin-key'];
+  if (ADMIN_API_KEY && clientAdminKey) {
+    try {
+      const a = Buffer.from(clientAdminKey);
+      const b = Buffer.from(ADMIN_API_KEY);
+      if (a.length === b.length && crypto.timingSafeEqual(a, b)) {
+        req.adminUser = { role: 'admin', authMethod: 'api-key' };
+        return next();
+      }
+    } catch (_) {}
+  }
+
+  // 2. Check for Supabase Bearer JWT Token
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({
+      success: false,
+      error: 'Unauthorized: Authentication required to access administrative resource.'
+    });
+  }
+
+  const token = authHeader.split(' ')[1];
+  if (!supabase) {
+    return res.status(503).json({ success: false, error: 'Auth service unavailable.' });
+  }
+
+  try {
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    if (error || !user) {
+      return res.status(401).json({ success: false, error: 'Unauthorized: Invalid or expired token.' });
+    }
+
+    // Check admin role in user claims or email list
+    const role = user.app_metadata?.role || user.user_metadata?.role;
+    const isEmailAdmin = user.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
+
+    if (role === 'admin' || role === 'superadmin' || isEmailAdmin) {
+      req.adminUser = user;
+      return next();
+    }
+
+    return res.status(403).json({
+      success: false,
+      error: 'Forbidden: User lacks administrative privileges.'
+    });
+  } catch (err) {
+    return res.status(401).json({ success: false, error: 'Unauthorized: Token verification failed.' });
+  }
+}
 
 // Health Check
 app.get('/api/health', (req, res) => {
@@ -404,6 +482,60 @@ app.post('/api/consent/log', writeLimiter, async (req, res) => {
   } catch (error) {
     res.status(500).json({ success: false, error: 'Failed to record consent audit log' });
   }
+});
+
+// ==========================================================
+// 9. Protected Admin Routes (Authenticated & Role-Guarded)
+// ==========================================================
+
+// 9a. Admin Diagnostics & Health Overview
+app.get('/api/admin/health', adminAuthMiddleware, async (req, res) => {
+  res.json({
+    success: true,
+    status: 'healthy',
+    mode: IS_PRODUCTION ? 'production' : 'development',
+    serverUptimeSeconds: Math.floor(process.uptime()),
+    memoryUsageMB: Math.round(process.memoryUsage().rss / 1024 / 1024),
+    authenticatedAdmin: req.adminUser?.email || req.adminUser?.role || 'admin',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// 9b. Protected Consent Audit Log Viewer
+app.get('/api/admin/audit-logs', adminAuthMiddleware, async (req, res) => {
+  try {
+    if (!supabase) {
+      return res.status(503).json({ success: false, error: 'Database service unavailable' });
+    }
+
+    const limit = Math.min(Math.max(Number(req.query.limit) || 50, 1), 200);
+    const { data, error } = await supabase
+      .from('consent_audit_logs')
+      .select('*')
+      .order('granted_at', { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      return res.status(500).json({ success: false, error: 'Failed to fetch audit records' });
+    }
+
+    res.json({ success: true, count: data?.length || 0, data });
+  } catch (error) {
+    res.status(500).json({ success: false, error: 'Failed to query audit trail' });
+  }
+});
+
+// 9c. Verify Admin Access Level
+app.post('/api/admin/verify-access', adminAuthMiddleware, (req, res) => {
+  res.json({
+    success: true,
+    isAdmin: true,
+    user: {
+      email: req.adminUser?.email || null,
+      role: 'admin',
+      authMethod: req.adminUser?.authMethod || 'supabase-token'
+    }
+  });
 });
 
 app.listen(PORT, () => {

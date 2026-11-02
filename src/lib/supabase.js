@@ -1,4 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
+import { sanitizeText, sanitizeEmail, sanitizePhone, sanitizeNumeric, checkUserAdminAccess } from './securityUtils';
+
+export { sanitizeText, sanitizeEmail, sanitizePhone, sanitizeNumeric, checkUserAdminAccess };
 
 let rawUrl = (typeof import.meta !== 'undefined' && import.meta?.env?.VITE_SUPABASE_URL) || 
   (typeof process !== 'undefined' && process.env?.VITE_SUPABASE_URL) || '';
@@ -48,14 +51,14 @@ export async function saveDiagnosticScanToDB(scan) {
     const { data, error } = await supabase
       .from('diagnostics_scans')
       .insert([{
-        crop: scan.crop,
-        disease: scan.disease,
-        location: scan.location,
-        confidence: scan.confidence,
-        severity: scan.severity,
-        symptoms: scan.symptoms,
-        treatment: scan.treatment,
-        yield_protected: scan.yieldProtected
+        crop: sanitizeText(scan.crop, 100),
+        disease: sanitizeText(scan.disease, 100),
+        location: sanitizeText(scan.location, 100),
+        confidence: sanitizeText(scan.confidence, 50),
+        severity: sanitizeText(scan.severity, 50),
+        symptoms: sanitizeText(scan.symptoms, 500),
+        treatment: sanitizeText(scan.treatment, 1000),
+        yield_protected: sanitizeText(scan.yieldProtected, 100)
       }])
       .select();
     if (error) throw error;
@@ -75,9 +78,9 @@ export async function saveAnanyaChatToDB(chat) {
     const { data, error } = await supabase
       .from('ananya_chats')
       .insert([{
-        user_text: chat.userText,
-        ananya_response: chat.ananyaResponse,
-        language: chat.language
+        user_text: sanitizeText(chat.userText, 1000),
+        ananya_response: sanitizeText(chat.ananyaResponse, 2000),
+        language: sanitizeText(chat.language, 50)
       }]);
     if (error) throw error;
     return { success: true, data };
@@ -96,14 +99,14 @@ export async function saveNPKToDB(calc) {
     const { data, error } = await supabase
       .from('npk_calculations')
       .insert([{
-        crop: calc.crop,
-        soil_type: calc.soilType,
-        acres: calc.acres,
-        growth_stage: calc.growthStage,
-        urea_kg: calc.ureaKg,
-        dap_kg: calc.dapKg,
-        mop_kg: calc.mopKg,
-        cost_savings_pct: calc.costSavingsPct
+        crop: sanitizeText(calc.crop, 100),
+        soil_type: sanitizeText(calc.soilType, 100),
+        acres: sanitizeNumeric(calc.acres, 0.1, 1000, 1),
+        growth_stage: sanitizeText(calc.growthStage, 100),
+        urea_kg: sanitizeNumeric(calc.ureaKg, 0, 50000, 0),
+        dap_kg: sanitizeNumeric(calc.dapKg, 0, 50000, 0),
+        mop_kg: sanitizeNumeric(calc.mopKg, 0, 50000, 0),
+        cost_savings_pct: sanitizeNumeric(calc.costSavingsPct, 0, 100, 18)
       }]);
     if (error) throw error;
     return { success: true, data };
@@ -121,7 +124,7 @@ export async function recordAppDownloadToDB(platform) {
   try {
     const { data, error } = await supabase
       .from('app_downloads')
-      .insert([{ platform, domain: 'Grainwish.com' }]);
+      .insert([{ platform: sanitizeText(platform, 50), domain: 'Grainwish.com' }]);
     if (error) throw error;
     return { success: true, data };
   } catch (err) {
@@ -138,11 +141,11 @@ export async function saveFeedbackToDB(feedback) {
     const user = await getLoggedInUser();
     const payload = {
       user_id: user?.id || null,
-      phone: feedback.phone || '',
-      email: feedback.email || '',
-      category: feedback.category || 'General',
-      rating: feedback.rating || 5,
-      comments: feedback.comments || '',
+      phone: sanitizePhone(feedback.phone),
+      email: sanitizeEmail(feedback.email),
+      category: sanitizeText(feedback.category || 'General', 50),
+      rating: sanitizeNumeric(feedback.rating, 1, 5, 5),
+      comments: sanitizeText(feedback.comments, 1000),
       updated_at: new Date().toISOString()
     };
 

@@ -27,28 +27,28 @@ app.use((req, res, next) => {
   res.setHeader('Strict-Transport-Security', 'max-age=63072000; includeSubDomains; preload');
   res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
   res.setHeader('Cross-Origin-Opener-Policy', 'same-origin-allow-popups');
+  res.setHeader('X-Permitted-Cross-Domain-Policies', 'none');
+  res.setHeader('Cross-Origin-Resource-Policy', 'same-origin');
   res.setHeader('Permissions-Policy', 'camera=(self), microphone=(self), geolocation=(), payment=()');
   next();
 });
 
-// Allowed Domains
-const ALLOWED_ORIGINS = [
-  'https://www.grainwish.com',
-  'http://www.grainwish.com',
-  'https://grainwish.com',
-  'http://grainwish.com',
+// Allowed Domains with strict regex to prevent subdomain takeover / spoofing
+const ALLOWED_ORIGIN_REGEX = /^https:\/\/(www\.)?grainwish\.com$/i;
+const ALLOWED_VERCEL_REGEX = /^https:\/\/grainwish[a-z0-9-]*\.vercel\.app$/i;
+const LOCAL_DEV_ORIGINS = new Set([
   'http://localhost:5173',
   'http://127.0.0.1:5173',
   'http://localhost:3000',
   'http://127.0.0.1:3000'
-];
+]);
 
 app.use(cors({
   origin: function (origin, callback) {
-    if (!origin || ALLOWED_ORIGINS.includes(origin) || origin.includes('grainwish.com') || origin.endsWith('.vercel.app')) {
+    if (!origin || ALLOWED_ORIGIN_REGEX.test(origin) || ALLOWED_VERCEL_REGEX.test(origin) || LOCAL_DEV_ORIGINS.has(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('Blocked by CORS policy'));
+      callback(new Error('Blocked by CORS policy: Origin not allowed'));
     }
   },
   credentials: true,
@@ -90,7 +90,14 @@ app.use(rateLimiter({ windowMs: 60000, max: 120 }));
 // Security: Input Sanitization against XSS & Injection
 function sanitizeString(str, maxLen = 500) {
   if (typeof str !== 'string') return '';
-  return str.replace(/[<>]/g, '').trim().slice(0, maxLen);
+  return str
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/<style\b[^<]*(?:(?!<\/style>)<[^<]*)*<\/style>/gi, '')
+    .replace(/<[^>]+>/g, '')
+    .replace(/javascript:/gi, '')
+    .replace(/on\w+\s*=/gi, '')
+    .trim()
+    .slice(0, maxLen);
 }
 
 // Supabase Connection

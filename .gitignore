@@ -1,6 +1,7 @@
 # Dependencies
 node_modules/
 .pnpm-store/
+.vite/
 
 # Build Output
 dist/
@@ -8,24 +9,39 @@ build/
 .next/
 *.tsbuildinfo
 
-# Local Environment
+# Local Environment & Secrets
 .env
-.env.local
-.env.*.local
+.env.*
+!.env.example
+*.pem
+*.key
+*.cert
+.github/mcp-config.json
 
-# Logs
+# Loose root media (official assets belong in public/assets/)
+/*.mp4
+/*.jpeg
+/*.jpg
+/*.png
+/*.webm
+/*.zip
+/*.tar*
+/Tablet_wheat_field*
+
+# Logs & Debugging
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 .system_generated/
+*.log
 
 # OS / Editor Files
 .DS_Store
+**/.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
-.github/
 supabase/.temp/
 skills-lock.json

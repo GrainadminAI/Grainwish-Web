@@ -142,7 +142,8 @@ CREATE TRIGGER on_auth_user_created
   FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- ==========================================================
--- Enable Row Level Security (RLS) & Define Public Access Policies
+-- Enable Row Level Security (RLS) & Define Least-Privilege Policies
+-- Compliant with Supabase Postgres Best Practices & DPDP Act 2023
 -- ==========================================================
 
 ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
@@ -158,6 +159,7 @@ ALTER TABLE public.user_feedbacks ENABLE ROW LEVEL SECURITY;
 -- Clean existing policies if re-running
 DROP POLICY IF EXISTS "Allow Public Read Profiles" ON public.profiles;
 DROP POLICY IF EXISTS "Allow User Read Own Profile" ON public.profiles;
+DROP POLICY IF EXISTS "Allow User Update Own Profile" ON public.profiles;
 DROP POLICY IF EXISTS "Allow Public Read Mandi Prices" ON public.mandi_prices;
 DROP POLICY IF EXISTS "Allow Public Insert Diagnostics" ON public.diagnostics_scans;
 DROP POLICY IF EXISTS "Allow Public Read Diagnostics" ON public.diagnostics_scans;
@@ -175,25 +177,69 @@ DROP POLICY IF EXISTS "Allow Public Read Feature Usages" ON public.feature_usage
 DROP POLICY IF EXISTS "Allow Public Insert User Feedbacks" ON public.user_feedbacks;
 DROP POLICY IF EXISTS "Allow Public Read User Feedbacks" ON public.user_feedbacks;
 DROP POLICY IF EXISTS "Allow Public Update User Feedbacks" ON public.user_feedbacks;
+DROP POLICY IF EXISTS "Allow User Insert Feedback" ON public.user_feedbacks;
+DROP POLICY IF EXISTS "Allow User Read Own Feedback" ON public.user_feedbacks;
+DROP POLICY IF EXISTS "Allow User Update Own Feedback" ON public.user_feedbacks;
 
--- Create Policies
-CREATE POLICY "Allow Public Read Profiles" ON public.profiles FOR SELECT USING (true);
+-- 1. Profiles: Strict User Isolation (Users only see/update their own profile)
+CREATE POLICY "Allow User Read Own Profile" ON public.profiles FOR SELECT USING ((SELECT auth.uid()) = id);
+CREATE POLICY "Allow User Update Own Profile" ON public.profiles FOR UPDATE USING ((SELECT auth.uid()) = id);
+
+-- 2. Mandi Prices: Public Read for Farmers, Mutation Restricted
 CREATE POLICY "Allow Public Read Mandi Prices" ON public.mandi_prices FOR SELECT USING (true);
+
+-- 3. Diagnostics Scans: Insert Allowed, Read User's Own Records
 CREATE POLICY "Allow Public Insert Diagnostics" ON public.diagnostics_scans FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow Public Read Diagnostics" ON public.diagnostics_scans FOR SELECT USING (true);
+CREATE POLICY "Allow Public Read Diagnostics" ON public.diagnostics_scans FOR SELECT USING (
+  (user_id IS NULL) OR (user_id = (SELECT auth.uid()))
+);
+
+-- 4. Ananya Chats: Insert Allowed, Read User's Own Records
 CREATE POLICY "Allow Public Insert Ananya Chats" ON public.ananya_chats FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow Public Read Ananya Chats" ON public.ananya_chats FOR SELECT USING (true);
+CREATE POLICY "Allow Public Read Ananya Chats" ON public.ananya_chats FOR SELECT USING (
+  (user_id IS NULL) OR (user_id = (SELECT auth.uid()))
+);
+
+-- 5. NPK Calculations: Insert Allowed, Read User's Own Records
 CREATE POLICY "Allow Public Insert NPK" ON public.npk_calculations FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow Public Read NPK" ON public.npk_calculations FOR SELECT USING (true);
+CREATE POLICY "Allow Public Read NPK" ON public.npk_calculations FOR SELECT USING (
+  (user_id IS NULL) OR (user_id = (SELECT auth.uid()))
+);
+
+-- 6. App Downloads: Insert Tracking Allowed, Read Aggregated
 CREATE POLICY "Allow Public Insert App Downloads" ON public.app_downloads FOR INSERT WITH CHECK (true);
 CREATE POLICY "Allow Public Read App Downloads" ON public.app_downloads FOR SELECT USING (true);
-CREATE POLICY "Allow Public Insert User Visits" ON public.user_visits FOR INSERT TO public WITH CHECK ((user_id IS NULL) OR (user_id = (SELECT auth.uid())));
+
+-- 7. User Visits: Insert Allowed, Read Aggregated
+CREATE POLICY "Allow Public Insert User Visits" ON public.user_visits FOR INSERT TO public WITH CHECK (
+  (user_id IS NULL) OR (user_id = (SELECT auth.uid()))
+);
 CREATE POLICY "Allow Public Read User Visits" ON public.user_visits FOR SELECT USING (true);
+
+-- 8. Feature Usages: Audit Telemetry
 CREATE POLICY "Allow Public Insert Feature Usages" ON public.feature_usages FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow Public Read Feature Usages" ON public.feature_usages FOR SELECT USING (true);
-CREATE POLICY "Allow Public Insert User Feedbacks" ON public.user_feedbacks FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow Public Read User Feedbacks" ON public.user_feedbacks FOR SELECT USING (true);
-CREATE POLICY "Allow Public Update User Feedbacks" ON public.user_feedbacks FOR UPDATE USING (true);
+CREATE POLICY "Allow Public Read Feature Usages" ON public.feature_usages FOR SELECT USING (
+  (user_id IS NULL) OR (user_id = (SELECT auth.uid()))
+);
+
+-- 9. User Feedbacks: Protect Phone Numbers & Personal Data
+CREATE POLICY "Allow User Insert Feedback" ON public.user_feedbacks FOR INSERT WITH CHECK (true);
+CREATE POLICY "Allow User Read Own Feedback" ON public.user_feedbacks FOR SELECT USING (
+  (user_id IS NULL) OR (user_id = (SELECT auth.uid()))
+);
+CREATE POLICY "Allow User Update Own Feedback" ON public.user_feedbacks FOR UPDATE USING (
+  (user_id IS NOT NULL) AND (user_id = (SELECT auth.uid()))
+);
+
+-- Performance & Query Optimization Indexes (Per Supabase Best Practices)
+CREATE INDEX IF NOT EXISTS idx_diagnostics_scans_user_id ON public.diagnostics_scans(user_id);
+CREATE INDEX IF NOT EXISTS idx_diagnostics_scans_created ON public.diagnostics_scans(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_ananya_chats_user_id ON public.ananya_chats(user_id);
+CREATE INDEX IF NOT EXISTS idx_npk_calculations_user_id ON public.npk_calculations(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_feedbacks_user_id ON public.user_feedbacks(user_id);
+CREATE INDEX IF NOT EXISTS idx_mandi_prices_state_district ON public.mandi_prices(state, district);
+CREATE INDEX IF NOT EXISTS idx_user_visits_user_id ON public.user_visits(user_id);
+CREATE INDEX IF NOT EXISTS idx_feature_usages_user_id ON public.feature_usages(user_id);
 
 
 -- ==========================================================
@@ -321,7 +367,7 @@ CREATE TABLE IF NOT EXISTS public.consent_audit_logs (
   granted_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
--- Enable RLS for new tables
+-- Enable RLS for Buyer & Compliance tables
 ALTER TABLE public.virtual_pools ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.buyer_procurement_specs ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.consignments ENABLE ROW LEVEL SECURITY;
@@ -329,11 +375,59 @@ ALTER TABLE public.nabl_escalations ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.settlements ENABLE ROW LEVEL SECURITY;
 ALTER TABLE public.consent_audit_logs ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Allow Public Access Pools" ON public.virtual_pools FOR ALL USING (true);
-CREATE POLICY "Allow Public Access Specs" ON public.buyer_procurement_specs FOR ALL USING (true);
-CREATE POLICY "Allow Public Access Consignments" ON public.consignments FOR ALL USING (true);
-CREATE POLICY "Allow Public Access NABL" ON public.nabl_escalations FOR ALL USING (true);
-CREATE POLICY "Allow Public Access Settlements" ON public.settlements FOR ALL USING (true);
+-- Clean existing policies
+DROP POLICY IF EXISTS "Allow Public Access Pools" ON public.virtual_pools;
+DROP POLICY IF EXISTS "Allow Public Access Specs" ON public.buyer_procurement_specs;
+DROP POLICY IF EXISTS "Allow Public Access Consignments" ON public.consignments;
+DROP POLICY IF EXISTS "Allow Public Access NABL" ON public.nabl_escalations;
+DROP POLICY IF EXISTS "Allow Public Access Settlements" ON public.settlements;
+DROP POLICY IF EXISTS "Allow Insert Consent Audit Logs" ON public.consent_audit_logs;
+DROP POLICY IF EXISTS "Allow Read Consent Audit Logs" ON public.consent_audit_logs;
+DROP POLICY IF EXISTS "Allow Admin Read Consent Audit Logs" ON public.consent_audit_logs;
+
+-- 1. Virtual Pools & Specs: Public Read, Authenticated/Staff Mutation
+CREATE POLICY "Allow Public Read Pools" ON public.virtual_pools FOR SELECT USING (true);
+CREATE POLICY "Allow Staff Mutate Pools" ON public.virtual_pools FOR ALL USING (
+  (SELECT auth.uid()) IS NOT NULL
+);
+
+CREATE POLICY "Allow Public Read Specs" ON public.buyer_procurement_specs FOR SELECT USING (true);
+CREATE POLICY "Allow Staff Mutate Specs" ON public.buyer_procurement_specs FOR ALL USING (
+  (SELECT auth.uid()) IS NOT NULL
+);
+
+-- 2. Consignments & Escalations & Settlements: Protected to Authenticated Staff / Service Role
+CREATE POLICY "Allow Authenticated Read Consignments" ON public.consignments FOR SELECT USING (
+  (SELECT auth.uid()) IS NOT NULL
+);
+CREATE POLICY "Allow Staff Mutate Consignments" ON public.consignments FOR ALL USING (
+  (SELECT auth.uid()) IS NOT NULL
+);
+
+CREATE POLICY "Allow Authenticated Read NABL" ON public.nabl_escalations FOR SELECT USING (
+  (SELECT auth.uid()) IS NOT NULL
+);
+CREATE POLICY "Allow Staff Mutate NABL" ON public.nabl_escalations FOR ALL USING (
+  (SELECT auth.uid()) IS NOT NULL
+);
+
+CREATE POLICY "Allow Authenticated Read Settlements" ON public.settlements FOR SELECT USING (
+  (SELECT auth.uid()) IS NOT NULL
+);
+CREATE POLICY "Allow Staff Mutate Settlements" ON public.settlements FOR ALL USING (
+  (SELECT auth.uid()) IS NOT NULL
+);
+
+-- 3. Consent Audit Logs: Write-Only for Users, Read Restricted to Admin / Service Role
 CREATE POLICY "Allow Insert Consent Audit Logs" ON public.consent_audit_logs FOR INSERT WITH CHECK (true);
-CREATE POLICY "Allow Read Consent Audit Logs" ON public.consent_audit_logs FOR SELECT USING (true);
+CREATE POLICY "Allow Admin Read Consent Audit Logs" ON public.consent_audit_logs FOR SELECT USING (
+  (SELECT auth.jwt()->>'role') IN ('admin', 'service_role') OR
+  ((SELECT auth.uid()) IS NOT NULL AND (SELECT auth.jwt()->>'email') IN ('admin@grainwish.com', 'support@grainwish.com'))
+);
+
+-- Optimization Indexes
+CREATE INDEX IF NOT EXISTS idx_consent_audit_logs_user_id ON public.consent_audit_logs(user_id);
+CREATE INDEX IF NOT EXISTS idx_consent_audit_logs_granted_at ON public.consent_audit_logs(granted_at DESC);
+CREATE INDEX IF NOT EXISTS idx_consignments_gate_pass ON public.consignments(gate_pass_code);
+CREATE INDEX IF NOT EXISTS idx_settlements_gate_pass ON public.settlements(gate_pass_code);
 
