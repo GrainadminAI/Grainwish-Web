@@ -14,9 +14,10 @@ import {
 } from '../lib/supabase';
 import { useLanguage } from '../lib/LanguageContext';
 import { useBrandTheme } from '../lib/BrandThemeContext';
+import { sanitizeText, sanitizeEmail } from '../lib/securityUtils';
 
 export const SUPABASE_CALLBACK_URL = 'https://drhraerbklibrkigbdaw.supabase.co/auth/v1/callback';
-export const GOOGLE_CLIENT_ID = '667150516323-ic01cfnmep6esqv7uj3g9qqe6tref0n6.apps.googleusercontent.com';
+export const GOOGLE_CLIENT_ID = (typeof import.meta !== 'undefined' && import.meta?.env?.VITE_GOOGLE_CLIENT_ID) || '667150516323-ic01cfnmep6esqv7uj3g9qqe6tref0n6.apps.googleusercontent.com';
 
 export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
   const { t } = useLanguage();
@@ -292,8 +293,8 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
       return;
     }
 
-    const email = customGoogleEmail.trim().toLowerCase();
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    const email = sanitizeEmail(customGoogleEmail);
+    if (!email) {
       setErrorMessage('Please enter a valid email address.');
       return;
     }
@@ -302,7 +303,8 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
     setSuccessMessage(`Verifying ${email}...`);
 
     try {
-      const rawName = customGoogleName.trim() || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
+      const sanitizedRawName = sanitizeText(customGoogleName.trim(), 80);
+      const rawName = sanitizedRawName || email.split('@')[0].replace(/[._]/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
       const avatar = `https://api.dicebear.com/7.x/initials/svg?seed=${encodeURIComponent(rawName)}&backgroundColor=047857,059669`;
 
       const verifiedUser = {
