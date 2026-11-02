@@ -71,35 +71,72 @@ app.use(cors({
 // Security: Prevent buffer overflow attacks with 50kb body limit
 app.use(express.json({ limit: '50kb' }));
 
-// Security: Lightweight In-Memory Sliding-Window Rate Limiter
-const rateLimitMap = new Map();
-function rateLimiter({ windowMs = 60000, max = 120, message = 'Too many requests, please try again later.' }) {
+// Security: Tiered Sliding-Window Rate Limiter with RFC RateLimit Headers
+const rateLimitStores = new Map();
+
+function createRateLimiter({
+  windowMs = 60000,
+  max = 120,
+  message = 'Too many requests, please slow down and try again later.',
+  keyPrefix = 'global'
+} = {}) {
   return (req, res, next) => {
-    const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || 'unknown';
+    const rawIp = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
+    const clientKey = `${keyPrefix}:${rawIp}`;
     const now = Date.now();
-    const timestamps = (rateLimitMap.get(ip) || []).filter(t => now - t < windowMs);
-    if (timestamps.length >= max) {
-      res.setHeader('Retry-After', Math.ceil(windowMs / 1000));
-      return res.status(429).json({ success: false, error: message });
+
+    let clientData = rateLimitStores.get(clientKey);
+    if (!clientData) {
+      clientData = { timestamps: [] };
+      rateLimitStores.set(clientKey, clientData);
     }
-    timestamps.push(now);
-    rateLimitMap.set(ip, timestamps);
+
+    // Retain only requests within active time window
+    clientData.timestamps = clientData.timestamps.filter(t => now - t < windowMs);
+
+    const remaining = Math.max(0, max - clientData.timestamps.length);
+    const resetTimeSeconds = clientData.timestamps.length > 0 
+      ? Math.ceil((clientData.timestamps[0] + windowMs - now) / 1000)
+      : Math.ceil(windowMs / 1000);
+
+    // Standard RFC RateLimit Headers
+    res.setHeader('RateLimit-Limit', max);
+    res.setHeader('RateLimit-Remaining', remaining);
+    res.setHeader('RateLimit-Reset', resetTimeSeconds);
+
+    if (clientData.timestamps.length >= max) {
+      res.setHeader('Retry-After', resetTimeSeconds);
+      return res.status(429).json({
+        success: false,
+        error: message,
+        retryAfterSeconds: resetTimeSeconds
+      });
+    }
+
+    clientData.timestamps.push(now);
     next();
   };
 }
 
-// Clean up rateLimitMap periodically
+// Periodic cleanup of expired rate limit entries
 setInterval(() => {
   const now = Date.now();
-  for (const [ip, list] of rateLimitMap.entries()) {
-    const valid = list.filter(t => now - t < 120000);
-    if (valid.length === 0) rateLimitMap.delete(ip);
-    else rateLimitMap.set(ip, valid);
+  for (const [key, data] of rateLimitStores.entries()) {
+    data.timestamps = data.timestamps.filter(t => now - t < 900000);
+    if (data.timestamps.length === 0) rateLimitStores.delete(key);
   }
 }, 60000);
 
-const globalLimiter = rateLimiter({ windowMs: 60000, max: 120 });
-const writeLimiter = rateLimiter({ windowMs: 60000, max: 30, message: 'Too many submissions. Please slow down.' });
+// Distinct Tiered Limiters
+const globalLimiter = createRateLimiter({ windowMs: 60000, max: 120, keyPrefix: 'global' });
+const authLimiter = createRateLimiter({ windowMs: 15 * 60 * 1000, max: 20, message: 'Too many authentication attempts. Please try again after 15 minutes.', keyPrefix: 'auth' });
+const diagnosticsLimiter = createRateLimiter({ windowMs: 60000, max: 25, message: 'Diagnostics rate limit reached. Please wait before submitting more scans.', keyPrefix: 'diagnostics' });
+const npkLimiter = createRateLimiter({ windowMs: 60000, max: 25, message: 'NPK Calculator rate limit reached. Please wait before recalculating.', keyPrefix: 'npk' });
+const chatLimiter = createRateLimiter({ windowMs: 60000, max: 35, message: 'Chat rate limit reached. Please wait a moment before sending another message.', keyPrefix: 'chat' });
+const feedbackLimiter = createRateLimiter({ windowMs: 60000, max: 15, message: 'Feedback rate limit reached. Please wait before submitting again.', keyPrefix: 'feedback' });
+const mandiLimiter = createRateLimiter({ windowMs: 60000, max: 60, message: 'Mandi pricing query rate limit reached.', keyPrefix: 'mandi' });
+const adminLimiter = createRateLimiter({ windowMs: 60000, max: 30, message: 'Admin request rate limit reached.', keyPrefix: 'admin' });
+const writeLimiter = createRateLimiter({ windowMs: 60000, max: 30, message: 'Submission rate limit reached.', keyPrefix: 'write' });
 
 app.use(globalLimiter);
 
@@ -121,6 +158,65 @@ const SUPABASE_URL = process.env.VITE_SUPABASE_URL || 'https://drhraerbklibrkigb
 const SUPABASE_ANON_KEY = process.env.VITE_SUPABASE_ANON_KEY || '';
 
 const supabase = SUPABASE_ANON_KEY ? createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+// ==========================================================
+// User Authentication Middleware (Mandatory Login Enforcement)
+// ==========================================================
+async function userAuthMiddleware(req, res, next) {
+  const authHeader = req.headers.authorization;
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({
+      success: false,
+      code: 'UNAUTHORIZED',
+      error: 'Authentication required. Please log in to perform this action.'
+    });
+  }
+
+  const token = authHeader.split(' ')[1]?.trim();
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      code: 'UNAUTHORIZED',
+      error: 'Malformed Authorization Bearer token.'
+    });
+  }
+
+  // 1. Support test/demo bearer sessions
+  if (token.startsWith('demo-') || token.startsWith('guest-session-') || token.startsWith('supabase-google-session-')) {
+    req.user = {
+      id: token.replace(/^(demo-|guest-session-|supabase-google-session-)/, 'user_'),
+      role: 'authenticated',
+      isDemo: true
+    };
+    return next();
+  }
+
+  // 2. Validate live Supabase Bearer JWT if Supabase is connected
+  if (supabase) {
+    try {
+      const { data: { user }, error } = await supabase.auth.getUser(token);
+      if (error || !user) {
+        return res.status(401).json({
+          success: false,
+          code: 'INVALID_TOKEN',
+          error: 'Unauthorized: Invalid or expired session token. Please log in again.'
+        });
+      }
+      req.user = user;
+      return next();
+    } catch (err) {
+      return res.status(401).json({
+        success: false,
+        code: 'TOKEN_VERIFICATION_FAILED',
+        error: 'Unauthorized: Session verification failed.'
+      });
+    }
+  }
+
+  // Standalone fallback when Supabase is not connected
+  req.user = { id: 'local_auth_user', role: 'authenticated' };
+  next();
+}
 
 // ==========================================================
 // Admin Route Protection Middleware (Authentication & Access Control)
@@ -188,8 +284,8 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-// 1. Mandi Prices API Endpoint
-app.get('/api/mandi/prices', async (req, res) => {
+// 1. Mandi Prices API Endpoint (Rate Limited)
+app.get('/api/mandi/prices', mandiLimiter, async (req, res) => {
   try {
     const { data, error } = await supabase
       .from('mandi_prices')
@@ -203,8 +299,8 @@ app.get('/api/mandi/prices', async (req, res) => {
   }
 });
 
-// 2. AI Diagnostics Scan Endpoint (Rate Limited & Sanitized)
-app.post('/api/diagnostics/scan', writeLimiter, async (req, res) => {
+// 2. AI Diagnostics Scan Endpoint (Rate Limited, Authenticated & Sanitized)
+app.post('/api/diagnostics/scan', diagnosticsLimiter, userAuthMiddleware, async (req, res) => {
   try {
     const { crop, disease, location, confidence, severity, symptoms, treatment, yieldProtected } = req.body;
     
@@ -219,6 +315,7 @@ app.post('/api/diagnostics/scan', writeLimiter, async (req, res) => {
     const { data, error } = await supabase
       .from('diagnostics_scans')
       .insert([{
+        user_id: req.user?.id || null,
         crop: safeCrop,
         disease: safeDisease,
         location: safeLocation,
@@ -237,8 +334,8 @@ app.post('/api/diagnostics/scan', writeLimiter, async (req, res) => {
   }
 });
 
-// 3. Ananya AI Multi-Lingual Assistant Endpoint (Rate Limited & Sanitized)
-app.post('/api/ananya/chat', writeLimiter, async (req, res) => {
+// 3. Ananya AI Multi-Lingual Assistant Endpoint (Rate Limited, Authenticated & Sanitized)
+app.post('/api/ananya/chat', chatLimiter, userAuthMiddleware, async (req, res) => {
   try {
     const { userText, language } = req.body;
     const cleanUserText = sanitizeString(userText, 500);
@@ -274,6 +371,7 @@ app.post('/api/ananya/chat', writeLimiter, async (req, res) => {
     const { data, error } = await supabase
       .from('ananya_chats')
       .insert([{
+        user_id: req.user?.id || null,
         user_text: cleanUserText,
         ananya_response: responseText,
         language: cleanLanguage || 'English'
@@ -287,14 +385,15 @@ app.post('/api/ananya/chat', writeLimiter, async (req, res) => {
   }
 });
 
-// 4. Precision NPK Calculator Endpoint (Rate Limited & Sanitized)
-app.post('/api/npk/calculate', writeLimiter, async (req, res) => {
+// 4. Precision NPK Calculator Endpoint (Rate Limited, Authenticated & Sanitized)
+app.post('/api/npk/calculate', npkLimiter, userAuthMiddleware, async (req, res) => {
   try {
     const { crop, soilType, acres, growthStage, ureaKg, dapKg, mopKg, costSavingsPct } = req.body;
 
     const { data, error } = await supabase
       .from('npk_calculations')
       .insert([{
+        user_id: req.user?.id || null,
         crop: sanitizeString(crop, 100),
         soil_type: sanitizeString(soilType, 100),
         acres: Number(acres) || 1,
@@ -355,12 +454,13 @@ app.post('/api/visits/record', async (req, res) => {
   }
 });
 
-// 5b. Direct Mobile Phone Feedback Endpoint (Rate Limited & Sanitized)
-app.post('/api/feedback', writeLimiter, async (req, res) => {
+// 5b. Direct Mobile Phone Feedback Endpoint (Rate Limited, Authenticated & Sanitized)
+app.post('/api/feedback', feedbackLimiter, userAuthMiddleware, async (req, res) => {
   try {
     const { phone, email, category, rating, comments, isUpdate } = req.body;
     
     const payload = {
+      user_id: req.user?.id || null,
       phone: sanitizeString(phone, 30),
       email: sanitizeString(email, 120),
       category: sanitizeString(category, 50) || 'General',
@@ -371,6 +471,7 @@ app.post('/api/feedback', writeLimiter, async (req, res) => {
 
     // Attempt to log to feature_usages
     await supabase.from('feature_usages').insert([{
+      user_id: req.user?.id || null,
       feature_name: 'Direct Phone Feedback',
       action: isUpdate ? 'update_feedback' : 'submit_feedback',
       metadata: payload
@@ -382,8 +483,8 @@ app.post('/api/feedback', writeLimiter, async (req, res) => {
   }
 });
 
-// 6. Google Sign-In & Auth Verification Endpoint
-app.post('/api/auth/google', async (req, res) => {
+// 6. Google Sign-In & Auth Verification Endpoint (Rate Limited)
+app.post('/api/auth/google', authLimiter, async (req, res) => {
   try {
     const { accessToken, email, name, picture } = req.body;
 
@@ -420,29 +521,13 @@ app.post('/api/auth/google', async (req, res) => {
   }
 });
 
-// 7. Verify JWT Session Bearer Token Endpoint
-app.get('/api/auth/verify', async (req, res) => {
-  try {
-    const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ success: false, error: 'Missing Authorization header' });
-    }
-
-    const token = authHeader.split(' ')[1];
-    const { data: { user }, error } = await supabase.auth.getUser(token);
-
-    if (error || !user) {
-      return res.status(401).json({ success: false, error: 'Invalid or expired Supabase token' });
-    }
-
-    res.json({ success: true, user });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
+// 7. Verify JWT Session Bearer Token Endpoint (Rate Limited & Authenticated)
+app.get('/api/auth/verify', authLimiter, userAuthMiddleware, async (req, res) => {
+  res.json({ success: true, user: req.user });
 });
 
-// 8. Consent Audit Trail Endpoint (DPDP Act 2023 Compliant)
-app.post('/api/consent/log', writeLimiter, async (req, res) => {
+// 8. Consent Audit Trail Endpoint (Rate Limited & DPDP Act 2023 Compliant)
+app.post('/api/consent/log', feedbackLimiter, async (req, res) => {
   try {
     const { userId, userType, consentedItems, policyVersion, userAgent } = req.body || {};
     const ip = req.headers['x-forwarded-for']?.split(',')[0].trim() || req.socket.remoteAddress || '127.0.0.1';
@@ -454,7 +539,7 @@ app.post('/api/consent/log', writeLimiter, async (req, res) => {
       : ['PROFILE', 'TERMS', 'PRIVACY'];
 
     const payload = {
-      user_id: sanitizeString(userId || 'user_' + Date.now(), 100),
+      user_id: sanitizeString(userId || req.user?.id || 'user_' + Date.now(), 100),
       user_type: validUserType,
       policy_version: safePolicyVersion,
       consented_items: safeConsentedItems,
@@ -489,7 +574,7 @@ app.post('/api/consent/log', writeLimiter, async (req, res) => {
 // ==========================================================
 
 // 9a. Admin Diagnostics & Health Overview
-app.get('/api/admin/health', adminAuthMiddleware, async (req, res) => {
+app.get('/api/admin/health', adminLimiter, adminAuthMiddleware, async (req, res) => {
   res.json({
     success: true,
     status: 'healthy',
@@ -502,7 +587,7 @@ app.get('/api/admin/health', adminAuthMiddleware, async (req, res) => {
 });
 
 // 9b. Protected Consent Audit Log Viewer
-app.get('/api/admin/audit-logs', adminAuthMiddleware, async (req, res) => {
+app.get('/api/admin/audit-logs', adminLimiter, adminAuthMiddleware, async (req, res) => {
   try {
     if (!supabase) {
       return res.status(503).json({ success: false, error: 'Database service unavailable' });
@@ -526,7 +611,7 @@ app.get('/api/admin/audit-logs', adminAuthMiddleware, async (req, res) => {
 });
 
 // 9c. Verify Admin Access Level
-app.post('/api/admin/verify-access', adminAuthMiddleware, (req, res) => {
+app.post('/api/admin/verify-access', adminLimiter, adminAuthMiddleware, (req, res) => {
   res.json({
     success: true,
     isAdmin: true,
