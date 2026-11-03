@@ -94,9 +94,10 @@ export default function GrievanceRedressalPage({ onBackToHome }) {
               <div>
                 <span className="text-slate-400 block text-[11px]">Indian Registered Office Address:</span>
                 <span className="text-slate-200 leading-relaxed block">
-                  Grainwish AgriTech India Pvt. Ltd.<br />
-                  Agri-Innovation Tech Park, Sector 62,<br />
-                  Noida, Uttar Pradesh 201309, India
+                  Grainwish Technologies Private Limited<br />
+                  CIN: U62013WB2026PTC296769<br />
+                  Registered Office: 3/21, Shanti Pally, Bhadreswar, Hooghly, Chandannagar, West Bengal 712124, India<br />
+                  Tech &amp; Operations Hub: Agri-Innovation Tech Park, Sector 62, Noida, Uttar Pradesh 201309, India
                 </span>
               </div>
               <div className="flex items-center gap-2 text-emerald-400 font-mono text-[11px]">
