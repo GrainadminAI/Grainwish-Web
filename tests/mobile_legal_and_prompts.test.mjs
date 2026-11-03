@@ -143,4 +143,20 @@ test('Mobile App & Agritech Legal Compliance (DPDP Act 2023 & GDPR)', async (t) 
     assert.ok(fs.existsSync(ogJpgPath), 'og-preview.jpg must exist');
     assert.ok(fs.statSync(ogPngPath).size > 10000, 'og-preview.png must be non-empty');
   });
+
+  // 7. SEO, Schema & Accessibility Audit Script Verification
+  await t.test('Component 7: Automated SEO & Compliance Audit Script in package.json and workflow', () => {
+    const pkgPath = path.resolve(__dirname, '../package.json');
+    const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'));
+    assert.ok(pkg.scripts && pkg.scripts.audit, 'package.json must declare an "audit" script');
+    assert.strictEqual(pkg.scripts.audit, 'node scripts/seo-audit.mjs', 'audit script must target scripts/seo-audit.mjs');
+
+    const auditScriptPath = path.resolve(__dirname, '../scripts/seo-audit.mjs');
+    assert.ok(fs.existsSync(auditScriptPath), 'scripts/seo-audit.mjs must exist on disk');
+
+    const workflowPath = path.resolve(__dirname, '../.github/workflows/weekly-audit.yml');
+    assert.ok(fs.existsSync(workflowPath), 'weekly-audit.yml workflow must exist');
+    const workflowContent = fs.readFileSync(workflowPath, 'utf8');
+    assert.match(workflowContent, /npm run audit/, 'Workflow must execute npm run audit');
+  });
 });
