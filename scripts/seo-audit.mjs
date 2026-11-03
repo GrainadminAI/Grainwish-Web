@@ -216,3 +216,4 @@ if (failedChecks.length === 0) {
   console.log('=======================================================\n');
   process.exit(1);
 }
+

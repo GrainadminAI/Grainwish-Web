@@ -251,7 +251,10 @@ export default function PrivacyPolicyPage({ onBackToHome }) {
               <div className="text-emerald-300 font-medium">Designated Data Protection &amp; Grievance Redressal Officer</div>
               <div>Official Email: <a href="mailto:support@grainwish.com" className="text-amber-400 underline font-mono font-bold">support@grainwish.com</a></div>
               <div>
-                Indian Registered Address: <span className="text-slate-300">Grainwish AgriTech India Pvt. Ltd., Tech Hub, Sector 62, Noida, Uttar Pradesh 201309, India</span>
+                Indian Registered Office: <span className="text-slate-300">Grainwish Technologies Private Limited (CIN: U62013WB2026PTC296769), 3/21, Shanti Pally, Bhadreswar, Hooghly, Chandannagar, West Bengal 712124, India</span>
+              </div>
+              <div>
+                Tech &amp; Operations Hub: <span className="text-slate-300">Agri-Innovation Tech Park, Sector 62, Noida, Uttar Pradesh 201309, India</span>
               </div>
               <div>Domain: <a href="https://www.grainwish.com" className="text-emerald-400 underline">www.grainwish.com</a></div>
               <div>Response Time: All privacy inquiries are acknowledged within 48 business hours, with full resolution within 30 days.</div>

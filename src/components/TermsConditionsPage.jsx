@@ -82,7 +82,7 @@ export default function TermsConditionsPage({ onBackToHome }) {
               <span className="text-amber-400 font-mono">1.</span> Acceptance of Terms
             </h2>
             <p>
-              By accessing, browsing, or utilizing the Grainwish AI website (<a href="https://www.grainwish.com" className="text-emerald-400 underline">www.grainwish.com</a>), software applications, AI simulators, or associated mobile packages, you agree to be legally bound by these Terms &amp; Conditions. If you do not agree with any part of these terms, you must refrain from using the platform.
+              By accessing, browsing, or utilizing the Grainwish AI website (<a href="https://www.grainwish.com" className="text-emerald-400 underline">www.grainwish.com</a>), software applications, AI simulators, or associated mobile packages operated by Grainwish Technologies Private Limited (CIN: U62013WB2026PTC296769), you agree to be legally bound by these Terms &amp; Conditions. If you do not agree with any part of these terms, you must refrain from using the platform.
             </p>
           </section>
 
