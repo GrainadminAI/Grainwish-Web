@@ -1,7 +1,7 @@
 {
-  "name": "GrainWish AI - Smart Farming Intelligence",
-  "short_name": "GrainWish AI",
-  "description": "Instant AI crop disease diagnostics, precision NPK calculations, live Mandi updates & Ananya AI guidance in 22 native Indian languages.",
+  "name": "Grainwish AI: Smart Farming & AI Crop Advisory",
+  "short_name": "Grainwish AI",
+  "description": "Grainwish AI delivers instant crop disease diagnosis, precision NPK dosage calculations, live mandi rates, and 24/7 Ananya AI farming guidance across India.",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#021109",

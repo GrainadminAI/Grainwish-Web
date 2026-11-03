@@ -113,4 +113,34 @@ test('Mobile App & Agritech Legal Compliance (DPDP Act 2023 & GDPR)', async (t) 
     assert.match(indexHtml, /"@type":\s*"WebPage"/, 'Must contain WebPage entity with speakable');
     assert.match(indexHtml, /"@type":\s*"FAQPage"/, 'Must contain FAQPage entity');
   });
+
+  // 6. Primary SEO Meta Tags & Open Graph Thumbnail Verification
+  await t.test('Component 6: Primary SEO Meta Tags & Open Graph Thumbnail in index.html', () => {
+    const indexPath = path.resolve(__dirname, '../index.html');
+    const indexHtml = fs.readFileSync(indexPath, 'utf8');
+    
+    // Title under 60 chars with Grainwish AI
+    const titleMatch = indexHtml.match(/<title>([^<]+)<\/title>/);
+    assert.ok(titleMatch, 'Must have <title>');
+    assert.ok(titleMatch[1].length <= 60, `Title must be under 60 characters for SERP visibility (got ${titleMatch[1].length})`);
+    assert.match(titleMatch[1], /Grainwish AI/i, 'Title must contain Grainwish AI');
+
+    // Description between 140 and 165 characters
+    const descMatch = indexHtml.match(/<meta name="description" content="([^"]+)"/);
+    assert.ok(descMatch, 'Must have meta description');
+    assert.ok(descMatch[1].length <= 165, 'Description must not exceed search engine limits');
+    assert.match(descMatch[1], /Grainwish AI/i, 'Description must contain Grainwish AI');
+
+    // Open Graph & Twitter Card tags
+    assert.match(indexHtml, /<meta property="og:site_name" content="Grainwish AI" \/>/, 'og:site_name must be Grainwish AI');
+    assert.match(indexHtml, /<meta property="og:image" content="https:\/\/www\.grainwish\.com\/assets\/og-preview\.png" \/>/, 'og:image must reference og-preview.png');
+    assert.match(indexHtml, /<meta name="twitter:image" content="https:\/\/www\.grainwish\.com\/assets\/og-preview\.png" \/>/, 'twitter:image must reference og-preview.png');
+
+    // Assets exist on disk
+    const ogPngPath = path.resolve(__dirname, '../public/assets/og-preview.png');
+    const ogJpgPath = path.resolve(__dirname, '../public/assets/og-preview.jpg');
+    assert.ok(fs.existsSync(ogPngPath), 'og-preview.png must exist');
+    assert.ok(fs.existsSync(ogJpgPath), 'og-preview.jpg must exist');
+    assert.ok(fs.statSync(ogPngPath).size > 10000, 'og-preview.png must be non-empty');
+  });
 });
