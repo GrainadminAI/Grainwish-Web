@@ -123,10 +123,10 @@ export default function AdminPortalPage({ onBackToHome, onOpenAuthModal }) {
           <div className="flex items-center gap-2">
             <img 
               src={currentOption?.src || '/favicon.png'} 
-              alt="GrainWish Logo" 
+              alt="Grainwish AI Logo" 
               className="w-6 h-6 object-contain"
             />
-            <span className="font-bold text-white tracking-wide text-sm sm:text-base">GrainWish Security Console</span>
+            <span className="font-bold text-white tracking-wide text-sm sm:text-base">Grainwish AI Security Console</span>
             <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded bg-emerald-900/40 text-emerald-400 border border-emerald-700/30">
               Admin Portal
             </span>

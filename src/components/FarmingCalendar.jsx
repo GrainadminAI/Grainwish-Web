@@ -57,11 +57,11 @@ export default function FarmingCalendar() {
 
   const handleCopySchedule = () => {
     const curSeason = SEASONS[activeSeason];
-    const text = `📅 GrainWish AI Farming Calendar - ${curSeason.name}
+    const text = `📅 Grainwish AI Farming Calendar - ${curSeason.name}
 Crops: ${curSeason.crops}
 Timeline:
 ${curSeason.stages.map(stg => `• ${stg.month}: ${stg.title} - ${stg.desc}`).join('\n')}
-Source: GrainWish AI Seasonal Guidance Engine`;
+Source: Grainwish AI Seasonal Guidance Engine`;
 
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(text);

@@ -83,7 +83,7 @@ export default function MandiPrices() {
 💰 Modal Price: ₹${item.modalPrice}/qtl
 🏛️ Govt MSP: ₹${item.msp}/qtl (Spread: ${item.modalPrice >= item.msp ? '+' : ''}₹${item.modalPrice - item.msp})
 📈 24h Trend: ${item.isUp ? '+' : ''}${item.dailyChangePct}%
-Source: GrainWish AI / Agmarknet`;
+Source: Grainwish AI / Agmarknet`;
 
     if (navigator?.clipboard?.writeText) {
       navigator.clipboard.writeText(text);
@@ -1007,7 +1007,7 @@ Source: GrainWish AI / Agmarknet`;
             </div>
 
             <p className="text-xs text-slate-300 leading-relaxed text-left">
-              GrainWish AI sorts 28-state APMC Mandi rates by proximity to your fields and displays localized IMD squall/tarpaulin alerts. Coordinates are processed client-side and never sold.
+              Grainwish AI sorts 28-state APMC Mandi rates by proximity to your fields and displays localized IMD squall/tarpaulin alerts. Coordinates are processed client-side and never sold.
             </p>
 
             <div className="flex gap-2.5 pt-2">
