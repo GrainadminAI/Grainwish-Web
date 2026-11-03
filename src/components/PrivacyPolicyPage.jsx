@@ -166,7 +166,7 @@ export default function PrivacyPolicyPage({ onBackToHome }) {
                 <span>Statutory Location Processing Note · DPDP Act 2023 &amp; GDPR Compliant</span>
               </div>
               <p className="text-xs text-slate-200 leading-relaxed">
-                GrainWish AI processes device GPS and network geolocation strictly for legitimate agronomic utility: calculating geodesic distances to the nearest APMC Mandis, generating localized IMD agro-meteorological advisories, tailoring soil NPK fertilizer ratios, and suggesting regional language interfaces across 22 scheduled Indian languages. <strong>We never track your movements in the background, never sell GPS coordinates, and never share location records with commercial data brokers.</strong>
+                Grainwish AI processes device GPS and network geolocation strictly for legitimate agronomic utility: calculating geodesic distances to the nearest APMC Mandis, generating localized IMD agro-meteorological advisories, tailoring soil NPK fertilizer ratios, and suggesting regional language interfaces across 22 scheduled Indian languages. <strong>We never track your movements in the background, never sell GPS coordinates, and never share location records with commercial data brokers.</strong>
               </p>
             </div>
 

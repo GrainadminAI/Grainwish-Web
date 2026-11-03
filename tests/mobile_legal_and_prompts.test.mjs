@@ -106,7 +106,7 @@ test('Mobile App & Agritech Legal Compliance (DPDP Act 2023 & GDPR)', async (t) 
     const indexHtml = fs.readFileSync(indexPath, 'utf8');
     assert.match(indexHtml, /<script type="application\/ld\+json">/, 'Must contain JSON-LD script tag');
     assert.match(indexHtml, /"@graph":\s*\[/, 'Must contain @graph array');
-    assert.match(indexHtml, /"name":\s*"GrainWish AI"/, 'Must contain Organization name');
+    assert.match(indexHtml, /"name":\s*"Grainwish AI"/, 'Must contain Organization name');
     assert.match(indexHtml, /"url":\s*"https:\/\/www\.grainwish\.com"/, 'Must contain Organization URL');
     assert.match(indexHtml, /"logo":\s*\{[^}]*"url":\s*"https:\/\/www\.grainwish\.com\/logo\.webp"/, 'Must reference logo.webp');
     assert.match(indexHtml, /"@type":\s*"WebApplication"/, 'Must contain WebApplication entity');

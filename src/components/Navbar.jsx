@@ -94,7 +94,7 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
             <a href="/" className="flex items-center gap-2 sm:gap-2.5 group">
               <img 
                 src={currentOption.src} 
-                alt="GrainWish AI Logo - Smart Agriculture Intelligence Platform" 
+                alt="Grainwish AI Logo - Smart Agriculture Intelligence Platform" 
                 width="42"
                 height="42"
                 className="h-8 w-8 sm:h-9 sm:w-9 md:h-10 md:w-10 object-contain group-hover:scale-105 transition-transform drop-shadow-[0_0_12px_rgba(16,185,129,0.55)] shrink-0"
@@ -105,7 +105,7 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
               <div className="flex flex-col justify-center min-w-0">
                 <div className="flex items-center gap-1.5 flex-nowrap">
                   <span className="font-display text-sm sm:text-base font-black tracking-tight text-white group-hover:text-emerald-300 transition-colors leading-none whitespace-nowrap">
-                    GrainWish <span className="text-amber-400 font-black">AI</span>
+                    Grainwish <span className="text-amber-400 font-black">AI</span>
                   </span>
                   <MadeInIndiaTag variant="navbar" className="hidden 2xl:inline-flex scale-75 origin-left py-0.5 px-1.5 shrink-0" />
                 </div>

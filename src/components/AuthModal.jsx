@@ -378,7 +378,7 @@ export default function AuthModal({ isOpen, onClose, onAuthSuccess }) {
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-emerald-400/20 via-black/40 to-amber-400/20 p-2 mx-auto flex items-center justify-center shadow-xl border border-emerald-500/40">
             <img 
               src={websiteLogoSrc} 
-              alt="GrainWish AI Official Logo" 
+              alt="Grainwish AI Official Logo" 
               width="44"
               height="44"
               className="w-10 h-10 object-contain drop-shadow-[0_0_12px_rgba(16,185,129,0.55)]"

@@ -162,7 +162,7 @@ export default function NPKCalculator() {
 
   const handleCopyPrescription = () => {
     const landDetailsText = landDeclaredSuccess && khasraNumber ? `\nLand Parcel: Khasra ${khasraNumber} (Custodian Declaration Verified)` : '';
-    const text = `🌾 GrainWish AI Precision NPK Prescription
+    const text = `🌾 Grainwish AI Precision NPK Prescription
 Crop: ${t('npk_crop_' + selectedCrop.id, selectedCrop.name)} · ${acres} Acres${landDetailsText}
 Soil: ${t('npk_soil_' + selectedSoil.id, selectedSoil.name)}
 Stage: ${stage}
@@ -590,7 +590,7 @@ Estimated Fertilizer Savings: ~18%`;
             </div>
 
             <p className="text-xs text-slate-300 leading-relaxed text-left">
-              GrainWish AI automatically tailors soil fertilizer absorption algorithms (N-P-K adjustments) to your agro-climatic region (e.g. Alluvial, Black Cotton, or Red Soil). Your location coordinates are processed solely for agronomic calculations in compliance with DPDP Act 2023.
+              Grainwish AI automatically tailors soil fertilizer absorption algorithms (N-P-K adjustments) to your agro-climatic region (e.g. Alluvial, Black Cotton, or Red Soil). Your location coordinates are processed solely for agronomic calculations in compliance with DPDP Act 2023.
             </p>
 
             <div className="flex gap-2.5 pt-2">

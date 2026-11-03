@@ -960,7 +960,7 @@ export default function DiagnosticsTool() {
     const fix = activeFix;
     const locationForShare = effectiveLocation;
     const text = encodeURIComponent(
-      `🌾 *GrainWish AI 100% Crop Diagnosis & Prescription*\n` +
+      `🌾 *Grainwish AI 100% Crop Diagnosis & Prescription*\n` +
       `📍 *Location:* ${locationForShare}\n` +
       `🌱 *Crop:* ${selectedCrop.crop}\n` +
       `🦠 *Detected Condition:* ${selectedCrop.disease} (${categoryKey})\n` +
@@ -986,7 +986,7 @@ export default function DiagnosticsTool() {
   // Copy shareable summary to clipboard
   const handleCopySummary = () => {
     const text =
-      `🌾 GrainWish AI 100% Crop Diagnosis Report\n` +
+      `🌾 Grainwish AI 100% Crop Diagnosis Report\n` +
       `Location: ${effectiveLocation}\n` +
       `Crop: ${selectedCrop.crop} | Diagnosis: ${selectedCrop.disease}\n` +
       `Severity: ${selectedCrop.severity} | Recovery: ${selectedCrop.recoveryDays}\n` +
@@ -1335,7 +1335,7 @@ export default function DiagnosticsTool() {
                       <Flashlight className="w-3 h-3" /> {torchActive ? 'Torch On' : 'Torch Off'}
                     </button>
                   )}
-                  <span className="text-[10px] text-amber-400 font-mono font-semibold">GrainWish AI</span>
+                  <span className="text-[10px] text-amber-400 font-mono font-semibold">Grainwish AI</span>
                 </div>
               </div>
 
@@ -2412,7 +2412,7 @@ export default function DiagnosticsTool() {
             </div>
 
             <p className="text-xs text-slate-300 leading-relaxed text-left">
-              GrainWish AI uses live visual frames to isolate leaf lesions, brown spots, yellow rust pustules, and calculate chlorophyll greenness in real time. Visual frames remain on your device and are never shared or recorded.
+              Grainwish AI uses live visual frames to isolate leaf lesions, brown spots, yellow rust pustules, and calculate chlorophyll greenness in real time. Visual frames remain on your device and are never shared or recorded.
             </p>
 
             <div className="flex gap-2.5 pt-2">
