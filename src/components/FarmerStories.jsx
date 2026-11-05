@@ -14,7 +14,7 @@ const INITIAL_STORIES = [
     metric: 'Saved 3.5 Bighas from Blast',
     metricTag: '28% Higher Net Realization',
     quote: '“আমি বাংলায় অনন্যা AI-কে ব্লাস্ট রোগের ছবি পাঠাই। নিমেষে কার্বেনডাজিম আর নিম তেলের সঠিক মাত্রা বাতলে দেয়। বর্ধমানের মাঠে আমার ধানের ফলন পুরো রক্ষা পেয়েছে।” (I shared photos of leaf blast in Bengali with Ananya AI. It immediately gave the exact spray dilution and neem oil alternative. My harvest in Bardhaman was completely saved.)',
-    image: '/assets/Farmer_walking.jpeg',
+    image: '/assets/farmer_subhashish_paddy.jpg',
     video: '/assets/Paddy_rice.mp4',
     detectedIssue: 'Neck blast & spindle lesions across Aman paddy plot',
     actionsTaken: [
@@ -33,8 +33,8 @@ const INITIAL_STORIES = [
     metric: '+₹350/qtl via Mandi Radar',
     metricTag: '₹14,000 Extra Net Profit on Single Trolley',
     quote: '“समस्तीपुर मंडी के बजाय बेगूसराय मंडी में मक्के का भाव ₹350 प्रति क्विंटल अधिक मिल रहा था। लाइव मंडी रडार ने एक ही ट्रॉली में ₹14,000 का अतिरिक्त फायदा करा दिया।” (Instead of Samastipur yard, Begusarai Mandi was offering ₹350/qtl more. The live Mandi radar earned me an extra ₹14,000 on a single trolley.)',
-    image: '/assets/Farmer_gesturing.jpeg',
-    video: '/assets/Yellow_Rust_Wheat.mp4',
+    image: '/assets/farmer_rajendra_maize.jpg',
+    video: '/assets/real_crops_field.mp4',
     detectedIssue: 'Fall armyworm whorl infestation & localized leaf spots',
     actionsTaken: [
       'Pointed phone camera directly into the maize whorl for instant AI diagnosis',
@@ -52,8 +52,8 @@ const INITIAL_STORIES = [
     metric: '₹2,200/bigha Fertilizer Savings',
     metricTag: 'Zero Chemical Over-dosing',
     quote: '“সবজি চাষে সারের খরচ অনেক বেড়ে যাচ্ছিল। গ্রেনউইশ ক্যালকুলেটর দিয়ে ইউরিয়া কমিয়ে সঠিক পটাশ প্রয়োগ করে আল্ট্রা-গ্রিন ফলন পেয়েছি।” (Fertilizer bills in vegetable farming were excessive. Using Grainwish to reduce urea and optimize potash gave me a lush, healthy harvest with ₹2,200/bigha savings.)',
-    image: '/assets/tablet_wheat_field.jpeg',
-    video: '/assets/Sustainable_farm_sunset.mp4',
+    image: '/assets/farmer_debabrata_cauliflower.jpg',
+    video: null,
     detectedIssue: 'Boron deficiency and leaf rot in winter vegetable plots',
     actionsTaken: [
       'Diagnosed micronutrient deficiency vs fungal infection via multi-spectral scan',
@@ -71,8 +71,8 @@ const INITIAL_STORIES = [
     metric: '100% Bio-IPM Transition',
     metricTag: '90% Drip Irrigation Subsidy Approved',
     quote: '“अनन्या दीदी से हमने मगही और हिंदी में बात की। खेत में चना का उकठा (Wilt) रोग लगा था, ट्राइकोडर्मा और जैविक खाद से 3 एकड़ खेत को बिना भारी दवा के ठीक कर लिया।” (We consulted Ananya Didi in Magahi and Hindi. Our gram crop had wilt disease; we treated 3 acres using Trichoderma and organic compost without expensive chemical sprays.)',
-    image: '/assets/Hand_holding_smartphone.jpeg',
-    video: '/assets/sustainable_farming_village.mp4',
+    image: '/assets/farmer_sunita_chana.jpg',
+    video: null,
     detectedIssue: 'Vascular wilt and pod borer in rainfed chickpea (chana)',
     actionsTaken: [
       'Obtained organic bio-fungicide seed treatment and Trichoderma soil drenching advice',
@@ -90,8 +90,8 @@ const INITIAL_STORIES = [
     metric: 'Saved ~2 acres from rust spread',
     metricTag: '~35% yield protected',
     quote: '“I scanned a yellowing wheat leaf at 6 in the morning and had a treatment plan before breakfast. We saved almost the whole plot.”',
-    image: '/assets/Farmer_gesturing.jpeg',
-    video: '/assets/holographic_leaves.mp4',
+    image: '/assets/farmer_ramesh_onion.jpg',
+    video: '/assets/Yellow_Rust_Wheat.mp4',
     detectedIssue: 'Yellow rust spreading across 2 acres',
     actionsTaken: [
       'Scanned affected leaves with Grainwish AI camera diagnostics',
@@ -109,8 +109,8 @@ const INITIAL_STORIES = [
     metric: '~18% lower fertilizer cost',
     metricTag: '18% lower fertilizer cost',
     quote: '“The NPK calculator told me I was over-applying urea. I cut my fertilizer bill and my paddy still came out stronger.”',
-    image: '/assets/Farmer_walking.jpeg',
-    video: '/assets/sustainable_farming_village.mp4',
+    image: '/assets/farmer_lakshmi_paddy.jpg',
+    video: '/assets/Paddy_rice.mp4',
     detectedIssue: 'Brown spots and stunted growth from over-fertilization',
     actionsTaken: [
       'Used the NPK calculator to reassess soil nutrient needs',
@@ -128,8 +128,8 @@ const INITIAL_STORIES = [
     metric: '₹1,900 more per quintal',
     metricTag: '₹1,900 more per quintal',
     quote: '“Mandi prices in the app showed a better rate two districts away. That one alert paid for my whole season\'s diesel.”',
-    image: '/assets/farmer_harvest.jpeg',
-    video: '/assets/sustainable_farm_diorama.mp4',
+    image: '/assets/farmer_gurpreet_cotton.jpg',
+    video: '/assets/Green_cotton.mp4',
     detectedIssue: 'Early bollworm damage spotted during routine scouting',
     actionsTaken: [
       'Captured pest photos for instant AI identification',
@@ -147,7 +147,7 @@ const INITIAL_STORIES = [
     metric: 'Fewer sprays, cleaner harvest',
     metricTag: '22% higher marketable yield',
     quote: '“I ask Ananya AI everything in Tamil. She explains pest control like a neighbour would, not like a textbook.”',
-    image: '/assets/Image1.jpeg',
+    image: '/assets/farmer_meena_turmeric.jpg',
     video: '/assets/Turmeric_plant_rot.mp4',
     detectedIssue: 'Rhizome rot and repeated leaf blotch',
     actionsTaken: [
@@ -163,6 +163,7 @@ export default function FarmerStories() {
   const { t } = useLanguage();
   const [stories, setStories] = useState(INITIAL_STORIES);
   const [selectedCase, setSelectedCase] = useState(INITIAL_STORIES[0]);
+  const [caseViewMode, setCaseViewMode] = useState('photo');
   const [caseVideoPlaying, setCaseVideoPlaying] = useState(false);
   const [caseVideoFailed, setCaseVideoFailed] = useState(false);
   const [selectedState, setSelectedState] = useState('All');
@@ -184,6 +185,7 @@ export default function FarmerStories() {
 
   const handleSelectCase = (story) => {
     setSelectedCase(story);
+    setCaseViewMode('photo');
     setCaseVideoPlaying(false);
     setCaseVideoFailed(false);
   };
@@ -212,8 +214,8 @@ export default function FarmerStories() {
         metric: `${saved.rating || 5}/5 Star Feedback`,
         metricTag: 'Community Feedback',
         quote: `“${saved.comments}”`,
-        image: '/assets/hand_phone_crop.jpeg',
-        video: '/assets/sustainable_farming_village.mp4',
+        image: '/assets/farmer_user_verified_scan.jpg',
+        video: null,
         detectedIssue: 'User Submitted Feedback & Experience',
         actionsTaken: [
           'Shared real field feedback directly with Grainwish AI team',
@@ -237,6 +239,7 @@ export default function FarmerStories() {
 
   const handleSelectStory = (story) => {
     setSelectedCase(story);
+    setCaseViewMode('photo');
     setCaseVideoPlaying(false);
     setCaseVideoFailed(false);
     recordFeatureUsageToDB({
@@ -275,8 +278,8 @@ export default function FarmerStories() {
         metric: `${userRating}/5 Star Feedback`,
         metricTag: 'Community Feedback',
         quote: `“${userFeedback}”`,
-        image: '/assets/hand_phone_crop.jpeg',
-        video: '/assets/sustainable_farming_village.mp4',
+        image: '/assets/farmer_user_verified_scan.jpg',
+        video: null,
         detectedIssue: 'User Submitted Feedback & Experience',
         actionsTaken: [
           'Shared real field feedback directly with Grainwish AI team',
@@ -576,17 +579,28 @@ export default function FarmerStories() {
                     </p>
                   </div>
 
-                  {/* Bottom: Farmer info + Metric tag */}
+                  {/* Bottom: Farmer avatar + info + Metric tag */}
                   <div className="pt-2 mt-1 border-t border-emerald-900/50 flex items-center justify-between gap-2">
-                    <div className="min-w-0 flex-1">
-                      <div className="font-display font-bold text-white text-xs group-hover:text-amber-300 transition-colors truncate">
-                        {s.name}
-                      </div>
-                      <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5 truncate">
-                        <MapPin className="w-2.5 h-2.5 text-emerald-400 shrink-0" />
-                        <span className="truncate">{s.location}</span>
-                        <span className="text-slate-600">·</span>
-                        <span className="text-amber-300 font-medium shrink-0">{s.crop}</span>
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+                      <img
+                        src={s.image}
+                        alt={`Photo of farmer ${s.name}`}
+                        loading="lazy"
+                        className="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover border border-emerald-500/40 shrink-0 shadow-sm"
+                        onError={(e) => {
+                          e.target.src = '/assets/farmer_user_verified_scan.jpg';
+                        }}
+                      />
+                      <div className="min-w-0 flex-1">
+                        <div className="font-display font-bold text-white text-xs group-hover:text-amber-300 transition-colors truncate">
+                          {s.name}
+                        </div>
+                        <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5 truncate">
+                          <MapPin className="w-2.5 h-2.5 text-emerald-400 shrink-0" />
+                          <span className="truncate">{s.location}</span>
+                          <span className="text-slate-600">·</span>
+                          <span className="text-amber-300 font-medium shrink-0">{s.crop}</span>
+                        </div>
                       </div>
                     </div>
 
@@ -638,60 +652,69 @@ export default function FarmerStories() {
           {/* Grid Layout: Media + Steps */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-5 items-center mt-3.5 sm:mt-4">
             
-            {/* Left: Video / Image Showcase with Guaranteed Image Display */}
-            <div className="lg:col-span-5 relative rounded-xl overflow-hidden border border-emerald-500/30 aspect-video bg-emerald-950 shadow-md">
-              <img
-                src={selectedCase.image}
-                alt={`Portrait of farmer ${selectedCase.name} sharing their crop yield experience from ${selectedCase.location}`}
-                loading="eager"
-                decoding="async"
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-                  caseVideoPlaying && !caseVideoFailed ? 'opacity-0 pointer-events-none' : 'opacity-100'
-                }`}
-                onError={(e) => {
-                  e.target.src = '/assets/farmer_harvest.jpeg';
-                }}
-              />
-
-              {!caseVideoFailed && (
+            {/* Left: Real Field Photo Showcase with Guaranteed Real Image & Optional Video Toggle */}
+            <div className="lg:col-span-5 relative rounded-xl overflow-hidden border border-emerald-500/40 aspect-video bg-emerald-950 shadow-lg group">
+              {caseViewMode === 'photo' || !selectedCase.video ? (
+                <img
+                  src={selectedCase.image}
+                  alt={`Real field photograph of farmer ${selectedCase.name} inspecting ${selectedCase.crop} in ${selectedCase.location}`}
+                  loading="eager"
+                  decoding="async"
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  onError={(e) => {
+                    e.target.src = '/assets/farmer_user_verified_scan.jpg';
+                  }}
+                />
+              ) : (
                 <video
                   key={selectedCase.id}
                   autoPlay
+                  controls
                   loop
                   muted
                   playsInline
-                  preload="metadata"
-                  ref={(el) => {
-                    if (el) {
-                      el.muted = true;
-                      el.volume = 0;
-                    }
-                  }}
                   poster={selectedCase.image}
-                  className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-                    caseVideoPlaying ? 'opacity-100' : 'opacity-0'
-                  }`}
+                  className="w-full h-full object-cover"
                   src={selectedCase.video}
-                  onPlay={(e) => {
-                    e.currentTarget.muted = true;
-                    e.currentTarget.volume = 0;
-                    setCaseVideoPlaying(true);
-                  }}
-                  onPlaying={(e) => {
-                    e.currentTarget.muted = true;
-                    e.currentTarget.volume = 0;
-                    setCaseVideoPlaying(true);
-                  }}
-                  onError={() => {
-                    setCaseVideoFailed(true);
-                    setCaseVideoPlaying(false);
-                  }}
                 />
               )}
 
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-              <div className="absolute bottom-2 left-2 bg-black/80 px-2 py-0.5 rounded border border-emerald-500/40 text-[10px] text-amber-300 font-mono">
-                Grainwish AI Verified Field Data
+              {/* Top Bar: Real Farmer Verified Badge + Video Toggle if available */}
+              <div className="absolute top-2 left-2 right-2 flex items-center justify-between gap-1.5 z-10 pointer-events-auto">
+                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-black/80 backdrop-blur-sm border border-emerald-400/50 text-[10px] text-emerald-300 font-bold shadow-md">
+                  <CheckCircle2 className="w-3 h-3 text-emerald-400 shrink-0" />
+                  <span>Real Farmer Verified</span>
+                </span>
+
+                {selectedCase.video && (
+                  <div className="flex items-center bg-black/85 backdrop-blur-sm rounded-lg p-0.5 border border-emerald-600/50 text-[10px] font-mono shadow-md">
+                    <button
+                      type="button"
+                      onClick={() => setCaseViewMode('photo')}
+                      className={`px-2 py-0.5 rounded transition-all ${caseViewMode === 'photo' ? 'bg-amber-400 text-black font-bold shadow-sm' : 'text-slate-300 hover:text-white'}`}
+                    >
+                      Photo
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCaseViewMode('video')}
+                      className={`px-2 py-0.5 rounded transition-all ${caseViewMode === 'video' ? 'bg-amber-400 text-black font-bold shadow-sm' : 'text-slate-300 hover:text-white'}`}
+                    >
+                      Footage
+                    </button>
+                  </div>
+                )}
+              </div>
+
+              {/* Bottom Gradient & Info Watermark */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between text-[10px] text-slate-200 z-10 pointer-events-none">
+                <div className="bg-black/80 backdrop-blur-sm px-2 py-0.5 rounded border border-emerald-500/40 text-amber-300 font-mono font-medium">
+                  {selectedCase.crop} · {selectedCase.location}
+                </div>
+                <div className="hidden sm:block text-[9px] text-emerald-400 font-mono bg-black/80 backdrop-blur-sm px-1.5 py-0.5 rounded border border-emerald-800/60">
+                  Grainwish AI Verified Field Data
+                </div>
               </div>
             </div>
 
