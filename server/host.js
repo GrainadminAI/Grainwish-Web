@@ -251,6 +251,15 @@ async function adminAuthMiddleware(req, res, next) {
   }
 }
 
+// Social Short Vanity Redirects
+app.get('/instagram', (req, res) => {
+  res.redirect(302, 'https://www.instagram.com/grainwish_ai');
+});
+
+app.get('/facebook', (req, res) => {
+  res.redirect(302, 'https://www.facebook.com/share/16NAw1dF7mn/');
+});
+
 // API Health Check
 app.get('/api/health', (req, res) => {
   res.json({

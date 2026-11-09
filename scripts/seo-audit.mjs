@@ -122,6 +122,14 @@ if (parsedJsonLd && parsedJsonLd['@graph']) {
   assertCheck('Organization entity exists in @graph', Boolean(org));
   assertCheck('Organization name is "Grainwish AI"', org && org.name === 'Grainwish AI');
   assertCheck('Organization logo references valid logo URL', Boolean(org && org.logo && org.logo.url));
+  assertCheck(
+    'Organization sameAs includes official Instagram profile',
+    Boolean(org && Array.isArray(org.sameAs) && org.sameAs.includes('https://www.instagram.com/grainwish_ai'))
+  );
+  assertCheck(
+    'Organization sameAs includes official Facebook profile',
+    Boolean(org && Array.isArray(org.sameAs) && org.sameAs.includes('https://www.facebook.com/share/16NAw1dF7mn/'))
+  );
 
   assertCheck('WebApplication entity exists in @graph', Boolean(webApp));
   assertCheck('WebApplication applicationCategory is "AgricultureApplication"', webApp && webApp.applicationCategory === 'AgricultureApplication');
@@ -180,6 +188,18 @@ const footerContent = fs.readFileSync(footerPath, 'utf8');
 assertCheck(
   'FooterSection declares official grievance email (support@grainwish.com)',
   footerContent.includes('support@grainwish.com')
+);
+assertCheck(
+  'FooterSection includes official Instagram link without tracking params',
+  footerContent.includes('https://www.instagram.com/grainwish_ai') && !footerContent.includes('obrf=')
+);
+assertCheck(
+  'FooterSection includes official Facebook link without tracking params',
+  footerContent.includes('https://www.facebook.com/share/16NAw1dF7mn/') && !footerContent.includes('mibextid=')
+);
+assertCheck(
+  'FooterSection social links enforce rel="noopener noreferrer" and target="_blank"',
+  footerContent.includes('rel="noopener noreferrer"') && footerContent.includes('target="_blank"')
 );
 
 const privacyPath = path.join(rootDir, 'src/components/PrivacyPolicyPage.jsx');

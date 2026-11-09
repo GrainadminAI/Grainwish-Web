@@ -140,6 +140,14 @@ function RootApp() {
     if (typeof window === 'undefined') return 'home';
     const path = window.location.pathname.toLowerCase();
     const hash = window.location.hash.toLowerCase();
+    if (path === '/instagram' || hash === '#instagram') {
+      window.location.replace('https://www.instagram.com/grainwish_ai');
+      return 'redirect';
+    }
+    if (path === '/facebook' || hash === '#facebook') {
+      window.location.replace('https://www.facebook.com/share/16NAw1dF7mn/');
+      return 'redirect';
+    }
     if (path === '/privacy' || path === '/privacy-policy' || hash === '#privacy' || hash === '#privacy-policy') return 'privacy';
     if (path === '/terms' || path === '/terms-and-conditions' || hash === '#terms' || hash === '#terms-and-conditions') return 'terms';
     if (path === '/security' || hash === '#security') return 'security';
@@ -192,6 +200,14 @@ function RootApp() {
     const handleLocationChange = () => {
       const path = window.location.pathname.toLowerCase();
       const hash = window.location.hash.toLowerCase();
+      if (path === '/instagram' || hash === '#instagram') {
+        window.location.replace('https://www.instagram.com/grainwish_ai');
+        return;
+      }
+      if (path === '/facebook' || hash === '#facebook') {
+        window.location.replace('https://www.facebook.com/share/16NAw1dF7mn/');
+        return;
+      }
       if (path === '/privacy' || path === '/privacy-policy' || hash === '#privacy' || hash === '#privacy-policy') {
         setCurrentRoute('privacy');
         window.scrollTo({ top: 0, behavior: 'smooth' });

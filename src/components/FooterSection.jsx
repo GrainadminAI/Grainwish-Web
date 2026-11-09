@@ -1,5 +1,5 @@
 import React from 'react';
-import { Smartphone, ShieldCheck, Heart, ArrowUp, Lock, FileText, Cookie, Mail, Award, HelpCircle } from 'lucide-react';
+import { Smartphone, ShieldCheck, Heart, ArrowUp, Lock, FileText, Cookie, Mail, Award, HelpCircle, Facebook, Instagram } from 'lucide-react';
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
 import { useBrandTheme } from '../lib/BrandThemeContext';
@@ -84,7 +84,7 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
               <span>Certified AgriTech Platform · ISO 27001 Secured</span>
             </div>
 
-            <div className="pt-1">
+            <div className="pt-2 flex items-center gap-2.5 flex-wrap">
               <a 
                 href="mailto:support@grainwish.com" 
                 className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-950/70 border border-emerald-800/60 text-slate-200 hover:text-emerald-300 hover:border-emerald-500/60 transition-all font-medium text-xs"
@@ -92,6 +92,29 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
                 <Mail className="w-4 h-4 text-amber-400 shrink-0" />
                 <span>support@grainwish.com</span>
               </a>
+
+              <div className="flex items-center gap-1.5">
+                <a
+                  href="https://www.instagram.com/grainwish_ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Follow Grainwish AI on Instagram"
+                  title="Follow @grainwish_ai on Instagram"
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-950/80 border border-emerald-800/70 text-slate-300 hover:text-pink-400 hover:border-pink-500/70 hover:bg-pink-950/30 transition-all shadow-sm group active:scale-95"
+                >
+                  <Instagram className="w-4 h-4 transition-transform group-hover:scale-110" />
+                </a>
+                <a
+                  href="https://www.facebook.com/share/16NAw1dF7mn/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Follow Grainwish AI on Facebook"
+                  title="Follow Grainwish AI on Facebook"
+                  className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-950/80 border border-emerald-800/70 text-slate-300 hover:text-sky-400 hover:border-sky-500/70 hover:bg-sky-950/30 transition-all shadow-sm group active:scale-95"
+                >
+                  <Facebook className="w-4 h-4 transition-transform group-hover:scale-110" />
+                </a>
+              </div>
             </div>
           </div>
 
@@ -227,6 +250,30 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
               © {new Date().getFullYear()} Grainwish AI. All rights reserved. Built for farmers with <Heart className="w-3 h-3 text-red-500 inline mx-1" />.
             </span>
             <MadeInIndiaTag variant="footer" />
+          </div>
+
+          <div className="flex items-center gap-2">
+            <span className="text-slate-400 text-[11px] hidden sm:inline">Connect:</span>
+            <a
+              href="https://www.instagram.com/grainwish_ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow Grainwish AI on Instagram"
+              title="Follow @grainwish_ai on Instagram"
+              className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-950/70 border border-emerald-800/60 text-slate-300 hover:text-pink-400 hover:border-pink-500/70 hover:bg-pink-950/30 transition-all group active:scale-95"
+            >
+              <Instagram className="w-3.5 h-3.5 transition-transform group-hover:scale-110" />
+            </a>
+            <a
+              href="https://www.facebook.com/share/16NAw1dF7mn/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Follow Grainwish AI on Facebook"
+              title="Follow Grainwish AI on Facebook"
+              className="inline-flex items-center justify-center w-7 h-7 rounded-lg bg-emerald-950/70 border border-emerald-800/60 text-slate-300 hover:text-sky-400 hover:border-sky-500/70 hover:bg-sky-950/30 transition-all group active:scale-95"
+            >
+              <Facebook className="w-3.5 h-3.5 transition-transform group-hover:scale-110" />
+            </a>
           </div>
 
           <button
