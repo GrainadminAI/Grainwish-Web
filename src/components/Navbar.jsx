@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut, Mic, MapPin, Compass, Settings, Lock, FileText, Cookie, Award } from 'lucide-react';
+import { Sprout, Smartphone, Globe2, ChevronDown, Sparkles, Menu, X, ShieldCheck, User, LogIn, LogOut, Mic, MapPin, Compass, Settings, Lock, FileText, Cookie, Award, Facebook, Instagram } from 'lucide-react';
 import { supabase, signOutUser, getLoggedInUser, recordFeatureUsageToDB } from '../lib/supabase';
 import AuthModal from './AuthModal';
 
@@ -627,6 +627,31 @@ export default function Navbar({ onOpenDownloadModal, selectedLang, setSelectedL
                 <a href="mailto:support@grainwish.com" className="text-emerald-400 hover:underline font-mono font-medium">
                   support@grainwish.com
                 </a>
+              </div>
+              <div className="p-2.5 rounded-xl bg-black/40 border border-emerald-900/60 flex items-center justify-between text-[11px] text-slate-300">
+                <span className="text-slate-400">Follow Grainwish AI:</span>
+                <div className="flex items-center gap-2">
+                  <a
+                    href="https://www.instagram.com/grainwish_ai"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Follow Grainwish AI on Instagram"
+                    title="Follow @grainwish_ai on Instagram"
+                    className="p-1.5 rounded-lg bg-emerald-950/80 border border-emerald-800/70 text-slate-300 hover:text-pink-400 hover:border-pink-500/60 hover:bg-pink-950/30 transition-all group active:scale-95"
+                  >
+                    <Instagram className="w-3.5 h-3.5 transition-transform group-hover:scale-110" />
+                  </a>
+                  <a
+                    href="https://www.facebook.com/share/16NAw1dF7mn/"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Follow Grainwish AI on Facebook"
+                    title="Follow Grainwish AI on Facebook"
+                    className="p-1.5 rounded-lg bg-emerald-950/80 border border-emerald-800/70 text-slate-300 hover:text-sky-400 hover:border-sky-500/60 hover:bg-sky-950/30 transition-all group active:scale-95"
+                  >
+                    <Facebook className="w-3.5 h-3.5 transition-transform group-hover:scale-110" />
+                  </a>
+                </div>
               </div>
             </div>
           </div>
