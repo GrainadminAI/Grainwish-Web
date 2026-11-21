@@ -137,19 +137,93 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
 }
 
 const TOOL_ROUTE_TARGETS = {
-  '/crop-disease-diagnosis': { selector: '#diagnostics', title: 'AI Crop Disease Diagnostics Simulator | Grainwish AI' },
-  '/crop-disease-diagnosis/': { selector: '#diagnostics', title: 'AI Crop Disease Diagnostics Simulator | Grainwish AI' },
-  '/npk-fertilizer-calculator': { selector: '#npk-calc', title: 'Precision NPK Fertilizer Calculator & Growth Roadmap | Grainwish AI' },
-  '/npk-fertilizer-calculator/': { selector: '#npk-calc', title: 'Precision NPK Fertilizer Calculator & Growth Roadmap | Grainwish AI' },
-  '/mandi-prices': { selector: '#mandi', title: 'Live Mandi Prices & MSP Locator | Grainwish AI' },
-  '/mandi-prices/': { selector: '#mandi', title: 'Live Mandi Prices & MSP Locator | Grainwish AI' },
-  '/ananya-ai-agronomist': { selector: '#ananya-ai', title: 'Ananya AI: 24/7 Virtual Agronomist in 22 Languages | Grainwish AI' },
-  '/ananya-ai-agronomist/': { selector: '#ananya-ai', title: 'Ananya AI: 24/7 Virtual Agronomist in 22 Languages | Grainwish AI' },
-  '/government-schemes': { selector: '#calendar', title: 'Government Agriculture Schemes & Subsidies | Grainwish AI' },
-  '/government-schemes/': { selector: '#calendar', title: 'Government Agriculture Schemes & Subsidies | Grainwish AI' },
-  '/farming-calendar': { selector: '#calendar', title: 'Interactive Agricultural Farming Calendar | Grainwish AI' },
-  '/farming-calendar/': { selector: '#calendar', title: 'Interactive Agricultural Farming Calendar | Grainwish AI' }
+  '/crop-disease-diagnosis': {
+    selector: '#diagnostics',
+    title: 'AI Crop Disease Diagnosis & Treatment | Grainwish AI',
+    description: 'Instant camera-based AI crop disease diagnosis and dual-track chemical and organic treatment protocols for Indian farmers across 22 native languages.'
+  },
+  '/crop-disease-diagnosis/': {
+    selector: '#diagnostics',
+    title: 'AI Crop Disease Diagnosis & Treatment | Grainwish AI',
+    description: 'Instant camera-based AI crop disease diagnosis and dual-track chemical and organic treatment protocols for Indian farmers across 22 native languages.'
+  },
+  '/npk-fertilizer-calculator': {
+    selector: '#npk-calc',
+    title: 'Precision NPK Fertilizer Dosage Calculator | Grainwish AI',
+    description: 'Calculate exact nitrogen, phosphorus, and potassium dosage required per acre based on crop variety, soil test results, and regional agricultural guidelines.'
+  },
+  '/npk-fertilizer-calculator/': {
+    selector: '#npk-calc',
+    title: 'Precision NPK Fertilizer Dosage Calculator | Grainwish AI',
+    description: 'Calculate exact nitrogen, phosphorus, and potassium dosage required per acre based on crop variety, soil test results, and regional agricultural guidelines.'
+  },
+  '/mandi-prices': {
+    selector: '#mandi',
+    title: "Live APMC Mandi Prices & Today's MSP Rates | Grainwish AI",
+    description: 'Real-time daily wholesale mandi rates, commodity arrivals, and Minimum Support Price (MSP) comparisons across 2,500+ APMC mandis in India.'
+  },
+  '/mandi-prices/': {
+    selector: '#mandi',
+    title: "Live APMC Mandi Prices & Today's MSP Rates | Grainwish AI",
+    description: 'Real-time daily wholesale mandi rates, commodity arrivals, and Minimum Support Price (MSP) comparisons across 2,500+ APMC mandis in India.'
+  },
+  '/ananya-ai-agronomist': {
+    selector: '#ananya-ai',
+    title: 'Ananya AI: 24/7 Multilingual Agronomist | Grainwish AI',
+    description: 'Conversational agronomy assistant and voice companion in 22 native Indian regional languages with ICAR and SAU scientific advisory packages.'
+  },
+  '/ananya-ai-agronomist/': {
+    selector: '#ananya-ai',
+    title: 'Ananya AI: 24/7 Multilingual Agronomist | Grainwish AI',
+    description: 'Conversational agronomy assistant and voice companion in 22 native Indian regional languages with ICAR and SAU scientific advisory packages.'
+  },
+  '/government-schemes': {
+    selector: '#calendar',
+    title: 'Agricultural Government Schemes & Subsidies | Grainwish AI',
+    description: 'Complete directory of central and state government agricultural schemes, PM-KISAN, PMFBY, and solar pump subsidies for Indian farmers.'
+  },
+  '/government-schemes/': {
+    selector: '#calendar',
+    title: 'Agricultural Government Schemes & Subsidies | Grainwish AI',
+    description: 'Complete directory of central and state government agricultural schemes, PM-KISAN, PMFBY, and solar pump subsidies for Indian farmers.'
+  },
+  '/farming-calendar': {
+    selector: '#calendar',
+    title: 'Interactive Agricultural Farming Calendar | Grainwish AI',
+    description: 'Seasonal crop lifecycle roadmaps for Rabi, Kharif, and Zaid seasons detailing sowing, irrigation, fertilizer, and harvesting milestones.'
+  },
+  '/farming-calendar/': {
+    selector: '#calendar',
+    title: 'Interactive Agricultural Farming Calendar | Grainwish AI',
+    description: 'Seasonal crop lifecycle roadmaps for Rabi, Kharif, and Zaid seasons detailing sowing, irrigation, fertilizer, and harvesting milestones.'
+  }
 };
+
+function updatePageMetadata(title, description, path) {
+  if (typeof document === 'undefined') return;
+  if (title) {
+    document.title = title;
+    const ogTitle = document.querySelector('meta[property="og:title"]');
+    if (ogTitle) ogTitle.setAttribute('content', title);
+    const twTitle = document.querySelector('meta[name="twitter:title"]');
+    if (twTitle) twTitle.setAttribute('content', title);
+  }
+  if (path) {
+    const canonicalUrl = `https://grainwish.com${path === '/' ? '' : path.replace(/\/+$/, '')}`;
+    const canonical = document.querySelector('link[rel="canonical"]');
+    if (canonical) canonical.setAttribute('href', canonicalUrl);
+    const ogUrl = document.querySelector('meta[property="og:url"]');
+    if (ogUrl) ogUrl.setAttribute('content', canonicalUrl);
+    const twUrl = document.querySelector('meta[name="twitter:url"]');
+    if (twUrl) twUrl.setAttribute('content', canonicalUrl);
+  }
+  if (description) {
+    const desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.setAttribute('content', description);
+    const ogDesc = document.querySelector('meta[property="og:description"]');
+    if (ogDesc) ogDesc.setAttribute('content', description);
+  }
+}
 
 function RootApp() {
   const [downloadModalOpen, setDownloadModalOpen] = useState(false);
@@ -206,13 +280,17 @@ function RootApp() {
       const toolTarget = TOOL_ROUTE_TARGETS[initialPath];
 
       if (toolTarget) {
-        if (typeof document !== 'undefined') {
-          document.title = toolTarget.title;
-        }
+        updatePageMetadata(toolTarget.title, toolTarget.description, initialPath);
         setTimeout(() => {
           const el = document.querySelector(toolTarget.selector);
           if (el) el.scrollIntoView({ behavior: 'smooth' });
         }, 350);
+      } else if (initialPath === '/about' || initialPath === '/about/') {
+        updatePageMetadata(
+          'About Grainwish AI: Smart Agritech Intelligence Platform',
+          'Learn about Grainwish Technologies Private Limited (CIN: U62013WB2026PTC296769), operating Grainwish AI smart agritech intelligence across India.',
+          '/about'
+        );
       } else {
         const resetScrollToTop = () => {
           if (!window.location.hash || window.location.hash.toLowerCase() === '#ananya-ai') {
@@ -245,6 +323,11 @@ function RootApp() {
       }
       if (path === '/about' || path === '/about/' || hash === '#about') {
         setCurrentRoute('about');
+        updatePageMetadata(
+          'About Grainwish AI: Smart Agritech Intelligence Platform',
+          'Learn about Grainwish Technologies Private Limited (CIN: U62013WB2026PTC296769), operating Grainwish AI smart agritech intelligence across India.',
+          '/about'
+        );
         window.scrollTo({ top: 0, behavior: 'smooth' });
         return;
       }
@@ -263,9 +346,7 @@ function RootApp() {
       if (path in TOOL_ROUTE_TARGETS) {
         const target = TOOL_ROUTE_TARGETS[path];
         setCurrentRoute('home');
-        if (typeof document !== 'undefined') {
-          document.title = target.title;
-        }
+        updatePageMetadata(target.title, target.description, path);
         setTimeout(() => {
           const el = document.querySelector(target.selector);
           if (el) el.scrollIntoView({ behavior: 'smooth' });

@@ -55,6 +55,17 @@
     <meta name="author" content="Grainwish AI" />
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <link rel="canonical" href="https://grainwish.com" />
+    <script>
+      (function () {
+        try {
+          var p = window.location.pathname;
+          var c = document.querySelector('link[rel="canonical"]');
+          if (c && p && p !== '/' && p !== '/index.html') {
+            c.setAttribute('href', 'https://grainwish.com' + p.replace(/\/+$/, ''));
+          }
+        } catch (e) {}
+      })();
+    </script>
     <meta name="theme-color" content="#021109" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
 
@@ -252,6 +263,71 @@
               }
             }
           ]
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://grainwish.com/#website",
+          "url": "https://grainwish.com",
+          "name": "Grainwish AI",
+          "alternateName": "Grainwish AI Agritech Platform",
+          "publisher": {
+            "@id": "https://grainwish.com/#organization"
+          },
+          "hasPart": [
+            {
+              "@type": "WebPage",
+              "@id": "https://grainwish.com/crop-disease-diagnosis",
+              "url": "https://grainwish.com/crop-disease-diagnosis",
+              "name": "AI Crop Disease Diagnosis & Leaf Health Scan",
+              "description": "Instant camera-based AI crop disease diagnosis and dual-track chemical and organic treatment protocols for Indian farmers across 22 native languages."
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://grainwish.com/npk-fertilizer-calculator",
+              "url": "https://grainwish.com/npk-fertilizer-calculator",
+              "name": "Precision NPK Fertilizer Dosage Calculator",
+              "description": "Calculate exact nitrogen, phosphorus, and potassium dosage required per acre based on crop variety, soil test results, and regional agricultural guidelines."
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://grainwish.com/mandi-prices",
+              "url": "https://grainwish.com/mandi-prices",
+              "name": "Live APMC Mandi Prices & MSP Radar",
+              "description": "Real-time daily wholesale mandi rates, commodity arrivals, and Minimum Support Price (MSP) comparisons across 2,500+ APMC mandis in India."
+            },
+            {
+              "@type": "AboutPage",
+              "@id": "https://grainwish.com/about",
+              "url": "https://grainwish.com/about",
+              "name": "About Grainwish AI: Company & Leadership",
+              "description": "Learn about Grainwish Technologies Private Limited (CIN: U62013WB2026PTC296769, RoC Kolkata), operating Grainwish AI smart agritech intelligence across India."
+            },
+            {
+              "@type": "WebPage",
+              "@id": "https://grainwish.com/ananya-ai-agronomist",
+              "url": "https://grainwish.com/ananya-ai-agronomist",
+              "name": "Ananya AI Multilingual Agronomist",
+              "description": "24/7 conversational agronomist and voice companion in 22 native Indian regional languages with ICAR and SAU scientific advisory packages."
+            }
+          ]
+        },
+        {
+          "@type": "SiteNavigationElement",
+          "@id": "https://grainwish.com/#navigation",
+          "name": [
+            "AI Crop Disease Diagnosis",
+            "Precision NPK Calculator",
+            "Live Mandi Prices & MSP",
+            "About Grainwish AI",
+            "Ananya AI Agronomist"
+          ],
+          "url": [
+            "https://grainwish.com/crop-disease-diagnosis",
+            "https://grainwish.com/npk-fertilizer-calculator",
+            "https://grainwish.com/mandi-prices",
+            "https://grainwish.com/about",
+            "https://grainwish.com/ananya-ai-agronomist"
+          ]
         }
       ]
     }
@@ -282,7 +358,95 @@
   </head>
   <body class="bg-[#021109] text-slate-100 font-sans antialiased overflow-x-hidden selection:bg-emerald-500 selection:text-black">
     <div id="google_translate_element"></div>
-    <div id="root"></div>
+    <div id="root">
+      <!-- Semantic crawlable snapshot for Googlebot, search indexers & screen readers -->
+      <header class="sr-only">
+        <nav aria-label="Main Navigation">
+          <a href="https://grainwish.com/">Grainwish AI Home</a>
+          <a href="https://grainwish.com/crop-disease-diagnosis">AI Crop Disease Diagnosis</a>
+          <a href="https://grainwish.com/npk-fertilizer-calculator">Precision NPK Fertilizer Calculator</a>
+          <a href="https://grainwish.com/mandi-prices">Live Mandi Prices &amp; MSP Radar</a>
+          <a href="https://grainwish.com/about">About Grainwish AI</a>
+          <a href="https://grainwish.com/ananya-ai-agronomist">Ananya AI Multilingual Agronomist</a>
+          <a href="https://grainwish.com/government-schemes">Government Schemes &amp; Subsidies</a>
+          <a href="https://grainwish.com/farming-calendar">Interactive Farming Calendar</a>
+          <a href="https://grainwish.com/privacy-policy">Privacy Policy</a>
+          <a href="https://grainwish.com/terms-and-conditions">Terms &amp; Conditions</a>
+          <a href="https://grainwish.com/grievance">Grievance Redressal</a>
+        </nav>
+      </header>
+      <main class="sr-only">
+        <section id="hero-overview">
+          <h1>Grainwish AI: Smart Farming &amp; AI Crop Advisory</h1>
+          <p>
+            Grainwish AI delivers instant crop disease diagnosis, precision NPK dosage calculations, live mandi rates, and 24/7 Ananya AI farming guidance across India in 22 native Indian regional languages.
+          </p>
+        </section>
+
+        <section id="crop-disease-diagnosis">
+          <h2>AI Crop Disease Diagnosis &amp; Leaf Health Scan</h2>
+          <p>
+            Empower your crop health with instant camera-based computer vision leaf scans. Instantaneously detects pathogens including Yellow Rust in wheat, Cotton Leaf Curl Virus, Rice Blast, and vegetable leaf spots with 100% precision metrics and dual chemical and organic treatment protocols.
+          </p>
+          <a href="https://grainwish.com/crop-disease-diagnosis">Open AI Crop Disease Diagnosis Tool</a>
+        </section>
+
+        <section id="npk-fertilizer-calculator">
+          <h2>Precision NPK Fertilizer Dosage Calculator</h2>
+          <p>
+            Scientific nutrient calculator calibrated per acre across crop varieties (wheat, paddy, cotton, maize, potato, mustard, sugarcane), soil textures, and growth stages. Follow a guided 4-step workflow: Growth Stage &gt; Acreage &gt; Soil Test &gt; Combined Agronomic Synthesis with field procurement schedule.
+          </p>
+          <a href="https://grainwish.com/npk-fertilizer-calculator">Open Precision NPK Fertilizer Calculator</a>
+        </section>
+
+        <section id="mandi-prices">
+          <h2>Live APMC Mandi Prices &amp; MSP Radar</h2>
+          <p>
+            Real-time pan-India agricultural wholesale market prices across 2,500+ APMC mandis. Daily commodity arrivals, modal wholesale rates, and Minimum Support Price (MSP) comparisons across Indian states.
+          </p>
+          <a href="https://grainwish.com/mandi-prices">Open Live Mandi Prices &amp; MSP Radar</a>
+        </section>
+
+        <section id="about">
+          <h2>About Grainwish Technologies Private Limited</h2>
+          <p>
+            Grainwish Technologies Private Limited (CIN: U62013WB2026PTC296769, RoC Kolkata) operates Grainwish AI, an advanced agritech intelligence platform founded by Suman Paramanik and Sujit Ray. Registered office at 3/21, Shanti Pally, Bhadreswar, Chandannagar, Hooghly, West Bengal, 712124. Built with ISO 27001 data governance and DPDP Act 2023 compliance.
+          </p>
+          <a href="https://grainwish.com/about">Explore Full About Page &amp; Corporate Profile</a>
+        </section>
+
+        <section id="ananya-ai-agronomist">
+          <h2>Ananya AI Multilingual Agronomist</h2>
+          <p>
+            24/7 agricultural AI voice assistant offering agronomic advisory, dosage recommendations, and weather-driven advice in Hindi, Bengali, Marathi, Punjabi, Telugu, Tamil, Gujarati, Kannada, and 14 other Indian regional languages.
+          </p>
+          <a href="https://grainwish.com/ananya-ai-agronomist">Consult Ananya AI Agronomist</a>
+        </section>
+
+        <section id="government-schemes">
+          <h2>Agricultural Government Schemes &amp; Subsidies</h2>
+          <p>
+            Directory of central and state government agricultural schemes, PM-KISAN guidelines, PM Fasal Bima Yojana (PMFBY), Soil Health Card, and drip irrigation subsidy eligibility.
+          </p>
+          <a href="https://grainwish.com/government-schemes">Explore Government Schemes</a>
+        </section>
+
+        <section id="farming-calendar">
+          <h2>Interactive Farming Calendar</h2>
+          <p>
+            Comprehensive seasonal crop lifecycle timelines for Rabi, Kharif, and Zaid seasons, detailing field preparation, sowing, irrigation, fertilizer top-dressing, and harvesting windows.
+          </p>
+          <a href="https://grainwish.com/farming-calendar">View Agricultural Farming Calendar</a>
+        </section>
+      </main>
+      <footer class="sr-only">
+        <p>&copy; 2026 Grainwish Technologies Private Limited. All rights reserved. Operating Grainwish AI.</p>
+        <p>Grievance &amp; Data Protection Officer: support@grainwish.com</p>
+        <a href="https://grainwish.com/privacy-policy">Privacy Policy (DPDP Act 2023)</a>
+        <a href="https://grainwish.com/terms-and-conditions">Terms &amp; Conditions</a>
+        <a href="https://grainwish.com/grievance">Grievance Redressal</a>
+      </footer>
+    </div>
     <script type="module" src="./src/main.jsx"></script>
   </body>
 </html>

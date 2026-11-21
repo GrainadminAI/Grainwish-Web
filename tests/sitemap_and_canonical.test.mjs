@@ -85,4 +85,14 @@ test('Sitemap.xml, Robots.txt & Non-WWW Canonical Alignment', async (t) => {
     assert.match(appCode, /\/hi/);
     assert.match(appCode, /\/bn/);
   });
+
+  await t.test('7. index.html contains crawlable semantic links and WebSite hasPart schema', () => {
+    assert.match(indexHtml, /href="https:\/\/grainwish\.com\/crop-disease-diagnosis"/);
+    assert.match(indexHtml, /href="https:\/\/grainwish\.com\/npk-fertilizer-calculator"/);
+    assert.match(indexHtml, /href="https:\/\/grainwish\.com\/mandi-prices"/);
+    assert.match(indexHtml, /href="https:\/\/grainwish\.com\/about"/);
+    assert.match(indexHtml, /"@type":\s*"WebSite"/);
+    assert.match(indexHtml, /"hasPart":\s*\[/);
+    assert.match(indexHtml, /"@type":\s*"SiteNavigationElement"/);
+  });
 });
