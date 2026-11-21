@@ -19,13 +19,14 @@ import TermsConditionsPage from './components/TermsConditionsPage';
 import SecurityPolicyPage from './components/SecurityPolicyPage';
 import CertificateTermsPage from './components/CertificateTermsPage';
 import GrievanceRedressalPage from './components/GrievanceRedressalPage';
+import AboutPage from './components/AboutPage';
 import AdminPortalPage from './components/AdminPortalPage';
 import NotFoundPage from './components/NotFoundPage';
 import { recordUserVisitToDB } from './lib/supabase';
 import { LanguageProvider, useLanguage } from './lib/LanguageContext';
 import { BrandThemeProvider } from './lib/BrandThemeContext';
 
-function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy, onOpenCertificateTerms, onOpenGrievance }) {
+function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy, onOpenCertificateTerms, onOpenGrievance, onOpenAbout }) {
   const { selectedLang, setSelectedLang } = useLanguage();
 
   const handleScanClick = () => {
@@ -121,6 +122,7 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
         onOpenSecurityPolicy={onOpenSecurityPolicy}
         onOpenCertificateTerms={onOpenCertificateTerms}
         onOpenGrievance={onOpenGrievance}
+        onOpenAbout={onOpenAbout}
       />
 
       {/* Mobile Sticky Quick-Action Bar */}
@@ -134,8 +136,24 @@ function MainLandingPage({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms
   );
 }
 
+const TOOL_ROUTE_TARGETS = {
+  '/crop-disease-diagnosis': { selector: '#diagnostics', title: 'AI Crop Disease Diagnostics Simulator | Grainwish AI' },
+  '/crop-disease-diagnosis/': { selector: '#diagnostics', title: 'AI Crop Disease Diagnostics Simulator | Grainwish AI' },
+  '/npk-fertilizer-calculator': { selector: '#npk-calc', title: 'Precision NPK Fertilizer Calculator & Growth Roadmap | Grainwish AI' },
+  '/npk-fertilizer-calculator/': { selector: '#npk-calc', title: 'Precision NPK Fertilizer Calculator & Growth Roadmap | Grainwish AI' },
+  '/mandi-prices': { selector: '#mandi', title: 'Live Mandi Prices & MSP Locator | Grainwish AI' },
+  '/mandi-prices/': { selector: '#mandi', title: 'Live Mandi Prices & MSP Locator | Grainwish AI' },
+  '/ananya-ai-agronomist': { selector: '#ananya-ai', title: 'Ananya AI: 24/7 Virtual Agronomist in 22 Languages | Grainwish AI' },
+  '/ananya-ai-agronomist/': { selector: '#ananya-ai', title: 'Ananya AI: 24/7 Virtual Agronomist in 22 Languages | Grainwish AI' },
+  '/government-schemes': { selector: '#calendar', title: 'Government Agriculture Schemes & Subsidies | Grainwish AI' },
+  '/government-schemes/': { selector: '#calendar', title: 'Government Agriculture Schemes & Subsidies | Grainwish AI' },
+  '/farming-calendar': { selector: '#calendar', title: 'Interactive Agricultural Farming Calendar | Grainwish AI' },
+  '/farming-calendar/': { selector: '#calendar', title: 'Interactive Agricultural Farming Calendar | Grainwish AI' }
+};
+
 function RootApp() {
   const [downloadModalOpen, setDownloadModalOpen] = useState(false);
+  const { setSelectedLang } = useLanguage();
   const [currentRoute, setCurrentRoute] = useState(() => {
     if (typeof window === 'undefined') return 'home';
     const path = window.location.pathname.toLowerCase();
@@ -148,6 +166,10 @@ function RootApp() {
       window.location.replace('https://www.facebook.com/share/16NAw1dF7mn/');
       return 'redirect';
     }
+    if (path === '/about' || path === '/about/' || hash === '#about') return 'about';
+    if (path === '/hi' || path === '/hi/') return 'home';
+    if (path === '/bn' || path === '/bn/') return 'home';
+    if (path in TOOL_ROUTE_TARGETS) return 'home';
     if (path === '/privacy' || path === '/privacy-policy' || hash === '#privacy' || hash === '#privacy-policy') return 'privacy';
     if (path === '/terms' || path === '/terms-and-conditions' || hash === '#terms' || hash === '#terms-and-conditions') return 'terms';
     if (path === '/security' || hash === '#security') return 'security';
@@ -179,17 +201,30 @@ function RootApp() {
         window.history.replaceState(null, '', window.location.pathname + window.location.search);
       }
 
-      // Ensure website opens at the very top (Hero Section) without auto-scrolling
-      const resetScrollToTop = () => {
-        if (!window.location.hash || window.location.hash.toLowerCase() === '#ananya-ai') {
-          window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-        }
-      };
+      // Ensure website opens at the very top (Hero Section) without auto-scrolling unless a tool route was targeted
+      const initialPath = window.location.pathname.toLowerCase();
+      const toolTarget = TOOL_ROUTE_TARGETS[initialPath];
 
-      resetScrollToTop();
-      requestAnimationFrame(resetScrollToTop);
-      timer50 = setTimeout(resetScrollToTop, 50);
-      timer200 = setTimeout(resetScrollToTop, 200);
+      if (toolTarget) {
+        if (typeof document !== 'undefined') {
+          document.title = toolTarget.title;
+        }
+        setTimeout(() => {
+          const el = document.querySelector(toolTarget.selector);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 350);
+      } else {
+        const resetScrollToTop = () => {
+          if (!window.location.hash || window.location.hash.toLowerCase() === '#ananya-ai') {
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+          }
+        };
+
+        resetScrollToTop();
+        requestAnimationFrame(resetScrollToTop);
+        timer50 = setTimeout(resetScrollToTop, 50);
+        timer200 = setTimeout(resetScrollToTop, 200);
+      }
 
       // Record initial visit in Supabase
       recordUserVisitToDB({
@@ -206,6 +241,35 @@ function RootApp() {
       }
       if (path === '/facebook' || hash === '#facebook') {
         window.location.replace('https://www.facebook.com/share/16NAw1dF7mn/');
+        return;
+      }
+      if (path === '/about' || path === '/about/' || hash === '#about') {
+        setCurrentRoute('about');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      if (path === '/hi' || path === '/hi/') {
+        setSelectedLang('Hindi (हिंदी)');
+        setCurrentRoute('home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      if (path === '/bn' || path === '/bn/') {
+        setSelectedLang('Bengali (বাংলা)');
+        setCurrentRoute('home');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+      if (path in TOOL_ROUTE_TARGETS) {
+        const target = TOOL_ROUTE_TARGETS[path];
+        setCurrentRoute('home');
+        if (typeof document !== 'undefined') {
+          document.title = target.title;
+        }
+        setTimeout(() => {
+          const el = document.querySelector(target.selector);
+          if (el) el.scrollIntoView({ behavior: 'smooth' });
+        }, 200);
         return;
       }
       if (path === '/privacy' || path === '/privacy-policy' || hash === '#privacy' || hash === '#privacy-policy') {
@@ -251,6 +315,7 @@ function RootApp() {
     setCurrentRoute(route);
     let newPath = '/';
     if (route === 'privacy') newPath = '/privacy-policy';
+    else if (route === 'about') newPath = '/about';
     else if (route === 'terms') newPath = '/terms-and-conditions';
     else if (route === 'security') newPath = '/security';
     else if (route === 'certificate-terms') newPath = '/certificate-terms';
@@ -295,6 +360,10 @@ function RootApp() {
         <GrievanceRedressalPage onBackToHome={() => navigateTo('home')} />
       )}
 
+      {currentRoute === 'about' && (
+        <AboutPage onBackToHome={() => navigateTo('home')} />
+      )}
+
       {currentRoute === 'admin' && (
         <AdminPortalPage
           onBackToHome={() => navigateTo('home')}
@@ -321,6 +390,7 @@ function RootApp() {
           onOpenSecurityPolicy={() => navigateTo('security')}
           onOpenCertificateTerms={() => navigateTo('certificate-terms')}
           onOpenGrievance={() => navigateTo('grievance')}
+          onOpenAbout={() => navigateTo('about')}
         />
       )}
 

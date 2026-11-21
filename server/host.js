@@ -27,6 +27,11 @@ app.disable('x-powered-by');
 
 // Security: HTTP Security Response Headers
 app.use((req, res, next) => {
+  // 301 Redirect www.grainwish.com to https://grainwish.com (non-www canonical domain)
+  const host = (req.headers.host || '').toLowerCase();
+  if (host.startsWith('www.grainwish.com')) {
+    return res.redirect(301, `https://grainwish.com${req.originalUrl}`);
+  }
   res.setHeader('X-Content-Type-Options', 'nosniff');
   res.setHeader('X-Frame-Options', 'DENY');
   res.setHeader('X-XSS-Protection', '1; mode=block');

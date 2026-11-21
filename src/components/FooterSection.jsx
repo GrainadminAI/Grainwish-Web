@@ -1,10 +1,10 @@
 import React from 'react';
-import { Smartphone, ShieldCheck, Heart, ArrowUp, Lock, FileText, Cookie, Mail, Award, HelpCircle, Facebook, Instagram } from 'lucide-react';
+import { Smartphone, ShieldCheck, Heart, ArrowUp, Lock, FileText, Cookie, Mail, Award, HelpCircle, Facebook, Instagram, Building } from 'lucide-react';
 import MadeInIndiaTag from './MadeInIndiaTag';
 import { useLanguage } from '../lib/LanguageContext';
 import { useBrandTheme } from '../lib/BrandThemeContext';
 
-export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy, onOpenCertificateTerms, onOpenGrievance }) {
+export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy, onOpenTerms, onOpenSecurityPolicy, onOpenCertificateTerms, onOpenGrievance, onOpenAbout }) {
   const { t } = useLanguage();
   const { currentOption } = useBrandTheme();
   const scrollToTop = () => {
@@ -136,6 +136,16 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
             <ul className="space-y-2 text-slate-300">
               <li>
                 <a
+                  href="/about"
+                  onClick={(e) => { e.preventDefault(); onOpenAbout?.(); }}
+                  className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left text-slate-300"
+                >
+                  <Building className="w-3.5 h-3.5 text-amber-400 shrink-0" />
+                  <span>About Grainwish AI</span>
+                </a>
+              </li>
+              <li>
+                <a
                   href="/privacy-policy"
                   onClick={(e) => { e.preventDefault(); onOpenPrivacyPolicy?.(); }}
                   className="hover:text-emerald-300 transition-colors flex items-center gap-1.5 text-left"
@@ -210,6 +220,14 @@ export default function FooterSection({ onOpenDownloadModal, onOpenPrivacyPolicy
 
         {/* Global Footer Layout: Mandatory Persistent Links Across All Public Views */}
         <div className="pt-6 pb-2 text-center text-xs text-slate-300 flex items-center justify-center gap-3 sm:gap-4 flex-wrap border-b border-emerald-900/40">
+          <a
+            href="/about"
+            onClick={(e) => { e.preventDefault(); onOpenAbout?.(); }}
+            className="hover:text-emerald-300 transition-colors underline font-medium"
+          >
+            About Us
+          </a>
+          <span className="text-emerald-800">|</span>
           <a
             href="/privacy-policy"
             onClick={(e) => { e.preventDefault(); onOpenPrivacyPolicy?.(); }}
