@@ -1,39 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
   <url>
-    <loc>https://www.grainwish.com/</loc>
-    <lastmod>2026-11-03</lastmod>
-    <changefreq>daily</changefreq>
+    <loc>https://grainwish.com/</loc>
+    <lastmod>2026-11-21T00:00:00+00:00</lastmod>
     <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="en-in" href="https://grainwish.com/" />
+    <xhtml:link rel="alternate" hreflang="hi-in" href="https://grainwish.com/hi/" />
+    <xhtml:link rel="alternate" hreflang="bn-in" href="https://grainwish.com/bn/" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://grainwish.com/" />
   </url>
   <url>
-    <loc>https://www.grainwish.com/privacy-policy</loc>
-    <lastmod>2026-11-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://grainwish.com/crop-disease-diagnosis</loc>
+    <lastmod>2026-11-21T00:00:00+00:00</lastmod>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.grainwish.com/terms-conditions</loc>
-    <lastmod>2026-11-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://grainwish.com/npk-fertilizer-calculator</loc>
+    <lastmod>2026-11-21T00:00:00+00:00</lastmod>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.grainwish.com/security-policy</loc>
-    <lastmod>2026-11-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://grainwish.com/mandi-prices</loc>
+    <lastmod>2026-11-21T00:00:00+00:00</lastmod>
+    <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://www.grainwish.com/certificate-terms</loc>
-    <lastmod>2026-11-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://grainwish.com/ananya-ai-agronomist</loc>
+    <lastmod>2026-11-21T00:00:00+00:00</lastmod>
+    <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://www.grainwish.com/grievance-redressal</loc>
-    <lastmod>2026-11-03</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.5</priority>
+    <loc>https://grainwish.com/government-schemes</loc>
+    <lastmod>2026-11-21T00:00:00+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://grainwish.com/farming-calendar</loc>
+    <lastmod>2026-11-21T00:00:00+00:00</lastmod>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://grainwish.com/about</loc>
+    <lastmod>2026-11-21T00:00:00+00:00</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://grainwish.com/privacy-policy</loc>
+    <lastmod>2026-10-15T07:04:57+00:00</lastmod>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://grainwish.com/terms-and-conditions</loc>
+    <lastmod>2026-10-15T07:04:57+00:00</lastmod>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://grainwish.com/grievance</loc>
+    <lastmod>2026-10-15T07:04:57+00:00</lastmod>
+    <priority>0.3</priority>
   </url>
 </urlset>

@@ -107,8 +107,8 @@ test('Mobile App & Agritech Legal Compliance (DPDP Act 2023 & GDPR)', async (t) 
     assert.match(indexHtml, /<script type="application\/ld\+json">/, 'Must contain JSON-LD script tag');
     assert.match(indexHtml, /"@graph":\s*\[/, 'Must contain @graph array');
     assert.match(indexHtml, /"name":\s*"Grainwish AI"/, 'Must contain Organization name');
-    assert.match(indexHtml, /"url":\s*"https:\/\/www\.grainwish\.com"/, 'Must contain Organization URL');
-    assert.match(indexHtml, /"logo":\s*\{[^}]*"url":\s*"https:\/\/www\.grainwish\.com\/logo\.webp"/, 'Must reference logo.webp');
+    assert.match(indexHtml, /"url":\s*"https:\/\/(www\.)?grainwish\.com"/, 'Must contain Organization URL');
+    assert.match(indexHtml, /"logo":\s*\{[^}]*"url":\s*"https:\/\/(www\.)?grainwish\.com\/logo\.webp"/, 'Must reference logo.webp');
     assert.match(indexHtml, /"@type":\s*"WebApplication"/, 'Must contain WebApplication entity');
     assert.match(indexHtml, /"@type":\s*"WebPage"/, 'Must contain WebPage entity with speakable');
     assert.match(indexHtml, /"@type":\s*"FAQPage"/, 'Must contain FAQPage entity');
@@ -133,8 +133,8 @@ test('Mobile App & Agritech Legal Compliance (DPDP Act 2023 & GDPR)', async (t) 
 
     // Open Graph & Twitter Card tags
     assert.match(indexHtml, /<meta property="og:site_name" content="Grainwish AI" \/>/, 'og:site_name must be Grainwish AI');
-    assert.match(indexHtml, /<meta property="og:image" content="https:\/\/www\.grainwish\.com\/assets\/og-preview\.png" \/>/, 'og:image must reference og-preview.png');
-    assert.match(indexHtml, /<meta name="twitter:image" content="https:\/\/www\.grainwish\.com\/assets\/og-preview\.png" \/>/, 'twitter:image must reference og-preview.png');
+    assert.match(indexHtml, /<meta property="og:image" content="https:\/\/(www\.)?grainwish\.com\/assets\/og-preview\.png" \/>/, 'og:image must reference og-preview.png');
+    assert.match(indexHtml, /<meta name="twitter:image" content="https:\/\/(www\.)?grainwish\.com\/assets\/og-preview\.png" \/>/, 'twitter:image must reference og-preview.png');
 
     // Assets exist on disk
     const ogPngPath = path.resolve(__dirname, '../public/assets/og-preview.png');

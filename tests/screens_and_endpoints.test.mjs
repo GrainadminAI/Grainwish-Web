@@ -99,6 +99,7 @@ test('Screen Components: Verify target screens exist and are intact', async (t) 
     'PrivacyPolicyPage.jsx',
     'TermsConditionsPage.jsx',
     'SecurityPolicyPage.jsx',
+    'AboutPage.jsx',
     'NotFoundPage.jsx'
   ];
 

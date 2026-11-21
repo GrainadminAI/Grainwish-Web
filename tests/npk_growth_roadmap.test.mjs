@@ -77,3 +77,4 @@ test('NPK Growth Roadmap & Farmers Application Schedule', async (t) => {
     assert.match(npkCode, /Grainwish AI — Farmers Growth Roadmap & NPK Prescription/);
   });
 });
+

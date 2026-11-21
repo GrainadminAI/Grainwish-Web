@@ -64,8 +64,8 @@ assertCheck(
 
 const canonicalMatch = indexHtml.match(/<link\s+rel="canonical"\s+href="([^"]+)"/i);
 assertCheck(
-  'Canonical URL points to https://www.grainwish.com',
-  canonicalMatch && (canonicalMatch[1] === 'https://www.grainwish.com' || canonicalMatch[1] === 'https://www.grainwish.com/'),
+  'Canonical URL points to https://grainwish.com',
+  canonicalMatch && (canonicalMatch[1] === 'https://grainwish.com' || canonicalMatch[1] === 'https://grainwish.com/'),
   `Canonical URL is ${canonicalMatch ? canonicalMatch[1] : 'missing'}`
 );
 
@@ -85,10 +85,10 @@ assertCheck(
 console.log('\n📱 2. Open Graph & Social Sharing Cards');
 assertCheck('og:site_name is "Grainwish AI"', indexHtml.includes('content="Grainwish AI"'));
 assertCheck('og:type is "website"', indexHtml.includes('property="og:type" content="website"'));
-assertCheck('og:url is canonical', indexHtml.includes('property="og:url" content="https://www.grainwish.com/"'));
+assertCheck('og:url is canonical', indexHtml.includes('property="og:url" content="https://grainwish.com/"'));
 assertCheck(
-  'og:image points to valid high-res preview (https://www.grainwish.com/assets/og-preview.png)',
-  indexHtml.includes('property="og:image" content="https://www.grainwish.com/assets/og-preview.png"')
+  'og:image points to valid high-res preview (https://grainwish.com/assets/og-preview.png)',
+  indexHtml.includes('property="og:image" content="https://grainwish.com/assets/og-preview.png"')
 );
 assertCheck(
   'Social preview image exists on disk (public/assets/og-preview.png)',
@@ -144,15 +144,30 @@ const sitemapPath = path.join(rootDir, 'public/sitemap.xml');
 assertCheck('public/sitemap.xml exists on disk', fs.existsSync(sitemapPath));
 const sitemapContent = fs.existsSync(sitemapPath) ? fs.readFileSync(sitemapPath, 'utf8') : '';
 assertCheck('sitemap.xml contains valid <urlset> declaration', sitemapContent.includes('<urlset') && sitemapContent.includes('</urlset>'));
-assertCheck('sitemap.xml includes canonical homepage URL', sitemapContent.includes('https://www.grainwish.com/'));
+assertCheck('sitemap.xml includes canonical homepage URL', sitemapContent.includes('https://grainwish.com/'));
+assertCheck(
+  'sitemap.xml includes dedicated tool and regional alternate URLs',
+  sitemapContent.includes('https://grainwish.com/crop-disease-diagnosis') &&
+  sitemapContent.includes('https://grainwish.com/npk-fertilizer-calculator') &&
+  sitemapContent.includes('https://grainwish.com/mandi-prices') &&
+  sitemapContent.includes('https://grainwish.com/ananya-ai-agronomist') &&
+  sitemapContent.includes('https://grainwish.com/about') &&
+  sitemapContent.includes('hreflang="hi-in"') &&
+  sitemapContent.includes('hreflang="bn-in"')
+);
 
 const robotsPath = path.join(rootDir, 'public/robots.txt');
 assertCheck('public/robots.txt exists on disk', fs.existsSync(robotsPath));
 const robotsContent = fs.existsSync(robotsPath) ? fs.readFileSync(robotsPath, 'utf8') : '';
 assertCheck(
-  'public/robots.txt declares correct Sitemap URL',
-  robotsContent.includes('Sitemap: https://www.grainwish.com/sitemap.xml'),
+  'public/robots.txt declares correct non-www Sitemap URL',
+  robotsContent.includes('Sitemap: https://grainwish.com/sitemap.xml'),
   'robots.txt missing Sitemap declaration'
+);
+assertCheck(
+  'public/robots.txt domain matches non-www canonical',
+  robotsContent.includes('https://grainwish.com') && !robotsContent.includes('https://www.grainwish.com'),
+  'robots.txt contains www domain mismatch'
 );
 
 // 5. Image Accessibility & Alt Attributes
